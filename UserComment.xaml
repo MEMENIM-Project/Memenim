@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="AnonymDesktopClient.UserComment"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AnonymDesktopClient"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Image Source="{Binding ImageURL}" Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></Image>
+        <TextBlock Text="{Binding UserName}" Grid.Row="0" Grid.Column="1"></TextBlock>
+        <TextBlock Text="{Binding Comment}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1"></TextBlock>
+    </Grid>
+</UserControl>
