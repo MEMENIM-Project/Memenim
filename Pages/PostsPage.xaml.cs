@@ -20,7 +20,7 @@ namespace AnonymDesktopClient
     /// <summary>
     /// Interaction logic for PostsPage.xaml
     /// </summary>
-    public partial class PostsPage : Page
+    public partial class PostsPage : UserControl
     {
         public PostsPage()
         {

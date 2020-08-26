@@ -40,7 +40,7 @@ namespace AnonymDesktopClient
                 }
                 else
                 {
-                    NavigationService.Navigate(new Uri(@"Pages\PostsPage.xaml", UriKind.Relative));
+                    NavigationService.Navigate(new Uri(@"Pages\ApplicationPage.xaml", UriKind.Relative));
                 }
             }
             catch(Exception ex)

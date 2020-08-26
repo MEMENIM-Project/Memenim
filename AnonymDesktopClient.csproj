@@ -58,8 +58,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GeneralBlackboard.cs" />
+    <Compile Include="Pages\ApplicationPage.xaml.cs">
+      <DependentUpon>ApplicationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\RegisterUserPage.xaml.cs">
       <DependentUpon>RegisterUserPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\NavigationPersistent.xaml.cs">
+      <DependentUpon>NavigationPersistent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Widgets\UserComment.xaml.cs">
       <DependentUpon>UserComment.xaml</DependentUpon>
@@ -67,6 +74,10 @@
     <Compile Include="Widgets\WriteComment.xaml.cs">
       <DependentUpon>WriteComment.xaml</DependentUpon>
     </Compile>
+    <Page Include="Pages\ApplicationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -92,11 +103,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Posts.xaml">
+    <Page Include="Pages\Posts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\PostsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Widgets\NavigationPersistent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -110,7 +125,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Posts.xaml.cs">
+    <Compile Include="Pages\Posts.xaml.cs">
       <DependentUpon>Posts.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PostsPage.xaml.cs">
