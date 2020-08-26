@@ -15,9 +15,12 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-        <Label Name="lblStatus" VerticalAlignment="Bottom" Foreground="Red" HorizontalAlignment="Center"></Label>
+            <Label Name="lblStatus" VerticalAlignment="Bottom" Foreground="Red" HorizontalAlignment="Center"></Label>
             <TextBox Name="txtLogin" Grid.Row="1" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Center">login</TextBox>
-            <TextBox Name="txtPass" Grid.Row="2" Width="200" VerticalAlignment="Top" HorizontalAlignment="Center">Pass</TextBox>
-            <Button Name="btnLogin" Grid.Row="3" ButtonBase.Click="btnLogin_Click" Margin="150 20 150 40">Proceed</Button>
+        <StackPanel Grid.Row="2">
+            <PasswordBox Name="txtPass"  Width="200" VerticalAlignment="Top" HorizontalAlignment="Center"></PasswordBox>
+            <Button Name="btnRegister" Click="btnRegister_Click" Width="200" Height="30" Margin="5 5 5 5">New User? Create an account</Button>
+        </StackPanel>
+        <Button Name="btnLogin" Grid.Row="3" ButtonBase.Click="btnLogin_Click" Margin="150 20 150 40">Proceed</Button>
     </Grid>
 </Page>

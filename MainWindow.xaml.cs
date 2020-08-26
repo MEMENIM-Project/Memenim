@@ -23,7 +23,7 @@ namespace AnonymDesktopClient
         public MainWindow()
         {
             InitializeComponent();
-            this.Navigate(new Uri("LoginPage.xaml", UriKind.Relative));
+            this.Navigate(new Uri(@"Pages\LoginPage.xaml", UriKind.Relative));
         }
     }
 }

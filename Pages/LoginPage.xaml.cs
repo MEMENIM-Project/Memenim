@@ -29,17 +29,30 @@ namespace AnonymDesktopClient
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             btnLogin.IsEnabled = false;
-            var res = await ApiHelper.Auth(txtLogin.Text, txtPass.Text);
+            try
+            {
+                var res = await ApiHelper.Auth(txtLogin.Text, txtPass.Password);
 
-            if(res != null)
-            {
-                lblStatus.Content = res;
-                btnLogin.IsEnabled = true;
+                if (res != null)
+                {
+                    lblStatus.Content = res;
+                    btnLogin.IsEnabled = true;
+                }
+                else
+                {
+                    NavigationService.Navigate(new Uri(@"Pages\PostsPage.xaml", UriKind.Relative));
+                }
             }
-            else
+            catch(Exception ex)
             {
-                NavigationService.Navigate(new Uri("PostsPage.xaml", UriKind.Relative));
+                MessageBox.Show(ex.Message, "An exception happened");
             }
+
+        }
+
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri(@"Pages\RegisterUserPage.xaml", UriKind.Relative));
         }
     }
 }

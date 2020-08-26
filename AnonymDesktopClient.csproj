@@ -58,13 +58,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="UserComment.xaml.cs">
+    <Compile Include="Pages\RegisterUserPage.xaml.cs">
+      <DependentUpon>RegisterUserPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Widgets\UserComment.xaml.cs">
       <DependentUpon>UserComment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WriteComment.xaml.cs">
+    <Compile Include="Widgets\WriteComment.xaml.cs">
       <DependentUpon>WriteComment.xaml</DependentUpon>
     </Compile>
-    <Page Include="LoginPage.xaml">
+    <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -78,26 +81,30 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataStructs.cs" />
-    <Compile Include="LoginPage.xaml.cs">
+    <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\RegisterUserPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Posts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PostsPage.xaml">
+    <Page Include="Pages\PostsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserComment.xaml">
+    <Page Include="Widgets\UserComment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WriteComment.xaml">
+    <Page Include="Widgets\WriteComment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -106,7 +113,7 @@
     <Compile Include="Posts.xaml.cs">
       <DependentUpon>Posts.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PostsPage.xaml.cs">
+    <Compile Include="Pages\PostsPage.xaml.cs">
       <DependentUpon>PostsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">

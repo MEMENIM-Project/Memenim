@@ -31,6 +31,30 @@ namespace AnonymDesktopClient
 
         private static string UserToken;
 
+        public static async Task<string> RegisterUser(string login, string pass)
+        {
+            AuthInfo inf = new AuthInfo();
+            inf.login = login;
+            inf.password = pass;
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+            var json = JsonConvert.SerializeObject(inf);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/add", data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+
+            AuthResponse resp = JsonConvert.DeserializeObject<AuthResponse>(result);
+            if (resp.data.token != null)
+            {
+                UserToken = resp.data.token;
+            }
+            return resp.message;
+        }
+
         public static async Task<string> Auth(string login, string pass)
         {
             AuthInfo inf = new AuthInfo();
