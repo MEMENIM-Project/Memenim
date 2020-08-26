@@ -17,7 +17,7 @@ namespace AnonymDesktopClient.DataStructs
         public int id { get; set; }
         public string text { get; set; }
         public string owner_name { get; set; }
-        public int owner_id { get; set; }
+        public int? owner_id { get; set; }
         public long date { get; set; }
     }
 
