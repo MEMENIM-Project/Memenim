@@ -1,11 +1,14 @@
-﻿<NavigationWindow x:Class="AnonymDesktopClient.MainWindow"
+﻿<mah:MetroWindow x:Class="AnonymDesktopClient.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        
         xmlns:local="clr-namespace:AnonymDesktopClient"
         mc:Ignorable="d"
-        ShowsNavigationUI="False"
         Title="MainWindow" Height="450" Width="800">
-    
-</NavigationWindow>
+    <Grid>
+        <mah:MetroContentControl x:Name="contentArea"></mah:MetroContentControl>
+    </Grid>
+</mah:MetroWindow>

@@ -18,9 +18,8 @@ namespace AnonymDesktopClient.Pages
     /// <summary>
     /// Interaction logic for ApplicationPage.xaml
     /// </summary>
-    public partial class ApplicationPage : Page
+    public partial class ApplicationPage : UserControl
     {
-
         PostsPage postView;
 
         public ApplicationPage()
@@ -40,12 +39,19 @@ namespace AnonymDesktopClient.Pages
                     case "AllPosts":
                         contentArea.Content = postView;
                         break;
+                    case "Memes":
+                        break;
                     case "Settings":
                         break;
                     default:
                         break;
                 }
             }
+        }
+
+        private void NavigationPersistent_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

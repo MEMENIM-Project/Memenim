@@ -35,4 +35,11 @@ namespace AnonymDesktopClient.DataStructs
         public CommentUserData user { get; set; }
     }
 
+    class UserInfo
+    {
+        public int id { get; set; }
+        public string think { get; set; }
+
+    }
+
 }

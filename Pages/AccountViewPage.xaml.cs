@@ -12,22 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using AnonymDesktopClient.Pages;
-using MahApps.Metro.Controls;
 
 namespace AnonymDesktopClient
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for AccountViewPage.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class AccountViewPage : UserControl
     {
-        public MainWindow()
+        public AccountViewPage()
         {
             InitializeComponent();
-            PageSwitcher.ContentControl = contentArea;
-
-            PageSwitcher.SwitchToPage(new LoginPage());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AnonymDesktopClient.DataStructs;
+using AnonymDesktopClient.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace AnonymDesktopClient
     /// <summary>
     /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class LoginPage : UserControl
     {
         public LoginPage()
         {
@@ -40,7 +41,7 @@ namespace AnonymDesktopClient
                 }
                 else
                 {
-                    NavigationService.Navigate(new Uri(@"Pages\ApplicationPage.xaml", UriKind.Relative));
+                    PageSwitcher.SwitchToPage(new ApplicationPage());
                 }
             }
             catch(Exception ex)
@@ -52,7 +53,7 @@ namespace AnonymDesktopClient
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri(@"Pages\RegisterUserPage.xaml", UriKind.Relative));
+            PageSwitcher.SwitchToPage(new RegisterUser());
         }
     }
 }

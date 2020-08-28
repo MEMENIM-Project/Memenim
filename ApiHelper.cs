@@ -155,5 +155,10 @@ namespace AnonymDesktopClient
 
             return resp.data;
         }
+
+        public static async Task GetUserInfo(int userId)
+        {
+
+        }
     }
 }

@@ -6,17 +6,24 @@
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="40">
-    <Grid Background="Blue">
+    <Control.Resources>
+        <SolidColorBrush x:Key="NavBarBackground" Color="#013a89" />
+        <Style x:Key="Navbar" TargetType="Grid">
+            <Setter Property="Background" Value="{StaticResource NavBarBackground}"></Setter>
+        </Style>
+    </Control.Resources>
+    <Grid Style="{StaticResource Navbar}">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Button></Button>
+        <local:IconButton x:Name="btnNavUser" IconButtonClick="btnNavUser_IconButtonClick"></local:IconButton>
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <Button Name="btnNavHome" Click="btnNavHome_Click" Height="40"></Button>
+            <local:IconButton x:Name="btnNavHome" IconButtonClick="btnNavHome_Click" ImageSource="/AnonymDesktopClient;component/Icons/Dark/appbar.home.empty.png" Height="40"></local:IconButton>
+            <local:IconButton x:Name="btnNavMemes" IconButtonClick="btnNavHome_Click" ImageSource="/AnonymDesktopClient;component/Icons/Dark/appbar.smiley.happy.png" Height="40"></local:IconButton>
         </StackPanel>
-        <Button Grid.Row="2" Name="btnNavSettings" Click="btnNavSettings_Click"></Button>
+        <local:IconButton Grid.Row="2" x:Name="btnNavSettings" ImageSource="/AnonymDesktopClient;component/Icons/Dark/appbar.settings.png" IconButtonClick="btnNavSettings_Click"></local:IconButton>
     </Grid>
 </UserControl>

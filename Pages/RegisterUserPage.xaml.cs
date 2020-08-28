@@ -18,7 +18,7 @@ namespace AnonymDesktopClient.Pages
     /// <summary>
     /// Interaction logic for RegisterUser.xaml
     /// </summary>
-    public partial class RegisterUser : Page
+    public partial class RegisterUser : UserControl
     {
         public RegisterUser()
         {
@@ -39,7 +39,7 @@ namespace AnonymDesktopClient.Pages
                 }
                 else
                 {
-                    NavigationService.Navigate(new Uri(@"Pages\ApplicationPage.xaml", UriKind.Relative));
+                    PageSwitcher.SwitchToPage(new ApplicationPage());
                 }
 
             }

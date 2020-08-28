@@ -56,5 +56,10 @@ namespace AnonymDesktopClient.Widgets
             GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, "Settings");
             RaiseRedirectEvent();
         }
+
+        private void btnNavUser_IconButtonClick(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
