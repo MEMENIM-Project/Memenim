@@ -34,6 +34,22 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
                         <Controls:MetroHeader Header="Comment Spam"></Controls:MetroHeader>
+                        <Controls:NumericUpDown
+                            Controls:TextBoxHelper.Watermark="Post ID"
+                            Name="txtPostId"></Controls:NumericUpDown>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="600" IsEnabled="False" Name="txtCommentsFilePath"></TextBox>
+                            <Button Click="btnOpenCommentsFile_Click" Name="btnOpenCommentsFile">Open File</Button>
+                        </StackPanel>
+                        <Controls:NumericUpDown
+                            Maximum="400"
+                            Minimum="1"
+                            Controls:TextBoxHelper.Watermark="Comments Count"
+                            Name="txtCommentsCount"></Controls:NumericUpDown>
+                        <CheckBox Name="bAnonymousComments">Send anonymously</CheckBox>
+                        <Button
+                            Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
+                            Name="btnSpamComments" Click="btnSpamComments_Click" HorizontalAlignment="Right">Spam Comments</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>

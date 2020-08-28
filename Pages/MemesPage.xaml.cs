@@ -1,4 +1,7 @@
 ﻿using AnonymDesktopClient.DataStructs;
+using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Converters;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace AnonymDesktopClient.Pages
 {
@@ -22,6 +26,9 @@ namespace AnonymDesktopClient.Pages
     /// </summary>
     public partial class MemesPage : UserControl
     {
+
+        private string[] m_SpamCommentsList;
+
         public MemesPage()
         {
             InitializeComponent();
@@ -78,6 +85,43 @@ namespace AnonymDesktopClient.Pages
             MessageBox.Show("Done");
             LockButtons(false);
 
+        }
+
+        private async void btnSpamComments_Click(object sender, RoutedEventArgs e)
+        {
+            if (m_SpamCommentsList != null && m_SpamCommentsList.Length > 0)
+            {
+                try
+                {
+                    Random rnd = new Random();
+                    for (int i = 0; i < txtCommentsCount.Value; ++i)
+                    {
+                        int idx = rnd.Next(0, m_SpamCommentsList.Length - 1);
+                        await ApiHelper.SendComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void btnOpenCommentsFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            try
+            {
+                if (dlg.ShowDialog().Value)
+                {
+                    txtCommentsFilePath.Text = dlg.FileName;
+                    m_SpamCommentsList = File.ReadAllLines(dlg.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
