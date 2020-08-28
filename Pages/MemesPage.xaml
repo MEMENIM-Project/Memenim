@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="AnonymDesktopClient.Pages.MemesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+
+             xmlns:local="clr-namespace:AnonymDesktopClient.Pages"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Controls:MetroAnimatedTabControl>
+            <TabItem Header="Profile memes">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <Controls:MetroHeader Header="Steal user profile">
+                        </Controls:MetroHeader>
+                        <TextBox Name="txtStealId"
+                            Controls:TextBoxHelper.Watermark="Victim ID">
+                        </TextBox>
+                        <Button Name="btnSteal" Click="btnSteal_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Do some dirty work</Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Comments memes">
+                
+            </TabItem>
+        </Controls:MetroAnimatedTabControl>
+    </Grid>
+</UserControl>

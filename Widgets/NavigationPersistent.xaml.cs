@@ -22,6 +22,7 @@ namespace AnonymDesktopClient.Widgets
     {
         public static readonly RoutedEvent RedirectEvent;
 
+
         static NavigationPersistent()
         {
             RedirectEvent = EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(NavigationPersistent));
@@ -45,21 +46,14 @@ namespace AnonymDesktopClient.Widgets
         }
 
 
-        private void btnNavHome_Click(object sender, RoutedEventArgs e)
+        private void OnNavButtonClick(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, "AllPosts");
+            IconButton btn = sender as IconButton;
+
+            GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, btn.RedirectTag);
             RaiseRedirectEvent();
         }
 
-        private void btnNavSettings_Click(object sender, RoutedEventArgs e)
-        {
-            GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, "Settings");
-            RaiseRedirectEvent();
-        }
 
-        private void btnNavUser_IconButtonClick(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

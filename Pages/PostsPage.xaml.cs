@@ -42,8 +42,9 @@ namespace AnonymDesktopClient
         {
             PostData post = (PostData)lstPostsView.SelectedItem;
             wdgComment.PostID = post.id;
-            lblPosterName.Text = post.owner_name;
-            lblDate.Text = new DateTime(post.date).ToLocalTime().ToString();
+            lblPosterName.Content = post.owner_name;
+            lblPosterName.IsEnabled = post.hidden == 0 ? true : false;
+            lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
             var commentsData = await ApiHelper.GetCommentsForPost(post.id);
             lstComments.Items.Clear();
             for (int i = commentsData.Count - 1; i > 0; --i)
@@ -53,7 +54,6 @@ namespace AnonymDesktopClient
                 commentWidget.Comment = commentsData[i].text;
                 commentWidget.ImageURL = commentsData[i].user.photo;
                 lstComments.Items.Add(commentWidget);
-
             }
         }
     }

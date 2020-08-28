@@ -21,11 +21,13 @@ namespace AnonymDesktopClient.Pages
     public partial class ApplicationPage : UserControl
     {
         PostsPage postView;
+        MemesPage memesPage;
 
         public ApplicationPage()
         {
             InitializeComponent();
             postView = new PostsPage();
+            memesPage = new MemesPage();
             contentArea.Content = postView;
         }
 
@@ -40,6 +42,7 @@ namespace AnonymDesktopClient.Pages
                         contentArea.Content = postView;
                         break;
                     case "Memes":
+                        contentArea.Content = memesPage;
                         break;
                     case "Settings":
                         break;

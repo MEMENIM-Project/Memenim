@@ -156,8 +156,46 @@ namespace AnonymDesktopClient
             return resp.data;
         }
 
-        public static async Task GetUserInfo(int userId)
+        class IdData
         {
+            public int id { get; set; }
+        }
+        
+        class GetProfileResult
+        {
+            public bool error { get; set; }
+            public List<UserInfo> data { get; set; }
+        }
+
+        public static async Task<UserInfo> GetUserInfo(int userId)
+        {
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            IdData inf = new IdData();
+            inf.id = userId;
+
+            var json = JsonConvert.SerializeObject(inf);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/profile/getById", data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+            GetProfileResult resp = JsonConvert.DeserializeObject<GetProfileResult>(result);
+
+            return resp.data[0];
+        }
+
+        public static async Task EditUserInfo(UserInfo userData)
+        {
+            var json = JsonConvert.SerializeObject(userData);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/profile/set", data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+            //GetProfileResult resp = JsonConvert.DeserializeObject<GetProfileResult>(result);
 
         }
     }

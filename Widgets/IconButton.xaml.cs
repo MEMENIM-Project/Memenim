@@ -22,6 +22,8 @@ namespace AnonymDesktopClient.Widgets
     {
 
         public string ImageSource { get; set; } = "";
+        public string RedirectTag { get; set; } = "";
+
 
         public static readonly RoutedEvent OnIconButtonClicked = EventManager.RegisterRoutedEvent("OnIconButtonClick", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(IconButton));
 

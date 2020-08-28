@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
       xmlns:local="clr-namespace:AnonymDesktopClient"
@@ -17,11 +18,18 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Label Name="lblStatus" VerticalAlignment="Bottom" Foreground="Red" HorizontalAlignment="Center"></Label>
-            <TextBox Name="txtLogin" Grid.Row="1" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Center">login</TextBox>
+        <TextBox 
+            Controls:TextBoxHelper.Watermark="Login"
+            Controls:TextBoxHelper.SelectAllOnFocus="True"
+            Name="txtLogin" Grid.Row="1" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBox>
         <StackPanel Grid.Row="2">
-            <PasswordBox Name="txtPass"  Width="200" VerticalAlignment="Top" HorizontalAlignment="Center"></PasswordBox>
-            <Button Name="btnRegister" Click="btnRegister_Click" Width="200" Height="30" Margin="5 5 5 5">New User? Create an account</Button>
+            <PasswordBox
+                Controls:TextBoxHelper.Watermark="Password"
+                Controls:TextBoxHelper.SelectAllOnFocus="True"
+                Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
+                Name="txtPass"  Width="200" VerticalAlignment="Top" HorizontalAlignment="Center"></PasswordBox>
+            <Button Name="btnRegister" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Width="200" Height="30" Margin="5 5 5 5">New User? Create an account</Button>
         </StackPanel>
-        <Button Name="btnLogin" Grid.Row="3" ButtonBase.Click="btnLogin_Click" Margin="150 20 150 40">Proceed</Button>
+        <Button Name="btnLogin" Grid.Row="3" Style="{DynamicResource MahApps.Styles.Button.Square}" ButtonBase.Click="btnLogin_Click" Margin="5 5 5 5">Proceed</Button>
     </Grid>
 </UserControl>

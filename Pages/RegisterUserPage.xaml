@@ -1,7 +1,8 @@
 ﻿<UserControl x:Class="AnonymDesktopClient.Pages.RegisterUser"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AnonymDesktopClient.Pages"
       mc:Ignorable="d" 
@@ -9,10 +10,20 @@
 
     <Grid>
         <StackPanel Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Controls:MetroHeader>
+                
+            </Controls:MetroHeader>
             <TextBlock Name="lblErrorMessage" Foreground="Red" Margin="5 5 5 5" HorizontalAlignment="Center"></TextBlock>
-            <TextBox Name="txtLogin"></TextBox>
-            <PasswordBox Name="txtPass"></PasswordBox>
-            <Button Margin="5 5 5 5" Height="30" Name="btnRegister" Click="btnRegister_Click">Register new user</Button>
+            <TextBox 
+                Controls:TextBoxHelper.Watermark="Login"
+                Controls:TextBoxHelper.SelectAllOnFocus="True"
+                Name="txtLogin"></TextBox>
+            <PasswordBox 
+                Controls:TextBoxHelper.Watermark="Password"
+                Controls:TextBoxHelper.SelectAllOnFocus="True"
+                Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
+                Name="txtPass"></PasswordBox>
+            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnRegister" Click="btnRegister_Click">Register new user</Button>
         </StackPanel>
     </Grid>
 </UserControl>
