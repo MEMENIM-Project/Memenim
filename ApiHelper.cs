@@ -131,7 +131,7 @@ namespace AnonymDesktopClient
             public List<CommentData> data { get; set; }
         }
 
-        class GetCommentData
+        class PostRequestData
         {
             public int post_id { get; set; }
         }
@@ -140,7 +140,7 @@ namespace AnonymDesktopClient
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            GetCommentData inf = new GetCommentData();
+            PostRequestData inf = new PostRequestData();
             inf.post_id = postId;
 
             var json = JsonConvert.SerializeObject(inf);
@@ -196,7 +196,34 @@ namespace AnonymDesktopClient
 
             string result = response.Content.ReadAsStringAsync().Result;
             //GetProfileResult resp = JsonConvert.DeserializeObject<GetProfileResult>(result);
+        }
 
+        public static async Task AddView(int postId)
+        {
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            PostRequestData inf = new PostRequestData();
+            inf.post_id = postId;
+
+            var json = JsonConvert.SerializeObject(inf);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/viewAdd", data);
+        }
+
+        public static async Task AddShares(int postId)
+        {
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            PostRequestData inf = new PostRequestData();
+            inf.post_id = postId;
+
+            var json = JsonConvert.SerializeObject(inf);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/repost", data);
         }
     }
 }

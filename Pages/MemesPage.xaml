@@ -27,7 +27,38 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Comments memes">
-                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <Controls:MetroHeader Header="Comment Spam"></Controls:MetroHeader>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Posts memes">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <Controls:MetroHeader Header="Boost stats"></Controls:MetroHeader>
+                        <TextBox Name="txtGroupId"
+                                 Controls:TextBoxHelper.AutoWatermark="True"
+                                 Controls:TextBoxHelper.Watermark="Group ID"></TextBox>
+                        <TextBox
+                            Controls:TextBoxHelper.Watermark="Views count"
+                            Name="txtViewsCount"></TextBox>
+                        <Button Name="btnViewsBoost" Click="btnViewsBoost_Click">Boost Views</Button>
+                        <TextBox
+                            Controls:TextBoxHelper.Watermark="Shares count"
+                            Name="txtSharesCount"></TextBox>
+                        <Button Name="btnSharesBoost" Click="btnSharesBoost_Click">Boost shares</Button>
+                    </StackPanel>
+                </Grid>
             </TabItem>
         </Controls:MetroAnimatedTabControl>
     </Grid>

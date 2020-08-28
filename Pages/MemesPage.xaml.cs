@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +33,51 @@ namespace AnonymDesktopClient.Pages
 
             await ApiHelper.EditUserInfo(victimData);
             MessageBox.Show("Done. Kinda");
+        }
+
+        void LockButtons(bool state = true)
+        {
+            btnSharesBoost.IsEnabled = !state;
+            btnViewsBoost.IsEnabled = !state;
+        }
+
+        // Not the best solution to do this(The spam stops after ~400 iterations)
+        private async void btnSharesBoost_Click(object sender, RoutedEventArgs e)
+        {
+            LockButtons(true);
+            try
+            {
+                for (int i = 0; i < Convert.ToInt32(txtSharesCount.Text); ++i)
+                {
+                    await ApiHelper.AddShares(Convert.ToInt32(txtGroupId.Text));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            LockButtons(false);
+            MessageBox.Show("Done");
+        }
+
+        private async void btnViewsBoost_Click(object sender, RoutedEventArgs e)
+        {
+            LockButtons(true);
+            try
+            {
+                for (int i = 0; i < Convert.ToInt32(txtViewsCount.Text); ++i)
+                {
+                    await ApiHelper.AddView(Convert.ToInt32(txtGroupId.Text));
+                }
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            MessageBox.Show("Done");
+            LockButtons(false);
+
         }
     }
 }
