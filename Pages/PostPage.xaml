@@ -1,15 +1,14 @@
-﻿<UserControl x:Class="AnonymDesktopClient.PostsPage"
+﻿<UserControl x:Class="AnonymDesktopClient.PostPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:AnonymDesktopClient"
       xmlns:uc="clr-namespace:AnonymDesktopClient"
+      xmlns:local="clr-namespace:AnonymDesktopClient"
       mc:Ignorable="d" 
-      d:DesignHeight="720" d:DesignWidth="1280"
-      Loaded="Page_Loaded">
+      d:DesignHeight="477.966" d:DesignWidth="843.22">
 
-    <Grid>
+    <Grid Loaded="PostPage_Loaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.6*"/>
             <ColumnDefinition Width="0.4*"/>
@@ -19,25 +18,23 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
-        <ListView Name="lstPostsView" Grid.Row="1" Grid.RowSpan="2" SelectionChanged="lstPostsView_SelectionChanged" Margin="5 5 5 5">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Name="btnOpenPost" Header="Open Post" Click="btnOpenPost_Click"></MenuItem>
-                    <MenuItem Name="btnCopyPostId" Header="Copy Post ID" Click="btnCopyPostId_Click"></MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
-        </ListView>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
+            <Image Name="imgPost" Height="300"></Image>
+            <TextBlock Name="txtPost" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="WrapWithOverflow"></TextBlock>
+        </StackPanel>
+        
         <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copy User ID" Click="MenuItem_Click">
+                    <MenuItem Header="Copy User ID" Click="CopyUserId_Click">
                     </MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
         <Label IsEnabled="True" Name="lblPosterName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"></Label>
         <Label Name="lblDate" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 0"></Label>
-        
+
         <uc:WriteComment x:Name="wdgComment" Grid.Column="1" Grid.Row="2"  ></uc:WriteComment>
     </Grid>
 </UserControl>

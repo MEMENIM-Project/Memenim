@@ -20,15 +20,18 @@ namespace AnonymDesktopClient.Pages
     /// </summary>
     public partial class ApplicationPage : UserControl
     {
-        PostsPage postView;
+        PostsPage postsView;
+        PostPage postView;
         MemesPage memesPage;
 
         public ApplicationPage()
         {
             InitializeComponent();
-            postView = new PostsPage();
+            postView = new PostPage();
+            postsView = new PostsPage();
+            postsView.ParrentPage = this;
             memesPage = new MemesPage();
-            contentArea.Content = postView;
+            contentArea.Content = postsView;
         }
 
         private void NavigationPersistent_RedirectRequested(object sender, RoutedEventArgs e)
@@ -36,20 +39,36 @@ namespace AnonymDesktopClient.Pages
             string page = GeneralBlackboard.TryGetValue<string>(BlackBoardValues.EPageToRedirect);
             if(page != null)
             {
-                switch(page)
-                {
-                    case "AllPosts":
-                        contentArea.Content = postView;
-                        break;
-                    case "Memes":
-                        contentArea.Content = memesPage;
-                        break;
-                    case "Settings":
-                        break;
-                    default:
-                        break;
-                }
+                NavigateTo(page);
             }
+        }
+
+        public void NavigateTo(string PageName)
+        {
+            switch (PageName)
+            {
+                case "AllPosts":
+                    contentArea.Content = postsView;
+                    break;
+                case "Post":
+                    contentArea.Content = postView;
+                    break;
+                case "Memes":
+                    contentArea.Content = memesPage;
+                    break;
+                case "Settings":
+                    break;
+                case "Back":
+                    UserControl backPage = GeneralBlackboard.TryGetValue<UserControl>(BlackBoardValues.EBackPage);
+                    if (backPage != null)
+                    {
+                        contentArea.Content = backPage;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
         }
 
         private void NavigationPersistent_Loaded(object sender, RoutedEventArgs e)

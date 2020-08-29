@@ -9,7 +9,9 @@ namespace AnonymDesktopClient
 {
     enum BlackBoardValues
     {
-        EPageToRedirect
+        EPageToRedirect,
+        EPostData,
+        EBackPage
     }
 
     static class GeneralBlackboard

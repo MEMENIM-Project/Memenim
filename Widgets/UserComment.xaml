@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <Image Source="{Binding ImageURL}" Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></Image>
         <TextBlock Text="{Binding UserName}" Grid.Row="0" Grid.Column="1"></TextBlock>
-        <TextBlock Text="{Binding Comment}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1"></TextBlock>
+        <TextBlock Text="{Binding Comment}" TextWrapping="WrapWithOverflow" Grid.Row="1" Grid.Column="1"></TextBlock>
 
     </Grid>
 </UserControl>

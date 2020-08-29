@@ -12,6 +12,18 @@ namespace AnonymDesktopClient.DataStructs
         public string token { get; set; }
     }
 
+    class PhotoData
+    {
+        public string photo_big { get; set; }
+        public string photo_medium { get; set; }
+        public string photo_small { get; set; }
+    }
+
+    class AttachmentData
+    {
+        public PhotoData photo { get; set; }
+    }
+
     class PostData
     {
         public int id { get; set; }
@@ -20,6 +32,7 @@ namespace AnonymDesktopClient.DataStructs
         public int? owner_id { get; set; }
         public int hidden { get; set; }
         public long date { get; set; }
+        public List<AttachmentData> attachments { get; set; }
     }
 
     class CommentData
