@@ -19,8 +19,21 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
-        <ListView Name="lstPostsView" Grid.Row="1" Grid.RowSpan="2" SelectionChanged="lstPostsView_SelectionChanged" Margin="5 5 5 5"></ListView>
-        <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5"></ListBox>
+        <ListView Name="lstPostsView" Grid.Row="1" Grid.RowSpan="2" SelectionChanged="lstPostsView_SelectionChanged" Margin="5 5 5 5">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="btnCopyPostId" Header="Copy Post ID" Click="btnCopyPostId_Click"></MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+        <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy User ID" Click="MenuItem_Click">
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
         <Label IsEnabled="True" Name="lblPosterName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"></Label>
         <Label Name="lblDate" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 0"></Label>
         

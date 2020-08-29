@@ -186,19 +186,17 @@ namespace AnonymDesktopClient
             return resp.data[0];
         }
 
-        public static async Task EditUserInfo(UserInfo userData)
+        public static async Task<bool> EditUserInfo(UserInfo userData)
         {
             var json = JsonConvert.SerializeObject(userData);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
             var response = await client.PostAsync("http://dev.apianon.ru:3000/users/profile/set", data);
-
-            string result = response.Content.ReadAsStringAsync().Result;
-            //GetProfileResult resp = JsonConvert.DeserializeObject<GetProfileResult>(result);
+            return response.IsSuccessStatusCode;
         }
 
-        public static async Task AddView(int postId)
+        public static async Task<bool> AddView(int postId)
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -210,9 +208,10 @@ namespace AnonymDesktopClient
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
             var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/viewAdd", data);
+            return response.IsSuccessStatusCode;
         }
 
-        public static async Task AddShares(int postId)
+        public static async Task<bool> AddShares(int postId)
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -224,6 +223,7 @@ namespace AnonymDesktopClient
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
             var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/repost", data);
+            return response.IsSuccessStatusCode;
         }
     }
 }

@@ -41,20 +41,36 @@ namespace AnonymDesktopClient
         private async void lstPostsView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             PostData post = (PostData)lstPostsView.SelectedItem;
-            wdgComment.PostID = post.id;
-            lblPosterName.Content = post.owner_name;
-            lblPosterName.IsEnabled = post.hidden == 0 ? true : false;
-            lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
-            var commentsData = await ApiHelper.GetCommentsForPost(post.id);
-            lstComments.Items.Clear();
-            for (int i = commentsData.Count - 1; i > 0; --i)
+            if(post != null)
             {
-                UserComment commentWidget = new UserComment();
-                commentWidget.UserName = commentsData[i].user.name;
-                commentWidget.Comment = commentsData[i].text;
-                commentWidget.ImageURL = commentsData[i].user.photo;
-                lstComments.Items.Add(commentWidget);
+                wdgComment.PostID = post.id;
+                lblPosterName.Content = post.owner_name;
+                lblPosterName.IsEnabled = post.hidden == 0 ? true : false;
+                lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
+                var commentsData = await ApiHelper.GetCommentsForPost(post.id);
+                lstComments.Items.Clear();
+                for (int i = commentsData.Count - 1; i > 0; --i)
+                {
+                    UserComment commentWidget = new UserComment();
+                    commentWidget.UserName = commentsData[i].user.name;
+                    commentWidget.Comment = commentsData[i].text;
+                    commentWidget.ImageURL = commentsData[i].user.photo;
+                    commentWidget.UserID = commentsData[i].user.id;
+                    lstComments.Items.Add(commentWidget);
+                }
             }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            UserComment comment = (UserComment)lstComments.SelectedItem;
+            Clipboard.SetText(comment.UserID.ToString());
+        }
+
+        private void btnCopyPostId_Click(object sender, RoutedEventArgs e)
+        {
+            PostData post = (PostData)lstPostsView.SelectedItem;
+            Clipboard.SetText(post.id.ToString());
         }
     }
 }
