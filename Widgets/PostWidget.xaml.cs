@@ -36,7 +36,7 @@ namespace AnonymDesktopClient.Widgets
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EPostData, CurrentPostData);
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new PostsPage());
-            PageSwitcher.SwitchToSubpage(new PostPage());
+            PageNavigationManager.SwitchToSubpage(new PostPage());
         }
 
         private void CopyPostID_Click(object sender, RoutedEventArgs e)

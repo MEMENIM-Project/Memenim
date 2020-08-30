@@ -9,20 +9,20 @@ using System.Windows.Controls;
 
 namespace AnonymDesktopClient.Pages
 {
-    static class PageSwitcher
+    static class PageNavigationManager
     {
         static public MetroContentControl PageContentControl
         {
             set { m_PageContentControl = value; }
         }
 
-        static public ContentControl SubpageContentControl
+        static public MetroContentControl SubpageContentControl
         {
             set { m_SubPageContentControl = value; }
         }
 
         static private MetroContentControl m_PageContentControl;
-        static private ContentControl m_SubPageContentControl;
+        static private MetroContentControl m_SubPageContentControl;
 
         public static void SwitchToPage(object page)
         {

@@ -41,7 +41,7 @@ namespace AnonymDesktopClient
                 }
                 else
                 {
-                    PageSwitcher.SwitchToPage(new ApplicationPage());
+                    PageNavigationManager.SwitchToPage(new ApplicationPage());
                 }
             }
             catch(Exception ex)
@@ -53,7 +53,7 @@ namespace AnonymDesktopClient
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            PageSwitcher.SwitchToPage(new RegisterUser());
+            PageNavigationManager.SwitchToPage(new RegisterUser());
         }
     }
 }

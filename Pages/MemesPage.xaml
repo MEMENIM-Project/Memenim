@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Controls:MetroAnimatedTabControl>
+        <Controls:MetroAnimatedTabControl Controls:TabControlHelper.Underlined="TabItems">
             <TabItem Header="Profile memes">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -19,9 +19,9 @@
                     <StackPanel Grid.Row="0">
                         <Controls:MetroHeader Header="Steal user profile">
                         </Controls:MetroHeader>
-                        <TextBox Name="txtStealId"
+                        <Controls:NumericUpDown Name="txtStealId"
                             Controls:TextBoxHelper.Watermark="Victim ID">
-                        </TextBox>
+                        </Controls:NumericUpDown>
                         <Button Name="btnSteal" Click="btnSteal_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Do some dirty work</Button>
                     </StackPanel>
                 </Grid>
@@ -62,16 +62,20 @@
 
                     <StackPanel Grid.Row="0">
                         <Controls:MetroHeader Header="Boost stats"></Controls:MetroHeader>
-                        <TextBox Name="txtGroupId"
+                        <Controls:NumericUpDown Name="txtGroupId"
                                  Controls:TextBoxHelper.AutoWatermark="True"
-                                 Controls:TextBoxHelper.Watermark="Group ID"></TextBox>
-                        <TextBox
+                                 Controls:TextBoxHelper.Watermark="Group ID"></Controls:NumericUpDown>
+                        <Controls:NumericUpDown
                             Controls:TextBoxHelper.Watermark="Views count"
-                            Name="txtViewsCount"></TextBox>
+                            Minimum="1"
+                            Maximum="400"
+                            Name="txtViewsCount"></Controls:NumericUpDown>
                         <Button Name="btnViewsBoost" Click="btnViewsBoost_Click">Boost Views</Button>
-                        <TextBox
+                        <Controls:NumericUpDown
                             Controls:TextBoxHelper.Watermark="Shares count"
-                            Name="txtSharesCount"></TextBox>
+                            Minimum="1"
+                            Maximum="400"
+                            Name="txtSharesCount"></Controls:NumericUpDown>
                         <Button Name="btnSharesBoost" Click="btnSharesBoost_Click">Boost shares</Button>
                     </StackPanel>
                 </Grid>

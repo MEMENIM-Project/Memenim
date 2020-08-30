@@ -36,7 +36,7 @@ namespace AnonymDesktopClient.Pages
 
         private async void btnSteal_Click(object sender, RoutedEventArgs e)
         {
-            UserInfo victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Text));
+            ProfileData victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Text));
 
             await ApiHelper.EditUserInfo(victimData);
             MessageBox.Show("Done. Kinda");
@@ -54,9 +54,9 @@ namespace AnonymDesktopClient.Pages
             LockButtons(true);
             try
             {
-                for (int i = 0; i < Convert.ToInt32(txtSharesCount.Text); ++i)
+                for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
                 {
-                    await ApiHelper.AddShares(Convert.ToInt32(txtGroupId.Text));
+                    await ApiHelper.AddShares(Convert.ToInt32(txtGroupId.Value));
                 }
             }
             catch (Exception ex)
@@ -72,9 +72,9 @@ namespace AnonymDesktopClient.Pages
             LockButtons(true);
             try
             {
-                for (int i = 0; i < Convert.ToInt32(txtViewsCount.Text); ++i)
+                for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await ApiHelper.AddView(Convert.ToInt32(txtGroupId.Text));
+                    await ApiHelper.AddView(Convert.ToInt32(txtGroupId.Value));
                 }
 
             }
@@ -91,6 +91,7 @@ namespace AnonymDesktopClient.Pages
         {
             if (m_SpamCommentsList != null && m_SpamCommentsList.Length > 0)
             {
+                btnSpamComments.IsEnabled = false;
                 try
                 {
                     Random rnd = new Random();
@@ -104,6 +105,8 @@ namespace AnonymDesktopClient.Pages
                 {
                     MessageBox.Show(ex.Message);
                 }
+                MessageBox.Show("Done");
+                btnSpamComments.IsEnabled = true;
             }
         }
 

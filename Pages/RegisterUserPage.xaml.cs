@@ -39,7 +39,7 @@ namespace AnonymDesktopClient.Pages
                 }
                 else
                 {
-                    PageSwitcher.SwitchToPage(new ApplicationPage());
+                    PageNavigationManager.SwitchToPage(new ApplicationPage());
                 }
 
             }

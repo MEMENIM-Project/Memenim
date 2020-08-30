@@ -27,10 +27,12 @@ namespace AnonymDesktopClient
             public string message { get; set; }
         }
 
+        public static int LocalUserID { get { return m_LocalUserId; } }
+
         private static readonly HttpClient client = new HttpClient();
 
         private static string UserToken;
-        private static int LocalUserId;
+        private static int m_LocalUserId;
 
         public static async Task<string> RegisterUser(string login, string pass)
         {
@@ -51,7 +53,7 @@ namespace AnonymDesktopClient
             AuthResponse resp = JsonConvert.DeserializeObject<AuthResponse>(result);
             if (resp.data.token != null)
             {
-                LocalUserId = resp.data.id;
+                m_LocalUserId = resp.data.id;
                 UserToken = resp.data.token;
             }
             return resp.message;
@@ -166,15 +168,15 @@ namespace AnonymDesktopClient
         class GetProfileResult
         {
             public bool error { get; set; }
-            public List<UserInfo> data { get; set; }
+            public List<ProfileData> data { get; set; }
         }
 
-        public static async Task<UserInfo> GetLocalUserInfo()
+        public static async Task<ProfileData> GetLocalUserInfo()
         {
-            return await GetUserInfo(LocalUserId);
+            return await GetUserInfo(m_LocalUserId);
         }
 
-        public static async Task<UserInfo> GetUserInfo(int userId)
+        public static async Task<ProfileData> GetUserInfo(int userId)
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -193,7 +195,7 @@ namespace AnonymDesktopClient
             return resp.data[0];
         }
 
-        public static async Task<bool> EditUserInfo(UserInfo userData)
+        public static async Task<bool> EditUserInfo(ProfileData userData)
         {
             var json = JsonConvert.SerializeObject(userData);
             var data = new StringContent(json, Encoding.UTF8, "application/json");

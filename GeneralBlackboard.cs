@@ -11,6 +11,7 @@ namespace AnonymDesktopClient
     {
         EPageToRedirect,
         EPostData,
+        EProfileData,
         EBackPage
     }
 

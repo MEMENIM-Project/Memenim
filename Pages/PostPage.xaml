@@ -29,8 +29,8 @@
         <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copy User ID" Click="CopyUserId_Click">
-                    </MenuItem>
+                    <MenuItem Header="Open User Profile" Click="ViewUserProfile_Click"></MenuItem>
+                    <MenuItem Header="Copy User ID" Click="CopyUserId_Click"></MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

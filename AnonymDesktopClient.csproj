@@ -137,8 +137,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Pages\AccountViewPage.xaml.cs">
-      <DependentUpon>AccountViewPage.xaml</DependentUpon>
+    <Compile Include="Pages\UserProfilePage.xaml.cs">
+      <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="GeneralBlackboard.cs" />
     <Compile Include="Pages\ApplicationPage.xaml.cs">
@@ -147,7 +147,7 @@
     <Compile Include="Pages\MemesPage.xaml.cs">
       <DependentUpon>MemesPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PageSwitcher.cs" />
+    <Compile Include="Pages\PageNavigationManager.cs" />
     <Compile Include="Pages\RegisterUserPage.xaml.cs">
       <DependentUpon>RegisterUserPage.xaml</DependentUpon>
     </Compile>
@@ -167,7 +167,7 @@
     <Compile Include="Widgets\WriteComment.xaml.cs">
       <DependentUpon>WriteComment.xaml</DependentUpon>
     </Compile>
-    <Page Include="Pages\AccountViewPage.xaml">
+    <Page Include="Pages\UserProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -49,7 +49,7 @@ namespace AnonymDesktopClient.DataStructs
         public CommentUserData user { get; set; }
     }
 
-    class UserInfo
+    class ProfileData
     {
         public int id { get; set; }
         public string name { get; set; }

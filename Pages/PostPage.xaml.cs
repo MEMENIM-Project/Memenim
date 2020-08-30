@@ -1,4 +1,5 @@
 ﻿using AnonymDesktopClient.DataStructs;
+using AnonymDesktopClient.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,10 +53,21 @@ namespace AnonymDesktopClient
             }
         }
 
+        private async void ViewUserProfile_Click(object sender, RoutedEventArgs e)
+        {
+            int id = (lstComments.SelectedItem as UserComment).UserID;
+            ProfileData profile = await ApiHelper.GetUserInfo(id);
+            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, profile);
+            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
+            PageNavigationManager.SwitchToSubpage(new UserProfilePage());
+        }
+
+
         private void CopyUserId_Click(object sender, RoutedEventArgs e)
         {
             UserComment comment = (UserComment)lstComments.SelectedItem;
             Clipboard.SetText(comment.UserID.ToString());
         }
+
     }
 }
