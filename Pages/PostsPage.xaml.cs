@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 using AnonymDesktopClient.Pages;
+using AnonymDesktopClient.Widgets;
 
 namespace AnonymDesktopClient
 {
@@ -39,32 +40,38 @@ namespace AnonymDesktopClient
 
             if(posts != null)
             {
-                lstPostsView.ItemsSource = posts;
-                lstPostsView.DisplayMemberPath = "text";
+                foreach (var post in posts)
+                {
+                    PostWidget widget = new PostWidget();
+                    widget.PostText = post.text;
+                    widget.ImageURL = post.attachments[0].photo.photo_medium;
+                    widget.CurrentPostData = post;
+                    postsPanel.Children.Add(widget);
+                }
             }
         }
 
         private async void lstPostsView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PostData post = (PostData)lstPostsView.SelectedItem;
-            if(post != null)
-            {
-                //wdgComment.PostID = post.id;
-                //lblPosterName.Content = post.owner_name;
-                //lblPosterName.IsEnabled = post.hidden == 0 ? true : false;
-                //lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
-                //var commentsData = await ApiHelper.GetCommentsForPost(post.id);
-                //lstComments.Items.Clear();
-                //for (int i = commentsData.Count - 1; i > 0; --i)
-                //{
-                //    UserComment commentWidget = new UserComment();
-                //    commentWidget.UserName = commentsData[i].user.name;
-                //    commentWidget.Comment = commentsData[i].text;
-                //    commentWidget.ImageURL = commentsData[i].user.photo;
-                //    commentWidget.UserID = commentsData[i].user.id;
-                //    lstComments.Items.Add(commentWidget);
-                //}
-            }
+            //PostData post = (PostData)lstPostsView.SelectedItem;
+            //if(post != null)
+            //{
+            //    //wdgComment.PostID = post.id;
+            //    //lblPosterName.Content = post.owner_name;
+            //    //lblPosterName.IsEnabled = post.hidden == 0 ? true : false;
+            //    //lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
+            //    //var commentsData = await ApiHelper.GetCommentsForPost(post.id);
+            //    //lstComments.Items.Clear();
+            //    //for (int i = commentsData.Count - 1; i > 0; --i)
+            //    //{
+            //    //    UserComment commentWidget = new UserComment();
+            //    //    commentWidget.UserName = commentsData[i].user.name;
+            //    //    commentWidget.Comment = commentsData[i].text;
+            //    //    commentWidget.ImageURL = commentsData[i].user.photo;
+            //    //    commentWidget.UserID = commentsData[i].user.id;
+            //    //    lstComments.Items.Add(commentWidget);
+            //    //}
+            //}
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -73,16 +80,16 @@ namespace AnonymDesktopClient
 
         private void btnCopyPostId_Click(object sender, RoutedEventArgs e)
         {
-            PostData post = (PostData)lstPostsView.SelectedItem;
-            Clipboard.SetText(post.id.ToString());
+            //PostData post = (PostData)lstPostsView.SelectedItem;
+            //Clipboard.SetText(post.id.ToString());
         }
 
         private void btnOpenPost_Click(object sender, RoutedEventArgs e)
         {
-            PostData post = (PostData)lstPostsView.SelectedItem;
-            GeneralBlackboard.SetValue(BlackBoardValues.EPostData, post);
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            m_ParrentPage.NavigateTo("Post");
+            //PostData post = (PostData)lstPostsView.SelectedItem;
+            //GeneralBlackboard.SetValue(BlackBoardValues.EPostData, post);
+            //GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
+            //m_ParrentPage.NavigateTo("Post");
             //PageSwitcher.SwitchToPage(new PostPage());
         }
     }

@@ -158,6 +158,9 @@
     <Compile Include="Widgets\NavigationPersistent.xaml.cs">
       <DependentUpon>NavigationPersistent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Widgets\PostWidget.xaml.cs">
+      <DependentUpon>PostWidget.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Widgets\UserComment.xaml.cs">
       <DependentUpon>UserComment.xaml</DependentUpon>
     </Compile>
@@ -218,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Widgets\NavigationPersistent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Widgets\PostWidget.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

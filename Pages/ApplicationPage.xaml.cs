@@ -29,10 +29,12 @@ namespace AnonymDesktopClient.Pages
             InitializeComponent();
             postView = new PostPage();
             postsView = new PostsPage();
-            postsView.ParrentPage = this;
+            //postsView.ParrentPage = this;
             memesPage = new MemesPage();
-            contentArea.Content = postsView;
+            PageSwitcher.SubpageContentControl = contentArea;
+            PageSwitcher.SwitchToSubpage(postsView);
         }
+
 
         private void NavigationPersistent_RedirectRequested(object sender, RoutedEventArgs e)
         {
@@ -48,13 +50,13 @@ namespace AnonymDesktopClient.Pages
             switch (PageName)
             {
                 case "AllPosts":
-                    contentArea.Content = postsView;
+                    PageSwitcher.SwitchToSubpage(postsView);
                     break;
                 case "Post":
-                    contentArea.Content = postView;
+                    PageSwitcher.SwitchToSubpage(postView);
                     break;
                 case "Memes":
-                    contentArea.Content = memesPage;
+                    PageSwitcher.SwitchToSubpage(memesPage);
                     break;
                 case "Settings":
                     break;
@@ -62,17 +64,12 @@ namespace AnonymDesktopClient.Pages
                     UserControl backPage = GeneralBlackboard.TryGetValue<UserControl>(BlackBoardValues.EBackPage);
                     if (backPage != null)
                     {
-                        contentArea.Content = backPage;
+                        PageSwitcher.SwitchToSubpage(backPage);
                     }
                     break;
                 default:
                     break;
             }
-
-        }
-
-        private void NavigationPersistent_Loaded(object sender, RoutedEventArgs e)
-        {
 
         }
     }

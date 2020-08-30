@@ -37,6 +37,7 @@ namespace AnonymDesktopClient.Widgets
         public IconButton()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
 
@@ -48,7 +49,7 @@ namespace AnonymDesktopClient.Widgets
 
         private void Button_Loaded(object sender, RoutedEventArgs e)
         {
-            imgIcon.Source = new BitmapImage(new Uri(ImageSource, UriKind.Relative));
+            //imgIcon.Source = new BitmapImage(new Uri(ImageSource, UriKind.Relative));
         }
     }
 }

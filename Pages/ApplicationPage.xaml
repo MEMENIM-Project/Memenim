@@ -17,8 +17,8 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <uc:NavigationPersistent RedirectRequested="NavigationPersistent_RedirectRequested" Loaded="NavigationPersistent_Loaded"></uc:NavigationPersistent>
-        <ContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3"></ContentControl>
+        <uc:NavigationPersistent RedirectRequested="NavigationPersistent_RedirectRequested"></uc:NavigationPersistent>
+        <ContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3" Margin="10 10 10 10"></ContentControl>
 
 
     </Grid>

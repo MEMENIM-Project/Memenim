@@ -32,6 +32,7 @@ namespace AnonymDesktopClient
             PostData post = GeneralBlackboard.TryGetValue<PostData>(BlackBoardValues.EPostData);
             if(post != null)
             {
+                wdgComment.PostID = post.id;
                 txtPost.Text = post.text;
                 imgPost.Source = new BitmapImage(new Uri(post.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = post.owner_name;

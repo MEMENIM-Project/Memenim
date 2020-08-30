@@ -30,6 +30,7 @@ namespace AnonymDesktopClient
         private static readonly HttpClient client = new HttpClient();
 
         private static string UserToken;
+        private static int LocalUserId;
 
         public static async Task<string> RegisterUser(string login, string pass)
         {
@@ -50,6 +51,7 @@ namespace AnonymDesktopClient
             AuthResponse resp = JsonConvert.DeserializeObject<AuthResponse>(result);
             if (resp.data.token != null)
             {
+                LocalUserId = resp.data.id;
                 UserToken = resp.data.token;
             }
             return resp.message;
@@ -165,6 +167,11 @@ namespace AnonymDesktopClient
         {
             public bool error { get; set; }
             public List<UserInfo> data { get; set; }
+        }
+
+        public static async Task<UserInfo> GetLocalUserInfo()
+        {
+            return await GetUserInfo(LocalUserId);
         }
 
         public static async Task<UserInfo> GetUserInfo(int userId)

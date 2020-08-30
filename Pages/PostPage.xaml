@@ -21,7 +21,9 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
             <Image Name="imgPost" Height="300"></Image>
-            <TextBlock Name="txtPost" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="WrapWithOverflow"></TextBlock>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <TextBlock Name="txtPost" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="WrapWithOverflow"></TextBlock>
+            </ScrollViewer>
         </StackPanel>
         
         <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">

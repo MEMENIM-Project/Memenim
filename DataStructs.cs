@@ -12,19 +12,19 @@ namespace AnonymDesktopClient.DataStructs
         public string token { get; set; }
     }
 
-    class PhotoData
+    public class PhotoData
     {
         public string photo_big { get; set; }
         public string photo_medium { get; set; }
         public string photo_small { get; set; }
     }
 
-    class AttachmentData
+    public class AttachmentData
     {
         public PhotoData photo { get; set; }
     }
 
-    class PostData
+    public class PostData
     {
         public int id { get; set; }
         public string text { get; set; }

@@ -25,7 +25,7 @@ namespace AnonymDesktopClient
         public MainWindow()
         {
             InitializeComponent();
-            PageSwitcher.ContentControl = contentArea;
+            PageSwitcher.PageContentControl = contentArea;
 
             PageSwitcher.SwitchToPage(new LoginPage());
         }
