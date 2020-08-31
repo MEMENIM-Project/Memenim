@@ -36,7 +36,7 @@ namespace AnonymDesktopClient.Pages
 
         private async void btnSteal_Click(object sender, RoutedEventArgs e)
         {
-            ProfileData victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Text));
+            ProfileData victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Value));
 
             await ApiHelper.EditUserInfo(victimData);
             MessageBox.Show("Done. Kinda");
