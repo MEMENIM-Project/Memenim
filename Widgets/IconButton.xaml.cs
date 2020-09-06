@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ControlzEx;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MahApps.Metro.IconPacks;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +23,7 @@ namespace AnonymDesktopClient.Widgets
     public partial class IconButton : UserControl
     {
 
+        public PackIconModernKind IconKind { get; set; }
         public string ImageSource { get; set; } = "";
         public string RedirectTag { get; set; } = "";
 
@@ -45,11 +48,6 @@ namespace AnonymDesktopClient.Widgets
         {
             RoutedEventArgs newEventArgs = new RoutedEventArgs(OnIconButtonClicked);
             RaiseEvent(newEventArgs);
-        }
-
-        private void Button_Loaded(object sender, RoutedEventArgs e)
-        {
-            //imgIcon.Source = new BitmapImage(new Uri(ImageSource, UriKind.Relative));
         }
     }
 }

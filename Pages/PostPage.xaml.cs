@@ -37,7 +37,7 @@ namespace AnonymDesktopClient
                 txtPost.Text = post.text;
                 imgPost.Source = new BitmapImage(new Uri(post.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = post.owner_name;
-                lblPosterName.IsEnabled = post.hidden == 0 ? true : false;
+                lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
                 lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
                 var commentsData = await ApiHelper.GetCommentsForPost(post.id);
                 lstComments.Items.Clear();

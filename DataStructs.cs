@@ -32,6 +32,12 @@ namespace AnonymDesktopClient.DataStructs
         public int? owner_id { get; set; }
         public int hidden { get; set; }
         public long date { get; set; }
+        public int author_watch { get; set; }
+        public int reposts { get; set; }
+        public StatData postviews { get; set; }
+        public StatData likes { get; set; }
+        public StatData dislikes { get; set; }
+        public StatData comments { get; set; }
         public List<AttachmentData> attachments { get; set; }
     }
 
@@ -47,6 +53,11 @@ namespace AnonymDesktopClient.DataStructs
         public int id { get; set; }
         public string text { get; set; }
         public CommentUserData user { get; set; }
+    }
+
+    public class StatData
+    {
+        public int count { get; set; }
     }
 
     class ProfileData

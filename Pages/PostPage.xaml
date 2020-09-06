@@ -21,12 +21,11 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
             <Image Name="imgPost" Height="300"></Image>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <TextBlock Name="txtPost" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="WrapWithOverflow"></TextBlock>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <TextBlock Name="txtPost" HorizontalAlignment="Stretch" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="WrapWithOverflow"></TextBlock>
             </ScrollViewer>
         </StackPanel>
-        
-        <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5 5 5 5">
+        <ListBox Name="lstComments" Grid.Row="1" Grid.Column="1" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Open User Profile" Click="ViewUserProfile_Click"></MenuItem>
@@ -34,6 +33,7 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
+        
         <Label IsEnabled="True" Name="lblPosterName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"></Label>
         <Label Name="lblDate" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 0"></Label>
 

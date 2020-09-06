@@ -14,19 +14,13 @@
             <RowDefinition Height="0.1*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="1">
-            <WrapPanel Orientation="Horizontal" Name="postsPanel" Grid.Row="1">
 
-            </WrapPanel>
-
-        </ScrollViewer>
-        <!--<ListView Name="lstPostsView" Grid.Row="1" Grid.RowSpan="2" SelectionChanged="lstPostsView_SelectionChanged" Margin="5 5 5 5">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Name="btnOpenPost" Header="Open Post" Click="btnOpenPost_Click"></MenuItem>
-                    <MenuItem Name="btnCopyPostId" Header="Copy Post ID" Click="btnCopyPostId_Click"></MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
-        </ListView>-->
+        <ListBox Name="postsPanel" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel IsItemsHost="True" Orientation="Horizontal"></StackPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
     </Grid>
 </UserControl>

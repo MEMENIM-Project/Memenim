@@ -19,11 +19,11 @@
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <local:IconButton x:Name="btnNavBack" RedirectTag="Back" IconButtonClick="OnNavButtonClick"></local:IconButton>
+        <local:IconButton x:Name="btnNavBack" RedirectTag="Back" IconKind="ArrowLeft" IconButtonClick="OnNavButtonClick"></local:IconButton>
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" RedirectTag="AllPosts" ImageSource="/AnonymDesktopClient;component/Icons/Dark/appbar.home.empty.png" Height="40"></local:IconButton>
-            <local:IconButton x:Name="btnNavMemes" IconButtonClick="OnNavButtonClick" RedirectTag="Memes" ImageSource="/AnonymDesktopClient;component/Icons/Dark/appbar.smiley.happy.png" Height="40"></local:IconButton>
+            <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" RedirectTag="AllPosts" IconKind="HomeEmpty" Height="40"></local:IconButton>
+            <local:IconButton x:Name="btnNavMemes" IconButtonClick="OnNavButtonClick" RedirectTag="Memes" IconKind="SmileyHappy" Height="40"></local:IconButton>
         </StackPanel>
-        <local:IconButton Grid.Row="2" x:Name="btnNavSettings" ImageSource="/AnonymDesktopClient;component/Icons/Dark/appbar.settings.png" IconButtonClick="OnNavButtonClick"></local:IconButton>
+        <local:IconButton Grid.Row="2" x:Name="btnNavSettings" IconKind="Settings" IconButtonClick="OnNavButtonClick"></local:IconButton>
     </Grid>
 </UserControl>

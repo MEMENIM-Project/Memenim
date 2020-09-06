@@ -24,6 +24,10 @@ namespace AnonymDesktopClient.Widgets
     {
         public string ImageURL { get; set; }
         public string PostText { get; set; }
+        public string PostComments { get; set; }
+        public string PostShares { get; set; }
+        public string PostLikes { get; set; }
+        public string PostDislikes { get; set; }
         public PostData CurrentPostData { get; set; }
 
         public PostWidget()

@@ -12,20 +12,26 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height=".2*"></RowDefinition>
         </Grid.RowDefinitions>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="View Post" Click="ViewPost_Click"></MenuItem>
                 <MenuItem Header="Copy Post ID" Click="CopyPostID_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <Image Source="{Binding ImageURL}"></Image>
-        <TextBlock Grid.Row="1" Text="{Binding PostText}" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="WrapWithOverflow"></TextBlock>
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <TextBlock>Shares</TextBlock>
-            <TextBlock>Comments</TextBlock>
-            <TextBlock>Likes</TextBlock>
-            <TextBlock >Dislikes</TextBlock>
+        <Image Source="{Binding ImageURL}" Stretch="Uniform" Width="400" Grid.ColumnSpan="3"></Image>
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding PostText}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap"></TextBlock>
+
+        <local:StatButton Grid.Row="2" Grid.Column="0" IsEnabled="False" IconKind="Share" ButtonSize="28" Value="{Binding PostShares}"></local:StatButton>
+        <local:StatButton HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" IsEnabled="False" IconKind="Eye" ButtonSize="28" Value="{Binding PostComments}"></local:StatButton>
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <local:StatButton IsEnabled="False" IconKind="ThumbsUp" ButtonSize="28" Value="{Binding PostLikes}"></local:StatButton>
+            <local:StatButton IsEnabled="False" IconKind="ThumbsDown" ButtonSize="28" Value="{Binding PostDislikes}"></local:StatButton>
         </StackPanel>
     </Grid>
 </UserControl>

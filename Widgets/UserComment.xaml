@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AnonymDesktopClient"
+             xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="400">
     <Grid>
@@ -18,7 +18,11 @@
         </Grid.RowDefinitions>
         <Image Source="{Binding ImageURL}" Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></Image>
         <TextBlock Text="{Binding UserName}" Grid.Row="0" Grid.Column="1"></TextBlock>
-        <TextBlock Text="{Binding Comment}" TextWrapping="WrapWithOverflow" Grid.Row="1" Grid.Column="1"></TextBlock>
-
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment}" TextWrapping="Wrap" ></TextBlock>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <local:StatButton ButtonSize="16"></local:StatButton>
+            <local:StatButton ButtonSize="16"></local:StatButton>
+        </StackPanel>
+        
     </Grid>
 </UserControl>

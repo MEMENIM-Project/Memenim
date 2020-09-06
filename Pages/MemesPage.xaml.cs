@@ -39,6 +39,7 @@ namespace AnonymDesktopClient.Pages
             ProfileData victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Value));
 
             await ApiHelper.EditUserInfo(victimData);
+            //PageNavigationManager.ShowDefaultMessage("Success", "Done. Kinda");
             MessageBox.Show("Done. Kinda");
         }
 

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              Name="IconBtn"
@@ -48,8 +49,8 @@
     </Control.Resources>
     
     <Grid>
-        <Button Style="{StaticResource IconButton}" Loaded="Button_Loaded" Click="Button_Click">
-            <Image x:Name="imgIcon" Source="{Binding ImageSource}"></Image>
+        <Button Style="{StaticResource IconButton}" Click="Button_Click">
+            <iconPacks:PackIconModern Kind="{Binding IconKind}"></iconPacks:PackIconModern>
         </Button>
     </Grid>
 </UserControl>

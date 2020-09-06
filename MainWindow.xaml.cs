@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnonymDesktopClient.Pages;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace AnonymDesktopClient
 {
@@ -25,7 +26,11 @@ namespace AnonymDesktopClient
         public MainWindow()
         {
             InitializeComponent();
+
             PageNavigationManager.PageContentControl = contentArea;
+            PageNavigationManager.MainWindowContext = this;
+            PageNavigationManager.DialogCoordinator = DialogCoordinator.Instance;
+            DataContext = PageNavigationManager.DialogCoordinator;
 
             PageNavigationManager.SwitchToPage(new LoginPage());
         }

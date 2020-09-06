@@ -161,6 +161,9 @@
     <Compile Include="Widgets\PostWidget.xaml.cs">
       <DependentUpon>PostWidget.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Widgets\StatButton.xaml.cs">
+      <DependentUpon>StatButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Widgets\UserComment.xaml.cs">
       <DependentUpon>UserComment.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Widgets\PostWidget.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Widgets\StatButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

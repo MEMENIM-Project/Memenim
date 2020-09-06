@@ -38,17 +38,27 @@ namespace AnonymDesktopClient
         {
             var posts = await ApiHelper.GetAllPosts();
 
-            if(posts != null)
+            UpdatePosts(posts);
+        }
+
+        bool UpdatePosts(List<PostData> posts)
+        {
+            if (posts == null) { return false; }
+
+            foreach (var post in posts)
             {
-                foreach (var post in posts)
-                {
-                    PostWidget widget = new PostWidget();
-                    widget.PostText = post.text;
-                    widget.ImageURL = post.attachments[0].photo.photo_medium;
-                    widget.CurrentPostData = post;
-                    postsPanel.Children.Add(widget);
-                }
+                PostWidget widget = new PostWidget();
+                widget.PostText = post.text;
+                widget.ImageURL = post.attachments[0].photo.photo_medium;
+                widget.CurrentPostData = post;
+                widget.PostLikes = post.likes.count.ToString();
+                widget.PostDislikes = post.dislikes.count.ToString();
+                widget.PostComments = post.comments.count.ToString();
+                widget.PostShares = post.reposts.ToString();
+                postsPanel.Items.Add(widget);
             }
+
+            return true;
         }
     }
 }
