@@ -38,7 +38,7 @@ namespace AnonymDesktopClient
                 imgPost.Source = new BitmapImage(new Uri(post.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = post.owner_name;
                 lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
-                lblDate.Content = new DateTime(post.date).ToLocalTime().ToString();
+                lblDate.Content = UnixTimeStampToDateTime(post.date).ToString();
                 var commentsData = await ApiHelper.GetCommentsForPost(post.id);
                 lstComments.Items.Clear();
                 for (int i = commentsData.Count - 1; i > 0; --i)
@@ -51,6 +51,14 @@ namespace AnonymDesktopClient
                     lstComments.Items.Add(commentWidget);
                 }
             }
+        }
+
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
         }
 
         private async void ViewUserProfile_Click(object sender, RoutedEventArgs e)
