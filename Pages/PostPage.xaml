@@ -34,7 +34,13 @@
             </ListBox.ContextMenu>
         </ListBox>
         
-        <Label IsEnabled="True" Name="lblPosterName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"></Label>
+        <Label IsEnabled="True" Name="lblPosterName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+            <Label.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Go To User Profile" Click="GoToPosterProfile_Click"></MenuItem>
+                </ContextMenu>
+            </Label.ContextMenu>
+        </Label>
         <Label Name="lblDate" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 0"></Label>
 
         <uc:WriteComment x:Name="wdgComment" Grid.Column="1" Grid.Row="2"  ></uc:WriteComment>

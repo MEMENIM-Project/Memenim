@@ -34,6 +34,8 @@ namespace AnonymDesktopClient
         private static string UserToken;
         private static int m_LocalUserId;
 
+        private static string GENERAL_API_STRING = "http://dev.apianon.ru:3000/";
+
         public static async Task<string> RegisterUser(string login, string pass)
         {
             AuthInfo inf = new AuthInfo();
@@ -46,7 +48,7 @@ namespace AnonymDesktopClient
             var json = JsonConvert.SerializeObject(inf);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/add", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "users/add", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
@@ -71,7 +73,7 @@ namespace AnonymDesktopClient
             var json = JsonConvert.SerializeObject(inf);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/login2", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "users/login2", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
@@ -103,7 +105,7 @@ namespace AnonymDesktopClient
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/commentAdd", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/commentAdd", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
         }
@@ -121,7 +123,7 @@ namespace AnonymDesktopClient
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/get", null);
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/get", null);
 
             string result = response.Content.ReadAsStringAsync().Result;
             
@@ -151,7 +153,7 @@ namespace AnonymDesktopClient
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/getComments", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/getComments", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
             Console.WriteLine(result);
@@ -187,7 +189,7 @@ namespace AnonymDesktopClient
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/profile/getById", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "users/profile/getById", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
             GetProfileResult resp = JsonConvert.DeserializeObject<GetProfileResult>(result);
@@ -201,7 +203,7 @@ namespace AnonymDesktopClient
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/users/profile/set", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "users/profile/set", data);
             return response.IsSuccessStatusCode;
         }
 
@@ -216,7 +218,7 @@ namespace AnonymDesktopClient
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/viewAdd", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/viewAdd", data);
             return response.IsSuccessStatusCode;
         }
 
@@ -231,8 +233,44 @@ namespace AnonymDesktopClient
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync("http://dev.apianon.ru:3000/posts/repost", data);
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/repost", data);
             return response.IsSuccessStatusCode;
         }
+
+        class CommentInteractionData
+        {
+            public int comment_id { get; set; }
+        }
+
+        public static async Task<bool> LikeComment(int commentId)
+        {
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            CommentInteractionData inf = new CommentInteractionData();
+            inf.comment_id = commentId;
+
+            var json = JsonConvert.SerializeObject(inf);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/likeCommentAdd", data);
+            return response.IsSuccessStatusCode;
+        }
+
+        public static async Task<bool> DislikeComment(int commentId)
+        {
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            CommentInteractionData inf = new CommentInteractionData();
+            inf.comment_id = commentId;
+
+            var json = JsonConvert.SerializeObject(inf);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/dislikeCommentAdd", data);
+            return response.IsSuccessStatusCode;
+        }
+
     }
 }

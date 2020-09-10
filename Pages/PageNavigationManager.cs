@@ -23,19 +23,8 @@ namespace AnonymDesktopClient.Pages
             set { m_SubPageContentControl = value; }
         }
 
-        static public object MainWindowContext;
-
-        static public IDialogCoordinator DialogCoordinator
-        {
-            set { m_DialogCoordinator = value; }
-            get { return m_DialogCoordinator; }
-        }
-
         static private MetroContentControl m_PageContentControl;
         static private MetroContentControl m_SubPageContentControl;
-
-        static private IDialogCoordinator m_DialogCoordinator;
-
 
         public static void SwitchToPage(object page)
         {
@@ -45,11 +34,6 @@ namespace AnonymDesktopClient.Pages
         public static void SwitchToSubpage(object subpage)
         {
             m_SubPageContentControl.Content = subpage;
-        }
-
-        public static async void ShowDefaultMessage(string title, string content)
-        {
-            await m_DialogCoordinator.ShowMessageAsync(MainWindowContext, title, content);
         }
     }
 }

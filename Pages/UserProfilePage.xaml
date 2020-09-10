@@ -13,12 +13,12 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         
-        <Image Name="imgUserPic" HorizontalAlignment="Right"></Image>
-        <Image Name="imgBanner"></Image>
+        <Image Name="imgBanner" Stretch="UniformToFill" Source="{Binding banner}"></Image>
+        <Image Name="imgUserPic" Stretch="Uniform" Height="200" Width="200" Source="{Binding photo}" HorizontalAlignment="Right"></Image>
         <StackPanel Grid.Row="1">
-            <Controls:MetroHeader Name="txtUserName" Foreground="{StaticResource MahApps.Brushes.Text}"></Controls:MetroHeader>
-            <TextBlock x:Name="txtUserAge" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
-            <TextBlock x:Name="txtUserSex" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
+            <Label Content="{Binding name}" Foreground="{StaticResource MahApps.Brushes.Text}"></Label>
+            <TextBlock Text="{Binding age}" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
+            <TextBlock Text="{Binding sex}" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

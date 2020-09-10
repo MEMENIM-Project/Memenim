@@ -47,5 +47,13 @@ namespace AnonymDesktopClient.Widgets
         {
             Clipboard.SetText(CurrentPostData.id.ToString());
         }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            stLikes.StatValue = PostLikes;
+            stDislikes.StatValue = PostDislikes;
+            stComments.StatValue = PostComments;
+            stShare.StatValue = PostShares;
+        }
     }
 }

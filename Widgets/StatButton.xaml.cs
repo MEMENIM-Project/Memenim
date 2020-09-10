@@ -21,19 +21,12 @@ namespace AnonymDesktopClient.Widgets
     /// </summary>
     public partial class StatButton : UserControl
     {
-        public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;
+        public PackIconModernKind Icon { get; set; } = PackIconModernKind.Xbox;
         public int ButtonSize { get; set; } = 48;
-        public string Value
-        {
-            get { return (string)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
-        }
+        public string StatValue { get; set; } = "000";
 
         public static readonly RoutedEvent OnButtonClicked = EventManager.RegisterRoutedEvent("ButtonClick", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(StatButton));
 
-        public static readonly DependencyProperty ValueProperty =
-                                                    DependencyProperty.Register("Value", typeof(string), typeof(StatButton), new
-                                                    PropertyMetadata("", new PropertyChangedCallback(OnSetValueChanged)));
 
         // expose our event
         public event RoutedEventHandler ButtonClick
@@ -55,17 +48,9 @@ namespace AnonymDesktopClient.Widgets
             RaiseEvent(newEventArgs);
         }
 
-        private static void OnSetValueChanged(DependencyObject d,  DependencyPropertyChangedEventArgs e)
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
         {
-            StatButton UserControl1Control = d as StatButton;
-            UserControl1Control.OnSetValueChanged(e);
+            tbValue.Text = StatValue;
         }
-
-
-        private void OnSetValueChanged(DependencyPropertyChangedEventArgs e)
-        {
-            tbValue.Text = e.NewValue.ToString();
-        }
-
     }
 }

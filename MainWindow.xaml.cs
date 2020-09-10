@@ -28,9 +28,7 @@ namespace AnonymDesktopClient
             InitializeComponent();
 
             PageNavigationManager.PageContentControl = contentArea;
-            PageNavigationManager.MainWindowContext = this;
-            PageNavigationManager.DialogCoordinator = DialogCoordinator.Instance;
-            DataContext = PageNavigationManager.DialogCoordinator;
+            DialogManager.WindowRef = this;
 
             PageNavigationManager.SwitchToPage(new LoginPage());
         }

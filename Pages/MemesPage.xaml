@@ -36,6 +36,7 @@
                         <Controls:MetroHeader Header="Comment Spam"></Controls:MetroHeader>
                         <Controls:NumericUpDown
                             Controls:TextBoxHelper.Watermark="Post ID"
+                            Controls:TextBoxHelper.SelectAllOnFocus="True"
                             Name="txtPostId"></Controls:NumericUpDown>
                         <StackPanel Orientation="Horizontal">
                             <TextBox Width="600" IsEnabled="False" Name="txtCommentsFilePath"></TextBox>
@@ -45,6 +46,7 @@
                             Maximum="400"
                             Minimum="1"
                             Controls:TextBoxHelper.Watermark="Comments Count"
+                            Controls:TextBoxHelper.SelectAllOnFocus="True"
                             Name="txtCommentsCount"></Controls:NumericUpDown>
                         <CheckBox Name="bAnonymousComments">Send anonymously</CheckBox>
                         <Button
@@ -64,19 +66,22 @@
                         <Controls:MetroHeader Header="Boost stats"></Controls:MetroHeader>
                         <Controls:NumericUpDown Name="txtGroupId"
                                  Controls:TextBoxHelper.AutoWatermark="True"
+                                 Controls:TextBoxHelper.SelectAllOnFocus="True"
                                  Controls:TextBoxHelper.Watermark="Group ID"></Controls:NumericUpDown>
                         <Controls:NumericUpDown
                             Controls:TextBoxHelper.Watermark="Views count"
+                            Controls:TextBoxHelper.SelectAllOnFocus="True"
                             Minimum="1"
                             Maximum="400"
                             Name="txtViewsCount"></Controls:NumericUpDown>
-                        <Button Name="btnViewsBoost" Click="btnViewsBoost_Click">Boost Views</Button>
+                        <Button Name="btnViewsBoost" Click="btnViewsBoost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Boost Views</Button>
                         <Controls:NumericUpDown
                             Controls:TextBoxHelper.Watermark="Shares count"
+                            Controls:TextBoxHelper.SelectAllOnFocus="True"
                             Minimum="1"
                             Maximum="400"
                             Name="txtSharesCount"></Controls:NumericUpDown>
-                        <Button Name="btnSharesBoost" Click="btnSharesBoost_Click">Boost shares</Button>
+                        <Button Name="btnSharesBoost" Click="btnSharesBoost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Boost shares</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>

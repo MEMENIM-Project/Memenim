@@ -23,6 +23,8 @@ namespace AnonymDesktopClient
     /// </summary>
     public partial class PostPage : UserControl
     {
+        private int? m_PosterId;
+
         public PostPage()
         {
             InitializeComponent();
@@ -34,23 +36,32 @@ namespace AnonymDesktopClient
             if(post != null)
             {
                 wdgComment.PostID = post.id;
+                m_PosterId = post.owner_id;
                 txtPost.Text = post.text;
                 imgPost.Source = new BitmapImage(new Uri(post.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = post.owner_name;
-                lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
+                //lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
                 lblDate.Content = UnixTimeStampToDateTime(post.date).ToString();
                 var commentsData = await ApiHelper.GetCommentsForPost(post.id);
-                lstComments.Items.Clear();
-                for (int i = commentsData.Count - 1; i > 0; --i)
-                {
-                    UserComment commentWidget = new UserComment();
-                    commentWidget.UserName = commentsData[i].user.name;
-                    commentWidget.Comment = commentsData[i].text;
-                    commentWidget.ImageURL = commentsData[i].user.photo;
-                    commentWidget.UserID = commentsData[i].user.id;
-                    lstComments.Items.Add(commentWidget);
-                }
+                UpdateComments(commentsData);
             }
+        }
+
+        void UpdateComments(List<CommentData> comments)
+        {
+            if(comments.Count == 0) { return; }
+            lstComments.Items.Clear();
+            for (int i = comments.Count - 1; i > 0; --i)
+            {
+                UserComment commentWidget = new UserComment();
+                commentWidget.UserName = comments[i].user.name;
+                commentWidget.Comment = comments[i].text;
+                commentWidget.ImageURL = comments[i].user.photo;
+                commentWidget.UserID = comments[i].user.id;
+                commentWidget.CommentID = comments[i].id;
+                lstComments.Items.Add(commentWidget);
+            }
+
         }
 
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
@@ -77,5 +88,12 @@ namespace AnonymDesktopClient
             Clipboard.SetText(comment.UserID.ToString());
         }
 
+        private async void GoToPosterProfile_Click(object sender, RoutedEventArgs e)
+        {
+            ProfileData profile = await ApiHelper.GetUserInfo(m_PosterId.GetValueOrDefault());
+            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, profile);
+            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
+            PageNavigationManager.SwitchToSubpage(new UserProfilePage());
+        }
     }
 }

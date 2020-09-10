@@ -59,6 +59,7 @@ namespace AnonymDesktopClient.Pages
                     PageNavigationManager.SwitchToSubpage(memesPage);
                     break;
                 case "Settings":
+                    TriggerSettingsMenu();
                     break;
                 case "Back":
                     UserControl backPage = GeneralBlackboard.TryGetValue<UserControl>(BlackBoardValues.EBackPage);
@@ -71,6 +72,11 @@ namespace AnonymDesktopClient.Pages
                     break;
             }
 
+        }
+
+        void TriggerSettingsMenu()
+        {
+            flyoutSettings.IsOpen = !flyoutSettings.IsOpen;
         }
     }
 }

@@ -39,8 +39,7 @@ namespace AnonymDesktopClient.Pages
             ProfileData victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Value));
 
             await ApiHelper.EditUserInfo(victimData);
-            //PageNavigationManager.ShowDefaultMessage("Success", "Done. Kinda");
-            MessageBox.Show("Done. Kinda");
+            DialogManager.ShowDialog("Success", "Profile copied");
         }
 
         void LockButtons(bool state = true)
@@ -62,10 +61,10 @@ namespace AnonymDesktopClient.Pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
             LockButtons(false);
-            MessageBox.Show("Done");
+            DialogManager.ShowDialog("Success", "BOOOOSTED");
         }
 
         private async void btnViewsBoost_Click(object sender, RoutedEventArgs e)
@@ -81,9 +80,9 @@ namespace AnonymDesktopClient.Pages
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
-            MessageBox.Show("Done");
+            DialogManager.ShowDialog("Success", "BOOOOSTED");
             LockButtons(false);
 
         }
@@ -104,9 +103,9 @@ namespace AnonymDesktopClient.Pages
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
                 }
-                MessageBox.Show("Done");
+                DialogManager.ShowDialog("Success", "Comment section destoroyed ;)");
                 btnSpamComments.IsEnabled = true;
             }
         }
@@ -124,7 +123,7 @@ namespace AnonymDesktopClient.Pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
         }
     }

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="400">
-    <Grid>
+    <Grid Loaded="Grid_Loaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
@@ -16,12 +16,12 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Image Source="{Binding ImageURL}" Stretch="Fill" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></Image>
+        <Image Source="{Binding ImageURL}" Stretch="UniformToFill" Width="100" Height="100" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></Image>
         <TextBlock Text="{Binding UserName}" Grid.Row="0" Grid.Column="1"></TextBlock>
         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment}" TextWrapping="Wrap" ></TextBlock>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <local:StatButton ButtonSize="16"></local:StatButton>
-            <local:StatButton ButtonSize="16"></local:StatButton>
+            <local:StatButton x:Name="stLikes" Icon="ThumbsUp" ButtonClick="Like_Click" ButtonSize="16"></local:StatButton>
+            <local:StatButton x:Name="stDislikes" Icon="ThumbsDown" ButtonClick="Dislike_Click" ButtonSize="16"></local:StatButton>
         </StackPanel>
         
     </Grid>

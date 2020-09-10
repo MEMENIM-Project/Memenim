@@ -29,6 +29,34 @@ namespace AnonymDesktopClient
         public string UserName { get; set; }
         public string Comment { get; set; }
         public string ImageURL { get; set; }
+        public string Likes { get; set; } = "0";
+        public string Dislikes { get; set; } = "0";
         public int UserID { get; set; }
+        public int CommentID { get; set; }
+
+        private async void Like_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = await ApiHelper.LikeComment(CommentID);
+            if(result)
+            {
+                DialogManager.ShowDialog("Liked", "Liked");
+            }
+        }
+
+        private async void Dislike_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = await ApiHelper.DislikeComment(CommentID);
+            if (result)
+            {
+                DialogManager.ShowDialog("Disliked", "Disliked");
+            }
+
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            stLikes.StatValue = Likes;
+            stDislikes.StatValue = Dislikes;
+        }
     }
 }

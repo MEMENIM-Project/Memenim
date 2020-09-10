@@ -18,8 +18,13 @@
         </Grid.ColumnDefinitions>
 
         <uc:NavigationPersistent RedirectRequested="NavigationPersistent_RedirectRequested"></uc:NavigationPersistent>
+        <mah:TransitioningContentControl Name="transition"></mah:TransitioningContentControl>
         <mah:MetroContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3" Margin="10 10 10 10"></mah:MetroContentControl>
 
-
+        <mah:FlyoutsControl Grid.Column="1" x:Name="flyoutContorls">
+            <mah:Flyout x:Name="flyoutSettings">
+                <mah:MetroHeader Header="Settings"></mah:MetroHeader>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
     </Grid>
 </UserControl>

@@ -24,11 +24,7 @@ namespace AnonymDesktopClient
     /// </summary>
     public partial class PostsPage : UserControl
     {
-
-        public ApplicationPage ParrentPage {  set { m_ParrentPage = value; } }
-
-        private ApplicationPage m_ParrentPage;
-
+    
         public PostsPage()
         {
             InitializeComponent();
@@ -36,15 +32,17 @@ namespace AnonymDesktopClient
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            loadingRing.Visibility = Visibility.Visible;
             var posts = await ApiHelper.GetAllPosts();
 
             UpdatePosts(posts);
+            loadingRing.Visibility = Visibility.Hidden;
         }
 
         bool UpdatePosts(List<PostData> posts)
         {
             if (posts == null) { return false; }
-
+            postsPanel.Items.Clear();
             foreach (var post in posts)
             {
                 PostWidget widget = new PostWidget();
