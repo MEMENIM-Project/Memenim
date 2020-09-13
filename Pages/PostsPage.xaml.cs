@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.Data;
 using AnonymDesktopClient.Pages;
 using AnonymDesktopClient.Widgets;
+using System.Web;
+using System.Windows.Controls.Primitives;
 
 namespace AnonymDesktopClient
 {
@@ -24,23 +26,32 @@ namespace AnonymDesktopClient
     /// </summary>
     public partial class PostsPage : UserControl
     {
-    
+
+        public List<PostRequest.EPostType> PostTypes { get; } = new List<PostRequest.EPostType>()
+        { PostRequest.EPostType.Popular, PostRequest.EPostType.New, PostRequest.EPostType.Favorite };
+
+        private int m_PostsCount = 20;
+
         public PostsPage()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             loadingRing.Visibility = Visibility.Visible;
-            var posts = await ApiHelper.GetAllPosts();
 
-            UpdatePosts(posts);
+            PostRequest request = new PostRequest();
+            request.count = m_PostsCount;
+            await UpdatePosts(request);
             loadingRing.Visibility = Visibility.Hidden;
         }
 
-        bool UpdatePosts(List<PostData> posts)
+        async Task<bool> UpdatePosts(PostRequest filters)
         {
+            var posts = await ApiHelper.GetAllPosts(filters);
+
             if (posts == null) { return false; }
             postsPanel.Items.Clear();
             foreach (var post in posts)
@@ -49,14 +60,35 @@ namespace AnonymDesktopClient
                 widget.PostText = post.text;
                 widget.ImageURL = post.attachments[0].photo.photo_medium;
                 widget.CurrentPostData = post;
-                widget.PostLikes = post.likes.count.ToString();
-                widget.PostDislikes = post.dislikes.count.ToString();
-                widget.PostComments = post.comments.count.ToString();
-                widget.PostShares = post.reposts.ToString();
                 postsPanel.Items.Add(widget);
             }
 
             return true;
         }
+
+        private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            loadingRing.Visibility = Visibility.Visible;
+
+            PostRequest request = new PostRequest();
+            request.type = (PostRequest.EPostType)((sender as Selector).SelectedItem);
+            request.count = m_PostsCount;
+            await UpdatePosts(request);
+            loadingRing.Visibility = Visibility.Hidden;
+
+        }
+
+        private async void ScrollEnd()
+        {
+            MessageBox.Show("This is the end");
+        }
+
+        //private void postsPanel_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        //{
+        //    //if (scrollViewer.HorizontalOffset == scrollViewer.Width)
+        //    //{
+        //    //    
+        //    //}
+        //}
     }
 }

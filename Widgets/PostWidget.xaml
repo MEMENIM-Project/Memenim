@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Loaded="Grid_Loaded">
+    <Grid Loaded="Grid_Loaded" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -28,7 +28,7 @@
         <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding PostText}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap"></TextBlock>
 
         <local:StatButton x:Name="stShare" Grid.Row="2" Grid.Column="0" IsEnabled="False" Icon="Share" ButtonSize="28" ></local:StatButton>
-        <local:StatButton x:Name="stComments" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" IsEnabled="False" Icon="Eye" ButtonSize="28" ></local:StatButton>
+        <local:StatButton x:Name="stComments" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" IsEnabled="False" Icon="Message" ButtonSize="28" ></local:StatButton>
         <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <local:StatButton x:Name="stLikes" IsEnabled="False" Icon="ThumbsUp" ButtonSize="28" ></local:StatButton>
             <local:StatButton x:Name="stDislikes" IsEnabled="False" Icon="ThumbsDown" ButtonSize="28" ></local:StatButton>

@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace AnonymDesktopClient
 {
@@ -25,40 +26,58 @@ namespace AnonymDesktopClient
     {
         private int? m_PosterId;
 
+        DispatcherTimer m_UpdateTimer;
+
         public PostPage()
         {
             InitializeComponent();
+            m_UpdateTimer = new DispatcherTimer();
+            m_UpdateTimer.Tick += new EventHandler(UpdateTimer_Tick);
+            m_UpdateTimer.Interval = new TimeSpan(0, 0, 30);
+            m_UpdateTimer.Start();
         }
 
-        private async void PostPage_Loaded(object sender, RoutedEventArgs e)
+        private void UpdateTimer_Tick(object sender, EventArgs e)
+        {
+            PostData post = GeneralBlackboard.TryGetValue<PostData>(BlackBoardValues.EPostData);
+            if(post != null)
+            {
+                UpdateComments(post.id);
+            }
+        }
+
+        private void PostPage_Loaded(object sender, RoutedEventArgs e)
         {
             PostData post = GeneralBlackboard.TryGetValue<PostData>(BlackBoardValues.EPostData);
             if(post != null)
             {
                 wdgComment.PostID = post.id;
                 m_PosterId = post.owner_id;
+                //wdgPost.CurrentPostData = post;
+                //wdgPost.PostText = post.text;
+                //wdgPost.ImageURL = post.attachments[0].photo.photo_medium;
                 txtPost.Text = post.text;
                 imgPost.Source = new BitmapImage(new Uri(post.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = post.owner_name;
                 //lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
                 lblDate.Content = UnixTimeStampToDateTime(post.date).ToString();
-                var commentsData = await ApiHelper.GetCommentsForPost(post.id);
-                UpdateComments(commentsData);
+                UpdateComments(post.id);
             }
         }
 
-        void UpdateComments(List<CommentData> comments)
+        async void UpdateComments(int id)
         {
-            if(comments.Count == 0) { return; }
+            var commentsData = await ApiHelper.GetCommentsForPost(id);
+            if (commentsData.Count == 0) { return; }
             lstComments.Items.Clear();
-            for (int i = comments.Count - 1; i > 0; --i)
+            for (int i = commentsData.Count - 1; i > 0; --i)
             {
                 UserComment commentWidget = new UserComment();
-                commentWidget.UserName = comments[i].user.name;
-                commentWidget.Comment = comments[i].text;
-                commentWidget.ImageURL = comments[i].user.photo;
-                commentWidget.UserID = comments[i].user.id;
-                commentWidget.CommentID = comments[i].id;
+                commentWidget.UserName = commentsData[i].user.name;
+                commentWidget.Comment = commentsData[i].text;
+                commentWidget.ImageURL = commentsData[i].user.photo;
+                commentWidget.UserID = commentsData[i].user.id;
+                commentWidget.CommentID = commentsData[i].id;
                 lstComments.Items.Add(commentWidget);
             }
 

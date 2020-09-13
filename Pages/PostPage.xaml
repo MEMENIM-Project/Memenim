@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:uc="clr-namespace:AnonymDesktopClient"
-      xmlns:local="clr-namespace:AnonymDesktopClient"
+      xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
       mc:Ignorable="d" 
       d:DesignHeight="477.966" d:DesignWidth="843.22">
 
@@ -19,6 +19,8 @@
             <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
 
+        <!--<local:PostWidget x:Name="wdgPost"  Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></local:PostWidget>-->
+        
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
             <Image Name="imgPost" Height="300"></Image>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

@@ -117,13 +117,15 @@ namespace AnonymDesktopClient
             public List<PostData> data { get; set; }
         }
 
-        public static async Task<List<PostData>> GetAllPosts()
+        public static async Task<List<PostData>> GetAllPosts(PostRequest postFilters)
         {
+            var json = JsonConvert.SerializeObject(postFilters);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
-            var response = await client.PostAsync(GENERAL_API_STRING + "posts/get", null);
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/get", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
             

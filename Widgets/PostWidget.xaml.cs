@@ -50,10 +50,10 @@ namespace AnonymDesktopClient.Widgets
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            stLikes.StatValue = PostLikes;
-            stDislikes.StatValue = PostDislikes;
-            stComments.StatValue = PostComments;
-            stShare.StatValue = PostShares;
+            stLikes.StatValue = CurrentPostData.likes.count.ToString();
+            stDislikes.StatValue = CurrentPostData.dislikes.count.ToString();
+            stComments.StatValue = CurrentPostData.comments.count.ToString();
+            stShare.StatValue = CurrentPostData.reposts.ToString();
         }
     }
 }

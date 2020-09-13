@@ -12,18 +12,23 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <ListBox Name="postsPanel" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.Row="1">
+        <TextBlock Foreground="{StaticResource MahApps.Brushes.Text}" Text="HELLO" VerticalAlignment="Center"></TextBlock>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Controls:SplitButton ItemsSource="{Binding PostTypes}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"></Controls:SplitButton>
+            <ListBox Name="lstPostCategory"></ListBox>
+        </StackPanel>
+        <ListBox Name="postsPanel" ScrollViewer.VerticalScrollBarVisibility="Disabled" Controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding ScrollEnd}" Grid.Row="2">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel IsItemsHost="True" Orientation="Horizontal"></StackPanel>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-        <Controls:ProgressRing Width="80" Height="80" IsActive="True" Grid.Row="1" x:Name="loadingRing" Visibility="Visible" IsLarge="True"></Controls:ProgressRing>
+        <Controls:ProgressRing Width="80" Height="80" IsActive="True" Grid.Row="2" x:Name="loadingRing" Visibility="Visible" IsLarge="True"></Controls:ProgressRing>
 
     </Grid>
 </UserControl>

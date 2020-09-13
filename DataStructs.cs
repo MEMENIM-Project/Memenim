@@ -60,6 +60,18 @@ namespace AnonymDesktopClient.DataStructs
         public int count { get; set; }
     }
 
+    public class PostRequest
+    {
+        public enum EPostType
+        {
+            New = 1,
+            Popular = 2,
+            Favorite = 3
+        }
+        public int count { get; set; } = 20;
+        public EPostType type { get; set; } = EPostType.Popular;
+    }
+
     class ProfileData
     {
         public int id { get; set; }
