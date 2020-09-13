@@ -20,6 +20,7 @@ namespace AnonymDesktopClient.Pages
     /// </summary>
     public partial class ApplicationPage : UserControl
     {
+        SubmitPostPage submitPage;
         PostsPage postsView;
         PostPage postView;
         MemesPage memesPage;
@@ -29,6 +30,7 @@ namespace AnonymDesktopClient.Pages
             InitializeComponent();
             postView = new PostPage();
             postsView = new PostsPage();
+            submitPage = new SubmitPostPage();
             //postsView.ParrentPage = this;
             memesPage = new MemesPage();
             PageNavigationManager.SubpageContentControl = contentArea;
@@ -54,6 +56,9 @@ namespace AnonymDesktopClient.Pages
                     break;
                 case "Post":
                     PageNavigationManager.SwitchToSubpage(postView);
+                    break;
+                case "CreatePost":
+                    PageNavigationManager.SwitchToSubpage(submitPage);
                     break;
                 case "Memes":
                     PageNavigationManager.SwitchToSubpage(memesPage);

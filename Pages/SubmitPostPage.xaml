@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="AnonymDesktopClient.Pages.SubmitPostPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:AnonymDesktopClient.Pages"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Loaded="Grid_Loaded">
+        <StackPanel Margin="10">
+            <TextBlock Height="40" Text="SUBMIT A POST:" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
+            <TextBox Controls:TextBoxHelper.Watermark="Post Content" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding text}"></TextBox>
+            <TextBox Text="{Binding attachments[0].photo.photo_medium}" Controls:TextBoxHelper.Watermark="Photo URL"></TextBox>
+            <CheckBox IsChecked="{Binding hidden}">Show post</CheckBox>
+            <CheckBox IsChecked="{Binding open_comments}">Open Comments</CheckBox>
+            <CheckBox IsChecked="{Binding adult}">18+</CheckBox>
+            <CheckBox IsChecked="{Binding author_watch}">Show your name :)</CheckBox>
+            <Button Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Submit Post</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

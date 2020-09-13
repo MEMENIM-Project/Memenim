@@ -21,6 +21,7 @@
 
         <local:IconButton x:Name="btnNavBack" RedirectTag="Back" IconKind="ArrowLeft" IconButtonClick="OnNavButtonClick"></local:IconButton>
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <local:IconButton IconButtonClick="OnNavButtonClick" IconKind="EditAdd" RedirectTag="CreatePost" Height="40"></local:IconButton>
             <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" RedirectTag="AllPosts" IconKind="HomeEmpty" Height="40"></local:IconButton>
             <local:IconButton x:Name="btnNavMemes" IconButtonClick="OnNavButtonClick" RedirectTag="Memes" IconKind="SmileyHappy" Height="40"></local:IconButton>
         </StackPanel>

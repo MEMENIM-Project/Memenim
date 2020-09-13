@@ -67,7 +67,7 @@
                         <Controls:NumericUpDown Name="txtGroupId"
                                  Controls:TextBoxHelper.AutoWatermark="True"
                                  Controls:TextBoxHelper.SelectAllOnFocus="True"
-                                 Controls:TextBoxHelper.Watermark="Group ID"></Controls:NumericUpDown>
+                                 Controls:TextBoxHelper.Watermark="Post ID"></Controls:NumericUpDown>
                         <Controls:NumericUpDown
                             Controls:TextBoxHelper.Watermark="Views count"
                             Controls:TextBoxHelper.SelectAllOnFocus="True"
@@ -82,6 +82,15 @@
                             Maximum="400"
                             Name="txtSharesCount"></Controls:NumericUpDown>
                         <Button Name="btnSharesBoost" Click="btnSharesBoost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Boost shares</Button>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1">
+                        <Controls:MetroHeader Header="Edit post"></Controls:MetroHeader>
+                        <TextBox x:Name="txtPostText"
+                                 Controls:TextBoxHelper.Watermark="Post Text"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap">
+                        </TextBox>
+                        <Button x:Name="btnEditPost" Click="btnEditPost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Edit Post</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>

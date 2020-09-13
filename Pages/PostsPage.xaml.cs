@@ -28,7 +28,7 @@ namespace AnonymDesktopClient
     {
 
         public List<PostRequest.EPostType> PostTypes { get; } = new List<PostRequest.EPostType>()
-        { PostRequest.EPostType.Popular, PostRequest.EPostType.New, PostRequest.EPostType.Favorite };
+        { PostRequest.EPostType.Popular, PostRequest.EPostType.New, PostRequest.EPostType.My, PostRequest.EPostType.Favorite };
 
         private int m_PostsCount = 20;
 

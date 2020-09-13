@@ -98,7 +98,7 @@ namespace AnonymDesktopClient.Pages
                     for (int i = 0; i < txtCommentsCount.Value; ++i)
                     {
                         int idx = rnd.Next(0, m_SpamCommentsList.Length - 1);
-                        await ApiHelper.SendComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked);
+                        var res = await ApiHelper.SendComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked);
                     }
                 }
                 catch (Exception ex)
@@ -125,6 +125,26 @@ namespace AnonymDesktopClient.Pages
             {
                 DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
+        }
+
+        private async void btnEditPost_Click(object sender, RoutedEventArgs e)
+        {
+            EditPostData postData = new EditPostData();
+            postData.id = (int)txtGroupId.Value;
+            postData.text = txtPostText.Text;
+            try
+            {
+                bool res = await ApiHelper.EditPost(postData);
+                if(res)
+                {
+                    DialogManager.ShowDialog("S U C C", "Profile editing done");
+                }    
+            }
+            catch(Exception ex)
+            {
+                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
+            }
+            
         }
     }
 }

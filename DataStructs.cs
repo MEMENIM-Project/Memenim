@@ -12,16 +12,32 @@ namespace AnonymDesktopClient.DataStructs
         public string token { get; set; }
     }
 
+    public class RectData
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+    }
+    
+    public class SizeData
+    {
+        public RectData photo_small { get; set; }
+        public RectData photo_medium { get; set; }
+        public RectData photo_big { get; set; }
+    }
+
     public class PhotoData
     {
         public string photo_big { get; set; }
         public string photo_medium { get; set; }
         public string photo_small { get; set; }
+        public SizeData size { get; set; }
     }
 
     public class AttachmentData
     {
+        public string link { get; set; } = null;
         public PhotoData photo { get; set; }
+        public string type { get; set; } = "photo";
     }
 
     public class PostData
@@ -30,7 +46,12 @@ namespace AnonymDesktopClient.DataStructs
         public string text { get; set; }
         public string owner_name { get; set; }
         public int? owner_id { get; set; }
+        public int adult { get; set; }
+        public int open_comments { get; set; } = 1;
+        public int category { get; set; } = 6;
         public int hidden { get; set; }
+        public int filter { get; set; }
+        public int type { get; set; } = 1;
         public long date { get; set; }
         public int author_watch { get; set; }
         public int reposts { get; set; }
@@ -66,7 +87,8 @@ namespace AnonymDesktopClient.DataStructs
         {
             New = 1,
             Popular = 2,
-            Favorite = 3
+            Favorite = 3,
+            My = 4
         }
         public int count { get; set; } = 20;
         public EPostType type { get; set; } = EPostType.Popular;
@@ -95,4 +117,10 @@ namespace AnonymDesktopClient.DataStructs
         public string banner { get; set; }
     }
 
+
+    class EditPostData
+    {
+        public int id { get; set; }
+        public string text { get; set; }
+    }
 }

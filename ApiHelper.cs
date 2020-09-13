@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using AnonymDesktopClient.DataStructs;
+using System.Net;
 
 namespace AnonymDesktopClient
 {
@@ -92,7 +93,7 @@ namespace AnonymDesktopClient
             public int anonim { get; set; }
         }
 
-        public static async Task SendComment(int postId, string content, bool? anonymous)
+        public static async Task<HttpStatusCode> SendComment(int postId, string content, bool? anonymous)
         {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -106,8 +107,7 @@ namespace AnonymDesktopClient
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
 
             var response = await client.PostAsync(GENERAL_API_STRING + "posts/commentAdd", data);
-
-            string result = response.Content.ReadAsStringAsync().Result;
+            return response.StatusCode;
         }
 
 
@@ -131,6 +131,34 @@ namespace AnonymDesktopClient
             
             PostResult resp = JsonConvert.DeserializeObject<PostResult>(result);
             return resp.data;
+        }
+
+        public static async Task<bool> SubmitPost(PostData post)
+        {
+            var json = JsonConvert.SerializeObject(post);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/add", data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+            return response.StatusCode == HttpStatusCode.OK;
+        }
+
+        public static async Task<bool> EditPost(EditPostData postData)
+        {
+            var json = JsonConvert.SerializeObject(postData);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync(GENERAL_API_STRING + "posts/edit", data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+            return response.StatusCode == HttpStatusCode.OK;
         }
 
         class CommentsResult
