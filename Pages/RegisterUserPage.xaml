@@ -24,6 +24,7 @@
                 Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
                 Name="txtPass"></PasswordBox>
             <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnRegister" Click="btnRegister_Click">Register new user</Button>
+            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnAutoReg" Click="btnAutoReg_Click">Auto register</Button>
         </StackPanel>
     </Grid>
 </UserControl>

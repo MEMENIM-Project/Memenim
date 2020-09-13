@@ -19,7 +19,7 @@ namespace AnonymDesktopClient
             public string password { get; set; }
         }
 
-        private class AuthResponse
+        public class AuthResponse
         {
             public bool error { get; set; }
             public int code { get; set; }
@@ -36,7 +36,7 @@ namespace AnonymDesktopClient
 
         private static string GENERAL_API_STRING = "http://dev.apianon.ru:3000/";
 
-        public static async Task<string> RegisterUser(string login, string pass)
+        public static async Task<AuthResponse> RegisterUser(string login, string pass)
         {
             AuthInfo inf = new AuthInfo();
             inf.login = login;
@@ -58,7 +58,7 @@ namespace AnonymDesktopClient
                 m_LocalUserId = resp.data.id;
                 UserToken = resp.data.token;
             }
-            return resp.message;
+            return resp;
         }
 
         public static async Task<string> Auth(string login, string pass)

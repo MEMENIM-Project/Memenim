@@ -34,7 +34,7 @@ namespace AnonymDesktopClient.Pages
                 var res = await ApiHelper.RegisterUser(txtLogin.Text, txtPass.Password);
                 if (res != null)
                 {
-                    lblErrorMessage.Text = res;
+                    lblErrorMessage.Text = res.message;
                     btnRegister.IsEnabled = true;
                 }
                 else
@@ -47,6 +47,20 @@ namespace AnonymDesktopClient.Pages
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private async void btnAutoReg_Click(object sender, RoutedEventArgs e)
+        {
+            UInt64 counter = 0;
+            string name = "bot";
+            var res = await ApiHelper.RegisterUser(name + counter.ToString("D10"), "botpass");
+            while(res.error)
+            {
+                ++counter;
+                res = await ApiHelper.RegisterUser(name + counter.ToString("D10"), "botpass");
+            }
+            DialogManager.ShowDialog("S U C C", "Regisered user with nickname " + name + counter.ToString("D10"));
+            PageNavigationManager.SwitchToPage(new ApplicationPage());
         }
     }
 }
