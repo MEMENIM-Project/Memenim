@@ -62,5 +62,10 @@ namespace AnonymDesktopClient.Pages
             DialogManager.ShowDialog("S U C C", "Regisered user with nickname " + name + counter.ToString("D10"));
             PageNavigationManager.SwitchToPage(new ApplicationPage());
         }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            PageNavigationManager.SwitchToPage(new LoginPage());
+        }
     }
 }
