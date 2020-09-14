@@ -138,6 +138,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DialogManager.cs" />
+    <Compile Include="Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SubmitPostPage.xaml.cs">
       <DependentUpon>SubmitPostPage.xaml</DependentUpon>
     </Compile>
@@ -174,6 +177,10 @@
     <Compile Include="Widgets\WriteComment.xaml.cs">
       <DependentUpon>WriteComment.xaml</DependentUpon>
     </Compile>
+    <Page Include="Pages\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\SubmitPostPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -16,7 +16,6 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Foreground="{StaticResource MahApps.Brushes.Text}" Text="HELLO" VerticalAlignment="Center"></TextBlock>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Controls:SplitButton ItemsSource="{Binding PostTypes}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"></Controls:SplitButton>
             <ListBox Name="lstPostCategory"></ListBox>

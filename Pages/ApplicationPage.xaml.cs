@@ -24,6 +24,7 @@ namespace AnonymDesktopClient.Pages
         PostsPage postsView;
         PostPage postView;
         MemesPage memesPage;
+        SettingsPage settingsPage;
 
         public ApplicationPage()
         {
@@ -31,8 +32,8 @@ namespace AnonymDesktopClient.Pages
             postView = new PostPage();
             postsView = new PostsPage();
             submitPage = new SubmitPostPage();
-            //postsView.ParrentPage = this;
             memesPage = new MemesPage();
+            settingsPage = new SettingsPage();
             PageNavigationManager.SubpageContentControl = contentArea;
             PageNavigationManager.SwitchToSubpage(postsView);
         }
@@ -81,7 +82,7 @@ namespace AnonymDesktopClient.Pages
 
         void TriggerSettingsMenu()
         {
-            flyoutSettings.IsOpen = !flyoutSettings.IsOpen;
+            PageNavigationManager.SwitchToSubpage(settingsPage);
         }
     }
 }

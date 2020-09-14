@@ -42,24 +42,29 @@ namespace AnonymDesktopClient
         {
             loadingRing.Visibility = Visibility.Visible;
 
-            PostRequest request = new PostRequest();
-            request.count = m_PostsCount;
+            PostRequest request = new PostRequest()
+            {
+                count = m_PostsCount,
+                type = (PostRequest.EPostType)lstPostType.SelectedItem
+            };
             await UpdatePosts(request);
             loadingRing.Visibility = Visibility.Hidden;
         }
 
         async Task<bool> UpdatePosts(PostRequest filters)
         {
+            postsPanel.Items.Clear();
             var posts = await ApiHelper.GetAllPosts(filters);
 
             if (posts == null) { return false; }
-            postsPanel.Items.Clear();
             foreach (var post in posts)
             {
-                PostWidget widget = new PostWidget();
-                widget.PostText = post.text;
-                widget.ImageURL = post.attachments[0].photo.photo_medium;
-                widget.CurrentPostData = post;
+                PostWidget widget = new PostWidget()
+                {
+                    PostText = post.text,
+                    ImageURL = post.attachments[0].photo.photo_medium,
+                    CurrentPostData = post
+                };
                 postsPanel.Items.Add(widget);
             }
 
@@ -70,25 +75,14 @@ namespace AnonymDesktopClient
         {
             loadingRing.Visibility = Visibility.Visible;
 
-            PostRequest request = new PostRequest();
-            request.type = (PostRequest.EPostType)((sender as Selector).SelectedItem);
-            request.count = m_PostsCount;
+            PostRequest request = new PostRequest()
+            {
+                type = (PostRequest.EPostType)((sender as Selector).SelectedItem),
+                count = m_PostsCount
+            };
             await UpdatePosts(request);
             loadingRing.Visibility = Visibility.Hidden;
 
         }
-
-        private async void ScrollEnd()
-        {
-            MessageBox.Show("This is the end");
-        }
-
-        //private void postsPanel_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        //{
-        //    //if (scrollViewer.HorizontalOffset == scrollViewer.Width)
-        //    //{
-        //    //    
-        //    //}
-        //}
     }
 }

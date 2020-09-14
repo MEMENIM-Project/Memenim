@@ -81,6 +81,7 @@ namespace AnonymDesktopClient
             AuthResponse resp = JsonConvert.DeserializeObject<AuthResponse>(result);
             if(resp.data.token != null)
             {
+                m_LocalUserId = resp.data.id;
                 UserToken = resp.data.token;
             }
             return resp.message;
