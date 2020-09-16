@@ -70,7 +70,7 @@ namespace AnonymDesktopClient
             var commentsData = await ApiHelper.GetCommentsForPost(id);
             if (commentsData.Count == 0) { return; }
             lstComments.Items.Clear();
-            for (int i = commentsData.Count - 1; i > 0; --i)
+            for (int i = commentsData.Count - 1; i > -1; --i)
             {
                 UserComment commentWidget = new UserComment();
                 commentWidget.UserName = commentsData[i].user.name;

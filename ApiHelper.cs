@@ -303,5 +303,16 @@ namespace AnonymDesktopClient
             return response.IsSuccessStatusCode;
         }
 
+        public static async Task<bool> ChangeUserProfileInfo<T>(T profileData)
+        {
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var json = JsonConvert.SerializeObject(profileData);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(UserToken);
+
+            var response = await client.PostAsync(GENERAL_API_STRING + "users/profile/set", data);
+            return response.IsSuccessStatusCode;
+        }
     }
 }

@@ -28,6 +28,9 @@
                 Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
                 Name="txtPass"></PasswordBox>
             <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Change Password</Button>
+            <TextBox x:Name="txtPicURL" Controls:TextBoxHelper.Watermark="Pic URL"></TextBox>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnChangeAvatar" Click="btnChangeAvatar_Click">Change Userpic</Button>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnChangeBanner" Click="btnChangeBanner_Click">Change Banner</Button>
             <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnSignOut" Click="btnSignOut_Click">Sign Out</Button>
         </StackPanel>
     </Grid>

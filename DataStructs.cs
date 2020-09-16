@@ -124,4 +124,18 @@ namespace AnonymDesktopClient.DataStructs
         public int id { get; set; }
         public string text { get; set; }
     }
+
+
+    // Remove this fucking shit ffs
+    class AvatarChangeRequestTemp
+    {
+        public string photo { get; set; }
+    }
+
+    class BannerChangeRequestTemp
+    {
+        public string banner { get; set; }
+    }
+
+
 }

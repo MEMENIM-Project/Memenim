@@ -32,7 +32,7 @@ namespace AnonymDesktopClient
         {
             await ApiHelper.SendComment(PostID, txtContent.Text, bAnon.IsChecked);
 
-            MessageBox.Show("Comment sent");
+            DialogManager.ShowDialog("S U C C", "Comment sent");
 
             txtContent.Text = "";
             bAnon.IsChecked = false;
