@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AnonymDesktopClient.Core;
+using Memenim.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,17 +33,19 @@ namespace AnonymDesktopClient.Pages
 
             try
             {
-                var res = await ApiHelper.RegisterUser(txtLogin.Text, txtPass.Password);
-                if (res != null)
+                var result = await UsersAPI.RegisterUser(txtLogin.Text, txtPass.Password);
+
+                if(result.error)
                 {
-                    lblErrorMessage.Text = res.message;
+                    lblErrorMessage.Text = result.message;
                     btnRegister.IsEnabled = true;
                 }
                 else
                 {
+                    AppPersistent.UserToken = result.data.token;
+                    AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
                 }
-
             }
             catch (Exception ex)
             {
@@ -53,12 +57,14 @@ namespace AnonymDesktopClient.Pages
         {
             UInt64 counter = 0;
             string name = "bot";
-            var res = await ApiHelper.RegisterUser(name + counter.ToString("D10"), "botpass");
+            var res = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass");
             while(res.error)
             {
                 ++counter;
-                res = await ApiHelper.RegisterUser(name + counter.ToString("D10"), "botpass");
+                res = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass");
             }
+            AppPersistent.UserToken = res.data.token;
+            AppPersistent.LocalUserId = res.data.id;
             DialogManager.ShowDialog("S U C C", "Regisered user with nickname " + name + counter.ToString("D10"));
             PageNavigationManager.SwitchToPage(new ApplicationPage());
         }

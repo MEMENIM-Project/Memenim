@@ -1,4 +1,4 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿using Memenim.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

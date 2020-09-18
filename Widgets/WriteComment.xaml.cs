@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AnonymDesktopClient.Core;
+using Memenim.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,9 +32,15 @@ namespace AnonymDesktopClient
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            await ApiHelper.SendComment(PostID, txtContent.Text, bAnon.IsChecked);
-
-            DialogManager.ShowDialog("S U C C", "Comment sent");
+            var res = await PostAPI.SendComment(PostID, txtContent.Text, bAnon.IsChecked, AppPersistent.UserToken);
+            if (!res.error)
+            {
+                DialogManager.ShowDialog("S U C C", "Comment sent");
+            }
+            else
+            {
+                DialogManager.ShowDialog("Not S U C C", res.message);
+            }
 
             txtContent.Text = "";
             bAnon.IsChecked = false;

@@ -1,4 +1,6 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿using AnonymDesktopClient.Core;
+using Memenim.Core;
+using Memenim.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +50,8 @@ namespace AnonymDesktopClient.Pages
             try
             {
                 m_PostData.author_watch++;
-                bool res = await ApiHelper.SubmitPost(m_PostData);
-                if (res)
+                var res = await PostAPI.SubmitPost(m_PostData, AppPersistent.UserToken);
+                if (!res.error)
                 {
                     DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait");
                 }

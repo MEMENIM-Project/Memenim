@@ -1,4 +1,4 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,9 @@ using AnonymDesktopClient.Pages;
 using AnonymDesktopClient.Widgets;
 using System.Web;
 using System.Windows.Controls.Primitives;
+using Memenim.Core;
+using Memenim.Core.Data;
+using AnonymDesktopClient.Core;
 
 namespace AnonymDesktopClient
 {
@@ -54,10 +57,10 @@ namespace AnonymDesktopClient
         async Task<bool> UpdatePosts(PostRequest filters)
         {
             postsPanel.Items.Clear();
-            var posts = await ApiHelper.GetAllPosts(filters);
+            var postsResponse = await PostAPI.GetAllPosts(filters, AppPersistent.UserToken);
 
-            if (posts == null) { return false; }
-            foreach (var post in posts)
+            if (postsResponse == null) { return false; }
+            foreach (var post in postsResponse.data)
             {
                 PostWidget widget = new PostWidget()
                 {

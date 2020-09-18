@@ -1,4 +1,7 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿using AnonymDesktopClient.Core;
+
+using Memenim.Core;
+using Memenim.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,12 +35,11 @@ namespace AnonymDesktopClient.Pages
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            ProfileData profile = await ApiHelper.GetLocalUserInfo();
-            Login = profile.login;
-            Username = profile.name;
-            AvatarURL = profile.photo;
+            var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
+            Login = profile.data[0].login;
+            Username = profile.data[0].name;
+            AvatarURL = profile.data[0].photo;
             DataContext = this;
-
         }
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
@@ -47,34 +49,34 @@ namespace AnonymDesktopClient.Pages
 
         private async void btnChangeAvatar_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var res = await ApiHelper.ChangeUserProfileInfo(new AvatarChangeRequestTemp() { photo = txtPicURL.Text });
-                if (res)
-                {
-                    DialogManager.ShowDialog("S U C C", "You changed your avatar.");
-                }
-            }
-            catch (Exception ex)
-            {
-                DialogManager.ShowDialog("F U C K", ex.Message);
-            }
+            //try
+            //{
+            //    var res = await ApiHelper.ChangeUserProfileInfo(new AvatarChangeRequestTemp() { photo = txtPicURL.Text });
+            //    if (res)
+            //    {
+            //        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    DialogManager.ShowDialog("F U C K", ex.Message);
+            //}
         }
 
         private async void btnChangeBanner_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var res = await ApiHelper.ChangeUserProfileInfo(new BannerChangeRequestTemp() { banner = txtPicURL.Text });
-                if(res)
-                {
-                    DialogManager.ShowDialog("S U C C", "You changed your banner.");
-                }
-            }
-            catch (Exception ex)
-            {
-                DialogManager.ShowDialog("F U C K", ex.Message);
-            }
+            //try
+            //{
+            //    var res = await ApiHelper.ChangeUserProfileInfo(new BannerChangeRequestTemp() { banner = txtPicURL.Text });
+            //    if(res)
+            //    {
+            //        DialogManager.ShowDialog("S U C C", "You changed your banner.");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    DialogManager.ShowDialog("F U C K", ex.Message);
+            //}
 
         }
     }

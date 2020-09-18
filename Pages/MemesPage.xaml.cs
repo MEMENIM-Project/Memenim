@@ -1,4 +1,4 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Converters;
 using Microsoft.Win32;
@@ -18,6 +18,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using Memenim.Core;
+using Memenim.Core.Data;
+using AnonymDesktopClient.Core;
 
 namespace AnonymDesktopClient.Pages
 {
@@ -36,9 +39,9 @@ namespace AnonymDesktopClient.Pages
 
         private async void btnSteal_Click(object sender, RoutedEventArgs e)
         {
-            ProfileData victimData = await ApiHelper.GetUserInfo(System.Convert.ToInt32(txtStealId.Value));
+            var victimData = await UsersAPI.GetUserProfileByID(System.Convert.ToInt32(txtStealId.Value));
 
-            await ApiHelper.EditUserInfo(victimData);
+            await UsersAPI.EditProfile(victimData.data[0], AppPersistent.UserToken);
             DialogManager.ShowDialog("Success", "Profile copied");
         }
 
@@ -56,7 +59,7 @@ namespace AnonymDesktopClient.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
                 {
-                    await ApiHelper.AddShares(Convert.ToInt32(txtGroupId.Value));
+                    await PostAPI.AddRepost(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken);
                 }
             }
             catch (Exception ex)
@@ -74,7 +77,7 @@ namespace AnonymDesktopClient.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await ApiHelper.AddView(Convert.ToInt32(txtGroupId.Value));
+                    await PostAPI.AddView(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken);
                 }
 
             }
@@ -98,7 +101,7 @@ namespace AnonymDesktopClient.Pages
                     for (int i = 0; i < txtCommentsCount.Value; ++i)
                     {
                         int idx = rnd.Next(0, m_SpamCommentsList.Length - 1);
-                        var res = await ApiHelper.SendComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked);
+                        var res = await PostAPI.SendComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked, AppPersistent.UserToken);
                     }
                 }
                 catch (Exception ex)
@@ -134,17 +137,20 @@ namespace AnonymDesktopClient.Pages
             postData.text = txtPostText.Text;
             try
             {
-                bool res = await ApiHelper.EditPost(postData);
-                if(res)
+                var res = await PostAPI.EditPost(postData, AppPersistent.UserToken);
+                if (!res.error)
                 {
-                    DialogManager.ShowDialog("S U C C", "Profile editing done");
-                }    
+                    DialogManager.ShowDialog("S U C C", "Post editing done");
+                }
+                else
+                {
+                    DialogManager.ShowDialog("Not S U C C", res.message);
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
-            
         }
     }
 }

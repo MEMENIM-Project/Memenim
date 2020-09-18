@@ -1,4 +1,4 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿
 using AnonymDesktopClient.Pages;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Memenim.Core;
+using AnonymDesktopClient.Core;
 
 namespace AnonymDesktopClient
 {
@@ -32,17 +34,19 @@ namespace AnonymDesktopClient
             btnLogin.IsEnabled = false;
             try
             {
-                var res = await ApiHelper.Auth(txtLogin.Text, txtPass.Password);
+                var result = await UsersAPI.Login(txtLogin.Text, txtPass.Password);
 
-                if (res != null)
+                if(result.error)
                 {
-                    lblStatus.Content = res;
-                    btnLogin.IsEnabled = true;
+                    lblStatus.Content = result.message;
                 }
                 else
                 {
+                    AppPersistent.UserToken = result.data.token;
+                    AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
                 }
+
             }
             catch(Exception ex)
             {

@@ -1,5 +1,7 @@
-﻿using AnonymDesktopClient.DataStructs;
+﻿
 using AnonymDesktopClient.Pages;
+using Memenim.Core;
+using Memenim.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,17 +69,17 @@ namespace AnonymDesktopClient
 
         async void UpdateComments(int id)
         {
-            var commentsData = await ApiHelper.GetCommentsForPost(id);
-            if (commentsData.Count == 0) { return; }
+            var commentsData = await PostAPI.GetCommentsForPost(id);
+            if (commentsData.data.Count == 0) { return; }
             lstComments.Items.Clear();
-            for (int i = commentsData.Count - 1; i > -1; --i)
+            for (int i = commentsData.data.Count - 1; i > -1; --i)
             {
                 UserComment commentWidget = new UserComment();
-                commentWidget.UserName = commentsData[i].user.name;
-                commentWidget.Comment = commentsData[i].text;
-                commentWidget.ImageURL = commentsData[i].user.photo;
-                commentWidget.UserID = commentsData[i].user.id;
-                commentWidget.CommentID = commentsData[i].id;
+                commentWidget.UserName = commentsData.data[i].user.name;
+                commentWidget.Comment = commentsData.data[i].text;
+                commentWidget.ImageURL = commentsData.data[i].user.photo;
+                commentWidget.UserID = commentsData.data[i].user.id;
+                commentWidget.CommentID = commentsData.data[i].id;
                 lstComments.Items.Add(commentWidget);
             }
 
@@ -94,10 +96,13 @@ namespace AnonymDesktopClient
         private async void ViewUserProfile_Click(object sender, RoutedEventArgs e)
         {
             int id = (lstComments.SelectedItem as UserComment).UserID;
-            ProfileData profile = await ApiHelper.GetUserInfo(id);
-            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, profile);
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubpage(new UserProfilePage());
+            var profile = await UsersAPI.GetUserProfileByID(id);
+            if(profile.error)
+            {
+                DialogManager.ShowDialog("ERROR", profile.message);
+                return;
+            }
+            GoToProfile(profile.data[0]);
         }
 
 
@@ -109,8 +114,13 @@ namespace AnonymDesktopClient
 
         private async void GoToPosterProfile_Click(object sender, RoutedEventArgs e)
         {
-            ProfileData profile = await ApiHelper.GetUserInfo(m_PosterId.GetValueOrDefault());
-            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, profile);
+            var profile = await UsersAPI.GetUserProfileByID(m_PosterId.GetValueOrDefault());
+            GoToProfile(profile.data[0]);
+        }
+
+        private void GoToProfile(ProfileData data)
+        {
+            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, data);
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
             PageNavigationManager.SwitchToSubpage(new UserProfilePage());
         }

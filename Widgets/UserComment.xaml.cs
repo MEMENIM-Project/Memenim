@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AnonymDesktopClient.Core;
+using Memenim.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,19 +38,27 @@ namespace AnonymDesktopClient
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            bool result = await ApiHelper.LikeComment(CommentID);
-            if(result)
+            var result = await PostAPI.LikeComment(CommentID, AppPersistent.UserToken);
+            if (!result.error)
             {
                 DialogManager.ShowDialog("Liked", "Liked");
+            }
+            else
+            {
+                DialogManager.ShowDialog("Error", result.message);
             }
         }
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            bool result = await ApiHelper.DislikeComment(CommentID);
-            if (result)
+            var result = await PostAPI.DislikeComment(CommentID, AppPersistent.UserToken);
+            if (!result.error)
             {
                 DialogManager.ShowDialog("Disliked", "Disliked");
+            }
+            else
+            {
+                DialogManager.ShowDialog("Error", result.message);
             }
 
         }
