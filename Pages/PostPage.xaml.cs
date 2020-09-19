@@ -1,4 +1,5 @@
 ﻿
+using AnonymDesktopClient.Core;
 using AnonymDesktopClient.Pages;
 using Memenim.Core;
 using Memenim.Core.Data;
@@ -30,6 +31,8 @@ namespace AnonymDesktopClient
 
         DispatcherTimer m_UpdateTimer;
 
+        PostData m_PostData;
+
         public PostPage()
         {
             InitializeComponent();
@@ -39,31 +42,45 @@ namespace AnonymDesktopClient
             m_UpdateTimer.Start();
         }
 
-        private void UpdateTimer_Tick(object sender, EventArgs e)
+        private async void UpdateTimer_Tick(object sender, EventArgs e)
         {
-            PostData post = GeneralBlackboard.TryGetValue<PostData>(BlackBoardValues.EPostData);
-            if(post != null)
+            var res = await PostAPI.GetPostById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
+            if (res.error)
             {
-                UpdateComments(post.id);
+                DialogManager.ShowDialog("F U C K", res.message);
+            }
+
+            m_PostData = res.data[0];
+
+            if (m_PostData != null)
+            {
+                UpdateComments(m_PostData.id);
             }
         }
 
-        private void PostPage_Loaded(object sender, RoutedEventArgs e)
+        private async void PostPage_Loaded(object sender, RoutedEventArgs e)
         {
-            PostData post = GeneralBlackboard.TryGetValue<PostData>(BlackBoardValues.EPostData);
-            if(post != null)
+            var res = await PostAPI.GetPostById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
+            if(res.error)
             {
-                wdgComment.PostID = post.id;
-                m_PosterId = post.owner_id;
+                DialogManager.ShowDialog("F U C K", res.message);
+            }
+
+            m_PostData = res.data[0];
+
+            if(m_PostData != null)
+            {
+                wdgComment.PostID = m_PostData.id;
+                m_PosterId = m_PostData.owner_id;
                 //wdgPost.CurrentPostData = post;
                 //wdgPost.PostText = post.text;
                 //wdgPost.ImageURL = post.attachments[0].photo.photo_medium;
-                txtPost.Text = post.text;
-                imgPost.Source = new BitmapImage(new Uri(post.attachments[0].photo.photo_medium, UriKind.Absolute));
-                lblPosterName.Content = post.owner_name;
+                txtPost.Text = m_PostData.text;
+                imgPost.Source = new BitmapImage(new Uri(m_PostData.attachments[0].photo.photo_medium, UriKind.Absolute));
+                lblPosterName.Content = m_PostData.owner_name;
                 //lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
-                lblDate.Content = UnixTimeStampToDateTime(post.date).ToString();
-                UpdateComments(post.id);
+                lblDate.Content = UnixTimeStampToDateTime(m_PostData.date).ToString();
+                UpdateComments(m_PostData.id);
             }
         }
 

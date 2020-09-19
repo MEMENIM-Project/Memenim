@@ -49,35 +49,60 @@ namespace AnonymDesktopClient.Pages
 
         private async void btnChangeAvatar_Click(object sender, RoutedEventArgs e)
         {
-            //try
-            //{
-            //    var res = await ApiHelper.ChangeUserProfileInfo(new AvatarChangeRequestTemp() { photo = txtPicURL.Text });
-            //    if (res)
-            //    {
-            //        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    DialogManager.ShowDialog("F U C K", ex.Message);
-            //}
+            try
+            {
+                var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
+                if(!profile.error)
+                {
+                    profile.data[0].photo = txtPicURL.Text;
+                    var res = await UsersAPI.EditProfile(profile.data[0], AppPersistent.UserToken);
+                    if (!res.error)
+                    {
+                        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
+                    }
+                    else
+                    {
+                        DialogManager.ShowDialog("F U C K", res.message);
+                    }
+                }
+                else
+                {
+                    DialogManager.ShowDialog("F U C K", profile.message);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogManager.ShowDialog("F U C K", ex.Message);
+            }
         }
 
         private async void btnChangeBanner_Click(object sender, RoutedEventArgs e)
         {
-            //try
-            //{
-            //    var res = await ApiHelper.ChangeUserProfileInfo(new BannerChangeRequestTemp() { banner = txtPicURL.Text });
-            //    if(res)
-            //    {
-            //        DialogManager.ShowDialog("S U C C", "You changed your banner.");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    DialogManager.ShowDialog("F U C K", ex.Message);
-            //}
-
+            try
+            {
+                var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
+                if (!profile.error)
+                {
+                    profile.data[0].photo = txtPicURL.Text;
+                    var res = await UsersAPI.EditProfile(profile.data[0], AppPersistent.UserToken);
+                    if (!res.error)
+                    {
+                        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
+                    }
+                    else
+                    {
+                        DialogManager.ShowDialog("F U C K", res.message);
+                    }
+                }
+                else
+                {
+                    DialogManager.ShowDialog("F U C K", profile.message);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogManager.ShowDialog("F U C K", ex.Message);
+            }
         }
     }
 }

@@ -38,7 +38,7 @@ namespace AnonymDesktopClient.Widgets
 
         private void ViewPost_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EPostData, CurrentPostData);
+            GeneralBlackboard.SetValue(BlackBoardValues.EPostData, CurrentPostData.id);
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new PostsPage());
             PageNavigationManager.SwitchToSubpage(new PostPage());
         }
