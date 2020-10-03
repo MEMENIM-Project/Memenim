@@ -21,6 +21,7 @@ using System.Windows.Controls.Primitives;
 using Memenim.Core;
 using Memenim.Core.Data;
 using AnonymDesktopClient.Core;
+using AnonymDesktopClient.Core.Utils;
 
 namespace AnonymDesktopClient
 {
@@ -29,15 +30,28 @@ namespace AnonymDesktopClient
     /// </summary>
     public partial class PostsPage : UserControl
     {
+        public ICommand OnPostScrollEnd { get; set; }
 
         public List<PostRequest.EPostType> PostTypes { get; } = new List<PostRequest.EPostType>()
         { PostRequest.EPostType.Popular, PostRequest.EPostType.New, PostRequest.EPostType.My, PostRequest.EPostType.Favorite };
 
         private int m_PostsCount = 20;
+        private int m_Offset = 0;
+
 
         public PostsPage()
         {
             InitializeComponent();
+            OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
+              {
+                  PostRequest request = new PostRequest()
+                  {
+                      count = m_PostsCount,
+                      offset = m_Offset,
+                      type = (PostRequest.EPostType)lstPostType.SelectedItem
+                  };
+                  await LoadNewPosts(request);
+              });
             DataContext = this;
         }
 
@@ -56,11 +70,29 @@ namespace AnonymDesktopClient
 
         async Task<bool> UpdatePosts(PostRequest filters)
         {
-            postsPanel.Items.Clear();
+            postsLists.Children.Clear();
+            m_Offset = 0;
             var postsResponse = await PostAPI.GetAllPosts(filters, AppPersistent.UserToken);
 
             if (postsResponse == null) { return false; }
-            foreach (var post in postsResponse.data)
+            AddPostsToList(postsResponse.data);
+            return true;
+        }
+
+        async Task<bool> LoadNewPosts(PostRequest filter)
+        {
+            
+            var postsResponse = await PostAPI.GetAllPosts(filter, AppPersistent.UserToken);
+
+            if (postsResponse == null) { return false; }
+            AddPostsToList(postsResponse.data);
+            return true;
+
+        }
+
+        void AddPostsToList(List<PostData> posts)
+        {
+            foreach (var post in posts)
             {
                 PostWidget widget = new PostWidget()
                 {
@@ -68,22 +100,17 @@ namespace AnonymDesktopClient
                     ImageURL = post.attachments[0].photo.photo_medium,
                     CurrentPostData = post
                 };
-                postsPanel.Items.Add(widget);
+                postsLists.Children.Add(widget);
             }
-
-            return true;
+            m_Offset += m_PostsCount;
         }
 
-        private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             loadingRing.Visibility = Visibility.Visible;
-
-            PostRequest request = new PostRequest()
-            {
-                type = (PostRequest.EPostType)((sender as Selector).SelectedItem),
-                count = m_PostsCount
-            };
-            await UpdatePosts(request);
+            m_Offset = 0;
+            postsLists.Children.Clear();
             loadingRing.Visibility = Visibility.Hidden;
 
         }

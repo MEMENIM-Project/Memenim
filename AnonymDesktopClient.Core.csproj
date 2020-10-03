@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.2.0" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.4.0" />
-    <PackageReference Include="Memenim.Core" Version="0.1.6.2" />
+    <PackageReference Include="Memenim.Core" Version="0.1.6.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="TenorClient" Version="1.0.3" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
