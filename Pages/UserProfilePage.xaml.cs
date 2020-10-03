@@ -30,8 +30,8 @@ namespace AnonymDesktopClient
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            m_UserInfo = GeneralBlackboard.TryGetValue<ProfileData>(BlackBoardValues.EProfileData);
-            DataContext = m_UserInfo;
+            //m_UserInfo = GeneralBlackboard.TryGetValue<ProfileData>(BlackBoardValues.EProfileData);
+            //DataContext = m_UserInfo;
         }
 
     }

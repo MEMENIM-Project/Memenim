@@ -1,5 +1,6 @@
 ﻿using AnonymDesktopClient.Core;
-
+using AnonymDesktopClient.Core.Pages;
+using AnonymDesktopClient.Core.Utils;
 using Memenim.Core;
 using Memenim.Core.Data;
 using System;
@@ -24,85 +25,19 @@ namespace AnonymDesktopClient.Pages
     /// </summary>
     public partial class SettingsPage : UserControl
     {
-        public string Username { get; set; } = "Undefined";
-        public string Login { get; set; } = "Undefined";
-        public string AvatarURL { get; set; }
-
         public SettingsPage()
         {
             InitializeComponent();
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
-            Login = profile.data[0].login;
-            Username = profile.data[0].name;
-            AvatarURL = profile.data[0].photo;
-            DataContext = this;
+            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, AppPersistent.LocalUserId);
         }
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
         {
             PageNavigationManager.SwitchToPage(new LoginPage());
-        }
-
-        private async void btnChangeAvatar_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
-                if(!profile.error)
-                {
-                    profile.data[0].photo = txtPicURL.Text;
-                    var res = await UsersAPI.EditProfile(profile.data[0], AppPersistent.UserToken);
-                    if (!res.error)
-                    {
-                        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
-                    }
-                    else
-                    {
-                        DialogManager.ShowDialog("F U C K", res.message);
-                    }
-                }
-                else
-                {
-                    DialogManager.ShowDialog("F U C K", profile.message);
-                }
-            }
-            catch (Exception ex)
-            {
-                DialogManager.ShowDialog("F U C K", ex.Message);
-            }
-        }
-
-        private async void btnChangeBanner_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
-                if (!profile.error)
-                {
-                    profile.data[0].photo = txtPicURL.Text;
-                    var res = await UsersAPI.EditProfile(profile.data[0], AppPersistent.UserToken);
-                    if (!res.error)
-                    {
-                        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
-                    }
-                    else
-                    {
-                        DialogManager.ShowDialog("F U C K", res.message);
-                    }
-                }
-                else
-                {
-                    DialogManager.ShowDialog("F U C K", profile.message);
-                }
-            }
-            catch (Exception ex)
-            {
-                DialogManager.ShowDialog("F U C K", ex.Message);
-            }
         }
     }
 }

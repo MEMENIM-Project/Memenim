@@ -7,9 +7,12 @@
         xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:AnonymDesktopClient"
         mc:Ignorable="d"
-        ShowTitleBar="False"
+        ShowTitleBar="True"
+        ShowIconOnTitleBar="False"
+        WindowTitleBrush="{StaticResource MahApps.Brushes.Menu.Background}"
+        GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
         Dialog:DialogParticipation.Register="{Binding}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MEMENIM Desktop" Height="450" Width="800">
     <Grid>
         <mah:MetroContentControl x:Name="contentArea"></mah:MetroContentControl>
     </Grid>

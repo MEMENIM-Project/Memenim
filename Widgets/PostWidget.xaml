@@ -8,14 +8,14 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Loaded="Grid_Loaded" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height=".2*"></RowDefinition>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height=".2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         
         <Grid.ContextMenu>
@@ -24,14 +24,20 @@
                 <MenuItem Header="Copy Post ID" Click="CopyPostID_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <Image Source="{Binding ImageURL}" Stretch="Uniform" Width="400" Grid.ColumnSpan="3"></Image>
-        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding PostText}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap"></TextBlock>
+        <Image Source="{Binding ImageURL}" Grid.Row="1" Stretch="Uniform" Width="400" Grid.ColumnSpan="3" VerticalAlignment="Top"/>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="{Binding PostText}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
-        <local:StatButton x:Name="stShare" Grid.Row="2" Grid.Column="0" IsEnabled="False" Icon="Share" ButtonSize="28" ></local:StatButton>
-        <local:StatButton x:Name="stComments" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" IsEnabled="False" Icon="Message" ButtonSize="28" ></local:StatButton>
-        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <DockPanel Grid.Row="2" Grid.ColumnSpan="3">
+            <local:StatButton x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" />
+            <local:StatButton x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28"/>
+            <local:StatButton x:Name="stLikes" IsEnabled="False" Icon="ThumbsUp" ButtonSize="28" DockPanel.Dock="Right" />
+            <local:StatButton x:Name="stDislikes" IsEnabled="False" Icon="ThumbsDown" ButtonSize="28" DockPanel.Dock="Right" />
+        </DockPanel>
+        <!--<local:StatButton x:Name="stShare" Grid.Row="2" Grid.Column="0" IsEnabled="False" Icon="Share" ButtonSize="28" VerticalAlignment="Bottom" ></local:StatButton>
+        <local:StatButton x:Name="stComments" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" IsEnabled="False" Icon="Message" ButtonSize="28" VerticalAlignment="Bottom"></local:StatButton>
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <local:StatButton x:Name="stLikes" IsEnabled="False" Icon="ThumbsUp" ButtonSize="28" ></local:StatButton>
             <local:StatButton x:Name="stDislikes" IsEnabled="False" Icon="ThumbsDown" ButtonSize="28" ></local:StatButton>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>

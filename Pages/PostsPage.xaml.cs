@@ -87,5 +87,11 @@ namespace AnonymDesktopClient
             loadingRing.Visibility = Visibility.Hidden;
 
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
+            PageNavigationManager.SwitchToSubpage(new SubmitPostPage());
+        }
     }
 }

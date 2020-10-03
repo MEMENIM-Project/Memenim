@@ -6,6 +6,8 @@ namespace AnonymDesktopClient.Core
 {
     public static class AppPersistent
     {
+        public const string TenorAPIKey = "TKAGGYAX27OJ";
+
         public static string UserToken { get; set; }
         public static int LocalUserId { get; set; }
     }

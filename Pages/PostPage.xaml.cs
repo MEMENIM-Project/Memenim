@@ -39,7 +39,6 @@ namespace AnonymDesktopClient
             m_UpdateTimer = new DispatcherTimer();
             m_UpdateTimer.Tick += new EventHandler(UpdateTimer_Tick);
             m_UpdateTimer.Interval = new TimeSpan(0, 0, 30);
-            m_UpdateTimer.Start();
         }
 
         private async void UpdateTimer_Tick(object sender, EventArgs e)
@@ -79,9 +78,10 @@ namespace AnonymDesktopClient
                 imgPost.Source = new BitmapImage(new Uri(m_PostData.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = m_PostData.owner_name;
                 //lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
-                lblDate.Content = UnixTimeStampToDateTime(m_PostData.date).ToString();
+                lblDate.Content = Utils.UnixTimeStampToDateTime(m_PostData.date).ToString();
                 UpdateComments(m_PostData.id);
             }
+            m_UpdateTimer.Start();
         }
 
         async void UpdateComments(int id)
@@ -102,13 +102,6 @@ namespace AnonymDesktopClient
 
         }
 
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-        {
-            // Unix timestamp is seconds past epoch
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dtDateTime;
-        }
 
         private async void ViewUserProfile_Click(object sender, RoutedEventArgs e)
         {
@@ -137,7 +130,7 @@ namespace AnonymDesktopClient
 
         private void GoToProfile(ProfileData data)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, data);
+            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, data.id);
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
             PageNavigationManager.SwitchToSubpage(new UserProfilePage());
         }

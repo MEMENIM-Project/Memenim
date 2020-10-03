@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:local="clr-namespace:AnonymDesktopClient"
+             xmlns:uc ="clr-namespace:AnonymDesktopClient.Core.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Loaded="Page_Loaded">
@@ -12,13 +13,15 @@
             <RowDefinition Height=".4*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        
-        <Image Name="imgBanner" Stretch="UniformToFill" Source="{Binding banner}"></Image>
+
+        <uc:ProfileBanner />
+
+        <!--<Image Name="imgBanner" Stretch="UniformToFill" Source="{Binding banner}"></Image>
         <Image Name="imgUserPic" Stretch="Uniform" Height="200" Width="200" Source="{Binding photo}" HorizontalAlignment="Right"></Image>
         <StackPanel Grid.Row="1">
             <Label Content="{Binding name}" Foreground="{StaticResource MahApps.Brushes.Text}"></Label>
             <TextBlock Text="{Binding age}" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
             <TextBlock Text="{Binding sex}" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>
