@@ -38,6 +38,7 @@ namespace AnonymDesktopClient
 
                 if(result.error)
                 {
+                    btnLogin.IsEnabled = true;
                     lblStatus.Content = result.message;
                 }
                 else

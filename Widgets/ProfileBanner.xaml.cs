@@ -16,7 +16,7 @@ using AnonymDesktopClient.Core.Pages;
 using AnonymDesktopClient.Core.Utils;
 using Memenim.Core;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace AnonymDesktopClient.Widgets
 {
     /// <summary>
     /// Interaction logic for ProfileBanner.xaml
@@ -49,6 +49,12 @@ namespace AnonymDesktopClient.Core.Widgets
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
             PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeBanner });
+        }
+
+        private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
+        {
+            string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL");
+            await ProfileUtils.ChangeAvatar(url);
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace AnonymDesktopClient.Widgets
 {
     /// <summary>
     /// Interaction logic for ImagePreviewButton.xaml

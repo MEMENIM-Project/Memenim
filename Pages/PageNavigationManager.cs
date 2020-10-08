@@ -22,8 +22,14 @@ namespace AnonymDesktopClient.Pages
             set { m_SubPageContentControl = value; }
         }
 
+        static public MetroContentControl OverlayContentControl
+        {
+            set { m_OverlayControlControl = value; }
+        }
+
         static private MetroContentControl m_PageContentControl;
         static private MetroContentControl m_SubPageContentControl;
+        static private MetroContentControl m_OverlayControlControl;
 
         public static void SwitchToPage(object page)
         {
@@ -33,6 +39,16 @@ namespace AnonymDesktopClient.Pages
         public static void SwitchToSubpage(object subpage)
         {
             m_SubPageContentControl.Content = subpage;
+        }
+
+        public static void OpenOverlay(object overlay)
+        {
+            m_OverlayControlControl.Content = overlay;
+        }
+
+        public static void CloseOverlay()
+        {
+            m_OverlayControlControl.Content = null;
         }
     }
 }

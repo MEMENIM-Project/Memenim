@@ -19,8 +19,9 @@
             <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
 
-        <!--<local:PostWidget x:Name="wdgPost"  Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></local:PostWidget>-->
-        
+        <!--<local:PostWidget x:Name="wdgPost"  Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"/>-->
+
+
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.RowSpan="3">
             <Image Name="imgPost" Height="300"></Image>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -45,6 +46,6 @@
         </Label>
         <Label Name="lblDate" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 0"></Label>
 
-        <uc:WriteComment x:Name="wdgComment" Grid.Column="1" Grid.Row="2"  ></uc:WriteComment>
+        <local:WriteComment x:Name="wdgComment" Grid.Column="1" Grid.Row="2"/>
     </Grid>
 </UserControl>
