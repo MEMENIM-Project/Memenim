@@ -74,8 +74,8 @@ namespace AnonymDesktopClient
                 //wdgPost.CurrentPostData = post;
                 //wdgPost.PostText = post.text;
                 //wdgPost.ImageURL = post.attachments[0].photo.photo_medium;
-                txtPost.Text = m_PostData.text;
-                imgPost.Source = new BitmapImage(new Uri(m_PostData.attachments[0].photo.photo_medium, UriKind.Absolute));
+                //txtPost.Text = m_PostData.text;
+                //imgPost.Source = new BitmapImage(new Uri(m_PostData.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = m_PostData.owner_name;
                 //lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
                 lblDate.Content = Utils.UnixTimeStampToDateTime(m_PostData.date).ToString();

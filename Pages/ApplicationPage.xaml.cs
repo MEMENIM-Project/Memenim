@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnonymDesktopClient.Core.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,22 +21,25 @@ namespace AnonymDesktopClient.Pages
     /// </summary>
     public partial class ApplicationPage : UserControl
     {
-        SubmitPostPage submitPage;
-        PostsPage postsView;
-        PostPage postView;
-        MemesPage memesPage;
-        SettingsPage settingsPage;
+        SubmitPostPage m_SubmitPostPage;
+        FeedPage m_FeedPage;
+        PostPage m_PostPage;
+        MemesPage m_MemesPage;
+        PlaceholderPage m_PlaceholderPage;
+        SettingsPage m_SettingsPage;
 
         public ApplicationPage()
         {
             InitializeComponent();
-            postView = new PostPage();
-            postsView = new PostsPage();
-            submitPage = new SubmitPostPage();
-            memesPage = new MemesPage();
-            settingsPage = new SettingsPage();
+            m_PostPage = new PostPage();
+            m_FeedPage = new FeedPage();
+            m_SubmitPostPage = new SubmitPostPage();
+            m_MemesPage = new MemesPage();
+            m_SettingsPage = new SettingsPage();
+            m_PlaceholderPage = new PlaceholderPage();
             PageNavigationManager.SubpageContentControl = contentArea;
-            PageNavigationManager.SwitchToSubpage(postsView);
+            PageNavigationManager.OverlayContentControl = overlayArea;
+            PageNavigationManager.SwitchToSubpage(m_FeedPage);
         }
 
 
@@ -53,16 +57,19 @@ namespace AnonymDesktopClient.Pages
             switch (PageName)
             {
                 case "AllPosts":
-                    PageNavigationManager.SwitchToSubpage(postsView);
+                    PageNavigationManager.SwitchToSubpage(m_FeedPage);
                     break;
                 case "Post":
-                    PageNavigationManager.SwitchToSubpage(postView);
+                    PageNavigationManager.SwitchToSubpage(m_PostPage);
                     break;
                 case "CreatePost":
-                    PageNavigationManager.SwitchToSubpage(submitPage);
+                    PageNavigationManager.SwitchToSubpage(m_SubmitPostPage);
                     break;
                 case "Memes":
-                    PageNavigationManager.SwitchToSubpage(memesPage);
+                    PageNavigationManager.SwitchToSubpage(m_MemesPage);
+                    break;
+                case "Placeholder":
+                    PageNavigationManager.SwitchToSubpage(m_PlaceholderPage);
                     break;
                 case "Settings":
                     TriggerSettingsMenu();
@@ -82,7 +89,7 @@ namespace AnonymDesktopClient.Pages
 
         void TriggerSettingsMenu()
         {
-            PageNavigationManager.SwitchToSubpage(settingsPage);
+            PageNavigationManager.SwitchToSubpage(m_SettingsPage);
         }
     }
 }

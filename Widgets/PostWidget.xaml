@@ -7,8 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border BorderThickness="0" Padding="5">
-    <Grid Loaded="Grid_Loaded" VerticalAlignment="Stretch" Background="{StaticResource MahApps.Brushes.Gray10}">
+    <Grid Loaded="Grid_Loaded" VerticalAlignment="Stretch" MouseLeftButtonUp="Post_Click" Background="{StaticResource MahApps.Brushes.Gray10}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition Height=".2*"/>
@@ -25,10 +26,14 @@
                 <MenuItem Header="Copy Post ID" Click="CopyPostID_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <Image Source="{Binding ImageURL}" Grid.Row="1" Stretch="Uniform" Width="400" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="5"/>
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="{Binding PostText}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap" VerticalAlignment="Top" Margin="5"/>
+        
+        <local:PosterBanner x:Name="wdgPoster" Grid.Row="0" Grid.ColumnSpan="3" Margin="15 15 0 0"/>
+        
+        
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding text}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap" VerticalAlignment="Top" Margin="15 5 15 5"/>
+        <Image Source="{Binding attachments[0].photo.photo_medium}" Grid.Row="2" Stretch="Uniform" Width="400" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="15 5 15 0"/>
 
-        <DockPanel Grid.Row="2" Grid.ColumnSpan="3" Margin="5">
+        <DockPanel Grid.Row="3" Grid.ColumnSpan="3" Margin="5">
             <local:StatButton x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" HorizontalAlignment="Left" />
             <local:StatButton x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28" HorizontalAlignment="Center"/>
             <local:StatButton x:Name="stLikes" IsEnabled="False" Icon="ThumbsUp" ButtonSize="28" HorizontalAlignment="Right" />

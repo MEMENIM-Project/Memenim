@@ -17,9 +17,10 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <uc:NavigationPersistent RedirectRequested="NavigationPersistent_RedirectRequested"></uc:NavigationPersistent>
-        <mah:TransitioningContentControl Name="transition"></mah:TransitioningContentControl>
-        <mah:MetroContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3" Margin="10 10 10 10"></mah:MetroContentControl>
+        <uc:NavigationPersistent RedirectRequested="NavigationPersistent_RedirectRequested"/>
+        <mah:TransitioningContentControl Name="transition"/>
+        <mah:MetroContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3" Margin="10 10 10 10"/>
+        <mah:MetroContentControl Name="overlayArea" Grid.Column="2" Grid.RowSpan="3"/>
 
         <mah:FlyoutsControl Grid.Column="1" x:Name="flyoutContorls">
             <mah:Flyout x:Name="flyoutSettings">

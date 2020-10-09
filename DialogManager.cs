@@ -17,10 +17,14 @@ namespace AnonymDesktopClient
 
         private static MetroWindow m_MainWindow;
 
-
         public static async void ShowDialog(string title, string message)
         {
             await m_MainWindow.ShowMessageAsync(title, message);
+        }
+
+        public static async Task<string> ShowInputDialog(string title, string message)
+        {
+            return await m_MainWindow.ShowInputAsync(title, message);
         }
     }
 }

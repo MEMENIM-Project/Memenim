@@ -22,13 +22,14 @@ using Memenim.Core;
 using Memenim.Core.Data;
 using AnonymDesktopClient.Core;
 using AnonymDesktopClient.Core.Utils;
+using Microsoft.Win32;
 
 namespace AnonymDesktopClient
 {
     /// <summary>
     /// Interaction logic for PostsPage.xaml
     /// </summary>
-    public partial class PostsPage : UserControl
+    public partial class FeedPage : UserControl
     {
         public ICommand OnPostScrollEnd { get; set; }
 
@@ -38,8 +39,7 @@ namespace AnonymDesktopClient
         private int m_PostsCount = 20;
         private int m_Offset = 0;
 
-
-        public PostsPage()
+        public FeedPage()
         {
             InitializeComponent();
             OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
@@ -57,15 +57,6 @@ namespace AnonymDesktopClient
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            loadingRing.Visibility = Visibility.Visible;
-
-            PostRequest request = new PostRequest()
-            {
-                count = m_PostsCount,
-                type = (PostRequest.EPostType)lstPostType.SelectedItem
-            };
-            await UpdatePosts(request);
-            loadingRing.Visibility = Visibility.Hidden;
         }
 
         async Task<bool> UpdatePosts(PostRequest filters)
@@ -81,7 +72,6 @@ namespace AnonymDesktopClient
 
         async Task<bool> LoadNewPosts(PostRequest filter)
         {
-            
             var postsResponse = await PostAPI.GetAllPosts(filter, AppPersistent.UserToken);
 
             if (postsResponse == null) { return false; }
@@ -100,20 +90,34 @@ namespace AnonymDesktopClient
                     ImageURL = post.attachments[0].photo.photo_medium,
                     CurrentPostData = post
                 };
+                widget.PostClick += OnPost_Click;
                 postsLists.Children.Add(widget);
             }
             m_Offset += m_PostsCount;
         }
 
 
-        private void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             loadingRing.Visibility = Visibility.Visible;
-            m_Offset = 0;
             postsLists.Children.Clear();
+
+            PostRequest request = new PostRequest()
+            {
+                count = m_PostsCount,
+                type = (PostRequest.EPostType)lstPostType.SelectedItem
+            };
+            var postsResponse = await PostAPI.GetAllPosts(request, AppPersistent.UserToken);
+            AddPostsToList(postsResponse.data);
             loadingRing.Visibility = Visibility.Hidden;
 
         }
+
+        private void OnPost_Click(object sender, RoutedEventArgs e)
+        {
+            PageNavigationManager.OpenOverlay(new PostOverlayPage() { PostInfo = (sender as PostWidget).CurrentPostData });
+        }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {

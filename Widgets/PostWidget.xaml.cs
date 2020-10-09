@@ -30,17 +30,32 @@ namespace AnonymDesktopClient.Widgets
         public string PostDislikes { get; set; }
         public PostData CurrentPostData { get; set; }
 
+        public static readonly RoutedEvent OnPostClicked = EventManager.RegisterRoutedEvent("OnPostClick", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(PostWidget));
+
+        // expose our event
+        public event RoutedEventHandler PostClick
+        {
+            add { AddHandler(OnPostClicked, value); }
+            remove { RemoveHandler(OnPostClicked, value); }
+        }
+
+
         public PostWidget()
         {
             InitializeComponent();
-            DataContext = this;
         }
 
         private void ViewPost_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EPostData, CurrentPostData.id);
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new PostsPage());
-            PageNavigationManager.SwitchToSubpage(new PostPage());
+            //GeneralBlackboard.SetValue(BlackBoardValues.EPostData, CurrentPostData.id);
+            //GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new FeedPage());
+            //PageNavigationManager.SwitchToSubpage(new PostPage());
+        }
+
+        private void Post_Click(object sender, RoutedEventArgs e)
+        {
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(OnPostClicked);
+            RaiseEvent(newEventArgs);
         }
 
         private void CopyPostID_Click(object sender, RoutedEventArgs e)
@@ -50,6 +65,11 @@ namespace AnonymDesktopClient.Widgets
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            DataContext = CurrentPostData;
+
+            wdgPoster.PosterName = CurrentPostData.owner_name;
+            wdgPoster.PostTime = Utils.UnixTimeStampToDateTime(CurrentPostData.date).ToString();
+
             stLikes.StatValue = CurrentPostData.likes.count.ToString();
             stDislikes.StatValue = CurrentPostData.dislikes.count.ToString();
             stComments.StatValue = CurrentPostData.comments.count.ToString();

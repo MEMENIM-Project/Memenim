@@ -21,7 +21,10 @@
 
         <local:IconButton x:Name="btnNavBack" RedirectTag="Back" IconKind="ArrowLeft" IconButtonClick="OnNavButtonClick"/>
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" RedirectTag="AllPosts" IconKind="HomeEmpty" Height="40"/>
+            <local:IconButton x:Name="btnNavSearch" IconButtonClick="OnNavButtonClick" RedirectTag="Placeholder" IconKind="Magnify" Height="40"/>
+            <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" RedirectTag="AllPosts" IconKind="Newspaper" Height="40"/>
+            <local:IconButton x:Name="btnNavMessages" IconButtonClick="OnNavButtonClick" RedirectTag="Placeholder" IconKind="Chat" Height="40"/>
+            <local:IconButton x:Name="btnNavGroups" IconButtonClick="OnNavButtonClick" RedirectTag="Placeholder" IconKind="Group" Height="40"/>
             <local:IconButton x:Name="btnNavMemes" IconButtonClick="OnNavButtonClick" RedirectTag="Memes" IconKind="SmileyHappy" Height="40"/>
         </StackPanel>
         <local:IconButton Grid.Row="2" x:Name="btnNavSettings" IconKind="Settings" RedirectTag="Settings" IconButtonClick="OnNavButtonClick"/>

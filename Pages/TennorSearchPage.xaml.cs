@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using WpfAnimatedGif;
 using Tenor;
 using Tenor.Schema;
-using AnonymDesktopClient.Core.Widgets;
+using AnonymDesktopClient.Widgets;
 using System.Threading.Tasks;
 using MahApps.Metro.IconPacks;
 using AnonymDesktopClient.Core.Utils;
