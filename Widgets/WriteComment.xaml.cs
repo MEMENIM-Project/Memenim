@@ -1,4 +1,5 @@
 ﻿using AnonymDesktopClient.Core;
+using AnonymDesktopClient.Core.Utils;
 using Memenim.Core;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,16 @@ namespace AnonymDesktopClient.Widgets
     /// </summary>
     public partial class WriteComment : UserControl
     {
+
+        public string UserAvatarSource { get; set; }
+        public ICommand AnononymCommandPress { get; set; }
+        private bool m_AnonSend = false;
+
+
         public WriteComment()
         {
             InitializeComponent();
+            AnononymCommandPress = new BasicCommand(o=> true, _ => { m_AnonSend = !m_AnonSend; });
             this.DataContext = this;
         }
 
@@ -32,7 +40,7 @@ namespace AnonymDesktopClient.Widgets
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostAPI.SendComment(PostID, txtContent.Text, bAnon.IsChecked, AppPersistent.UserToken);
+            var res = await PostAPI.SendComment(PostID, txtContent.Text, m_AnonSend, AppPersistent.UserToken);
             if (!res.error)
             {
                 DialogManager.ShowDialog("S U C C", "Comment sent");
@@ -43,7 +51,7 @@ namespace AnonymDesktopClient.Widgets
             }
 
             txtContent.Text = "";
-            bAnon.IsChecked = false;
+            m_AnonSend = false;
         }
     }
 }

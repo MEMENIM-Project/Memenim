@@ -17,19 +17,19 @@ namespace AnonymDesktopClient.Pages
             set { m_PageContentControl = value; }
         }
 
-        static public MetroContentControl SubpageContentControl
+        static public TransitioningContentControl SubpageContentControl
         {
             set { m_SubPageContentControl = value; }
         }
 
-        static public MetroContentControl OverlayContentControl
+        static public TransitioningContentControl OverlayContentControl
         {
             set { m_OverlayControlControl = value; }
         }
 
         static private MetroContentControl m_PageContentControl;
-        static private MetroContentControl m_SubPageContentControl;
-        static private MetroContentControl m_OverlayControlControl;
+        static private TransitioningContentControl m_SubPageContentControl;
+        static private TransitioningContentControl m_OverlayControlControl;
 
         public static void SwitchToPage(object page)
         {

@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Memenim.Core.Data;
+using Memenim.Core;
+using AnonymDesktopClient.Core;
 
 namespace AnonymDesktopClient.Widgets
 {
@@ -75,5 +77,47 @@ namespace AnonymDesktopClient.Widgets
             stComments.StatValue = CurrentPostData.comments.count.ToString();
             stShare.StatValue = CurrentPostData.reposts.ToString();
         }
+
+        private async void Like_Click(object sender, RoutedEventArgs e)
+        {
+            var res = await PostAPI.LikePost(CurrentPostData.id, AppPersistent.UserToken);
+            if (res.error)
+            {
+                DialogManager.ShowDialog("F U C K", res.message);
+                return;
+            }
+            await UpdatePostStats();
+        }
+
+        private async void Dislike_Click(object sender, RoutedEventArgs e)
+        {
+            var res = await PostAPI.DislikePost(CurrentPostData.id, AppPersistent.UserToken);
+            if(res.error)
+            {
+                DialogManager.ShowDialog("F U C K", res.message);
+                return;
+            }
+            await UpdatePostStats();
+        }
+
+        async Task UpdatePostStats()
+        {
+            var res = await PostAPI.GetPostById(CurrentPostData.id, AppPersistent.UserToken);
+
+            if(res.error)
+            {
+                DialogManager.ShowDialog("F U C K", res.message);
+                return;
+            }
+
+            CurrentPostData = res.data[0];
+
+            stLikes.StatValue = CurrentPostData.likes.count.ToString();
+            stDislikes.StatValue = CurrentPostData.dislikes.count.ToString();
+            stComments.StatValue = CurrentPostData.comments.count.ToString();
+            stShare.StatValue = CurrentPostData.reposts.ToString();
+
+        }
+
     }
 }

@@ -35,12 +35,10 @@ namespace AnonymDesktopClient.Pages
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            //var res = await PostAPI.GetPostById(PostID, AppPersistent.UserToken);
-            //if(res.error)
-            //{
-            //    DialogManager.ShowDialog("F U C K", "Failed to load post");
-            //}
             wdgPost.CurrentPostData = PostInfo;
+            wdgCommentsList.PostID = PostInfo.id;
+            wdgCommentsList.CommentsCount = PostInfo.comments.count;
+            wdgUserComment.PostID = PostInfo.id;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

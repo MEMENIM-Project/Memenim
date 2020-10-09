@@ -25,9 +25,9 @@
             </Style>
             <Style TargetType="TextBlock" x:Key="Header2">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
-                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontSize" Value="20"/>
             </Style>
-            <Style TargetType="TextBlock" x:Key="Header3">
+            <Style TargetType="TextBlock" x:Key="Paragraph">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
             </Style>
         </ResourceDictionary>

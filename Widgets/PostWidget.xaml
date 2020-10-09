@@ -22,7 +22,6 @@
         
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="View Post" Click="ViewPost_Click"></MenuItem>
                 <MenuItem Header="Copy Post ID" Click="CopyPostID_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
@@ -33,12 +32,12 @@
         <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding text}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap" VerticalAlignment="Top" Margin="15 5 15 5"/>
         <Image Source="{Binding attachments[0].photo.photo_medium}" Grid.Row="2" Stretch="Uniform" Width="400" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="15 5 15 0"/>
 
-        <DockPanel Grid.Row="3" Grid.ColumnSpan="3" Margin="5">
-            <local:StatButton x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" HorizontalAlignment="Left" />
-            <local:StatButton x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28" HorizontalAlignment="Center"/>
-            <local:StatButton x:Name="stLikes" IsEnabled="False" Icon="ThumbsUp" ButtonSize="28" HorizontalAlignment="Right" />
-            <local:StatButton x:Name="stDislikes" IsEnabled="False" Icon="ThumbsDown" ButtonSize="28" HorizontalAlignment="Right" />
-        </DockPanel>
+        <local:StatButton Grid.Row="3" x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" HorizontalAlignment="Left" />
+        <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <local:StatButton x:Name="stLikes" ButtonClick="Like_Click" IsEnabled="True" Icon="ThumbsUp" ButtonSize="28" HorizontalAlignment="Right" />
+            <local:StatButton x:Name="stDislikes" ButtonClick="Dislike_Click" IsEnabled="True" Icon="ThumbsDown" ButtonSize="28" HorizontalAlignment="Right" />
+        </StackPanel>
     </Grid>
     </Border>
 </UserControl>

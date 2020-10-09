@@ -8,14 +8,16 @@
              xmlns:uc="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="{DynamicResource Overlay.Background}" Loaded="Grid_Loaded">
-        <Button Click="Button_Click"/>
-        <StackPanel Margin="50">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid Loaded="Grid_Loaded">
+        <Button Click="Button_Click" Background="{DynamicResource Overlay.Background}" BorderThickness="0"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="50">
+            <StackPanel>
                 <uc:PostWidget x:Name="wdgPost"/>
-            </ScrollViewer>
-            <uc:WriteComment/>
-        </StackPanel>
-        
+                <uc:CommentsList x:Name="wdgCommentsList"/>
+                <uc:WriteComment x:Name="wdgUserComment"/>
+            </StackPanel>
+        </ScrollViewer>
+
+
     </Grid>
 </UserControl>

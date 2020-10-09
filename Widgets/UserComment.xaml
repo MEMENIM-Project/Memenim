@@ -6,23 +6,25 @@
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="400">
+    <Border Padding="5">
     <Grid Loaded="Grid_Loaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="15"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Image Source="{Binding ImageURL}" Stretch="UniformToFill" Width="100" Height="100" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"></Image>
-        <TextBlock Text="{Binding UserName}" Grid.Row="0" Grid.Column="1"></TextBlock>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment}" TextWrapping="Wrap" ></TextBlock>
+        <Image Source="{Binding ImageURL}" Stretch="UniformToFill" Width="100" Height="100" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" MouseUp="Avatar_MouseUp" VerticalAlignment="Top"/>
+        <TextBlock Text="{Binding UserName}" Grid.Row="0" Grid.Column="1" Style="{DynamicResource Header2}" VerticalAlignment="Bottom" Margin="5"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Comment}" TextWrapping="Wrap" Style="{DynamicResource Paragraph}" VerticalAlignment="Top" Margin="5"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <local:StatButton x:Name="stLikes" Icon="ThumbsUp" ButtonClick="Like_Click" ButtonSize="16"></local:StatButton>
             <local:StatButton x:Name="stDislikes" Icon="ThumbsDown" ButtonClick="Dislike_Click" ButtonSize="16"></local:StatButton>
         </StackPanel>
         
     </Grid>
+    </Border>
 </UserControl>

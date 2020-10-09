@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.2.0" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.4.0" />
-    <PackageReference Include="Memenim.Core" Version="0.1.6.4" />
+    <PackageReference Include="Memenim.Core" Version="0.1.6.5" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="RIS" Version="3.4.3" />
     <PackageReference Include="TenorClient" Version="1.0.3" />

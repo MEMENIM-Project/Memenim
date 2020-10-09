@@ -7,10 +7,12 @@
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="48" d:DesignWidth="1000">
-    <StackPanel Orientation="Horizontal" Loaded="StackPanel_Loaded">
-        <Button Width="{Binding ButtonSize}" Height="{Binding ButtonSize}" Margin="5" Click="Button_Click" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource MahApps.Styles.Button.Circle}" >
-            <iconPacks:PackIconModern Kind="{Binding Icon}"></iconPacks:PackIconModern>
-        </Button>
-        <TextBlock x:Name="tbValue" VerticalAlignment="Center" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
-    </StackPanel>
+    <Border Padding="5">
+        <StackPanel Orientation="Horizontal" Loaded="StackPanel_Loaded">
+            <Button Width="{Binding ButtonSize}" Height="{Binding ButtonSize}" Margin="5" Click="Button_Click" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource MahApps.Styles.Button.Circle}" >
+                <iconPacks:PackIconModern Kind="{Binding Icon}"></iconPacks:PackIconModern>
+            </Button>
+            <TextBlock x:Name="tbValue" VerticalAlignment="Center" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
+        </StackPanel>
+    </Border>
 </UserControl>

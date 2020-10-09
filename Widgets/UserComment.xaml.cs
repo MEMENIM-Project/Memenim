@@ -1,4 +1,5 @@
 ﻿using AnonymDesktopClient.Core;
+using AnonymDesktopClient.Pages;
 using Memenim.Core;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,11 @@ namespace AnonymDesktopClient
         {
             stLikes.StatValue = Likes;
             stDislikes.StatValue = Dislikes;
+        }
+
+        private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //PageNavigationManager.SwitchToSubpage(new UserProfilePage());
         }
     }
 }

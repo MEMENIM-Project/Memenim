@@ -57,7 +57,7 @@
                 Name="chkRememberMe" MinWidth="100" MinHeight="15" FontSize="11" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5 0 5 5">
                 Remember Me
             </CheckBox>
-            <Button Name="btnRegister" MinHeight="10" FontSize="10" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Margin="40 0 40 5">
+            <Button Name="btnRegister" MinHeight="10" FontSize="10" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Margin="25 8 25 8">
                 New User? Create an account
             </Button>
         </StackPanel>

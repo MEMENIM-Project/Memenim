@@ -15,7 +15,7 @@
         <Image Grid.Column="0" Source="/Resources/placeholder_avatar.jpg" Stretch="Uniform"/>
         <StackPanel Grid.Column="1" Margin="20 0 0 0">
             <TextBlock Text="{Binding PosterName}" Style="{DynamicResource Header2}"/>
-            <TextBlock Text="{Binding PostTime}" Style="{DynamicResource Header3}"/>
+            <TextBlock Text="{Binding PostTime}" Style="{DynamicResource Paragraph}"/>
         </StackPanel>
     </Grid>
         

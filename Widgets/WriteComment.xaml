@@ -3,22 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="400">
-    <Grid>
+             d:DesignHeight="40" d:DesignWidth="400">
+    <Border Padding="5 0 5 0" BorderThickness="0">
+    <Grid Background="{StaticResource MahApps.Brushes.Gray10}">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width=".5*"/>
+            <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height=".3*"/>
-            <RowDefinition/>
-            <RowDefinition Height="0.3*"/>
-        </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom">Write a comment</Label>
-        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="10 5 10 5" Name="txtContent"></TextBox>
-        <CheckBox Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5 5 5 5" Name="bAnon">Post anonymuosly</CheckBox>
-        <Button Grid.Column="1" Grid.Row="2" Margin="2 2 2 2" ButtonBase.Click="Button_Click">Post comment</Button>
+        <Image gif:ImageBehavior.AnimatedSource="{Binding UserAvatarSource}"  Height="40" Width="40"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="10 5 10 5" Name="txtContent"
+                 Controls:TextBoxHelper.ButtonCommand="{Binding AnononymCommandPress}"
+                 Style="{DynamicResource MahApps.Styles.TextBox.Button}"/>
+        <local:IconButton Grid.Column="2" IconKind="MessageSend" IconButtonClick="Button_Click" />
     </Grid>
+    </Border>
 </UserControl>
