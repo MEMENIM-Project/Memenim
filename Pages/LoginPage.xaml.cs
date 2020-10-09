@@ -3,6 +3,7 @@ using AnonymDesktopClient.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,32 +33,74 @@ namespace AnonymDesktopClient
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             btnLogin.IsEnabled = false;
+
             try
             {
-                var result = await UsersAPI.Login(txtLogin.Text, txtPass.Password);
+                var result = await UsersAPI.Login(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
 
                 if(result.error)
                 {
                     lblStatus.Content = result.message;
+                    btnLogin.IsEnabled = true;
                 }
                 else
                 {
+                    if (chkRememberMe.IsChecked.GetValueOrDefault())
+                    {
+                        AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
+                        AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+                    }
+                    else
+                    {
+                        AppPersistent.RemoveFromStore("UserToken");
+                        AppPersistent.RemoveFromStore("UserId");
+                    }
+
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
                 }
-
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "An exception happened");
             }
-
         }
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             PageNavigationManager.SwitchToPage(new RegisterUser());
+        }
+
+        private void txtLogin_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                txtPassword.Focus();
+            }
+        }
+
+        private void txtPassword_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                if (btnLogin.IsEnabled)
+                    btnLogin_Click(null, new RoutedEventArgs());
+            }
+            else if (e.Key == Key.Up)
+            {
+                txtLogin.Focus();
+            }
+        }
+
+        private void txtPassword_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnLogin.IsEnabled = txtPassword.Password.Length != 0;
+        }
+
+        private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnLogin.IsEnabled = txtLogin.Text.Length != 0;
         }
     }
 }

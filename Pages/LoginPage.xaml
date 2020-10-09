@@ -7,29 +7,62 @@
       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
       xmlns:local="clr-namespace:AnonymDesktopClient"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800">
+      mc:Ignorable="d"
+      Height="200" Width="250"
+      MinHeight="230" MinWidth="250">
 
     <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Label Name="lblStatus" VerticalAlignment="Bottom" Foreground="Red" HorizontalAlignment="Center"></Label>
-        <TextBox 
-            Controls:TextBoxHelper.Watermark="Login"
-            Controls:TextBoxHelper.SelectAllOnFocus="True"
-            Name="txtLogin" Grid.Row="1" Width="200" VerticalAlignment="Bottom" HorizontalAlignment="Center"></TextBox>
-        <StackPanel Grid.Row="2">
-            <PasswordBox
-                Controls:TextBoxHelper.Watermark="Password"
-                Controls:TextBoxHelper.SelectAllOnFocus="True"
-                Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
-                Name="txtPass"  Width="200" VerticalAlignment="Top" HorizontalAlignment="Center"></PasswordBox>
-            <Button Name="btnRegister" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Width="200" Height="30" Margin="5 5 5 5">New User? Create an account</Button>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="12" Width="12*"/>
+            <ColumnDefinition MinWidth="113" Width="113*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="50" Height="50*" />
+            <RowDefinition MinHeight="100" Height="100*"/>
+            <RowDefinition MinHeight="50" Height="50*"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="lblStatus" VerticalAlignment="Bottom" Foreground="Red" HorizontalAlignment="Center" Margin="0,0,0,5"></Label>
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="12" Width="12*"/>
+                    <ColumnDefinition MinWidth="113" Width="113*"/>
+                </Grid.ColumnDefinitions>
+
+                <iconPacks:PackIconModern Grid.Column="0" Name="IconLogin" Kind="User" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <TextBox 
+                    Controls:TextBoxHelper.Watermark="Login"
+                    Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    Style="{DynamicResource MahApps.Styles.TextBox}"
+                    Grid.Column="0" Grid.ColumnSpan="2"
+                    Name="txtLogin" MinWidth="200" MinHeight="25" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="5 5 5 5"></TextBox>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="12" Width="12*"/>
+                    <ColumnDefinition MinWidth="113" Width="113*"/>
+                </Grid.ColumnDefinitions>
+
+                <iconPacks:PackIconModern Grid.Column="0" Name="IconPassword" Kind="Key" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <PasswordBox
+                    Controls:TextBoxHelper.Watermark="Password"
+                    Controls:TextBoxHelper.SelectAllOnFocus="True"
+                    Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
+                    Grid.Column="0" Grid.ColumnSpan="2"
+                    Name="txtPassword" MinWidth="200" MinHeight="25" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5 0 5 2"></PasswordBox>
+            </Grid>
+            <CheckBox
+                Style="{StaticResource MahApps.Styles.CheckBox.Win10}"
+                Name="chkRememberMe" MinWidth="100" MinHeight="15" FontSize="11" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5 0 5 5">
+                Remember Me
+            </CheckBox>
+            <Button Name="btnRegister" MinHeight="10" FontSize="10" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Margin="40 0 40 5">
+                New User? Create an account
+            </Button>
         </StackPanel>
-        <Button Name="btnLogin" Grid.Row="3" Style="{DynamicResource MahApps.Styles.Button.Square}" ButtonBase.Click="btnLogin_Click" Margin="5 5 5 5">Proceed</Button>
+        <Button Name="btnLogin" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="17" Style="{DynamicResource MahApps.Styles.Button.Square}" Click="btnLogin_Click" Margin="25 8 25 8">
+            Login
+        </Button>
     </Grid>
 </UserControl>

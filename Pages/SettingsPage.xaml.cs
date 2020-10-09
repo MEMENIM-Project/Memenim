@@ -37,6 +37,9 @@ namespace AnonymDesktopClient.Pages
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
         {
+            AppPersistent.RemoveFromStore("UserToken");
+            AppPersistent.RemoveFromStore("UserId");
+
             PageNavigationManager.SwitchToPage(new LoginPage());
         }
     }
