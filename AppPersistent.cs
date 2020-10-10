@@ -115,6 +115,8 @@ namespace AnonymDesktopClient.Core
 
                 if (Store.ContainsKey(key))
                     Store.Remove(key);
+
+                SaveStore();
             }
         }
 

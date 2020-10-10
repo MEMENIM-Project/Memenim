@@ -28,6 +28,8 @@ namespace AnonymDesktopClient
         public LoginPage()
         {
             InitializeComponent();
+
+            btnLogin.IsEnabled = false;
         }
 
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
@@ -93,14 +95,19 @@ namespace AnonymDesktopClient
             }
         }
 
-        private void txtPassword_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            btnLogin.IsEnabled = txtPassword.Password.Length != 0;
+            btnLogin.IsEnabled = !NeedBlockLogin();
         }
 
         private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
         {
-            btnLogin.IsEnabled = txtLogin.Text.Length != 0;
+            btnLogin.IsEnabled = !NeedBlockLogin();
+        }
+
+        private bool NeedBlockLogin()
+        {
+            return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
         }
     }
 }
