@@ -16,20 +16,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
-            <Label Content="Feed" DockPanel.Dock="Left" Style="{DynamicResource DescriptionHeaderStyle}"/>
+            <Label Content="{DynamicResource ResourceKey=FeedTitle}" DockPanel.Dock="Left" Style="{DynamicResource DescriptionHeaderStyle}"/>
             <Controls:SplitButton Margin="5 10 5 8" DockPanel.Dock="Left" ItemsSource="{Binding PostTypes}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"/>
             <Button HorizontalAlignment="Right" Click="Button_Click">Write new Post </Button>
         </DockPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding OnPostScrollEnd}">
             <WrapPanel Name="postsLists"/>
         </ScrollViewer>
-        <!--<ListBox Name="postsPanel" ScrollViewer.VerticalScrollBarVisibility="Disabled" Controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding OnPostScrollEnd}" Grid.Row="1">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel IsItemsHost="True" Orientation="Horizontal"></StackPanel>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>-->
         <Controls:ProgressRing Width="80" Height="80" IsActive="True" Grid.Row="2" x:Name="loadingRing" Visibility="Visible" IsLarge="True"></Controls:ProgressRing>
 
     </Grid>

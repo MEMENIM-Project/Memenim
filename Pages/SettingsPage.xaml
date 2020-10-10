@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:local="clr-namespace:AnonymDesktopClient.Pages"
-            xmlns:uc="clr-namespace:AnonymDesktopClient.Widgets"
+             xmlns:uc="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Loaded="Grid_Loaded">
@@ -22,7 +23,13 @@
                 Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
                 Name="txtPass"></PasswordBox>
             <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Change Password</Button>
-            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnSignOut" Click="btnSignOut_Click">Sign Out</Button>
+            <Controls:SplitButton Name="slcLang" ItemsSource="{Binding Locales}" DisplayMemberPath="Value" SelectionChanged="SplitButton_SelectionChanged">
+                <Controls:SplitButton.Icon>
+                    <iconPacks:PackIconModern Margin="6" Kind="Globe" />
+                </Controls:SplitButton.Icon>
+            </Controls:SplitButton>
+
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnSignOut" Click="btnSignOut_Click" Content="{DynamicResource ResourceKey=SignOut}"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -32,7 +32,7 @@
 
                 <iconPacks:PackIconModern Grid.Column="0" Name="IconLogin" Kind="User" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <TextBox 
-                    Controls:TextBoxHelper.Watermark="Login"
+                    Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     Style="{DynamicResource MahApps.Styles.TextBox}"
                     Grid.Column="0" Grid.ColumnSpan="2"
@@ -46,7 +46,7 @@
 
                 <iconPacks:PackIconModern Grid.Column="0" Name="IconPassword" Kind="Key" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <PasswordBox
-                    Controls:TextBoxHelper.Watermark="Password"
+                    Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
                     Controls:TextBoxHelper.SelectAllOnFocus="True"
                     Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
                     Grid.Column="0" Grid.ColumnSpan="2"
@@ -54,12 +54,11 @@
             </Grid>
             <CheckBox
                 Style="{StaticResource MahApps.Styles.CheckBox.Win10}"
-                Name="chkRememberMe" MinWidth="100" MinHeight="15" FontSize="11" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5 0 5 5">
-                Remember Me
-            </CheckBox>
-            <Button Name="btnRegister" MinHeight="10" FontSize="10" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Margin="25 8 25 8">
-                New User? Create an account
-            </Button>
+                Name="chkRememberMe" MinWidth="100" MinHeight="15" FontSize="11" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5 0 5 5" Content="{DynamicResource ResourceKey=RememberMe}"/>
+
+            <Button Name="btnRegister" Content="{DynamicResource ResourceKey=RegisterProposeTitle}" 
+                    MinHeight="10" FontSize="10"
+                    Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="btnRegister_Click" Margin="40 2 40 2"/>
         </StackPanel>
         <Button Name="btnLogin" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="17" Style="{DynamicResource MahApps.Styles.Button.Square}" Click="btnLogin_Click" Margin="25 8 25 8">
             Login

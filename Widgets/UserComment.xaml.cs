@@ -59,7 +59,7 @@ namespace AnonymDesktopClient
             }
             else
             {
-                DialogManager.ShowDialog("Error", result.message);
+                DialogManager.ShowDialog("F U C K", result.message);
             }
 
         }
@@ -72,7 +72,8 @@ namespace AnonymDesktopClient
 
         private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            //PageNavigationManager.SwitchToSubpage(new UserProfilePage());
+            PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
+            PageNavigationManager.CloseOverlay();
         }
     }
 }

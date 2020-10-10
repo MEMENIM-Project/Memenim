@@ -33,6 +33,9 @@ namespace AnonymDesktopClient
             PageNavigationManager.PageContentControl = contentArea;
             DialogManager.WindowRef = this;
 
+            LocalizationManager.MainWindow = this;
+            LocalizationManager.SetDefaultLanguage(this);
+
             try
             {
                 string userToken = AppPersistent.GetFromStore("UserToken");
@@ -55,5 +58,7 @@ namespace AnonymDesktopClient
                 PageNavigationManager.SwitchToPage(new LoginPage());
             }
         }
+
+
     }
 }

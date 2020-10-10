@@ -1,4 +1,5 @@
-﻿using Memenim.Core.Data;
+﻿using Memenim.Core;
+using Memenim.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace AnonymDesktopClient
     /// </summary>
     public partial class UserProfilePage : UserControl
     {
+        public int UserID { get; set; }
+
         private ProfileData m_UserInfo;
 
         public UserProfilePage()
@@ -28,10 +31,16 @@ namespace AnonymDesktopClient
             InitializeComponent();
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            //m_UserInfo = GeneralBlackboard.TryGetValue<ProfileData>(BlackBoardValues.EProfileData);
-            //DataContext = m_UserInfo;
+            var res = await UsersAPI.GetUserProfileByID(UserID); 
+            if(res.error)
+            {
+                DialogManager.ShowDialog("F U C K", res.message);
+                return;
+            }
+            m_UserInfo = res.data[0];
+            DataContext = m_UserInfo;
         }
 
     }

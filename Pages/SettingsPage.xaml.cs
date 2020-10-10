@@ -25,9 +25,17 @@ namespace AnonymDesktopClient.Pages
     /// </summary>
     public partial class SettingsPage : UserControl
     {
+        public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>()
+        {
+            {"en-US", "English" },
+            {"ru-RU", "Русский" },
+            {"ja-JP", "日本語" }
+        };
+
         public SettingsPage()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -41,6 +49,12 @@ namespace AnonymDesktopClient.Pages
             AppPersistent.RemoveFromStore("UserId");
 
             PageNavigationManager.SwitchToPage(new LoginPage());
+        }
+
+        private void SplitButton_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedPair = (KeyValuePair<string, string>)slcLang.SelectedItem;
+            LocalizationManager.SwitchLanguage(LocalizationManager.MainWindow, selectedPair.Key);
         }
     }
 }
