@@ -26,7 +26,7 @@
     <sys:String x:Key="LoadComments">НУЖНО БОЛЬШЕ КОММЕНТАРИЕВ!11!</sys:String>
     <sys:String x:Key="EnterComment">Введите содержимое комментария</sys:String>
 
-    <sys:String x:Key="ImageSourceTitle">Источник картики</sys:String>
+    <sys:String x:Key="ImageSourceTitle">Источник картинки</sys:String>
     <sys:String x:Key="GallerySelect">Выбрать из галлереи</sys:String>
     <sys:String x:Key="TennorSelect">Выбрать в Tennor</sys:String>
     <sys:String x:Key="URLSelect">Вставить URL</sys:String>

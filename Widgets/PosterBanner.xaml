@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="136" d:DesignWidth="800">
-    <Grid Loaded="Grid_Loaded">
+    <Grid Loaded="Grid_Loaded" MouseLeftButtonUp="OnPoster_MouseUp">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"/>
             <ColumnDefinition/>
@@ -14,7 +14,10 @@
 
         <Image Grid.Column="0" Source="/Resources/placeholder_avatar.jpg" Stretch="Uniform"/>
         <StackPanel Grid.Column="1" Margin="20 0 0 0">
-            <TextBlock Text="{Binding PosterName}" Style="{DynamicResource Header2}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding PosterName}" Style="{DynamicResource Header2}" IsEnabled="{Binding IsAnonymousPost}"/>
+                <TextBlock Text="Anonymous" Style="{DynamicResource Paragraph}" Name="txtAnon" VerticalAlignment="Bottom" Margin="5"/>
+            </StackPanel>
             <TextBlock Text="{Binding PostTime}" Style="{DynamicResource Paragraph}"/>
         </StackPanel>
     </Grid>

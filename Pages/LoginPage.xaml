@@ -60,13 +60,13 @@
                 VerticalAlignment="Top" HorizontalAlignment="Center" Margin="5 0 5 5" Content="{DynamicResource ResourceKey=RememberMe}"/>
             <Button Name="btnRegister"
                     MinHeight="10" FontSize="10"
-                    Style="{StaticResource MahApps.Styles.Button.Square}" Click="btnRegister_Click" Margin="40 2 40 2">
+                    Style="{StaticResource MahApps.Styles.Button.Square}" Click="btnRegister_Click" Margin="40 2 40 2" Height="30">
                 <TextBlock Text="{DynamicResource ResourceKey=RegisterProposeTitle}"
                            MinHeight="10" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"
                            TextAlignment="Center" TextWrapping="Wrap"/>
             </Button>
         </StackPanel>
-        <Button Name="btnLogin" Content="Login"
+        <Button Name="btnLogin" Content="{DynamicResource ResourceKey=SignIn}"
                 Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" FontSize="17"
                 Style="{DynamicResource MahApps.Styles.Button.Square.Accent}" Click="btnLogin_Click" Margin="25 8 25 8"/>
     </Grid>

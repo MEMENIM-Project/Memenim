@@ -9,6 +9,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Loaded="Page_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <TextBlock Text="{Binding name}" Style="{DynamicResource Header1}"/>
+        <Image Source="{Binding photo}" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="50" Height="200" Width="200" Stretch="Uniform"/>
+        <!--<WrapPanel Grid.Row="1">
+            <uc:UserProfileStat x:Name="wdgStatThink" StatTitle="Thought" StatValue="{Binding Path=think}"/>
+        </WrapPanel>-->
     </Grid>
 </UserControl>

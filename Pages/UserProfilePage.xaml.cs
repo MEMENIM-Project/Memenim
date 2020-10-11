@@ -24,7 +24,7 @@ namespace AnonymDesktopClient
     {
         public int UserID { get; set; }
 
-        private ProfileData m_UserInfo;
+        private ProfileData m_UserInfo { get; set; }
 
         public UserProfilePage()
         {
@@ -33,8 +33,8 @@ namespace AnonymDesktopClient
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var res = await UsersAPI.GetUserProfileByID(UserID); 
-            if(res.error)
+            var res = await UsersAPI.GetUserProfileByID(UserID);
+            if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
                 return;
@@ -42,6 +42,5 @@ namespace AnonymDesktopClient
             m_UserInfo = res.data[0];
             DataContext = m_UserInfo;
         }
-
     }
 }

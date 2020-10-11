@@ -67,6 +67,8 @@ namespace AnonymDesktopClient.Widgets
         {
             DataContext = CurrentPostData;
 
+            wdgPoster.IsAnonymousPost = CurrentPostData.author_watch > 1;
+            wdgPoster.PosterID = CurrentPostData.owner_id.GetValueOrDefault(-1);
             wdgPoster.PosterName = CurrentPostData.owner_name;
             wdgPoster.PostTime = Utils.UnixTimeStampToDateTime(CurrentPostData.date).ToString();
 

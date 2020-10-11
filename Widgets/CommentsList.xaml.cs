@@ -38,7 +38,7 @@ namespace AnonymDesktopClient.Widgets
             var res = await PostAPI.GetCommentsForPost(PostID);
             if(res.error)
             {
-                DialogManager.ShowDialog("F U C K", "Cannot load comments");
+                DialogManager.ShowDialog("F U C K", res.message);
                 return;
             }
             AddComments(res.data);

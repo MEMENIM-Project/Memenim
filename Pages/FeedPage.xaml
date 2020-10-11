@@ -23,7 +23,7 @@
 
         </DockPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding OnPostScrollEnd}">
-            <WrapPanel Name="postsLists"/>
+            <WrapPanel Name="postsLists" ItemWidth="400"/>
         </ScrollViewer>
         <Controls:ProgressRing Width="80" Height="80" IsActive="True" Grid.Row="2" x:Name="loadingRing" Visibility="Visible" IsLarge="True"></Controls:ProgressRing>
 

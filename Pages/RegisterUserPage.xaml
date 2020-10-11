@@ -15,17 +15,17 @@
             </Controls:MetroHeader>
             <TextBlock Name="lblErrorMessage" Foreground="Red" Margin="5 5 5 5" HorizontalAlignment="Center"></TextBlock>
             <TextBox 
-                Controls:TextBoxHelper.Watermark="Login"
+                Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
                 Controls:TextBoxHelper.SelectAllOnFocus="True"
                 Name="txtLogin"></TextBox>
             <PasswordBox 
-                Controls:TextBoxHelper.Watermark="Password"
+                Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
                 Controls:TextBoxHelper.SelectAllOnFocus="True"
                 Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
                 Name="txtPass"></PasswordBox>
-            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnLogin" Click="btnLogin_Click">Already registered?</Button>
-            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnRegister" Click="btnRegister_Click">Register new user</Button>
-            <Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnAutoReg" Click="btnAutoReg_Click">Auto register</Button>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square}" Margin="5 5 5 5" Width="190" Height="30" Name="btnLogin" Click="btnLogin_Click" Content="{DynamicResource ResourceKey=GoToLogin}"/>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnRegister" Click="btnRegister_Click" Content="{DynamicResource ResourceKey=Register}"/> 
+            <!--<Button Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5" Width="190" Height="30" Name="btnAutoReg" Click="btnAutoReg_Click">Auto register</Button>-->
         </StackPanel>
     </Grid>
 </UserControl>

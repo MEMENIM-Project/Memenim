@@ -7,7 +7,10 @@
     <sys:String x:Key="Password">Password</sys:String>
     <sys:String x:Key="RememberMe">Remember Me</sys:String>
     <sys:String x:Key="RegisterProposeTitle">New user? Register now</sys:String>
-
+    <sys:String x:Key="SignIn">Sign In</sys:String>
+    <sys:String x:Key="GoToLogin">Already registered?</sys:String>
+    <sys:String x:Key="Register">Register new user</sys:String>
+    
     <sys:String x:Key="ErrorTitle">F U C K</sys:String>
     <sys:String x:Key="SuccessTitle">S U C C</sys:String>
     <sys:String x:Key="WIPTitle">Not implemented yet</sys:String>
