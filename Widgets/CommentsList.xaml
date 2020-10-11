@@ -9,8 +9,8 @@
     <Border Padding="5" BorderThickness="0">
         <Grid Background="{StaticResource MahApps.Brushes.Gray10}" Loaded="Grid_Loaded">
             <StackPanel>
-                <TextBlock Style="{DynamicResource Header2}" Text="Comments: " Margin="16 5 0 0" />
-                <Button x:Name="btnLoadMore" Click="btnLoadMore_Click" Margin="16 5 16 5">Load More Comments</Button>
+                <TextBlock Style="{DynamicResource Header2}" Text="{DynamicResource ResourceKey=CommentsTitle}" Margin="16 5 0 0" />
+                <Button x:Name="btnLoadMore" Click="btnLoadMore_Click" Margin="16 5 16 5" Content="{DynamicResource ResourceKey=LoadComments}" Style="{StaticResource MahApps.Styles.Button.Square}"/> 
                 <WrapPanel Name="lstComments" Orientation="Vertical" Margin="16 5 16 5"/>
             </StackPanel>
         </Grid>

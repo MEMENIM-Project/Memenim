@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AnonymDesktopClient.Pages;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace AnonymDesktopClient.Widgets
         private async void Preview_Click(object sender, RoutedEventArgs e)
         {
             await ButtonPressAction(ValueImage);
+            PageNavigationManager.GoBack();
         }
     }
 }

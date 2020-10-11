@@ -41,6 +41,15 @@ namespace AnonymDesktopClient.Pages
             m_SubPageContentControl.Content = subpage;
         }
 
+        public static void GoBack()
+        {
+            UserControl backPage = GeneralBlackboard.TryGetValue<UserControl>(BlackBoardValues.EBackPage);
+            if (backPage != null)
+            {
+                SwitchToSubpage(backPage);
+            }
+        }
+
         public static void OpenOverlay(object overlay)
         {
             m_OverlayControlControl.Content = overlay;

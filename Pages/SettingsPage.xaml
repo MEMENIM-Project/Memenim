@@ -10,7 +10,7 @@
              xmlns:uc="clr-namespace:AnonymDesktopClient.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Loaded="Grid_Loaded">
+    <Grid Loaded="Grid_Loaded" Margin="16 0">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="2.8*"></RowDefinition>
@@ -18,18 +18,19 @@
         <uc:ProfileBanner x:Name="userBanner" Grid.Row="0" Grid.ColumnSpan="2"/>
         <StackPanel Grid.Row="1">
             <PasswordBox 
-                Controls:TextBoxHelper.Watermark="New Password"
+                Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=NewPassword}"
                 Controls:TextBoxHelper.SelectAllOnFocus="True"
                 Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
-                Name="txtPass"></PasswordBox>
-            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Change Password</Button>
-            <Controls:SplitButton Name="slcLang" ItemsSource="{Binding Locales}" DisplayMemberPath="Value" SelectionChanged="SplitButton_SelectionChanged">
+                Name="txtPass"
+                Margin="0 5"/>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="{DynamicResource ResourceKey=ChangePassword}" Margin="0 5"/>
+            <Controls:SplitButton Name="slcLang" ItemsSource="{Binding Locales}" DisplayMemberPath="Value" SelectionChanged="SplitButton_SelectionChanged" Margin="0 5">
                 <Controls:SplitButton.Icon>
                     <iconPacks:PackIconModern Margin="6" Kind="Globe" />
                 </Controls:SplitButton.Icon>
             </Controls:SplitButton>
 
-            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnSignOut" Click="btnSignOut_Click" Content="{DynamicResource ResourceKey=SignOut}"/>
+            <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="btnSignOut" Click="btnSignOut_Click" Content="{DynamicResource ResourceKey=SignOut}" Margin="0 5"/>
         </StackPanel>
     </Grid>
 </UserControl>

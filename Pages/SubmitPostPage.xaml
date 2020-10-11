@@ -4,19 +4,45 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:Widgets="clr-namespace:AnonymDesktopClient.Widgets"
              xmlns:local="clr-namespace:AnonymDesktopClient.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Loaded="Grid_Loaded">
-        <StackPanel Margin="10">
-            <TextBlock Height="40" Text="SUBMIT A POST:" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
-            <TextBox Controls:TextBoxHelper.Watermark="Post Content" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding text}"></TextBox>
-            <TextBox Text="{Binding attachments[0].photo.photo_medium}" Controls:TextBoxHelper.Watermark="Photo URL"></TextBox>
-            <CheckBox IsChecked="{Binding hidden}">Show post</CheckBox>
-            <CheckBox IsChecked="{Binding open_comments}">Open Comments</CheckBox>
-            <CheckBox IsChecked="{Binding adult}">18+</CheckBox>
-            <CheckBox IsChecked="{Binding author_watch}">Show your name :)</CheckBox>
-            <Button Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Submit Post</Button>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{DynamicResource ResourceKey=SubmitPostTitle}" Style="{DynamicResource Header1}" Margin="16 5" Grid.Row="0" />
+        <Controls:MetroAnimatedTabControl Grid.Row="1" Margin="16 5" Controls:TabControlHelper.Underlined="TabItems">
+            <TabItem Header="{DynamicResource ResourceKey=EditTitle}">
+                <ScrollViewer  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBox MinHeight="200" Controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding text}" Margin="0 5"/>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+                                <TextBlock Style="{DynamicResource Header2}" Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
+                                <RadioButton Content="{DynamicResource ResourceKey=URLSelect}" Name="rbImageRaw" GroupName="ImageSource" Margin="0 5"/>
+                                <RadioButton Content="{DynamicResource ResourceKey=TennorSelect}" Name="rbImageTennor" GroupName="ImageSource" Margin="0 5"/>
+                                <RadioButton Content="{DynamicResource ResourceKey=GallerySelect}" Name="rbImageGallery" GroupName="ImageSource" Margin="0 5"/>
+                            </StackPanel>
+                            <Image x:Name="imgPreview" Height="100" Width="100" Margin="10"/>
+                        </StackPanel>
+
+                        <Button Click="SelectPhoto_Click" Content="{DynamicResource ResourceKey=SelectPhoto}" Style="{StaticResource MahApps.Styles.Button.Square}" Margin="0 5"/>
+                        <!--<CheckBox IsChecked="{Binding hidden}">Show post</CheckBox>-->
+                        <CheckBox IsChecked="{Binding open_comments}" Content="{DynamicResource ResourceKey=OpenComments}" Margin="0 5"/>
+                        <CheckBox IsChecked="{Binding adult}" Margin="0 5">18+</CheckBox>
+                        <CheckBox IsChecked="{Binding author_watch}" Content="{DynamicResource ResourceKey=PostAnon}" Margin="0 5"/>
+                        <Button Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"/> 
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{DynamicResource ResourceKey=PreviewTitle}">
+                <Widgets:PostWidget x:Name="wdgPostPreview"/>
+            </TabItem>
+        </Controls:MetroAnimatedTabControl>
+        
+
     </Grid>
 </UserControl>

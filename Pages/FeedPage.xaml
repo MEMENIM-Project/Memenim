@@ -4,6 +4,7 @@
       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:local="clr-namespace:AnonymDesktopClient"
       xmlns:uc="clr-namespace:AnonymDesktopClient.Widgets"
       mc:Ignorable="d" 
@@ -18,7 +19,8 @@
         <DockPanel Grid.Row="0">
             <Label Content="{DynamicResource ResourceKey=FeedTitle}" DockPanel.Dock="Left" Style="{DynamicResource DescriptionHeaderStyle}"/>
             <Controls:SplitButton Margin="5 10 5 8" DockPanel.Dock="Left" ItemsSource="{Binding PostTypes}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"/>
-            <Button HorizontalAlignment="Right" Click="Button_Click">Write new Post </Button>
+            <Button HorizontalAlignment="Right" Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Square}" Content="{DynamicResource WriteNewPost}"/>
+
         </DockPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding OnPostScrollEnd}">
             <WrapPanel Name="postsLists"/>

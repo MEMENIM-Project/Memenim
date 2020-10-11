@@ -30,7 +30,7 @@
         
         
         <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding text}" Foreground="{StaticResource MahApps.Brushes.Text}" Width="400" TextWrapping="Wrap" VerticalAlignment="Top" Margin="15 5 15 5"/>
-        <Image Source="{Binding attachments[0].photo.photo_medium}" Grid.Row="2" Stretch="Uniform" Width="400" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="15 5 15 0"/>
+        <Image x:Name="imgPost" Source="{Binding attachments[0].photo.photo_medium}" Grid.Row="2" Stretch="Uniform" Width="400" Grid.ColumnSpan="3" VerticalAlignment="Top" Margin="15 5 15 0"/>
 
         <local:StatButton Grid.Row="3" x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" HorizontalAlignment="Left" />
         <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28" HorizontalAlignment="Center"/>

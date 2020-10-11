@@ -1,4 +1,5 @@
 ﻿using AnonymDesktopClient.Core;
+using AnonymDesktopClient.Core.Pages;
 using Memenim.Core;
 using Memenim.Core.Data;
 using System;
@@ -43,6 +44,8 @@ namespace AnonymDesktopClient.Pages
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         { 
             DataContext = m_PostData;
+            wdgPostPreview.CurrentPostData = m_PostData;
+            wdgPostPreview.PreviewMode = true;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -61,6 +64,31 @@ namespace AnonymDesktopClient.Pages
                 DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
 
+        }
+
+        private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
+        {
+            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
+            if(rbImageRaw.IsChecked == true)
+            {
+                string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL");
+                SelectPhotoForPost(url);
+            }
+            else if(rbImageTennor.IsChecked == true)
+            {
+                PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = SelectPhotoForPost });
+            }
+            else
+            {
+                PageNavigationManager.SwitchToSubpage(new AnonymGallerySearchPage() { OnPicSelect = SelectPhotoForPost });
+            }
+        }
+
+        private async Task SelectPhotoForPost(string url)
+        {
+            m_PostData.attachments[0].photo.photo_medium = url;
+            imgPreview.Source = new BitmapImage(new Uri(m_PostData.attachments[0].photo.photo_medium));
+            wdgPostPreview.ReloadImage();
         }
     }
 }

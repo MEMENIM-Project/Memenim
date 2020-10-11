@@ -6,9 +6,35 @@
     <sys:String x:Key="Login">Login</sys:String>
     <sys:String x:Key="Password">Password</sys:String>
     <sys:String x:Key="RememberMe">Remember Me</sys:String>
-    <sys:String x:Key="ErrorTitle">F U C K</sys:String>
     <sys:String x:Key="RegisterProposeTitle">New user? Register now</sys:String>
+
+    <sys:String x:Key="ErrorTitle">F U C K</sys:String>
+    <sys:String x:Key="SuccessTitle">S U C C</sys:String>
+    <sys:String x:Key="WIPTitle">Not implemented yet</sys:String>
+    
     <sys:String x:Key="FeedTitle">Feed</sys:String>
+    <sys:String x:Key="PreviewTitle">Preview</sys:String>
+    <sys:String x:Key="EditTitle">Edit</sys:String>
+    <sys:String x:Key="WriteNewPost">Write New Post</sys:String>
+    <sys:String x:Key="SubmitPostTitle">Submit new post</sys:String>
+    <sys:String x:Key="PostContent">Enter Post Content</sys:String>
+    <sys:String x:Key="OpenComments">Open comments</sys:String>
+    <sys:String x:Key="PostAnon">Show your name :)</sys:String>
+    <sys:String x:Key="SelectPhoto">Select photo for a post</sys:String>
+    <sys:String x:Key="SubmitPostButton">Submit</sys:String>
+
+    <sys:String x:Key="CommentsTitle">Comments</sys:String>
+    <sys:String x:Key="LoadComments">Load more comments</sys:String>
+    <sys:String x:Key="EnterComment">Enter comment content</sys:String>
+
+    <sys:String x:Key="ImageSourceTitle">Image Source</sys:String>
+    <sys:String x:Key="GallerySelect">Select from Anonym Gallery</sys:String>
+    <sys:String x:Key="TennorSelect">Select from Tennor</sys:String>
+    <sys:String x:Key="URLSelect">Paste an raw URL</sys:String>
+    <sys:String x:Key="UploadSelect">Upload your picture</sys:String>
+    
     <sys:String x:Key="SignOut">Sign Out</sys:String>
     <sys:String x:Key="LanguageTitle">Language</sys:String>
+    <sys:String x:Key="NewPassword">New password</sys:String>
+    <sys:String x:Key="ChangePassword">Change password</sys:String>
 </ResourceDictionary>

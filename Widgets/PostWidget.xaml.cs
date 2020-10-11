@@ -31,6 +31,7 @@ namespace AnonymDesktopClient.Widgets
         public string PostLikes { get; set; }
         public string PostDislikes { get; set; }
         public PostData CurrentPostData { get; set; }
+        public bool PreviewMode { get; set; } = false;
 
         public static readonly RoutedEvent OnPostClicked = EventManager.RegisterRoutedEvent("OnPostClick", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(PostWidget));
 
@@ -69,10 +70,18 @@ namespace AnonymDesktopClient.Widgets
             wdgPoster.PosterName = CurrentPostData.owner_name;
             wdgPoster.PostTime = Utils.UnixTimeStampToDateTime(CurrentPostData.date).ToString();
 
-            stLikes.StatValue = CurrentPostData.likes.count.ToString();
-            stDislikes.StatValue = CurrentPostData.dislikes.count.ToString();
-            stComments.StatValue = CurrentPostData.comments.count.ToString();
-            stShare.StatValue = CurrentPostData.reposts.ToString();
+            if (!PreviewMode)
+            {
+                stLikes.StatValue = CurrentPostData.likes.count.ToString();
+                stDislikes.StatValue = CurrentPostData.dislikes.count.ToString();
+                stComments.StatValue = CurrentPostData.comments.count.ToString();
+                stShare.StatValue = CurrentPostData.reposts.ToString();
+            }
+            else
+            {
+                stLikes.IsEnabled = false;
+                stDislikes.IsEnabled = false;
+            }
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)
@@ -113,8 +122,12 @@ namespace AnonymDesktopClient.Widgets
             stDislikes.StatValue = CurrentPostData.dislikes.count.ToString();
             stComments.StatValue = CurrentPostData.comments.count.ToString();
             stShare.StatValue = CurrentPostData.reposts.ToString();
-
         }
 
+
+        public void ReloadImage()
+        {
+            imgPost.Source = new BitmapImage(new Uri(CurrentPostData.attachments[0].photo.photo_medium));
+        }
     }
 }

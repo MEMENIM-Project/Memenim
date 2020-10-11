@@ -75,11 +75,7 @@ namespace AnonymDesktopClient.Pages
                     TriggerSettingsMenu();
                     break;
                 case "Back":
-                    UserControl backPage = GeneralBlackboard.TryGetValue<UserControl>(BlackBoardValues.EBackPage);
-                    if (backPage != null)
-                    {
-                        PageNavigationManager.SwitchToSubpage(backPage);
-                    }
+                    PageNavigationManager.GoBack();
                     break;
                 default:
                     break;
