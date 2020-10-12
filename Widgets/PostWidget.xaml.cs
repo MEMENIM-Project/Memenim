@@ -1,23 +1,13 @@
-﻿using AnonymDesktopClient.Pages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Memenim.Core.Data;
+using AnonymDesktopClient.Core.Utils;
 using Memenim.Core;
-using AnonymDesktopClient.Core;
+using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Widgets
+namespace AnonymDesktopClient.Core.Widgets
 {
     /// <summary>
     /// Interaction logic for PostWidget.xaml
@@ -70,7 +60,7 @@ namespace AnonymDesktopClient.Widgets
             wdgPoster.IsAnonymousPost = CurrentPostData.author_watch > 1;
             wdgPoster.PosterID = CurrentPostData.owner_id.GetValueOrDefault(-1);
             wdgPoster.PosterName = CurrentPostData.owner_name;
-            wdgPoster.PostTime = Utils.UnixTimeStampToDateTime(CurrentPostData.date).ToString();
+            wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData.date).ToString();
 
             if (!PreviewMode)
             {
@@ -100,7 +90,7 @@ namespace AnonymDesktopClient.Widgets
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
             var res = await PostAPI.DislikePost(CurrentPostData.id, AppPersistent.UserToken);
-            if(res.error)
+            if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
                 return;
@@ -112,7 +102,7 @@ namespace AnonymDesktopClient.Widgets
         {
             var res = await PostAPI.GetPostById(CurrentPostData.id, AppPersistent.UserToken);
 
-            if(res.error)
+            if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
                 return;

@@ -1,23 +1,13 @@
-﻿using AnonymDesktopClient.Core;
-using AnonymDesktopClient.Core.Pages;
-using Memenim.Core;
-using Memenim.Core.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Memenim.Core;
+using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Pages
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for SubmitPostPage.xaml
@@ -32,17 +22,22 @@ namespace AnonymDesktopClient.Pages
             m_PostData = new PostData();
             m_PostData.attachments = new List<AttachmentData>();
             m_PostData.attachments.Add(new AttachmentData());
-            m_PostData.attachments[0].photo = new PhotoData() { photo_big = "", photo_medium = "", photo_small = "",
+            m_PostData.attachments[0].photo = new PhotoData()
+            {
+                photo_big = "",
+                photo_medium = "",
+                photo_small = "",
                 size = new SizeData()
-                { 
-                    photo_big = new RectData(), 
-                    photo_medium = new RectData(), 
-                    photo_small= new RectData() 
-                } };
+                {
+                    photo_big = new RectData(),
+                    photo_medium = new RectData(),
+                    photo_small = new RectData()
+                }
+            };
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
-        { 
+        {
             DataContext = m_PostData;
             wdgPostPreview.CurrentPostData = m_PostData;
             wdgPostPreview.PreviewMode = true;
@@ -69,12 +64,12 @@ namespace AnonymDesktopClient.Pages
         private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            if(rbImageRaw.IsChecked == true)
+            if (rbImageRaw.IsChecked == true)
             {
                 string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL");
                 SelectPhotoForPost(url);
             }
-            else if(rbImageTennor.IsChecked == true)
+            else if (rbImageTennor.IsChecked == true)
             {
                 PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = SelectPhotoForPost });
             }

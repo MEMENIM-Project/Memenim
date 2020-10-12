@@ -1,18 +1,9 @@
-﻿using AnonymDesktopClient.Pages;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using AnonymDesktopClient.Core.Pages;
 
-namespace AnonymDesktopClient.Widgets
+namespace AnonymDesktopClient.Core.Widgets
 {
     /// <summary>
     /// Interaction logic for PosterBanner.xaml
@@ -33,7 +24,7 @@ namespace AnonymDesktopClient.Widgets
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             DataContext = this;
-            if(IsAnonymousPost)
+            if (IsAnonymousPost)
             {
                 txtAnon.Visibility = Visibility.Hidden;
             }
@@ -45,7 +36,7 @@ namespace AnonymDesktopClient.Widgets
 
         private void OnPoster_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(PosterID > 0)
+            if (PosterID > 0)
             {
                 PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = PosterID });
                 PageNavigationManager.CloseOverlay();

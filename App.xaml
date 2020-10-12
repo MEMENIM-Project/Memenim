@@ -1,7 +1,7 @@
-﻿<Application x:Class="AnonymDesktopClient.App"
+﻿<Application x:Class="AnonymDesktopClient.Core.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:local="clr-namespace:AnonymDesktopClient"
+            xmlns:local="clr-namespace:AnonymDesktopClient.Core"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

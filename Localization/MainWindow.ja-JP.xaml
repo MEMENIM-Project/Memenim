@@ -6,8 +6,11 @@
     <sys:String x:Key="Login">ユーザー名前</sys:String>
     <sys:String x:Key="Password">パスワード</sys:String>
     <sys:String x:Key="RememberMe">ユーザーを覚えている</sys:String>
+
     <sys:String x:Key="ErrorTitle">エーラー</sys:String>
+
     <sys:String x:Key="FeedTitle">フィードー</sys:String>
+
     <sys:String x:Key="SignOut">サインアウト</sys:String>
     <sys:String x:Key="LanguageTitle">言語</sys:String>
 </ResourceDictionary>

@@ -1,22 +1,10 @@
-﻿using AnonymDesktopClient.Core;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using AnonymDesktopClient.Core.Utils;
 using Memenim.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace AnonymDesktopClient.Widgets
+namespace AnonymDesktopClient.Core.Widgets
 {
     /// <summary>
     /// Interaction logic for WriteComment.xaml
@@ -32,7 +20,7 @@ namespace AnonymDesktopClient.Widgets
         public WriteComment()
         {
             InitializeComponent();
-            AnononymCommandPress = new BasicCommand(o=> true, _ => { m_AnonSend = !m_AnonSend; });
+            AnononymCommandPress = new BasicCommand(o => true, _ => { m_AnonSend = !m_AnonSend; });
             this.DataContext = this;
         }
 

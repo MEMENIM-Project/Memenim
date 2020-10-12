@@ -1,21 +1,10 @@
-﻿using AnonymDesktopClient.Core;
-using Memenim.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Memenim.Core;
 
-namespace AnonymDesktopClient.Pages
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for RegisterUser.xaml
@@ -25,6 +14,8 @@ namespace AnonymDesktopClient.Pages
         public RegisterUser()
         {
             InitializeComponent();
+
+            btnRegister.IsEnabled = false;
         }
 
         private async void btnRegister_Click(object sender, RoutedEventArgs e)
@@ -33,15 +24,18 @@ namespace AnonymDesktopClient.Pages
 
             try
             {
-                var result = await UsersAPI.RegisterUser(txtLogin.Text, txtPass.Password);
+                var result = await UsersAPI.RegisterUser(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
 
-                if(result.error)
+                if (result.error)
                 {
                     lblErrorMessage.Text = result.message;
                     btnRegister.IsEnabled = true;
                 }
                 else
                 {
+                    AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
+                    AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
@@ -55,23 +49,68 @@ namespace AnonymDesktopClient.Pages
 
         private async void btnAutoReg_Click(object sender, RoutedEventArgs e)
         {
-            UInt64 counter = 0;
-            string name = "bot";
-            var res = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass");
-            while(res.error)
+            //btnAutoReg.IsEnabled = false;
+
+            const string name = "bot";
+            ulong counter = 0;
+
+            var result = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+
+            while (result.error)
             {
                 ++counter;
-                res = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass");
+                result = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
             }
-            AppPersistent.UserToken = res.data.token;
-            AppPersistent.LocalUserId = res.data.id;
-            DialogManager.ShowDialog("S U C C", "Regisered user with nickname " + name + counter.ToString("D10"));
+
+            AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
+            AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+
+            AppPersistent.UserToken = result.data.token;
+            AppPersistent.LocalUserId = result.data.id;
+
+            DialogManager.ShowDialog("S U C C", "Registered user with username " + name + counter.ToString("D10"));
             PageNavigationManager.SwitchToPage(new ApplicationPage());
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private void btnGoToLogin_Click(object sender, RoutedEventArgs e)
         {
             PageNavigationManager.SwitchToPage(new LoginPage());
+        }
+
+        private void txtLogin_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                txtPassword.Focus();
+            }
+        }
+
+        private void txtPassword_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                if (btnRegister.IsEnabled)
+                    btnRegister_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key == Key.Up)
+            {
+                txtLogin.Focus();
+            }
+        }
+
+        private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            btnRegister.IsEnabled = !NeedBlockRegister();
+        }
+
+        private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnRegister.IsEnabled = !NeedBlockRegister();
+        }
+
+        private bool NeedBlockRegister()
+        {
+            return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
         }
     }
 }

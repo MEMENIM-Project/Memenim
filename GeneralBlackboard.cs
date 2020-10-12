@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Collections.Generic;
 
-namespace AnonymDesktopClient
+namespace AnonymDesktopClient.Core
 {
     enum BlackBoardValues
     {
@@ -41,7 +36,7 @@ namespace AnonymDesktopClient
 
         public static void SetValue(BlackBoardValues key, object value)
         {
-            if(!m_boardValues.ContainsKey(key))
+            if (!m_boardValues.ContainsKey(key))
             {
                 m_boardValues.Add(key, value);
             }

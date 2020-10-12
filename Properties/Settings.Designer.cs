@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AnonymDesktopClient.Properties
+namespace AnonymDesktopClient.Core.Properties
 {
 
 

@@ -1,40 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using AnonymDesktopClient.Core;
-using AnonymDesktopClient.Pages;
+using AnonymDesktopClient.Core.Pages;
+using AnonymDesktopClient.Core.Settings;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using RIS.Extensions;
 
-namespace AnonymDesktopClient
+namespace AnonymDesktopClient.Core
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public static MainWindow CurrentMainWindow;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            CurrentMainWindow = this;
+
+            SettingManager.MainWindow = this;
+
+            Width = SettingManager.AppSettings.WindowWidth;
+            Height = SettingManager.AppSettings.WindowHeight;
+            WindowStartupLocation = WindowStartupLocation.Manual;
+            Left = SettingManager.AppSettings.WindowPositionX - (Width / 2.0);
+            Top = SettingManager.AppSettings.WindowPositionY - (Height / 2.0);
+            WindowState = (WindowState)SettingManager.AppSettings.WindowState;
 
             PageNavigationManager.PageContentControl = contentArea;
             DialogManager.WindowRef = this;
 
             LocalizationManager.MainWindow = this;
-            LocalizationManager.SetDefaultLanguage(this);
+            LocalizationManager.SwitchLanguage(SettingManager.AppSettings.Language);
 
             try
             {
@@ -59,6 +59,14 @@ namespace AnonymDesktopClient
             }
         }
 
-
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            SettingManager.AppSettings.WindowWidth = Width;
+            SettingManager.AppSettings.WindowHeight = Height;
+            SettingManager.AppSettings.WindowPositionX = Left + (Width / 2.0);
+            SettingManager.AppSettings.WindowPositionY = Top + (Height / 2.0);
+            SettingManager.AppSettings.WindowState = (int)WindowState;
+            SettingManager.AppSettings.Save();
+        }
     }
 }

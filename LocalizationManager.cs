@@ -1,24 +1,20 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Windows;
+using AnonymDesktopClient.Core.Settings;
 
 namespace AnonymDesktopClient.Core
 {
     public static class LocalizationManager
     {
-        // TODO: Make something more elegant
         public static FrameworkElement MainWindow;
 
-        /// <summary>  
-        /// Get application name from an element  
-        /// </summary>  
-        /// <param name="element"></param>  
-        /// <returns></returns>  
+        private static string GetAppName()
+        {
+            return GetAppName(MainWindow);
+        }
         private static string GetAppName(FrameworkElement element)
         {
             var elType = element.GetType().ToString();
@@ -26,11 +22,10 @@ namespace AnonymDesktopClient.Core
             return elNames[0];
         }
 
-        /// <summary>  
-        /// Generate a name from an element base on its class name  
-        /// </summary>  
-        /// <param name="element"></param>  
-        /// <returns></returns>  
+        private static string GetElementName()
+        {
+            return GetElementName(MainWindow);
+        }
         private static string GetElementName(FrameworkElement element)
         {
             var elType = element.GetType().ToString();
@@ -40,94 +35,77 @@ namespace AnonymDesktopClient.Core
             return elName;
         }
 
-        /// <summary>  
-        /// Get current culture info name base on previously saved setting if any,  
-        /// otherwise get from OS language  
-        /// </summary>  
-        /// <param name="element"></param>  
-        /// <returns></returns>  
-        public static string GetCurrentCultureName(FrameworkElement element)
+        private static string GetLocXamlFilePath(string element, string сultureName)
         {
-            // TODO: Add localization loading from settings
-            var cultureName = CultureInfo.CurrentUICulture.Name;
-            return cultureName;
+            string locXamlFile = $"{element}.{сultureName}.xaml";
+            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            return string.IsNullOrEmpty(directory)
+                ? Path.Combine("Localization", locXamlFile)
+                : Path.Combine(directory, "Localization", locXamlFile);
         }
 
-        /// <summary>  
-        /// Set language based on previously save language setting,  
-        /// otherwise set to OS lanaguage  
-        /// </summary>  
-        /// <param name="element"></param>  
+        private static void SetLanguageResourceDictionary(string resourceFile)
+        {
+            SetLanguageResourceDictionary(MainWindow, resourceFile);
+        }
+        private static void SetLanguageResourceDictionary(FrameworkElement element, string resourceFile)
+        {
+            if (!File.Exists(resourceFile))
+                DialogManager.ShowDialog("F U C K", "'" + resourceFile + "' not found.");
+
+            ResourceDictionary languageDictionary = new ResourceDictionary
+            {
+                Source = new Uri(resourceFile)
+            };
+
+            int langDictId = -1;
+
+            for (int i = 0; i < element.Resources.MergedDictionaries.Count; ++i)
+            {
+                ResourceDictionary md = element.Resources.MergedDictionaries[i];
+
+                if (!md.Contains("ResourceDictionaryName") ||
+                    md["ResourceDictionaryName"].ToString()?.StartsWith("Loc-") != true)
+                {
+                    continue;
+                }
+
+                langDictId = i;
+                break;
+            }
+
+            if (langDictId == -1)
+                element.Resources.MergedDictionaries.Add(languageDictionary);
+            else
+                element.Resources.MergedDictionaries[langDictId] = languageDictionary;
+        }
+
+        public static string GetCurrentCultureName()
+        {
+            return CultureInfo.CurrentUICulture.Name;
+        }
+
+        public static void SetDefaultLanguage()
+        {
+            SetDefaultLanguage(MainWindow);
+        }
         public static void SetDefaultLanguage(FrameworkElement element)
         {
-            SetLanguageResourceDictionary(element, GetLocXAMLFilePath(GetElementName(element), GetCurrentCultureName(element)));
+            SetLanguageResourceDictionary(element, GetLocXamlFilePath(GetElementName(element), GetCurrentCultureName()));
         }
 
-        /// <summary>  
-        /// Dynamically load a Localization ResourceDictionary from a file  
-        /// </summary>  
-        public static void SwitchLanguage(FrameworkElement element, string inFiveCharLang)
+        public static void SwitchLanguage(string сultureName)
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(inFiveCharLang);
-            SetLanguageResourceDictionary(element, GetLocXAMLFilePath(GetElementName(element), inFiveCharLang));
-            // TODO: Add localization saving
+            SwitchLanguage(MainWindow, сultureName);
         }
-
-        /// <summary>  
-        /// Returns the path to the ResourceDictionary file based on the language character string.  
-        /// </summary>  
-        /// <param name="inFiveCharLang"></param>  
-        /// <returns></returns>  
-        public static string GetLocXAMLFilePath(string element, string inFiveCharLang)
+        public static void SwitchLanguage(FrameworkElement element, string сultureName)
         {
-            string locXamlFile = element + "." + inFiveCharLang + ".xaml";
-            string directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            return Path.Combine(directory, "Localization", locXamlFile);
-        }
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(сultureName);
+            SetLanguageResourceDictionary(element, GetLocXamlFilePath(GetElementName(element), сultureName));
 
-        /// <summary>  
-        /// Sets or replaces the ResourceDictionary by dynamically loading  
-        /// a Localization ResourceDictionary from the file path passed in.  
-        /// </summary>  
-        /// <param name="inFile"></param>  
-        private static void SetLanguageResourceDictionary(FrameworkElement element, String inFile)
-        {
-            if (File.Exists(inFile))
-            {
-                // Read in ResourceDictionary File  
-                var languageDictionary = new ResourceDictionary();
-                languageDictionary.Source = new Uri(inFile);
-                // Remove any previous Localization dictionaries loaded  
-                int langDictId = -1;
-                for (int i = 0; i < element.Resources.MergedDictionaries.Count; i++)
-                {
-                    var md = element.Resources.MergedDictionaries[i];
-                    // Make sure your Localization ResourceDictionarys have the ResourceDictionaryName  
-                    // key and that it is set to a value starting with "Loc-".  
-                    if (md.Contains("ResourceDictionaryName"))
-                    {
-                        if (md["ResourceDictionaryName"].ToString().StartsWith("Loc-"))
-                        {
-                            langDictId = i;
-                            break;
-                        }
-                    }
-                }
-                if (langDictId == -1)
-                {
-                    // Add in newly loaded Resource Dictionary  
-                    element.Resources.MergedDictionaries.Add(languageDictionary);
-                }
-                else
-                {
-                    // Replace the current langage dictionary with the new one  
-                    element.Resources.MergedDictionaries[langDictId] = languageDictionary;
-                }
-            }
-            else
-            {
-                DialogManager.ShowDialog("F U C K","'" + inFile + "' not found.");
-            }
+            SettingManager.AppSettings.Language = сultureName;
+            SettingManager.AppSettings.Save();
         }
     }
 }

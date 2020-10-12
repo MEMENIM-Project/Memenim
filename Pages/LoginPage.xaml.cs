@@ -1,24 +1,10 @@
-﻿
-using AnonymDesktopClient.Pages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Memenim.Core;
-using AnonymDesktopClient.Core;
 
-namespace AnonymDesktopClient
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for LoginPage.xaml
@@ -40,9 +26,9 @@ namespace AnonymDesktopClient
             {
                 var result = await UsersAPI.Login(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
 
-                if(result.error)
+                if (result.error)
                 {
-                    lblStatus.Content = result.message;
+                    lblErrorMessage.Content = result.message;
                     btnLogin.IsEnabled = true;
                 }
                 else
@@ -69,7 +55,7 @@ namespace AnonymDesktopClient
             }
         }
 
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        private void btnGoToRegister_Click(object sender, RoutedEventArgs e)
         {
             PageNavigationManager.SwitchToPage(new RegisterUser());
         }
@@ -87,7 +73,7 @@ namespace AnonymDesktopClient
             if (e.Key == Key.Enter || e.Key == Key.Down)
             {
                 if (btnLogin.IsEnabled)
-                    btnLogin_Click(null, new RoutedEventArgs());
+                    btnLogin_Click(this, new RoutedEventArgs());
             }
             else if (e.Key == Key.Up)
             {

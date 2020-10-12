@@ -1,24 +1,9 @@
-﻿using AnonymDesktopClient.Core;
-using AnonymDesktopClient.Core.Pages;
-using AnonymDesktopClient.Core.Utils;
-using Memenim.Core;
-using Memenim.Core.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using AnonymDesktopClient.Core.Settings;
 
-namespace AnonymDesktopClient.Pages
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
@@ -36,6 +21,10 @@ namespace AnonymDesktopClient.Pages
         {
             InitializeComponent();
             DataContext = this;
+
+            slcLang.SelectedItem = new KeyValuePair<string, string>(
+                SettingManager.AppSettings.Language,
+                Locales[SettingManager.AppSettings.Language]);
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -54,7 +43,7 @@ namespace AnonymDesktopClient.Pages
         private void SplitButton_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedPair = (KeyValuePair<string, string>)slcLang.SelectedItem;
-            LocalizationManager.SwitchLanguage(LocalizationManager.MainWindow, selectedPair.Key);
+            LocalizationManager.SwitchLanguage(selectedPair.Key);
         }
     }
 }

@@ -1,26 +1,14 @@
-﻿
-using AnonymDesktopClient.Core;
-using AnonymDesktopClient.Pages;
-using Memenim.Core;
-using Memenim.Core.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using AnonymDesktopClient.Core.Utils;
+using AnonymDesktopClient.Core.Widgets;
+using Memenim.Core;
+using Memenim.Core.Data;
 
-namespace AnonymDesktopClient
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for Posts.xaml
@@ -60,14 +48,14 @@ namespace AnonymDesktopClient
         private async void PostPage_Loaded(object sender, RoutedEventArgs e)
         {
             var res = await PostAPI.GetPostById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
-            if(res.error)
+            if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
             }
 
             m_PostData = res.data[0];
 
-            if(m_PostData != null)
+            if (m_PostData != null)
             {
                 wdgComment.PostID = m_PostData.id;
                 m_PosterId = m_PostData.owner_id;
@@ -78,13 +66,13 @@ namespace AnonymDesktopClient
                 //imgPost.Source = new BitmapImage(new Uri(m_PostData.attachments[0].photo.photo_medium, UriKind.Absolute));
                 lblPosterName.Content = m_PostData.owner_name;
                 //lblPosterName.IsEnabled = post.author_watch == 1 ? false : true;
-                lblDate.Content = Utils.UnixTimeStampToDateTime(m_PostData.date).ToString();
+                lblDate.Content = TimeUtils.UnixTimeStampToDateTime(m_PostData.date).ToString();
                 UpdateComments(m_PostData.id);
             }
             m_UpdateTimer.Start();
         }
 
-        async void UpdateComments(int id)
+        private async Task UpdateComments(int id)
         {
             var commentsData = await PostAPI.GetCommentsForPost(id);
             if (commentsData.data.Count == 0) { return; }
@@ -107,7 +95,7 @@ namespace AnonymDesktopClient
         {
             int id = (lstComments.SelectedItem as UserComment).UserID;
             var profile = await UsersAPI.GetUserProfileByID(id);
-            if(profile.error)
+            if (profile.error)
             {
                 DialogManager.ShowDialog("ERROR", profile.message);
                 return;

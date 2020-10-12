@@ -1,24 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using WpfAnimatedGif;
+using AnonymDesktopClient.Core.Utils;
+using AnonymDesktopClient.Core.Widgets;
 using Tenor;
 using Tenor.Schema;
-using AnonymDesktopClient.Widgets;
-using System.Threading.Tasks;
-using MahApps.Metro.IconPacks;
-using AnonymDesktopClient.Core.Utils;
 
 namespace AnonymDesktopClient.Core.Pages
 {
@@ -30,7 +19,7 @@ namespace AnonymDesktopClient.Core.Pages
         public Func<string, Task> OnPicSelect { get; set; }
 
         public ICommand SearchCommand { get; set; }
-        
+
         public TennorSearchPage()
         {
             InitializeComponent();

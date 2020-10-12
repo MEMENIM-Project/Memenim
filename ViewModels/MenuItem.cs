@@ -3,7 +3,7 @@ using System.Windows;
 using MahApps.Metro.Controls;
 
 
-namespace AnonymDesktopClient.ViewModels
+namespace AnonymDesktopClient.Core.ViewModels
 {
     class MenuItem : HamburgerMenuIconItem
     {

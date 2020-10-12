@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace AnonymDesktopClient
+namespace AnonymDesktopClient.Core.Utils
 {
-    static class Utils
+    public static class TimeUtils
     {
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {

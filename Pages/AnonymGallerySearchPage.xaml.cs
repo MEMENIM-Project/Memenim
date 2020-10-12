@@ -1,20 +1,11 @@
-﻿using AnonymDesktopClient.Widgets;
-using Memenim.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using AnonymDesktopClient.Core.Widgets;
+using Memenim.Core;
 
-namespace AnonymDesktopClient.Pages
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for AnonymGallerySearchPage.xaml
@@ -37,7 +28,7 @@ namespace AnonymDesktopClient.Pages
         {
             var searchResults = await PhotoAPI.GetLibraryPhotos();
 
-            if(searchResults.error)
+            if (searchResults.error)
             {
                 return;
             }

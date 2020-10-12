@@ -1,18 +1,19 @@
-﻿<mah:MetroWindow x:Class="AnonymDesktopClient.MainWindow"
+﻿<mah:MetroWindow x:Class="AnonymDesktopClient.Core.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:AnonymDesktopClient"
+        xmlns:local="clr-namespace:AnonymDesktopClient.Core"
         mc:Ignorable="d"
         ShowTitleBar="True"
         ShowIconOnTitleBar="False"
         WindowTitleBrush="{StaticResource MahApps.Brushes.Menu.Background}"
         GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
         Dialog:DialogParticipation.Register="{Binding}"
-        Title="MEMENIM Desktop" Height="450" Width="800">
+        Title="MEMENIM Desktop" Height="450" Width="800"
+        Closed="MainWindow_Closed">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

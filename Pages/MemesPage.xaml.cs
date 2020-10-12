@@ -1,28 +1,12 @@
-﻿
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.Converters;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
 using Memenim.Core;
 using Memenim.Core.Data;
-using AnonymDesktopClient.Core;
+using Microsoft.Win32;
 
-namespace AnonymDesktopClient.Pages
+namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for MemesPage.xaml
@@ -81,7 +65,7 @@ namespace AnonymDesktopClient.Pages
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }

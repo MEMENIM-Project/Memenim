@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace AnonymDesktopClient
+namespace AnonymDesktopClient.Core
 {
     static class DialogManager
     {
@@ -17,7 +13,7 @@ namespace AnonymDesktopClient
 
         private static MetroWindow m_MainWindow;
 
-        public static async void ShowDialog(string title, string message)
+        public static async Task ShowDialog(string title, string message)
         {
             await m_MainWindow.ShowMessageAsync(title, message);
         }
