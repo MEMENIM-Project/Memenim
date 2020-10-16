@@ -3,15 +3,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
+using Memenim.Managers;
 
 namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : UserControl
+    public partial class LoginPage : Page
     {
-        public LoginPage()
+        public LoginPage() : base()
         {
             InitializeComponent();
 
@@ -46,7 +47,7 @@ namespace Memenim.Pages
 
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
-                    PageNavigationManager.SwitchToPage(new ApplicationPage());
+                    PageNavigationManager.SwitchToPage<ApplicationPage>();
                 }
             }
             catch (Exception ex)
@@ -57,7 +58,7 @@ namespace Memenim.Pages
 
         private void btnGoToRegister_Click(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.SwitchToPage(new RegisterUser());
+            PageNavigationManager.SwitchToPage<RegisterUser>();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

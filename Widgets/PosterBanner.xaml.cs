@@ -38,8 +38,8 @@ namespace Memenim.Widgets
         {
             if (PosterID > 0)
             {
-                PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = PosterID });
-                PageNavigationManager.CloseOverlay();
+                //PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = PosterID });
+                //PageNavigationManager.CloseOverlay();
 
             }
         }
