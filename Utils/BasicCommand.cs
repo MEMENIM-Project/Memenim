@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace AnonymDesktopClient.Core.Utils
+namespace Memenim.Utils
 {
     class BasicCommand : ICommand
     {

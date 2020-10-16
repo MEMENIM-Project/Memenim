@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Memenim.Core;
+using Memenim.Core.Api;
 
-namespace AnonymDesktopClient.Core.Utils
+namespace Memenim.Utils
 {
     static class ProfileUtils
     {
@@ -10,11 +10,11 @@ namespace AnonymDesktopClient.Core.Utils
         {
             try
             {
-                var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
+                var profile = await UserApi.GetProfileById(AppPersistent.LocalUserId);
                 if (!profile.error)
                 {
                     profile.data[0].photo = Url;
-                    var res = await UsersAPI.EditProfile(profile.data[0], AppPersistent.UserToken);
+                    var res = await UserApi.EditProfile(profile.data[0], AppPersistent.UserToken);
                     if (!res.error)
                     {
                         DialogManager.ShowDialog("S U C C", "You changed your avatar.");
@@ -39,11 +39,11 @@ namespace AnonymDesktopClient.Core.Utils
         {
             try
             {
-                var profile = await UsersAPI.GetUserProfileByID(AppPersistent.LocalUserId);
+                var profile = await UserApi.GetProfileById(AppPersistent.LocalUserId);
                 if (!profile.error)
                 {
                     profile.data[0].banner = Url;
-                    var res = await UsersAPI.EditProfile(profile.data[0], AppPersistent.UserToken);
+                    var res = await UserApi.EditProfile(profile.data[0], AppPersistent.UserToken);
                     if (!res.error)
                     {
                         DialogManager.ShowDialog("S U C C", "You changed your banner.");

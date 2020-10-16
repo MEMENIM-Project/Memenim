@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Core;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for CommentsList.xaml
@@ -26,7 +26,7 @@ namespace AnonymDesktopClient.Core.Widgets
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             lstComments.Children.Clear();
-            var res = await PostAPI.GetCommentsForPost(PostID);
+            var res = await PostApi.GetComments(PostID);
             if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
@@ -56,7 +56,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostAPI.GetCommentsForPost(PostID, m_Offset);
+            var res = await PostApi.GetComments(PostID, m_Offset);
             btnLoadMore.IsEnabled = false;
             if (res.error)
             {

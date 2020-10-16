@@ -1,10 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AnonymDesktopClient.Core.Pages;
-using Memenim.Core;
+using Memenim.Pages;
+using Memenim.Core.Api;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for UserComment.xaml
@@ -27,7 +27,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostAPI.LikeComment(CommentID, AppPersistent.UserToken);
+            var result = await PostApi.AddLikeComment(CommentID, AppPersistent.UserToken);
             if (!result.error)
             {
                 DialogManager.ShowDialog("Liked", "Liked");
@@ -40,7 +40,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostAPI.DislikeComment(CommentID, AppPersistent.UserToken);
+            var result = await PostApi.AddDislikeComment(CommentID, AppPersistent.UserToken);
             if (!result.error)
             {
                 DialogManager.ShowDialog("Disliked", "Disliked");

@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using AnonymDesktopClient.Core.Pages;
-using AnonymDesktopClient.Core.Utils;
-using Memenim.Core;
+using Memenim.Pages;
+using Memenim.Utils;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for ProfileBanner.xaml
@@ -22,7 +22,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void UserBanner_Loaded(object sender, RoutedEventArgs e)
         {
-            var profile = await UsersAPI.GetUserProfileByID(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EProfileData));
+            var profile = await UserApi.GetProfileById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EProfileData));
             UserProfile = profile.data[0];
 
             DataContext = UserProfile;

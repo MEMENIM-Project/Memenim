@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using AnonymDesktopClient.Core.Widgets;
-using Memenim.Core;
+using Memenim.Widgets;
+using Memenim.Core.Api;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for AnonymGallerySearchPage.xaml
@@ -26,7 +26,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         public async Task ExecuteSearch()
         {
-            var searchResults = await PhotoAPI.GetLibraryPhotos();
+            var searchResults = await PhotoApi.GetLibraryPhotos();
 
             if (searchResults.error)
             {

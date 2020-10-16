@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using MahApps.Metro.Controls;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     static class PageNavigationManager
     {

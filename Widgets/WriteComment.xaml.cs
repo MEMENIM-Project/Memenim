@@ -1,10 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AnonymDesktopClient.Core.Utils;
-using Memenim.Core;
+using Memenim.Utils;
+using Memenim.Core.Api;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for WriteComment.xaml
@@ -28,7 +28,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostAPI.SendComment(PostID, txtContent.Text, m_AnonSend, AppPersistent.UserToken);
+            var res = await PostApi.AddComment(PostID, txtContent.Text, m_AnonSend, AppPersistent.UserToken);
             if (!res.error)
             {
                 DialogManager.ShowDialog("S U C C", "Comment sent");

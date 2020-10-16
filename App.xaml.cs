@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AnonymDesktopClient.Core
+namespace Memenim
 {
     /// <summary>
     /// Interaction logic for App.xaml

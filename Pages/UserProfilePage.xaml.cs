@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Memenim.Core;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for AccountViewPage.xaml
@@ -21,7 +21,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var res = await UsersAPI.GetUserProfileByID(UserID);
+            var res = await UserApi.GetProfileById(UserID);
             if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);

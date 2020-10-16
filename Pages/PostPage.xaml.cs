@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using AnonymDesktopClient.Core.Utils;
-using AnonymDesktopClient.Core.Widgets;
-using Memenim.Core;
+using Memenim.Utils;
+using Memenim.Widgets;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for Posts.xaml
@@ -31,7 +31,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async void UpdateTimer_Tick(object sender, EventArgs e)
         {
-            var res = await PostAPI.GetPostById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
+            var res = await PostApi.GetById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
             if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
@@ -47,7 +47,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async void PostPage_Loaded(object sender, RoutedEventArgs e)
         {
-            var res = await PostAPI.GetPostById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
+            var res = await PostApi.GetById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EPostData), AppPersistent.UserToken);
             if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
@@ -74,7 +74,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async Task UpdateComments(int id)
         {
-            var commentsData = await PostAPI.GetCommentsForPost(id);
+            var commentsData = await PostApi.GetComments(id);
             if (commentsData.data.Count == 0) { return; }
             lstComments.Items.Clear();
             for (int i = commentsData.data.Count - 1; i > -1; --i)
@@ -94,7 +94,7 @@ namespace AnonymDesktopClient.Core.Pages
         private async void ViewUserProfile_Click(object sender, RoutedEventArgs e)
         {
             int id = (lstComments.SelectedItem as UserComment).UserID;
-            var profile = await UsersAPI.GetUserProfileByID(id);
+            var profile = await UserApi.GetProfileById(id);
             if (profile.error)
             {
                 DialogManager.ShowDialog("ERROR", profile.message);
@@ -112,7 +112,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async void GoToPosterProfile_Click(object sender, RoutedEventArgs e)
         {
-            var profile = await UsersAPI.GetUserProfileByID(m_PosterId.GetValueOrDefault());
+            var profile = await UserApi.GetProfileById(m_PosterId.GetValueOrDefault());
             GoToProfile(profile.data[0]);
         }
 

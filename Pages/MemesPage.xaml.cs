@@ -2,11 +2,11 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Core;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Microsoft.Win32;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for MemesPage.xaml
@@ -23,9 +23,9 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async void btnSteal_Click(object sender, RoutedEventArgs e)
         {
-            var victimData = await UsersAPI.GetUserProfileByID(System.Convert.ToInt32(txtStealId.Value));
+            var victimData = await UserApi.GetProfileById(System.Convert.ToInt32(txtStealId.Value));
 
-            await UsersAPI.EditProfile(victimData.data[0], AppPersistent.UserToken);
+            await UserApi.EditProfile(victimData.data[0], AppPersistent.UserToken);
             DialogManager.ShowDialog("Success", "Profile copied");
         }
 
@@ -43,7 +43,7 @@ namespace AnonymDesktopClient.Core.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
                 {
-                    await PostAPI.AddRepost(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken);
+                    await PostApi.AddRepost(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken);
                 }
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ namespace AnonymDesktopClient.Core.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await PostAPI.AddView(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken);
+                    await PostApi.AddView(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken);
                 }
 
             }
@@ -85,7 +85,7 @@ namespace AnonymDesktopClient.Core.Pages
                     for (int i = 0; i < txtCommentsCount.Value; ++i)
                     {
                         int idx = rnd.Next(0, m_SpamCommentsList.Length - 1);
-                        var res = await PostAPI.SendComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked, AppPersistent.UserToken);
+                        var res = await PostApi.AddComment((int)txtPostId.Value, m_SpamCommentsList[idx], bAnonymousComments.IsChecked, AppPersistent.UserToken);
                     }
                 }
                 catch (Exception ex)
@@ -116,12 +116,12 @@ namespace AnonymDesktopClient.Core.Pages
 
         private async void btnEditPost_Click(object sender, RoutedEventArgs e)
         {
-            EditPostData postData = new EditPostData();
-            postData.id = (int)txtGroupId.Value;
-            postData.text = txtPostText.Text;
+            EditPostRequest postRequest = new EditPostRequest();
+            postRequest.id = (int)txtGroupId.Value;
+            postRequest.text = txtPostText.Text;
             try
             {
-                var res = await PostAPI.EditPost(postData, AppPersistent.UserToken);
+                var res = await PostApi.EditPost(postRequest, AppPersistent.UserToken);
                 if (!res.error)
                 {
                     DialogManager.ShowDialog("S U C C", "Post editing done");

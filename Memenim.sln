@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnonymDesktopClient.Core", "AnonymDesktopClient.Core.csproj", "{54FB655C-3F5F-4EE7-823B-10409FD10C7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memenim", "Memenim.csproj", "{54FB655C-3F5F-4EE7-823B-10409FD10C7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

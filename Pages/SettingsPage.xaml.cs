@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using AnonymDesktopClient.Core.Settings;
+using Memenim.Settings;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for SettingsPage.xaml

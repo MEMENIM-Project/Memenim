@@ -2,7 +2,7 @@
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace AnonymDesktopClient.Core
+namespace Memenim
 {
     static class DialogManager
     {

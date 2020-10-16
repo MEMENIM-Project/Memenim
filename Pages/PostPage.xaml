@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="AnonymDesktopClient.Core.Pages.PostPage"
+﻿<UserControl x:Class="Memenim.Pages.PostPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:uc="clr-namespace:AnonymDesktopClient"
-      xmlns:local="clr-namespace:AnonymDesktopClient.Core.Widgets"
+      xmlns:widgets="clr-namespace:Memenim.Pages"
+      xmlns:local="clr-namespace:Memenim.Widgets"
       mc:Ignorable="d" 
       d:DesignHeight="477.966" d:DesignWidth="843.22">
 

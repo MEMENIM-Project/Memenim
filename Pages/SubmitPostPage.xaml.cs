@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using Memenim.Core;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for SubmitPostPage.xaml
@@ -27,11 +27,11 @@ namespace AnonymDesktopClient.Core.Pages
                 photo_big = "",
                 photo_medium = "",
                 photo_small = "",
-                size = new SizeData()
+                size = new PhotoSizeData()
                 {
-                    photo_big = new RectData(),
-                    photo_medium = new RectData(),
-                    photo_small = new RectData()
+                    photo_big = new RectangleData(),
+                    photo_medium = new RectangleData(),
+                    photo_small = new RectangleData()
                 }
             };
         }
@@ -48,7 +48,7 @@ namespace AnonymDesktopClient.Core.Pages
             try
             {
                 m_PostData.author_watch++;
-                var res = await PostAPI.SubmitPost(m_PostData, AppPersistent.UserToken);
+                var res = await PostApi.AddPost(m_PostData, AppPersistent.UserToken);
                 if (!res.error)
                 {
                     DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait");

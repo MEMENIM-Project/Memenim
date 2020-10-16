@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Core;
+using Memenim.Core.Api;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for LoginPage.xaml
@@ -24,7 +24,7 @@ namespace AnonymDesktopClient.Core.Pages
 
             try
             {
-                var result = await UsersAPI.Login(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
+                var result = await UserApi.Login(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
 
                 if (result.error)
                 {

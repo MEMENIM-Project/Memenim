@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AnonymDesktopClient.Core.Utils;
-using AnonymDesktopClient.Core.Widgets;
-using Memenim.Core;
+using Memenim.Utils;
+using Memenim.Widgets;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for PostsPage.xaml
@@ -17,8 +17,8 @@ namespace AnonymDesktopClient.Core.Pages
     {
         public ICommand OnPostScrollEnd { get; set; }
 
-        public List<PostRequest.EPostType> PostTypes { get; } = new List<PostRequest.EPostType>()
-        { PostRequest.EPostType.Popular, PostRequest.EPostType.New, PostRequest.EPostType.My, PostRequest.EPostType.Favorite };
+        public List<PostType> PostTypes { get; } = new List<PostType>()
+        { PostType.Popular, PostType.New, PostType.My, PostType.Favorite };
 
         private int m_PostsCount = 20;
         private int m_Offset = 0;
@@ -32,7 +32,7 @@ namespace AnonymDesktopClient.Core.Pages
                   {
                       count = m_PostsCount,
                       offset = m_Offset,
-                      type = (PostRequest.EPostType)lstPostType.SelectedItem
+                      type = (PostType)lstPostType.SelectedItem
                   };
                   await LoadNewPosts(request);
               });
@@ -47,7 +47,7 @@ namespace AnonymDesktopClient.Core.Pages
         {
             postsLists.Children.Clear();
             m_Offset = 0;
-            var postsResponse = await PostAPI.GetAllPosts(filters, AppPersistent.UserToken);
+            var postsResponse = await PostApi.GetAll(filters, AppPersistent.UserToken);
 
             if (postsResponse == null) { return false; }
             AddPostsToList(postsResponse.data);
@@ -56,7 +56,7 @@ namespace AnonymDesktopClient.Core.Pages
 
         async Task<bool> LoadNewPosts(PostRequest filter)
         {
-            var postsResponse = await PostAPI.GetAllPosts(filter, AppPersistent.UserToken);
+            var postsResponse = await PostApi.GetAll(filter, AppPersistent.UserToken);
 
             if (postsResponse == null) { return false; }
             AddPostsToList(postsResponse.data);
@@ -89,9 +89,9 @@ namespace AnonymDesktopClient.Core.Pages
             PostRequest request = new PostRequest()
             {
                 count = m_PostsCount,
-                type = (PostRequest.EPostType)lstPostType.SelectedItem
+                type = (PostType)lstPostType.SelectedItem
             };
-            var postsResponse = await PostAPI.GetAllPosts(request, AppPersistent.UserToken);
+            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken);
             AddPostsToList(postsResponse.data);
             loadingRing.Visibility = Visibility.Hidden;
 

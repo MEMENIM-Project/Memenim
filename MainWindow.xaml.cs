@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Windows;
-using AnonymDesktopClient.Core.Pages;
-using AnonymDesktopClient.Core.Settings;
+using Memenim.Pages;
+using Memenim.Settings;
 using MahApps.Metro.Controls;
 using RIS.Extensions;
 
-namespace AnonymDesktopClient.Core
+namespace Memenim
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

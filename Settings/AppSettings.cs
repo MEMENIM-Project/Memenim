@@ -2,7 +2,7 @@
 using RIS.Settings;
 using RIS.Settings.Ini;
 
-namespace AnonymDesktopClient.Core.Settings
+namespace Memenim.Settings
 {
     public class AppSettings : IniSettings
     {

@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using AnonymDesktopClient.Core.Pages;
+using Memenim.Pages;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for ImagePreviewButton.xaml

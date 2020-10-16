@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using AnonymDesktopClient.Core.Utils;
-using Memenim.Core;
+using Memenim.Utils;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for PostWidget.xaml
@@ -78,7 +78,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostAPI.LikePost(CurrentPostData.id, AppPersistent.UserToken);
+            var res = await PostApi.AddLike(CurrentPostData.id, AppPersistent.UserToken);
             if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
@@ -89,7 +89,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostAPI.DislikePost(CurrentPostData.id, AppPersistent.UserToken);
+            var res = await PostApi.AddDislike(CurrentPostData.id, AppPersistent.UserToken);
             if (res.error)
             {
                 DialogManager.ShowDialog("F U C K", res.message);
@@ -100,7 +100,7 @@ namespace AnonymDesktopClient.Core.Widgets
 
         async Task UpdatePostStats()
         {
-            var res = await PostAPI.GetPostById(CurrentPostData.id, AppPersistent.UserToken);
+            var res = await PostApi.GetById(CurrentPostData.id, AppPersistent.UserToken);
 
             if (res.error)
             {

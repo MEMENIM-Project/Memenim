@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Core;
+using Memenim.Core.Api;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for RegisterUser.xaml
@@ -24,7 +24,7 @@ namespace AnonymDesktopClient.Core.Pages
 
             try
             {
-                var result = await UsersAPI.RegisterUser(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
+                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
 
                 if (result.error)
                 {
@@ -54,12 +54,12 @@ namespace AnonymDesktopClient.Core.Pages
             const string name = "bot";
             ulong counter = 0;
 
-            var result = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+            var result = await UserApi.Register(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
 
             while (result.error)
             {
                 ++counter;
-                result = await UsersAPI.RegisterUser(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+                result = await UserApi.Register(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
             }
 
             AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));

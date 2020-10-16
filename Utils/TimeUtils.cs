@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnonymDesktopClient.Core.Utils
+namespace Memenim.Utils
 {
     public static class TimeUtils
     {

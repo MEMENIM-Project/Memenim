@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using MahApps.Metro.IconPacks;
 
-namespace AnonymDesktopClient.Core.Widgets
+namespace Memenim.Widgets
 {
     /// <summary>
     /// Interaction logic for IconButton.xaml

@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AnonymDesktopClient.Core.Utils;
-using AnonymDesktopClient.Core.Widgets;
+using Memenim.Utils;
+using Memenim.Widgets;
 using Tenor;
 using Tenor.Schema;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for TennorSearchPage.xaml

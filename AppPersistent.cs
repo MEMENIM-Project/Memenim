@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AnonymDesktopClient.Core
+namespace Memenim
 {
     public static class AppPersistent
     {

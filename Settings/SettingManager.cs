@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnonymDesktopClient.Core.Settings
+namespace Memenim.Settings
 {
     public static class SettingManager
     {

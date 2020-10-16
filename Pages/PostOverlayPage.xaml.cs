@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Data;
 
-namespace AnonymDesktopClient.Core.Pages
+namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for PostOverlayPage.xaml
