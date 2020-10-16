@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Memenim.Pages.RegisterUser"
+﻿<local:Page x:Class="Memenim.Pages.RegisterUser"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -37,4 +37,4 @@
                 Width="190" Height="30" Name="btnAutoReg" Click="btnAutoReg_Click">Auto register</Button>-->
         </StackPanel>
     </Grid>
-</UserControl>
+</local:Page>

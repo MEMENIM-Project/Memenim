@@ -6,17 +6,18 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Managers;
 
 namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for SubmitPostPage.xaml
     /// </summary>
-    public partial class SubmitPostPage : UserControl
+    public partial class SubmitPostPage : Page
     {
         private PostData m_PostData;
 
-        public SubmitPostPage()
+        public SubmitPostPage() : base()
         {
             InitializeComponent();
             m_PostData = new PostData();
@@ -36,7 +37,7 @@ namespace Memenim.Pages
             };
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnEnter(object sender, RoutedEventArgs e)
         {
             DataContext = m_PostData;
             wdgPostPreview.CurrentPostData = m_PostData;
@@ -51,12 +52,12 @@ namespace Memenim.Pages
                 var res = await PostApi.AddPost(m_PostData, AppPersistent.UserToken);
                 if (!res.error)
                 {
-                    DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait");
+                    await DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait");
                 }
             }
             catch (Exception ex)
             {
-                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
+                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
 
         }
@@ -71,11 +72,11 @@ namespace Memenim.Pages
             }
             else if (rbImageTennor.IsChecked == true)
             {
-                PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = SelectPhotoForPost });
+                //PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = SelectPhotoForPost });
             }
             else
             {
-                PageNavigationManager.SwitchToSubpage(new AnonymGallerySearchPage() { OnPicSelect = SelectPhotoForPost });
+                //PageNavigationManager.SwitchToSubpage(new AnonymGallerySearchPage() { OnPicSelect = SelectPhotoForPost });
             }
         }
 

@@ -5,6 +5,7 @@ using Memenim.Pages;
 using Memenim.Settings;
 using MahApps.Metro.Controls;
 using RIS.Extensions;
+using Memenim.Managers;
 
 namespace Memenim
 {
@@ -20,6 +21,14 @@ namespace Memenim
             InitializeComponent();
 
             CurrentMainWindow = this;
+
+            Loaded += (s, e) => 
+            {
+                if (OverlayPageController.Instance == null)
+                    OverlayPageController.Instance = new OverlayPageController();
+
+                rootLayout.Children.Add(OverlayPageController.Instance);
+            };
 
             SettingManager.MainWindow = this;
 
@@ -46,16 +55,16 @@ namespace Memenim
                     AppPersistent.UserToken = AppPersistent.WinUnprotect(userToken, "UserToken");
                     AppPersistent.LocalUserId = AppPersistent.WinUnprotect(userId, "UserId").ToInt();
 
-                    PageNavigationManager.SwitchToPage(new ApplicationPage());
+                    PageNavigationManager.SwitchToPage<ApplicationPage>();
                 }
                 else
                 {
-                    PageNavigationManager.SwitchToPage(new LoginPage());
+                    PageNavigationManager.SwitchToPage<LoginPage>();
                 }
             }
             catch (CryptographicException)
             {
-                PageNavigationManager.SwitchToPage(new LoginPage());
+                PageNavigationManager.SwitchToPage<LoginPage>();
             }
         }
 

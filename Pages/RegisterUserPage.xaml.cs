@@ -3,13 +3,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
+using Memenim.Managers;
 
 namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for RegisterUser.xaml
     /// </summary>
-    public partial class RegisterUser : UserControl
+    public partial class RegisterUser : Page
     {
         public RegisterUser()
         {
@@ -38,7 +39,7 @@ namespace Memenim.Pages
 
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
-                    PageNavigationManager.SwitchToPage(new ApplicationPage());
+                    PageNavigationManager.SwitchToPage<ApplicationPage>();
                 }
             }
             catch (Exception ex)
@@ -69,12 +70,12 @@ namespace Memenim.Pages
             AppPersistent.LocalUserId = result.data.id;
 
             DialogManager.ShowDialog("S U C C", "Registered user with username " + name + counter.ToString("D10"));
-            PageNavigationManager.SwitchToPage(new ApplicationPage());
+            PageNavigationManager.SwitchToPage<ApplicationPage>();
         }
 
         private void btnGoToLogin_Click(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.SwitchToPage(new LoginPage());
+            PageNavigationManager.SwitchToPage<LoginPage>();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

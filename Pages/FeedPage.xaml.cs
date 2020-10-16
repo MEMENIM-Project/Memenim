@@ -7,13 +7,14 @@ using Memenim.Utils;
 using Memenim.Widgets;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Managers;
 
 namespace Memenim.Pages
 {
     /// <summary>
     /// Interaction logic for PostsPage.xaml
     /// </summary>
-    public partial class FeedPage : UserControl
+    public partial class FeedPage : Page
     {
         public ICommand OnPostScrollEnd { get; set; }
 
@@ -23,7 +24,7 @@ namespace Memenim.Pages
         private int m_PostsCount = 20;
         private int m_Offset = 0;
 
-        public FeedPage()
+        public FeedPage() : base()
         {
             InitializeComponent();
             OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
@@ -37,10 +38,6 @@ namespace Memenim.Pages
                   await LoadNewPosts(request);
               });
             DataContext = this;
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
         }
 
         async Task<bool> UpdatePosts(PostRequest filters)
@@ -99,14 +96,15 @@ namespace Memenim.Pages
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.OpenOverlay(new PostOverlayPage() { PostInfo = (sender as PostWidget).CurrentPostData });
+            OverlayPageController.Instance.RequestOverlay<PostOverlayPage>();
+            //PageNavigationManager.OpenOverlay(new PostOverlayPage() { PostInfo = (sender as PostWidget).CurrentPostData });
         }
 
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubpage(new SubmitPostPage());
+            PageNavigationManager.SwitchToSubpage<SubmitPostPage>();
         }
     }
 }

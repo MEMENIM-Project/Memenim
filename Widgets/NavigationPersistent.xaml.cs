@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using MahApps.Metro.Controls;
+using Memenim.Managers;
+using Memenim.Pages;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Memenim.Widgets
@@ -6,30 +9,32 @@ namespace Memenim.Widgets
     /// <summary>
     /// Interaction logic for NavigationPersistent.xaml
     /// </summary>
-    public partial class NavigationPersistent : UserControl
+    public partial class TabNavigationController : UserControl
     {
         public static readonly RoutedEvent RedirectEvent;
 
+        public object PageContent { get; set; }
 
-        static NavigationPersistent()
+
+        static TabNavigationController()
         {
-            RedirectEvent = EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(NavigationPersistent));
+            RedirectEvent = EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(TabNavigationController));
         }
 
-        public NavigationPersistent()
+        public TabNavigationController()
         {
             InitializeComponent();
         }
 
         public event RoutedEventHandler RedirectRequested
         {
-            add { AddHandler(NavigationPersistent.RedirectEvent, value); }
-            remove { RemoveHandler(NavigationPersistent.RedirectEvent, value); }
+            add { AddHandler(TabNavigationController.RedirectEvent, value); }
+            remove { RemoveHandler(TabNavigationController.RedirectEvent, value); }
         }
 
         void RaiseRedirectEvent()
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(NavigationPersistent.RedirectEvent);
+            RoutedEventArgs newEventArgs = new RoutedEventArgs(TabNavigationController.RedirectEvent);
             RaiseEvent(newEventArgs);
         }
 
@@ -39,6 +44,9 @@ namespace Memenim.Widgets
             IconButton btn = sender as IconButton;
 
             GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, btn.RedirectTag);
+
+            //PageContent = PageNavigationManager.GetPage<FeedPage>();
+
             RaiseRedirectEvent();
         }
 

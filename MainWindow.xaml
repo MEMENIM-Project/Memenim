@@ -23,7 +23,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+    <Grid x:Name="rootLayout">
         <mah:MetroContentControl x:Name="contentArea"/>
     </Grid>
 </mah:MetroWindow>

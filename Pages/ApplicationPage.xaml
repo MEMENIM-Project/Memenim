@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Memenim.Pages.ApplicationPage"
+﻿<local:Page x:Class="Memenim.Pages.ApplicationPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,14 +17,15 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <widgets:NavigationPersistent RedirectRequested="NavigationPersistent_RedirectRequested"/>
-        <mah:TransitioningContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3" Margin="10" Transition="LeftReplace"/>
+        <widgets:TabNavigationController RedirectRequested="NavigationPersistent_RedirectRequested" x:Name="navBar"/>
+
+        <mah:TransitioningContentControl Name="contentArea" Grid.Column="2" Grid.RowSpan="3" Content="{Binding ElementName=navBar, Path=PageContent}"/>
         <mah:TransitioningContentControl Name="overlayArea" Grid.Column="2" Grid.RowSpan="3"/>
 
         <mah:FlyoutsControl Grid.Column="1" x:Name="flyoutContorls">
             <mah:Flyout x:Name="flyoutSettings">
-                <mah:MetroHeader Header="Settings"></mah:MetroHeader>
+                <mah:MetroHeader Header="Settings"/>
             </mah:Flyout>
         </mah:FlyoutsControl>
     </Grid>
-</UserControl>
+</local:Page>

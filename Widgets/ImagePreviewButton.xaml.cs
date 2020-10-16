@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Pages;
+using Memenim.Managers;
 
 namespace Memenim.Widgets
 {

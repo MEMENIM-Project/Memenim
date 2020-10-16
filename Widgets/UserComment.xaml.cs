@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Pages;
 using Memenim.Core.Api;
+using Memenim.Managers;
 
 namespace Memenim.Widgets
 {
@@ -60,8 +61,8 @@ namespace Memenim.Widgets
 
         private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
-            PageNavigationManager.CloseOverlay();
+            //PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
+            //PageNavigationManager.CloseOverlay();
         }
     }
 }
