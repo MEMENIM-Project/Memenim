@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AnonymDesktopClient.Managers;
 using Memenim.Core.Data;
 
 namespace AnonymDesktopClient.Core.Pages

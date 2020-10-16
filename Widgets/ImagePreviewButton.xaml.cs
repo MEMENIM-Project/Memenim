@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AnonymDesktopClient.Core.Pages;
+using AnonymDesktopClient.Managers;
 
 namespace AnonymDesktopClient.Core.Widgets
 {

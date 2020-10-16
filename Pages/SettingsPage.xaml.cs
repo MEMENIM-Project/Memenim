@@ -2,13 +2,14 @@
 using System.Windows;
 using System.Windows.Controls;
 using AnonymDesktopClient.Core.Settings;
+using AnonymDesktopClient.Managers;
 
 namespace AnonymDesktopClient.Core.Pages
 {
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : UserControl
+    public partial class SettingsPage : Page
     {
         public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>()
         {
@@ -17,7 +18,7 @@ namespace AnonymDesktopClient.Core.Pages
             {"ja-JP", "日本語" }
         };
 
-        public SettingsPage()
+        public SettingsPage() : base()
         {
             InitializeComponent();
             DataContext = this;
@@ -37,7 +38,7 @@ namespace AnonymDesktopClient.Core.Pages
             AppPersistent.RemoveFromStore("UserToken");
             AppPersistent.RemoveFromStore("UserId");
 
-            PageNavigationManager.SwitchToPage(new LoginPage());
+            PageNavigationManager.SwitchToPage<LoginPage>();
         }
 
         private void SplitButton_SelectionChanged(object sender, SelectionChangedEventArgs e)

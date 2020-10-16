@@ -7,7 +7,7 @@ namespace AnonymDesktopClient.Core.Pages
     /// <summary>
     /// Interaction logic for PlaceholderPage.xaml
     /// </summary>
-    public partial class PlaceholderPage : UserControl
+    public partial class PlaceholderPage : Page
     {
         private string[] SmilesPool = new string[]
         {
@@ -18,14 +18,15 @@ namespace AnonymDesktopClient.Core.Pages
             "(* _ω_)…"
         };
 
-        public PlaceholderPage()
+        public PlaceholderPage() : base()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
             Random rnd = new Random();
             int idx = rnd.Next(0, SmilesPool.Length - 1);
             txtSmile.Text = SmilesPool[idx];

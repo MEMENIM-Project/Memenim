@@ -31,13 +31,13 @@ namespace AnonymDesktopClient.Core.Widgets
         private void SelectAvatarFromTennor_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
-            PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeAvatar });
+            //PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeAvatar });
         }
 
         private void SelectBannerFromTennor_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
-            PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeBanner });
+            //PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeBanner });
         }
 
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)

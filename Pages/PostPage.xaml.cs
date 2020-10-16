@@ -120,7 +120,7 @@ namespace AnonymDesktopClient.Core.Pages
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, data.id);
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubpage(new UserProfilePage());
+            //PageNavigationManager.SwitchToSubpage(new UserProfilePage());
         }
     }
 }

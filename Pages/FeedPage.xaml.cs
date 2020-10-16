@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AnonymDesktopClient.Core.Utils;
 using AnonymDesktopClient.Core.Widgets;
+using AnonymDesktopClient.Managers;
 using Memenim.Core;
 using Memenim.Core.Data;
 
@@ -13,7 +14,7 @@ namespace AnonymDesktopClient.Core.Pages
     /// <summary>
     /// Interaction logic for PostsPage.xaml
     /// </summary>
-    public partial class FeedPage : UserControl
+    public partial class FeedPage : Page
     {
         public ICommand OnPostScrollEnd { get; set; }
 
@@ -23,7 +24,7 @@ namespace AnonymDesktopClient.Core.Pages
         private int m_PostsCount = 20;
         private int m_Offset = 0;
 
-        public FeedPage()
+        public FeedPage() : base()
         {
             InitializeComponent();
             OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
@@ -37,10 +38,6 @@ namespace AnonymDesktopClient.Core.Pages
                   await LoadNewPosts(request);
               });
             DataContext = this;
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
         }
 
         async Task<bool> UpdatePosts(PostRequest filters)
@@ -106,7 +103,7 @@ namespace AnonymDesktopClient.Core.Pages
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubpage(new SubmitPostPage());
+            PageNavigationManager.SwitchToSubpage<SubmitPostPage>();
         }
     }
 }

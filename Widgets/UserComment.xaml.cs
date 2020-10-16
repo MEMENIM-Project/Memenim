@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using AnonymDesktopClient.Core.Pages;
+using AnonymDesktopClient.Managers;
 using Memenim.Core;
 
 namespace AnonymDesktopClient.Core.Widgets
@@ -60,8 +61,8 @@ namespace AnonymDesktopClient.Core.Widgets
 
         private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
-            PageNavigationManager.CloseOverlay();
+            //PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
+            //PageNavigationManager.CloseOverlay();
         }
     }
 }

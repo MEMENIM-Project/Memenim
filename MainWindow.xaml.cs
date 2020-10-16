@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Windows;
 using AnonymDesktopClient.Core.Pages;
 using AnonymDesktopClient.Core.Settings;
+using AnonymDesktopClient.Managers;
 using MahApps.Metro.Controls;
 using RIS.Extensions;
 
@@ -46,16 +47,16 @@ namespace AnonymDesktopClient.Core
                     AppPersistent.UserToken = AppPersistent.WinUnprotect(userToken, "UserToken");
                     AppPersistent.LocalUserId = AppPersistent.WinUnprotect(userId, "UserId").ToInt();
 
-                    PageNavigationManager.SwitchToPage(new ApplicationPage());
+                    PageNavigationManager.SwitchToPage<ApplicationPage>();
                 }
                 else
                 {
-                    PageNavigationManager.SwitchToPage(new LoginPage());
+                    PageNavigationManager.SwitchToPage<LoginPage>();
                 }
             }
             catch (CryptographicException)
             {
-                PageNavigationManager.SwitchToPage(new LoginPage());
+                PageNavigationManager.SwitchToPage<LoginPage>();
             }
         }
 

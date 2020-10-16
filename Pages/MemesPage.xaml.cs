@@ -11,12 +11,12 @@ namespace AnonymDesktopClient.Core.Pages
     /// <summary>
     /// Interaction logic for MemesPage.xaml
     /// </summary>
-    public partial class MemesPage : UserControl
+    public partial class MemesPage : Page
     {
 
         private string[] m_SpamCommentsList;
 
-        public MemesPage()
+        public MemesPage() : base()
         {
             InitializeComponent();
         }
@@ -26,7 +26,7 @@ namespace AnonymDesktopClient.Core.Pages
             var victimData = await UsersAPI.GetUserProfileByID(System.Convert.ToInt32(txtStealId.Value));
 
             await UsersAPI.EditProfile(victimData.data[0], AppPersistent.UserToken);
-            DialogManager.ShowDialog("Success", "Profile copied");
+            await DialogManager.ShowDialog("Success", "Profile copied");
         }
 
         void LockButtons(bool state = true)
@@ -48,10 +48,10 @@ namespace AnonymDesktopClient.Core.Pages
             }
             catch (Exception ex)
             {
-                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
+                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
             LockButtons(false);
-            DialogManager.ShowDialog("Success", "BOOOOSTED");
+            await DialogManager.ShowDialog("Success", "BOOOOSTED");
         }
 
         private async void btnViewsBoost_Click(object sender, RoutedEventArgs e)
@@ -90,9 +90,9 @@ namespace AnonymDesktopClient.Core.Pages
                 }
                 catch (Exception ex)
                 {
-                    DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
+                    await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
                 }
-                DialogManager.ShowDialog("Success", "Comment section destoroyed ;)");
+                await DialogManager.ShowDialog("Success", "Comment section destoroyed ;)");
                 btnSpamComments.IsEnabled = true;
             }
         }
@@ -124,16 +124,16 @@ namespace AnonymDesktopClient.Core.Pages
                 var res = await PostAPI.EditPost(postData, AppPersistent.UserToken);
                 if (!res.error)
                 {
-                    DialogManager.ShowDialog("S U C C", "Post editing done");
+                    await DialogManager.ShowDialog("S U C C", "Post editing done");
                 }
                 else
                 {
-                    DialogManager.ShowDialog("Not S U C C", res.message);
+                    await DialogManager.ShowDialog("Not S U C C", res.message);
                 }
             }
             catch (Exception ex)
             {
-                DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
+                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message);
             }
         }
     }
