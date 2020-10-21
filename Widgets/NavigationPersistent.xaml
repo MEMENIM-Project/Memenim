@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Memenim.Widgets.NavigationPersistent"
+             d:DataContext="{d:DesignInstance local:NavigationPersistent}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,12 +7,15 @@
              xmlns:local="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="40">
+
     <Control.Resources>
         <SolidColorBrush x:Key="NavBarBackground" Color="#013a89" />
+
         <Style x:Key="Navbar" TargetType="Grid">
             <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent}"></Setter>
         </Style>
     </Control.Resources>
+
     <Grid Style="{StaticResource Navbar}">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>

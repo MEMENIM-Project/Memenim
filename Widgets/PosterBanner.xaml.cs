@@ -1,47 +1,101 @@
-﻿using System.Windows;
+﻿using System;
+using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Memenim.Core.Data;
 using Memenim.Pages;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for PosterBanner.xaml
-    /// </summary>
     public partial class PosterBanner : UserControl
     {
-        public int PosterID { get; set; }
-        public string PosterImageSource { get; set; }
-        public string PosterName { get; set; } = "Unknown";
-        public string PostTime { get; set; }
-        public bool IsAnonymousPost { get; set; }
+        public static readonly DependencyProperty UserIdProperty =
+            DependencyProperty.Register("UserId", typeof(int), typeof(PosterBanner), new PropertyMetadata(-1));
+        public static readonly DependencyProperty UserNameProperty =
+            DependencyProperty.Register("UserName", typeof(string), typeof(PosterBanner), new PropertyMetadata("Unknown"));
+        public static readonly DependencyProperty UserAvatarSourceProperty =
+            DependencyProperty.Register("UserAvatarSource", typeof(string), typeof(PosterBanner), new PropertyMetadata((string) null));
+        public static readonly DependencyProperty PostTimeProperty =
+            DependencyProperty.Register("PostTime", typeof(string), typeof(PosterBanner), new PropertyMetadata(DateTime.MinValue.ToString(CultureInfo.CurrentCulture)));
+        public static readonly DependencyProperty IsAnonymousProperty =
+            DependencyProperty.Register("IsAnonymous", typeof(bool), typeof(PosterBanner), new PropertyMetadata(false));
+
+        public int UserId
+        {
+            get
+            {
+                return (int)GetValue(UserIdProperty);
+            }
+            set
+            {
+                SetValue(UserIdProperty, value);
+            }
+        }
+        public string UserName
+        {
+            get
+            {
+                return (string)GetValue(UserNameProperty);
+            }
+            set
+            {
+                SetValue(UserNameProperty, value);
+            }
+        }
+        public string UserAvatarSource
+        {
+            get
+            {
+                return (string)GetValue(UserAvatarSourceProperty);
+            }
+            set
+            {
+                SetValue(UserAvatarSourceProperty, value);
+            }
+        }
+        public string PostTime
+        {
+            get
+            {
+                return (string)GetValue(PostTimeProperty);
+            }
+            set
+            {
+                SetValue(PostTimeProperty, value);
+            }
+        }
+        public bool IsAnonymous
+        {
+            get
+            {
+                return (bool)GetValue(IsAnonymousProperty);
+            }
+            set
+            {
+                SetValue(IsAnonymousProperty, value);
+            }
+        }
 
         public PosterBanner()
         {
             InitializeComponent();
-        }
-
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
             DataContext = this;
-            if (IsAnonymousPost)
-            {
-                txtAnon.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                txtAnon.Visibility = Visibility.Visible;
-            }
         }
 
         private void OnPoster_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (PosterID > 0)
-            {
-                PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = PosterID });
-                PageNavigationManager.CloseOverlay();
+            if (UserId == -1)
+                return;
 
-            }
+            PageNavigationManager.SwitchToSubPage(new UserProfilePage
+            {
+                CurrentProfileData = new ProfileData
+                {
+                    id = UserId
+                }
+            });
+            PageNavigationManager.CloseOverlay();
         }
     }
 }

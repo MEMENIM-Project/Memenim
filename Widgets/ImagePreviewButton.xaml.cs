@@ -6,16 +6,38 @@ using Memenim.Pages;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for ImagePreviewButton.xaml
-    /// </summary>
     public partial class ImagePreviewButton : UserControl
     {
-        public string PreviewImage { get; set; }
-        public string ValueImage { get; set; }
-        public int ButtonSize { get; set; }
+        public static readonly DependencyProperty ImageSourceProperty =
+            DependencyProperty.Register("ImageSource", typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
+        public static readonly DependencyProperty SmallImageSourceProperty =
+            DependencyProperty.Register("SmallImageSource", typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
 
         public Func<string, Task> ButtonPressAction;
+
+        public string ImageSource
+        {
+            get
+            {
+                return (string)GetValue(ImageSourceProperty);
+            }
+            set
+            {
+                SetValue(ImageSourceProperty, value);
+            }
+        }
+        public string SmallImageSource
+        {
+            get
+            {
+                return (string)GetValue(SmallImageSourceProperty);
+            }
+            set
+            {
+                SetValue(SmallImageSourceProperty, value);
+            }
+        }
+        public int ButtonSize { get; set; }
 
         public ImagePreviewButton()
         {
@@ -25,7 +47,9 @@ namespace Memenim.Widgets
 
         private async void Preview_Click(object sender, RoutedEventArgs e)
         {
-            await ButtonPressAction(ValueImage);
+            await ButtonPressAction(ImageSource)
+                .ConfigureAwait(true);
+
             PageNavigationManager.GoBack();
         }
     }

@@ -7,9 +7,6 @@ using Memenim.Core.Api;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for AnonymGallerySearchPage.xaml
-    /// </summary>
     public partial class AnonymGallerySearchPage : UserControl
     {
         public Func<string, Task> OnPicSelect { get; set; }
@@ -17,36 +14,42 @@ namespace Memenim.Pages
         public AnonymGallerySearchPage()
         {
             InitializeComponent();
-        }
-
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
-            await ExecuteSearch();
+            DataContext = this;
         }
 
         public async Task ExecuteSearch()
         {
-            var searchResults = await PhotoApi.GetLibraryPhotos();
+            var searchResults = await PhotoApi.GetLibraryPhotos()
+                .ConfigureAwait(true);
 
             if (searchResults.error)
-            {
                 return;
-            }
 
-            lslImages.Children.Clear();
+            lstImages.Children.Clear();
 
             foreach (var img in searchResults.data)
             {
+                if (string.IsNullOrEmpty(img.photo_medium))
+                    continue;
+                if (string.IsNullOrEmpty(img.photo_small))
+                    continue;
+
                 ImagePreviewButton previewButton = new ImagePreviewButton()
                 {
                     ButtonSize = 200,
                     ButtonPressAction = OnPicSelect,
-                    ValueImage = img.photo_medium,
-                    PreviewImage = img.photo_medium
+                    SmallImageSource = img.photo_small,
+                    ImageSource = img.photo_medium
                 };
-                lslImages.Children.Add(previewButton);
-            }
 
+                lstImages.Children.Add(previewButton);
+            }
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ExecuteSearch()
+                .ConfigureAwait(true);
         }
     }
 }

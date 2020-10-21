@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Memenim.Pages.PostOverlayPage"
+             d:DataContext="{d:DesignInstance local:PostOverlayPage}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,14 +9,15 @@
              xmlns:widgets="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Control.Resources>
 
+    <Control.Resources>
         <SolidColorBrush x:Key="Button.Static.Background" Color="#00ffffff"/>
         <SolidColorBrush x:Key="Button.Border" Color="#00ffffff"/>
-        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#E54D4D4D"/>
-        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#c8aaaaaa"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#c8aaaaaa"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#E54D4D4D"/>
         <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
         <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
         <Style x:Key="OverlayButton" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -28,7 +30,7 @@
                                 <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}" />
                                 <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Border}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
@@ -46,16 +48,17 @@
             </Setter>
         </Style>
     </Control.Resources>
+
     <Grid Loaded="Grid_Loaded">
-        <Button Click="Button_Click" Background="{DynamicResource Overlay.Background}" Style="{StaticResource OverlayButton}"/>
+        <Button Click="Button_Click" Style="{StaticResource OverlayButton}"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="50">
             <StackPanel>
-                <widgets:PostWidget x:Name="wdgPost"/>
-                <widgets:CommentsList x:Name="wdgCommentsList"/>
-                <widgets:WriteComment x:Name="wdgUserComment"/>
+                <widgets:PostWidget CurrentPostData="{Binding Path=CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
+                <widgets:CommentsList PostId="{Binding Path=CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                                      CommentsCount="{Binding Path=CurrentPostData.comments.count, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
+                <widgets:WriteComment x:Name="wdgUserComment"
+                                      PostId="{Binding Path=CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
             </StackPanel>
         </ScrollViewer>
-
-
     </Grid>
 </UserControl>

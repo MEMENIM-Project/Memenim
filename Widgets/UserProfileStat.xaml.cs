@@ -1,15 +1,18 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for UserProfileStat.xaml
-    /// </summary>
     public partial class UserProfileStat : UserControl
     {
-        public string StatTitle { get; set; }
+        public static readonly DependencyProperty StatValueProperty =
+            DependencyProperty.Register("StatValue", typeof(string), typeof(UserProfileStat), new PropertyMetadata(string.Empty));
 
+        public string StatTitle { get; set; }
         public string StatValue
         {
             get
@@ -21,11 +24,6 @@ namespace Memenim.Widgets
                 SetValue(StatValueProperty, value);
             }
         }
-
-        public static readonly DependencyProperty StatValueProperty = DependencyProperty.Register("StatValue",
-                                                                      typeof(string),
-                                                                      typeof(UserProfileStat),
-                                                                      new PropertyMetadata("#NOT_FOUND"));
 
         public UserProfileStat()
         {

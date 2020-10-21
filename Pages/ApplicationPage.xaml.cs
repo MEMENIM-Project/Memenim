@@ -3,63 +3,48 @@ using System.Windows.Controls;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for ApplicationPage.xaml
-    /// </summary>
     public partial class ApplicationPage : UserControl
     {
-        SubmitPostPage m_SubmitPostPage;
-        FeedPage m_FeedPage;
-        PostPage m_PostPage;
-        MemesPage m_MemesPage;
-        PlaceholderPage m_PlaceholderPage;
-        SettingsPage m_SettingsPage;
+        private readonly SubmitPostPage _submitPostPage;
+        private readonly FeedPage _feedPage;
+        private readonly MemesPage _memesPage;
+        private readonly PlaceholderPage _placeholderPage;
+        private readonly SettingsPage _settingsPage;
 
         public ApplicationPage()
         {
             InitializeComponent();
-            m_PostPage = new PostPage();
-            m_FeedPage = new FeedPage();
-            m_SubmitPostPage = new SubmitPostPage();
-            m_MemesPage = new MemesPage();
-            m_SettingsPage = new SettingsPage();
-            m_PlaceholderPage = new PlaceholderPage();
-            PageNavigationManager.SubpageContentControl = contentArea;
+            DataContext = this;
+
+            _feedPage = new FeedPage();
+            _submitPostPage = new SubmitPostPage();
+            _memesPage = new MemesPage();
+            _settingsPage = new SettingsPage();
+            _placeholderPage = new PlaceholderPage();
+
+            PageNavigationManager.SubPageContentControl = contentArea;
             PageNavigationManager.OverlayContentControl = overlayArea;
-            PageNavigationManager.SwitchToSubpage(m_FeedPage);
+            PageNavigationManager.SwitchToSubPage(_feedPage);
         }
 
-
-        private void NavigationPersistent_RedirectRequested(object sender, RoutedEventArgs e)
+        public void NavigateTo(string pageName)
         {
-            string page = GeneralBlackboard.TryGetValue<string>(BlackBoardValues.EPageToRedirect);
-            if (page != null)
-            {
-                NavigateTo(page);
-            }
-        }
-
-        public void NavigateTo(string PageName)
-        {
-            switch (PageName)
+            switch (pageName)
             {
                 case "AllPosts":
-                    PageNavigationManager.SwitchToSubpage(m_FeedPage);
-                    break;
-                case "Post":
-                    PageNavigationManager.SwitchToSubpage(m_PostPage);
+                    PageNavigationManager.SwitchToSubPage(_feedPage);
                     break;
                 case "CreatePost":
-                    PageNavigationManager.SwitchToSubpage(m_SubmitPostPage);
+                    PageNavigationManager.SwitchToSubPage(_submitPostPage);
                     break;
                 case "Memes":
-                    PageNavigationManager.SwitchToSubpage(m_MemesPage);
+                    PageNavigationManager.SwitchToSubPage(_memesPage);
                     break;
                 case "Placeholder":
-                    PageNavigationManager.SwitchToSubpage(m_PlaceholderPage);
+                    PageNavigationManager.SwitchToSubPage(_placeholderPage);
                     break;
                 case "Settings":
-                    TriggerSettingsMenu();
+                    PageNavigationManager.SwitchToSubPage(_settingsPage);
                     break;
                 case "Back":
                     PageNavigationManager.GoBack();
@@ -67,12 +52,14 @@ namespace Memenim.Pages
                 default:
                     break;
             }
-
         }
 
-        void TriggerSettingsMenu()
+        private void NavigationPersistent_RedirectRequested(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.SwitchToSubpage(m_SettingsPage);
+            string page = GeneralBlackboard.TryGetValue<string>(BlackBoardValues.EPageToRedirect);
+
+            if (page != null)
+                NavigateTo(page);
         }
     }
 }

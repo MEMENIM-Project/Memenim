@@ -1,26 +1,20 @@
 ﻿using System.Threading.Tasks;
-using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Memenim
 {
-    static class DialogManager
+    public static class DialogManager
     {
-        public static MetroWindow WindowRef
+        public static Task<MessageDialogResult> ShowDialog(string title, string message,
+            MessageDialogStyle style = MessageDialogStyle.Affirmative, MetroDialogSettings settings = null)
         {
-            set { m_MainWindow = value; }
+            return MainWindow.CurrentInstance.ShowMessageAsync(title, message, style, settings);
         }
 
-        private static MetroWindow m_MainWindow;
-
-        public static async Task ShowDialog(string title, string message)
+        public static Task<string> ShowInputDialog(string title, string message,
+            MetroDialogSettings settings = null)
         {
-            await m_MainWindow.ShowMessageAsync(title, message);
-        }
-
-        public static async Task<string> ShowInputDialog(string title, string message)
-        {
-            return await m_MainWindow.ShowInputAsync(title, message);
+            return MainWindow.CurrentInstance.ShowInputAsync(title, message, settings);
         }
     }
 }

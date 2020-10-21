@@ -1,28 +1,28 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.IconPacks;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for IconButton.xaml
-    /// </summary>
     public partial class IconButton : UserControl
     {
+        public static readonly RoutedEvent OnIconButtonClicked = EventManager.RegisterRoutedEvent("OnIconButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));
+
+        public event EventHandler<RoutedEventArgs> IconButtonClick
+        {
+            add
+            {
+                AddHandler(OnIconButtonClicked, value);
+            }
+            remove
+            {
+                RemoveHandler(OnIconButtonClicked, value);
+            }
+        }
 
         public PackIconModernKind IconKind { get; set; }
-        public string ImageSource { get; set; } = "";
-        public string RedirectTag { get; set; } = "";
-
-
-        public static readonly RoutedEvent OnIconButtonClicked = EventManager.RegisterRoutedEvent("OnIconButtonClick", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(IconButton));
-
-        // expose our event
-        public event RoutedEventHandler IconButtonClick
-        {
-            add { AddHandler(OnIconButtonClicked, value); }
-            remove { RemoveHandler(OnIconButtonClicked, value); }
-        }
+        public string RedirectTag { get; set; } = string.Empty;
 
         public IconButton()
         {
@@ -30,11 +30,9 @@ namespace Memenim.Widgets
             DataContext = this;
         }
 
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(OnIconButtonClicked);
-            RaiseEvent(newEventArgs);
+            RaiseEvent(new RoutedEventArgs(OnIconButtonClicked));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Memenim.Pages.MemesPage"
+             d:DataContext="{d:DesignInstance local:MemesPage}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,6 +8,7 @@
              xmlns:local="clr-namespace:Memenim.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
         <controls:MetroAnimatedTabControl controls:TabControlHelper.Underlined="TabItems">
             <TabItem Header="Profile memes">
@@ -15,13 +17,12 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
+
                     <StackPanel Grid.Row="0">
-                        <controls:MetroHeader Header="Steal user profile">
-                        </controls:MetroHeader>
-                        <controls:NumericUpDown Name="txtStealId"
-                                                controls:TextBoxHelper.Watermark="Victim ID">
-                        </controls:NumericUpDown>
-                        <Button Name="btnSteal" Click="btnSteal_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Do some dirty work</Button>
+                        <controls:MetroHeader Header="Steal user profile"/>
+                        <controls:NumericUpDown Name="txtStealId" controls:TextBoxHelper.Watermark="Victim ID"/>
+                        <Button Name="btnSteal" Click="btnSteal_Click"
+                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Do some dirty work</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -31,6 +32,7 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
+
                     <StackPanel Grid.Row="0">
                         <controls:MetroHeader Header="Comment Spam"></controls:MetroHeader>
                         <controls:NumericUpDown
@@ -42,11 +44,10 @@
                             <Button Click="btnOpenCommentsFile_Click" Name="btnOpenCommentsFile">Open File</Button>
                         </StackPanel>
                         <controls:NumericUpDown
-                            Maximum="400"
-                            Minimum="1"
+                            Maximum="400" Minimum="1"
                             controls:TextBoxHelper.Watermark="Comments Count"
                             controls:TextBoxHelper.SelectAllOnFocus="True"
-                            Name="txtCommentsCount"></controls:NumericUpDown>
+                            Name="txtCommentsCount"/>
                         <CheckBox Name="bAnonymousComments">Send anonymously</CheckBox>
                         <Button
                             Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"
@@ -71,24 +72,20 @@
                         <controls:NumericUpDown
                             controls:TextBoxHelper.Watermark="Views count"
                             controls:TextBoxHelper.SelectAllOnFocus="True"
-                            Minimum="1"
-                            Maximum="400"
+                            Minimum="1" Maximum="400"
                             Name="txtViewsCount"></controls:NumericUpDown>
                         <Button Name="btnViewsBoost" Click="btnViewsBoost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Boost Views</Button>
                         <controls:NumericUpDown
                             controls:TextBoxHelper.Watermark="Shares count"
                             controls:TextBoxHelper.SelectAllOnFocus="True"
-                            Minimum="1"
-                            Maximum="400"
+                            Minimum="1" Maximum="400"
                             Name="txtSharesCount"></controls:NumericUpDown>
                         <Button Name="btnSharesBoost" Click="btnSharesBoost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Boost shares</Button>
                     </StackPanel>
                     <StackPanel Grid.Row="1">
                         <controls:MetroHeader Header="Edit post"></controls:MetroHeader>
-                        <TextBox x:Name="txtPostText"
-                                 controls:TextBoxHelper.Watermark="Post Text"
-                                 AcceptsReturn="True"
-                                 TextWrapping="Wrap">
+                        <TextBox x:Name="txtPostText" controls:TextBoxHelper.Watermark="Post Text"
+                                 AcceptsReturn="True" TextWrapping="Wrap">
                         </TextBox>
                         <Button x:Name="btnEditPost" Click="btnEditPost_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Edit Post</Button>
                     </StackPanel>

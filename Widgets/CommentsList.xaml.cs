@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
@@ -6,66 +7,98 @@ using Memenim.Core.Data;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for CommentsList.xaml
-    /// </summary>
     public partial class CommentsList : UserControl
     {
-        public int PostID { get; set; }
-        public int CommentsCount { get; set; }
+        public static readonly DependencyProperty PostIdProperty =
+            DependencyProperty.Register("PostId", typeof(int), typeof(CommentsList), new PropertyMetadata(-1));
+        public static readonly DependencyProperty CommentsCountProperty =
+            DependencyProperty.Register("CommentsCount", typeof(int), typeof(CommentsList), new PropertyMetadata(0));
 
-        private int m_Offset { get; set; }
+        private const int OffsetPerTime = 20;
 
-        private const int CommentsOffsetValue = 20;
+        private int _offset;
+
+        public int PostId
+        {
+            get
+            {
+                return (int)GetValue(PostIdProperty);
+            }
+            set
+            {
+                SetValue(PostIdProperty, value);
+            }
+        }
+        public int CommentsCount
+        {
+            get
+            {
+                return (int)GetValue(CommentsCountProperty);
+            }
+            set
+            {
+                SetValue(CommentsCountProperty, value);
+            }
+        }
 
         public CommentsList()
         {
             InitializeComponent();
-        }
-
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
-            lstComments.Children.Clear();
-            var res = await PostApi.GetComments(PostID);
-            if (res.error)
-            {
-                DialogManager.ShowDialog("F U C K", res.message);
-                return;
-            }
-            AddComments(res.data);
-            m_Offset += CommentsOffsetValue;
+            DataContext = this;
         }
 
         public void AddComments(List<CommentData> comments)
         {
             foreach (var comment in comments)
             {
-                UserComment commentWidget = new UserComment();
-                commentWidget.UserName = comment.user.name;
-                commentWidget.Comment = comment.text;
-                commentWidget.ImageURL = comment.user.photo;
-                commentWidget.UserID = comment.user.id;
-                commentWidget.CommentID = comment.id;
-                lstComments.Children.Insert(0, commentWidget);
+                UserComment commentWidget = new UserComment
+                {
+                    CurrentCommentData = comment
+                };
+
+                lstComments.Items.Insert(0, commentWidget);
             }
-            if (lstComments.Children.Count >= CommentsCount - 1)
+
+            if (lstComments.Items.Count >= CommentsCount - 1)
+                btnLoadMore.Visibility = Visibility.Collapsed;
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            lstComments.Items.Clear();
+
+            var res = await PostApi.GetComments(PostId)
+                .ConfigureAwait(true);
+
+            if (res.error)
             {
-                btnLoadMore.Visibility = Visibility.Hidden;
+                await DialogManager.ShowDialog("F U C K", res.message)
+                    .ConfigureAwait(true);
+                return;
             }
+
+            AddComments(res.data);
+            _offset += OffsetPerTime;
         }
 
         private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostApi.GetComments(PostID, m_Offset);
             btnLoadMore.IsEnabled = false;
+
+            var res = await PostApi.GetComments(PostId, _offset)
+                .ConfigureAwait(true);
+
             if (res.error)
             {
-                DialogManager.ShowDialog("F U C K", "Cannot load comments");
+                await DialogManager.ShowDialog("F U C K", "Cannot load comments")
+                    .ConfigureAwait(true);
                 return;
             }
+
             AddComments(res.data);
+            _offset += OffsetPerTime;
+
             btnLoadMore.IsEnabled = true;
-            m_Offset += CommentsOffsetValue;
         }
     }
 }

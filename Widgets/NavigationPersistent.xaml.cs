@@ -1,47 +1,42 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for NavigationPersistent.xaml
-    /// </summary>
     public partial class NavigationPersistent : UserControl
     {
-        public static readonly RoutedEvent RedirectEvent;
+        public static readonly RoutedEvent RedirectEvent = EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(EventHandler<RoutedEventArgs>), typeof(NavigationPersistent));
 
-
-        static NavigationPersistent()
+        public event EventHandler<RoutedEventArgs> RedirectRequested
         {
-            RedirectEvent = EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(NavigationPersistent));
+            add
+            {
+                AddHandler(NavigationPersistent.RedirectEvent, value);
+            }
+            remove
+            {
+                RemoveHandler(NavigationPersistent.RedirectEvent, value);
+            }
         }
 
         public NavigationPersistent()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
-        public event RoutedEventHandler RedirectRequested
+        private void RaiseRedirectEvent()
         {
-            add { AddHandler(NavigationPersistent.RedirectEvent, value); }
-            remove { RemoveHandler(NavigationPersistent.RedirectEvent, value); }
+            RaiseEvent(new RoutedEventArgs(RedirectEvent));
         }
-
-        void RaiseRedirectEvent()
-        {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(NavigationPersistent.RedirectEvent);
-            RaiseEvent(newEventArgs);
-        }
-
 
         private void OnNavButtonClick(object sender, RoutedEventArgs e)
         {
-            IconButton btn = sender as IconButton;
+            IconButton button = sender as IconButton;
 
-            GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, btn.RedirectTag);
+            GeneralBlackboard.SetValue(BlackBoardValues.EPageToRedirect, button?.RedirectTag);
             RaiseRedirectEvent();
         }
-
-
     }
 }

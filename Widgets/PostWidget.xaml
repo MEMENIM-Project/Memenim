@@ -1,18 +1,20 @@
 ﻿<UserControl x:Class="Memenim.Widgets.PostWidget"
+             d:DataContext="{d:DesignInstance local:PostWidget}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Border BorderThickness="0" Padding="5">
     <Grid Loaded="Grid_Loaded" VerticalAlignment="Stretch" MouseLeftButtonUp="Post_Click" Background="{StaticResource MahApps.Brushes.Gray10}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
+            <RowDefinition MinHeight="60" Height="60"/>
             <RowDefinition/>
             <RowDefinition/>
-            <RowDefinition Height=".2*"/>
+            <RowDefinition MinHeight="50" Height="50"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -25,18 +27,24 @@
                 <MenuItem Header="Copy Post ID" Click="CopyPostID_Click"></MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        
-        <local:PosterBanner x:Name="wdgPoster" Grid.Row="0" Grid.ColumnSpan="3" Margin="15 15 0 0"/>
-        
-        
-        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding text}" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="Wrap" VerticalAlignment="Top" Margin="15 5 15 5"/>
-        <Image x:Name="imgPost" Source="{Binding attachments[0].photo.photo_medium}" Grid.Row="2" Stretch="Uniform" Grid.ColumnSpan="3" Width="600" VerticalAlignment="Top" Margin="15,1,15,0"/>
 
-        <local:StatButton Grid.Row="3" x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" HorizontalAlignment="Left" />
-        <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28" HorizontalAlignment="Center"/>
+        <local:PosterBanner x:Name="wdgPoster" Grid.Row="0" Grid.ColumnSpan="3" Margin="15 15 15 0"
+                            UserId="{Binding Path=CurrentPostData.owner_id, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                            UserName="{Binding Path=CurrentPostData.owner_name, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" Text="{Binding Path=CurrentPostData.text}" Foreground="{StaticResource MahApps.Brushes.Text}" TextWrapping="Wrap" VerticalAlignment="Top" Margin="15 5 15 5"/>
+        <Image x:Name="imgPost" Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostMediumImageSourceConverter}}" Grid.Row="2" Stretch="Uniform" Grid.ColumnSpan="3"
+               Grid.Column="0" Width="600" VerticalAlignment="Top" Margin="15,1,15,0"/>
+
+        <local:StatButton Grid.Row="3" Grid.Column="0" x:Name="stShare" IsEnabled="False" Icon="Share" ButtonSize="28" HorizontalAlignment="Left"
+                          StatValue="{Binding Path=CurrentPostData.reposts, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+        <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" IsEnabled="False"  Icon="Message" ButtonSize="28" HorizontalAlignment="Center"
+                          StatValue="{Binding Path=CurrentPostData.comments.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
         <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <local:StatButton x:Name="stLikes" ButtonClick="Like_Click" IsEnabled="True" Icon="ThumbsUp" ButtonSize="28" HorizontalAlignment="Right" />
-            <local:StatButton x:Name="stDislikes" ButtonClick="Dislike_Click" IsEnabled="True" Icon="ThumbsDown" ButtonSize="28" HorizontalAlignment="Right" />
+            <local:StatButton x:Name="stLikes" ButtonClick="Like_Click" IsEnabled="True" Icon="ThumbsUp" ButtonSize="28" HorizontalAlignment="Right"
+                              StatValue="{Binding Path=CurrentPostData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+            <local:StatButton x:Name="stDislikes" ButtonClick="Dislike_Click" IsEnabled="True" Icon="ThumbsDown" ButtonSize="28" HorizontalAlignment="Right"
+                              StatValue="{Binding Path=CurrentPostData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
         </StackPanel>
     </Grid>
     </Border>

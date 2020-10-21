@@ -1,33 +1,40 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using Memenim.Core.Api;
 using Memenim.Core.Data;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for PostOverlayPage.xaml
-    /// </summary>
     public partial class PostOverlayPage : UserControl
     {
-        public PostData PostInfo { get; set; }
+        public static readonly DependencyProperty CurrentPostDataProperty =
+            DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(PostOverlayPage), new PropertyMetadata((PostData)null));
+
+        public PostData CurrentPostData
+        {
+            get
+            {
+                return (PostData)GetValue(CurrentPostDataProperty);
+            }
+            set
+            {
+                SetValue(CurrentPostDataProperty, value);
+            }
+        }
 
         public PostOverlayPage()
         {
             InitializeComponent();
-        }
-
-        private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            PageNavigationManager.CloseOverlay();
+            DataContext = this;
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            wdgPost.CurrentPostData = PostInfo;
-            wdgCommentsList.PostID = PostInfo.id;
-            wdgCommentsList.CommentsCount = PostInfo.comments.count;
-            wdgUserComment.PostID = PostInfo.id;
+            var result = await UserApi.GetProfileById(AppPersistent.LocalUserId)
+                .ConfigureAwait(true);
+
+            wdgUserComment.UserAvatarSource = result.data[0].photo;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

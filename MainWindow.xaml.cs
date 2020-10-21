@@ -8,20 +8,16 @@ using RIS.Extensions;
 
 namespace Memenim
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public static MainWindow CurrentMainWindow;
+        public static MainWindow CurrentInstance { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
 
-            CurrentMainWindow = this;
-
-            SettingManager.MainWindow = this;
+            CurrentInstance = this;
 
             Width = SettingManager.AppSettings.WindowWidth;
             Height = SettingManager.AppSettings.WindowHeight;
@@ -31,10 +27,8 @@ namespace Memenim
             WindowState = (WindowState)SettingManager.AppSettings.WindowState;
 
             PageNavigationManager.PageContentControl = contentArea;
-            DialogManager.WindowRef = this;
 
-            LocalizationManager.MainWindow = this;
-            LocalizationManager.SwitchLanguage(SettingManager.AppSettings.Language);
+            LocalizationManager.SwitchLanguage(SettingManager.AppSettings.Language).Wait();
 
             try
             {
@@ -66,6 +60,7 @@ namespace Memenim
             SettingManager.AppSettings.WindowPositionX = Left + (Width / 2.0);
             SettingManager.AppSettings.WindowPositionY = Top + (Height / 2.0);
             SettingManager.AppSettings.WindowState = (int)WindowState;
+
             SettingManager.AppSettings.Save();
         }
     }

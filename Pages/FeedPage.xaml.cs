@@ -3,110 +3,120 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Utils;
+using Memenim.Commands;
 using Memenim.Widgets;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for PostsPage.xaml
-    /// </summary>
     public partial class FeedPage : UserControl
     {
+        private const int OffsetPerTime = 20;
+
+        private int _offset;
+
+        public List<PostType> PostTypes { get; } = new List<PostType>
+        {
+            PostType.Popular,
+            PostType.New,
+            PostType.My,
+            PostType.Favorite
+        };
         public ICommand OnPostScrollEnd { get; set; }
-
-        public List<PostType> PostTypes { get; } = new List<PostType>()
-        { PostType.Popular, PostType.New, PostType.My, PostType.Favorite };
-
-        private int m_PostsCount = 20;
-        private int m_Offset = 0;
 
         public FeedPage()
         {
             InitializeComponent();
-            OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
-              {
-                  PostRequest request = new PostRequest()
-                  {
-                      count = m_PostsCount,
-                      offset = m_Offset,
-                      type = (PostType)lstPostType.SelectedItem
-                  };
-                  await LoadNewPosts(request);
-              });
             DataContext = this;
+            OnPostScrollEnd = new BasicCommand(_ => true, async _ =>
+            {
+                PostRequest request = new PostRequest
+                {
+                    count = OffsetPerTime,
+                    offset = _offset,
+                    type = (PostType)lstPostType.SelectedItem
+                };
+
+                await LoadNewPosts(request)
+                    .ConfigureAwait(true);
+            });
         }
 
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        private Task UpdatePosts()
         {
-        }
+            PostRequest request = new PostRequest()
+            {
+                count = OffsetPerTime,
+                offset = 0,
+                type = (PostType)lstPostType.SelectedItem
+            };
 
-        async Task<bool> UpdatePosts(PostRequest filters)
+            return UpdatePosts(request);
+        }
+        private async Task UpdatePosts(PostRequest request)
         {
+            loadingRing.Visibility = Visibility.Visible;
+
             postsLists.Children.Clear();
-            m_Offset = 0;
-            var postsResponse = await PostApi.GetAll(filters, AppPersistent.UserToken);
+            _offset = 0;
 
-            if (postsResponse == null) { return false; }
+            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken)
+                .ConfigureAwait(true);
+
+            if (postsResponse == null)
+                return;
+
             AddPostsToList(postsResponse.data);
-            return true;
+
+            loadingRing.Visibility = Visibility.Hidden;
         }
 
-        async Task<bool> LoadNewPosts(PostRequest filter)
+        private async Task LoadNewPosts(PostRequest request)
         {
-            var postsResponse = await PostApi.GetAll(filter, AppPersistent.UserToken);
+            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken)
+                .ConfigureAwait(true);
 
-            if (postsResponse == null) { return false; }
+            if (postsResponse == null)
+                return;
+
             AddPostsToList(postsResponse.data);
-            return true;
-
         }
 
-        void AddPostsToList(List<PostData> posts)
+        private void AddPostsToList(List<PostData> posts)
         {
             foreach (var post in posts)
             {
                 PostWidget widget = new PostWidget()
                 {
-                    PostText = post.text,
-                    ImageURL = post.attachments[0].photo.photo_medium,
                     CurrentPostData = post
                 };
                 widget.PostClick += OnPost_Click;
+
                 postsLists.Children.Add(widget);
             }
-            m_Offset += m_PostsCount;
-        }
 
+            _offset += OffsetPerTime;
+        }
 
         private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            loadingRing.Visibility = Visibility.Visible;
-            postsLists.Children.Clear();
-
-            PostRequest request = new PostRequest()
-            {
-                count = m_PostsCount,
-                type = (PostType)lstPostType.SelectedItem
-            };
-            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken);
-            AddPostsToList(postsResponse.data);
-            loadingRing.Visibility = Visibility.Hidden;
-
+            await UpdatePosts()
+                .ConfigureAwait(true);
         }
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.OpenOverlay(new PostOverlayPage() { PostInfo = (sender as PostWidget).CurrentPostData });
+            PageNavigationManager.OpenOverlay(new PostOverlayPage
+            {
+                CurrentPostData = (sender as PostWidget)?.CurrentPostData
+            });
         }
-
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubpage(new SubmitPostPage());
+            PageNavigationManager.SwitchToSubPage(new SubmitPostPage());
         }
     }
 }

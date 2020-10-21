@@ -1,66 +1,92 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Pages;
 using Memenim.Core.Api;
+using Memenim.Core.Data;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for UserComment.xaml
-    /// </summary>
     public partial class UserComment : UserControl
     {
+        public static readonly DependencyProperty CurrentCommentDataProperty =
+            DependencyProperty.Register("CurrentCommentData", typeof(CommentData), typeof(UserComment),
+                new PropertyMetadata(new CommentData {user = new CommentData.CommentUserData {id = -1} }));
+
+        public CommentData CurrentCommentData
+        {
+            get
+            {
+                return (CommentData)GetValue(CurrentCommentDataProperty);
+            }
+            set
+            {
+                SetValue(CurrentCommentDataProperty, value);
+            }
+        }
+
         public UserComment()
         {
             InitializeComponent();
-            this.DataContext = this;
+            DataContext = this;
         }
 
-        public string UserName { get; set; }
-        public string Comment { get; set; }
-        public string ImageURL { get; set; }
-        public string Likes { get; set; } = "0";
-        public string Dislikes { get; set; } = "0";
-        public int UserID { get; set; }
-        public int CommentID { get; set; }
-
-        private async void Like_Click(object sender, RoutedEventArgs e)
+        public void UpdateComment()
         {
-            var result = await PostApi.AddLikeComment(CommentID, AppPersistent.UserToken);
-            if (!result.error)
+            if (CurrentCommentData.user.id == -1)
             {
-                DialogManager.ShowDialog("Liked", "Liked");
+                CurrentCommentData.user.name = "Unknown";
             }
-            else
-            {
-                DialogManager.ShowDialog("Error", result.message);
-            }
-        }
-
-        private async void Dislike_Click(object sender, RoutedEventArgs e)
-        {
-            var result = await PostApi.AddDislikeComment(CommentID, AppPersistent.UserToken);
-            if (!result.error)
-            {
-                DialogManager.ShowDialog("Disliked", "Disliked");
-            }
-            else
-            {
-                DialogManager.ShowDialog("F U C K", result.message);
-            }
-
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            stLikes.StatValue = Likes;
-            stDislikes.StatValue = Dislikes;
+            UpdateComment();
+        }
+
+        private async void Like_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await PostApi.AddLikeComment(CurrentCommentData.id, AppPersistent.UserToken)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+                return;
+            }
+
+            //++Likes;
+        }
+
+        private async void Dislike_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, AppPersistent.UserToken)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+                return;
+            }
+
+            //++Dislikes;
         }
 
         private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
+            if (CurrentCommentData.user.id == -1)
+                return;
+
+            PageNavigationManager.SwitchToSubPage(new UserProfilePage
+            {
+                CurrentProfileData = new ProfileData
+                {
+                    id = CurrentCommentData.user.id
+                }
+            });
             PageNavigationManager.CloseOverlay();
         }
     }

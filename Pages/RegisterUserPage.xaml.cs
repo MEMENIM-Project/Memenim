@@ -6,14 +6,12 @@ using Memenim.Core.Api;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for RegisterUser.xaml
-    /// </summary>
     public partial class RegisterUser : UserControl
     {
         public RegisterUser()
         {
             InitializeComponent();
+            DataContext = this;
 
             btnRegister.IsEnabled = false;
         }
@@ -24,12 +22,14 @@ namespace Memenim.Pages
 
             try
             {
-                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
+                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password)
+                    .ConfigureAwait(true);
 
                 if (result.error)
                 {
                     lblErrorMessage.Text = result.message;
-                    btnRegister.IsEnabled = true;
+
+                    txtPassword.Clear();
                 }
                 else
                 {
@@ -39,11 +39,19 @@ namespace Memenim.Pages
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
+
+                    txtLogin.Clear();
+                    txtPassword.Clear();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnRegister.IsEnabled = true;
             }
         }
 
@@ -54,22 +62,27 @@ namespace Memenim.Pages
             const string name = "bot";
             ulong counter = 0;
 
-            var result = await UserApi.Register(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+            var result = await UserApi.Register(name + counter.ToString("D10"), "botpass")
+                .ConfigureAwait(true);
 
             while (result.error)
             {
                 ++counter;
-                result = await UserApi.Register(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+                result = await UserApi.Register(name + counter.ToString("D10"), "botpass")
+                    .ConfigureAwait(true);
             }
+
+            await DialogManager.ShowDialog("S U C C", "Registered user with username " + name + counter.ToString("D10"))
+                .ConfigureAwait(true);
 
             AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
             AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
 
             AppPersistent.UserToken = result.data.token;
             AppPersistent.LocalUserId = result.data.id;
-
-            DialogManager.ShowDialog("S U C C", "Registered user with username " + name + counter.ToString("D10"));
             PageNavigationManager.SwitchToPage(new ApplicationPage());
+
+            //btnAutoReg.IsEnabled = true;
         }
 
         private void btnGoToLogin_Click(object sender, RoutedEventArgs e)

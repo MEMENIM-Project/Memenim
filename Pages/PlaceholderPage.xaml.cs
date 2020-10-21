@@ -4,12 +4,10 @@ using System.Windows.Controls;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for PlaceholderPage.xaml
-    /// </summary>
     public partial class PlaceholderPage : UserControl
     {
-        private string[] SmilesPool = new string[]
+        private static readonly Random Random = new Random();
+        private static readonly string[] Smiles =
         {
             "(ﾟдﾟ；)",
             "(ó﹏ò｡)",
@@ -26,9 +24,7 @@ namespace Memenim.Pages
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            Random rnd = new Random();
-            int idx = rnd.Next(0, SmilesPool.Length - 1);
-            txtSmile.Text = SmilesPool[idx];
+            txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];
         }
     }
 }

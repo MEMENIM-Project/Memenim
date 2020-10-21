@@ -6,14 +6,12 @@ using Memenim.Core.Api;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for LoginPage.xaml
-    /// </summary>
     public partial class LoginPage : UserControl
     {
         public LoginPage()
         {
             InitializeComponent();
+            DataContext = this;
 
             btnLogin.IsEnabled = false;
         }
@@ -24,19 +22,22 @@ namespace Memenim.Pages
 
             try
             {
-                var result = await UserApi.Login(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
+                var result = await UserApi.Login(txtLogin.Text, txtPassword.Password)
+                    .ConfigureAwait(true);
 
                 if (result.error)
                 {
                     lblErrorMessage.Content = result.message;
-                    btnLogin.IsEnabled = true;
+
+                    txtPassword.Clear();
                 }
                 else
                 {
                     if (chkRememberMe.IsChecked.GetValueOrDefault())
                     {
                         AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
-                        AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+                        AppPersistent.AddToStore("UserId",
+                            AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
                     }
                     else
                     {
@@ -47,11 +48,19 @@ namespace Memenim.Pages
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
+
+                    txtLogin.Clear();
+                    txtPassword.Clear();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "An exception happened");
+                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnLogin.IsEnabled = true;
             }
         }
 

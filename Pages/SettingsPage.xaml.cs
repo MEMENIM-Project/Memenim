@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Core.Data;
 using Memenim.Settings;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for SettingsPage.xaml
-    /// </summary>
     public partial class SettingsPage : UserControl
     {
         public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>()
@@ -22,14 +20,20 @@ namespace Memenim.Pages
             InitializeComponent();
             DataContext = this;
 
-            slcLang.SelectedItem = new KeyValuePair<string, string>(
+            slcLanguage.SelectedItem = new KeyValuePair<string, string>(
                 SettingManager.AppSettings.Language,
                 Locales[SettingManager.AppSettings.Language]);
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EProfileData, AppPersistent.LocalUserId);
+            wdgUserBanner.CurrentProfileData = new ProfileData
+            {
+                id = AppPersistent.LocalUserId
+            };
+
+            await wdgUserBanner.UpdateProfile()
+                .ConfigureAwait(true);
         }
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
@@ -40,10 +44,11 @@ namespace Memenim.Pages
             PageNavigationManager.SwitchToPage(new LoginPage());
         }
 
-        private void SplitButton_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedPair = (KeyValuePair<string, string>)slcLang.SelectedItem;
-            LocalizationManager.SwitchLanguage(selectedPair.Key);
+            var selectedPair = (KeyValuePair<string, string>) slcLanguage.SelectedItem;
+            await LocalizationManager.SwitchLanguage(selectedPair.Key)
+                .ConfigureAwait(true);
         }
     }
 }

@@ -3,54 +3,45 @@ using MahApps.Metro.Controls;
 
 namespace Memenim.Pages
 {
-    static class PageNavigationManager
+    public static class PageNavigationManager
     {
-        static public MetroContentControl PageContentControl
-        {
-            set { m_PageContentControl = value; }
-        }
+        public static MetroContentControl PageContentControl { get; set; }
+        public static TransitioningContentControl SubPageContentControl { get; set; }
+        public static TransitioningContentControl OverlayContentControl { get; set; }
 
-        static public TransitioningContentControl SubpageContentControl
+        static PageNavigationManager()
         {
-            set { m_SubPageContentControl = value; }
-        }
-
-        static public TransitioningContentControl OverlayContentControl
-        {
-            set { m_OverlayControlControl = value; }
-        }
-
-        static private MetroContentControl m_PageContentControl;
-        static private TransitioningContentControl m_SubPageContentControl;
-        static private TransitioningContentControl m_OverlayControlControl;
-
-        public static void SwitchToPage(object page)
-        {
-            m_PageContentControl.Content = page;
-        }
-
-        public static void SwitchToSubpage(object subpage)
-        {
-            m_SubPageContentControl.Content = subpage;
+            PageContentControl = new MetroContentControl();
+            SubPageContentControl = new TransitioningContentControl();
+            OverlayContentControl = new TransitioningContentControl();
         }
 
         public static void GoBack()
         {
             UserControl backPage = GeneralBlackboard.TryGetValue<UserControl>(BlackBoardValues.EBackPage);
+
             if (backPage != null)
-            {
-                SwitchToSubpage(backPage);
-            }
+                SwitchToSubPage(backPage);
         }
 
         public static void OpenOverlay(object overlay)
         {
-            m_OverlayControlControl.Content = overlay;
+            OverlayContentControl.Content = overlay;
         }
 
         public static void CloseOverlay()
         {
-            m_OverlayControlControl.Content = null;
+            OverlayContentControl.Content = null;
+        }
+
+        public static void SwitchToPage(object page)
+        {
+            PageContentControl.Content = page;
+        }
+
+        public static void SwitchToSubPage(object subPage)
+        {
+            SubPageContentControl.Content = subPage;
         }
     }
 }
