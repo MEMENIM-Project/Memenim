@@ -11,7 +11,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for MemesPage.xaml
     /// </summary>
-    public partial class MemesPage : Page
+    public partial class MemesPage : PageContent
     {
 
         private string[] m_SpamCommentsList;

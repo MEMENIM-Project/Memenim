@@ -8,7 +8,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for AccountViewPage.xaml
     /// </summary>
-    public partial class UserProfilePage : Page
+    public partial class UserProfilePage : PageContent
     {
         public int UserID { get; set; }
 

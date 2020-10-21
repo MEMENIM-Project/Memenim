@@ -7,7 +7,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for PlaceholderPage.xaml
     /// </summary>
-    public partial class PlaceholderPage : Page
+    public partial class PlaceholderPage : PageContent
     {
         private string[] SmilesPool = new string[]
         {

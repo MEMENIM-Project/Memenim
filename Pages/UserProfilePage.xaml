@@ -1,4 +1,4 @@
-﻿<local:Page x:Class="Memenim.Pages.UserProfilePage"
+﻿<local:PageContent x:Class="Memenim.Pages.UserProfilePage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -19,4 +19,4 @@
             <uc:UserProfileStat x:Name="wdgStatThink" StatTitle="Thought" StatValue="{Binding Path=think}"/>
         </WrapPanel>-->
     </Grid>
-</local:Page>
+</local:PageContent>

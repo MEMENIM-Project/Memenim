@@ -18,12 +18,22 @@ namespace Memenim.Managers
     /// </summary>
     public partial class OverlayPageController : UserControl
     {
-        public static OverlayPageController Instance { get; set; }
+        public static OverlayPageController Instance 
+        {
+            get 
+            {
+                if (m_Instance == null)
+                    m_Instance = new OverlayPageController();
+                return m_Instance;
+            }
+        }
+
+
+        private static OverlayPageController m_Instance;
 
         public OverlayPageController()
         {
             InitializeComponent();
-            Instance = this;
             HideOverlay();
         }
 
@@ -32,9 +42,10 @@ namespace Memenim.Managers
             HideOverlay();
         }
 
-        public void RequestOverlay<T>() where T : Pages.Page
+        public void RequestOverlay<T>(object dataContext = null) where T : Pages.PageContent
         {
-            Pages.Page pg = PageNavigationManager.GetPage<T>();
+            Pages.PageContent pg = PageNavigationManager.GetPage<T>();
+            pg.DataContext = dataContext;
             OverlayContent.Content = pg;
             rootLayout.Visibility = Visibility.Visible;
         }

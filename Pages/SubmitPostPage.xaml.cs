@@ -13,7 +13,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for SubmitPostPage.xaml
     /// </summary>
-    public partial class SubmitPostPage : Page
+    public partial class SubmitPostPage : PageContent
     {
         private PostData m_PostData;
 

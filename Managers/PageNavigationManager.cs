@@ -9,7 +9,7 @@ namespace Memenim.Managers
     static class PageNavigationManager
     {
 
-        private static Dictionary<Type,Page> m_Pages = new Dictionary<Type, Page>();
+        private static Dictionary<Type,PageContent> m_Pages = new Dictionary<Type, PageContent>();
 
         static public MetroContentControl PageContentControl
         {
@@ -31,25 +31,25 @@ namespace Memenim.Managers
         static private TransitioningContentControl m_OverlayControlControl;
         
 
-        public static void SwitchToPage<T>() where T : Page
+        public static void SwitchToPage<T>() where T : PageContent
         {
-            Page pg = GetPageObject<T>();
+            PageContent pg = GetPageObject<T>();
             m_PageContentControl.Content = pg;
         }
 
-        public static void SwitchToSubpage<T>() where T : Page
+        public static void SwitchToSubpage<T>() where T : PageContent
         {
-            Page pg = GetPageObject<T>();
+            PageContent pg = GetPageObject<T>();
             m_SubPageContentControl.Content = pg;
         }
 
-        private static Page GetPageObject<T>() where T : Page
+        private static PageContent GetPageObject<T>() where T : PageContent
         {
-            Page pg = null;
+            PageContent pg = null;
             m_Pages.TryGetValue(typeof(T), out pg);
             if (pg == null)
             {
-                pg = (Activator.CreateInstance<T>() as Page);
+                pg = (Activator.CreateInstance<T>() as PageContent);
                 if (pg != null)
                 {
                     m_Pages.Add(typeof(T), pg);
@@ -62,7 +62,7 @@ namespace Memenim.Managers
             return pg;
         }
 
-        public static Page GetPage<T>() where T : Page
+        public static PageContent GetPage<T>() where T : PageContent
         {
             return GetPageObject<T>();
         }

@@ -1,4 +1,4 @@
-﻿<local:Page x:Class="Memenim.Pages.FeedPage"
+﻿<local:PageContent x:Class="Memenim.Pages.FeedPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -25,4 +25,4 @@
         </ScrollViewer>
         <controls:ProgressRing Width="80" Height="80" IsActive="True" Grid.Row="2" x:Name="loadingRing" Visibility="Visible" IsLarge="True"/>
     </Grid>
-</local:Page>
+</local:PageContent>

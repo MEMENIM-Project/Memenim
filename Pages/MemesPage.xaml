@@ -1,4 +1,4 @@
-﻿<local:Page x:Class="Memenim.Pages.MemesPage"
+﻿<local:PageContent x:Class="Memenim.Pages.MemesPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -93,4 +93,4 @@
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>
-</local:Page>
+</local:PageContent>
