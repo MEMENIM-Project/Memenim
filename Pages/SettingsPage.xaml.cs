@@ -9,7 +9,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : Page
+    public partial class SettingsPage : PageContent
     {
         public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>()
         {

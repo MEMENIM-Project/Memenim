@@ -10,7 +10,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for RegisterUser.xaml
     /// </summary>
-    public partial class RegisterUser : Page
+    public partial class RegisterUser : PageContent
     {
         public RegisterUser()
         {

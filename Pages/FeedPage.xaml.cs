@@ -14,7 +14,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for PostsPage.xaml
     /// </summary>
-    public partial class FeedPage : Page
+    public partial class FeedPage : PageContent
     {
         public ICommand OnPostScrollEnd { get; set; }
 

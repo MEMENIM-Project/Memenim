@@ -24,9 +24,6 @@ namespace Memenim
 
             Loaded += (s, e) => 
             {
-                if (OverlayPageController.Instance == null)
-                    OverlayPageController.Instance = new OverlayPageController();
-
                 rootLayout.Children.Add(OverlayPageController.Instance);
             };
 

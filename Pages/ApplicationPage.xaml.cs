@@ -7,7 +7,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for ApplicationPage.xaml
     /// </summary>
-    public partial class ApplicationPage : Page
+    public partial class ApplicationPage : PageContent
     {
         public ApplicationPage() : base()
         {

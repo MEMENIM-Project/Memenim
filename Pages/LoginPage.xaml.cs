@@ -10,7 +10,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class LoginPage : PageContent
     {
         public LoginPage() : base()
         {

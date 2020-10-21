@@ -5,9 +5,9 @@ using System.Windows.Controls;
 
 namespace Memenim.Pages
 {
-    public partial class Page : UserControl
+    public partial class PageContent : UserControl
     {
-        public Page()
+        public PageContent()
         {
             Loaded += OnEnter;
             Unloaded += OnExit;

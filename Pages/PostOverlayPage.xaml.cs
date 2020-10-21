@@ -9,7 +9,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for PostOverlayPage.xaml
     /// </summary>
-    public partial class PostOverlayPage : Page
+    public partial class PostOverlayPage : PageContent
     {
         public PostData PostInfo { get; set; }
 
