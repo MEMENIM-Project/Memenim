@@ -14,7 +14,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for TennorSearchPage.xaml
     /// </summary>
-    public partial class TennorSearchPage : UserControl
+    public partial class TennorSearchPage : PageContent
     {
         public Func<string, Task> OnPicSelect { get; set; }
 

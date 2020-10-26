@@ -50,7 +50,7 @@
     
     <Grid>
         <Button Style="{StaticResource IconButton}" Click="Button_Click">
-            <iconPacks:PackIconModern Kind="{Binding IconKind}"></iconPacks:PackIconModern>
+            <iconPacks:PackIconModern Kind="{Binding IconKind}"/>
         </Button>
     </Grid>
 </UserControl>

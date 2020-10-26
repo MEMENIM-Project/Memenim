@@ -38,7 +38,7 @@ namespace Memenim.Pages
             AppPersistent.RemoveFromStore("UserToken");
             AppPersistent.RemoveFromStore("UserId");
 
-            PageNavigationManager.SwitchToPage<LoginPage>();
+            NavigationController.Instance.RequestPage<LoginPage>();
         }
 
         private void SplitButton_SelectionChanged(object sender, SelectionChangedEventArgs e)

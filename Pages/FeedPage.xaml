@@ -9,6 +9,12 @@
       xmlns:widgets="clr-namespace:Memenim.Widgets"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280">
+    <local:PageContent.Resources>
+        <x:Array x:Key="postTypes" Type="local:PostTypeModel">
+            <local:PostTypeModel CategoryName="Popular" CategoryType="Popular"/>
+            <local:PostTypeModel CategoryName="New" CategoryType="New"/>
+        </x:Array>
+    </local:PageContent.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
@@ -16,7 +22,8 @@
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0">
             <Label Content="{DynamicResource ResourceKey=FeedTitle}" DockPanel.Dock="Left" Style="{DynamicResource DescriptionHeaderStyle}"/>
-            <controls:SplitButton Margin="5 10 5 8" DockPanel.Dock="Left" ItemsSource="{Binding PostTypes}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"/>
+            <!--<controls:SplitButton Margin="5 10 5 8" DockPanel.Dock="Left" ItemsSource="{Binding PostTypes}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"/>-->
+            <controls:SplitButton Margin="5 10 5 8" DockPanel.Dock="Left" DisplayMemberPath="CategoryName" ItemsSource="{Binding Source={StaticResource postTypes}}" SelectedIndex="0" SelectionChanged="lstPostType_SelectionChanged" Name="lstPostType"/>
             <Button HorizontalAlignment="Right" Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Square}" Content="{DynamicResource WriteNewPost}"/>
 
         </DockPanel>

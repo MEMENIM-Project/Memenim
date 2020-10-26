@@ -61,8 +61,7 @@ namespace Memenim.Widgets
 
         private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            //PageNavigationManager.SwitchToSubpage(new UserProfilePage() { UserID = this.UserID });
-            //PageNavigationManager.CloseOverlay();
+            NavigationController.Instance.RequestPage<UserProfilePage>(new { UserID = this.UserID });
         }
     }
 }

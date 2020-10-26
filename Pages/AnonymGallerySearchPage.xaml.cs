@@ -10,7 +10,7 @@ namespace Memenim.Pages
     /// <summary>
     /// Interaction logic for AnonymGallerySearchPage.xaml
     /// </summary>
-    public partial class AnonymGallerySearchPage : UserControl
+    public partial class AnonymGallerySearchPage : PageContent
     {
         public Func<string, Task> OnPicSelect { get; set; }
 
@@ -19,7 +19,7 @@ namespace Memenim.Pages
             InitializeComponent();
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
             await ExecuteSearch();
         }

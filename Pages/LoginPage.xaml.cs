@@ -47,7 +47,7 @@ namespace Memenim.Pages
 
                     AppPersistent.UserToken = result.data.token;
                     AppPersistent.LocalUserId = result.data.id;
-                    PageNavigationManager.SwitchToPage<ApplicationPage>();
+                    NavigationController.Instance.RequestPage<FeedPage>();
                 }
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace Memenim.Pages
 
         private void btnGoToRegister_Click(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.SwitchToPage<RegisterUser>();
+            NavigationController.Instance.RequestPage<RegisterUser>();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

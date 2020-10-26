@@ -12,14 +12,22 @@ using Memenim.Managers;
 namespace Memenim.Pages
 {
     /// <summary>
-    /// Interaction logic for PostsPage.xaml
+    /// Interaction logic for FeedPage.xaml
     /// </summary>
+    /// 
+
+    public class PostTypeModel
+    {
+        public string CategoryName { get; set; }
+        public PostType CategoryType { get; set; }
+    }
+
     public partial class FeedPage : PageContent
     {
         public ICommand OnPostScrollEnd { get; set; }
 
         public List<PostType> PostTypes { get; } = new List<PostType>()
-        { PostType.Popular, PostType.New, PostType.My, PostType.Favorite };
+                { PostType.Popular, PostType.New, PostType.My, PostType.Favorite };
 
         private int m_PostsCount = 20;
         private int m_Offset = 0;
@@ -28,15 +36,19 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
-              {
-                  PostRequest request = new PostRequest()
-                  {
-                      count = m_PostsCount,
-                      offset = m_Offset,
-                      type = (PostType)lstPostType.SelectedItem
-                  };
-                  await LoadNewPosts(request);
-              });
+            {
+                PostRequest request = new PostRequest()
+                {
+                    count = m_PostsCount,
+                    offset = m_Offset,
+                    type = (PostType)lstPostType.SelectedItem
+                };
+                await LoadNewPosts(request);
+            });
+        }
+
+        protected override void OnEnter(object sender, RoutedEventArgs e)
+        {
             DataContext = this;
         }
 
@@ -80,31 +92,32 @@ namespace Memenim.Pages
 
         private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (DataContext == null)
+                return;
+
             loadingRing.Visibility = Visibility.Visible;
             postsLists.Children.Clear();
 
             PostRequest request = new PostRequest()
             {
                 count = m_PostsCount,
-                type = (PostType)lstPostType.SelectedItem
+                type = (lstPostType.SelectedItem as PostTypeModel).CategoryType
             };
             var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken);
             AddPostsToList(postsResponse.data);
             loadingRing.Visibility = Visibility.Hidden;
-
         }
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
-            OverlayPageController.Instance.RequestOverlay<PostOverlayPage>();
-            //PageNavigationManager.OpenOverlay(new PostOverlayPage() { PostInfo = (sender as PostWidget).CurrentPostData });
+            NavigationController.Instance.RequestOverlay<PostOverlayPage>((sender as PostWidget).CurrentPostData);
         }
 
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubpage<SubmitPostPage>();
+            NavigationController.Instance.RequestPage<SubmitPostPage>();
         }
     }
 }

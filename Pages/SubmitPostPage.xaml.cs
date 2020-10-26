@@ -68,10 +68,11 @@ namespace Memenim.Pages
             if (rbImageRaw.IsChecked == true)
             {
                 string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL");
-                SelectPhotoForPost(url);
+                await SelectPhotoForPost(url);
             }
             else if (rbImageTennor.IsChecked == true)
             {
+                NavigationController.Instance.RequestPage<TennorSearchPage>();
                 //PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = SelectPhotoForPost });
             }
             else

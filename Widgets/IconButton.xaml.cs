@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.IconPacks;
 
@@ -11,9 +12,7 @@ namespace Memenim.Widgets
     {
 
         public PackIconModernKind IconKind { get; set; }
-        public string ImageSource { get; set; } = "";
-        public string RedirectTag { get; set; } = "";
-
+        public string PageName { get; set; }
 
         public static readonly RoutedEvent OnIconButtonClicked = EventManager.RegisterRoutedEvent("OnIconButtonClick", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(IconButton));
 

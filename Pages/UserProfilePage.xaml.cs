@@ -19,13 +19,9 @@ namespace Memenim.Pages
             InitializeComponent();
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
+            UserID = (int)DataContext.GetType().GetProperty("UserID").GetValue(DataContext, null);
             var res = await UserApi.GetProfileById(UserID);
             if (res.error)
             {

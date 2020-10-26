@@ -24,7 +24,7 @@ namespace Memenim
 
             Loaded += (s, e) => 
             {
-                rootLayout.Children.Add(OverlayPageController.Instance);
+                rootLayout.Children.Add(NavigationController.Instance);
             };
 
             SettingManager.MainWindow = this;
@@ -36,7 +36,6 @@ namespace Memenim
             Top = SettingManager.AppSettings.WindowPositionY - (Height / 2.0);
             WindowState = (WindowState)SettingManager.AppSettings.WindowState;
 
-            PageNavigationManager.PageContentControl = contentArea;
             DialogManager.WindowRef = this;
 
             LocalizationManager.MainWindow = this;
@@ -52,16 +51,16 @@ namespace Memenim
                     AppPersistent.UserToken = AppPersistent.WinUnprotect(userToken, "UserToken");
                     AppPersistent.LocalUserId = AppPersistent.WinUnprotect(userId, "UserId").ToInt();
 
-                    PageNavigationManager.SwitchToPage<ApplicationPage>();
+                    NavigationController.Instance.RequestPage<FeedPage>();
                 }
                 else
                 {
-                    PageNavigationManager.SwitchToPage<LoginPage>();
+                    NavigationController.Instance.RequestPage<LoginPage>();
                 }
             }
             catch (CryptographicException)
             {
-                PageNavigationManager.SwitchToPage<LoginPage>();
+                NavigationController.Instance.RequestPage<LoginPage>();
             }
         }
 

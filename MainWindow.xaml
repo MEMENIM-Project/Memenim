@@ -24,6 +24,6 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid x:Name="rootLayout">
-        <mah:MetroContentControl x:Name="contentArea"/>
+        <!--<mah:MetroContentControl x:Name="contentArea"/>-->
     </Grid>
 </mah:MetroWindow>

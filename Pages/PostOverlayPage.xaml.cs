@@ -11,8 +11,6 @@ namespace Memenim.Pages
     /// </summary>
     public partial class PostOverlayPage : PageContent
     {
-        public PostData PostInfo { get; set; }
-
         public PostOverlayPage()
         {
             InitializeComponent();
@@ -20,10 +18,10 @@ namespace Memenim.Pages
 
         protected override void OnEnter(object sender, RoutedEventArgs e)
         {
-            //wdgPost.CurrentPostData = PostInfo;
-            //wdgCommentsList.PostID = PostInfo.id;
-            //wdgCommentsList.CommentsCount = PostInfo.comments.count;
-            //wdgUserComment.PostID = PostInfo.id;
+            wdgPost.CurrentPostData = (DataContext as PostData);
+            wdgCommentsList.PostID = (DataContext as PostData).id;
+            wdgCommentsList.CommentsCount = (DataContext as PostData).comments.count; 
+            wdgUserComment.PostID = (DataContext as PostData).id;
         }
     }
 }

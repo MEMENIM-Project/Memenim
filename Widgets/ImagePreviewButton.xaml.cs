@@ -27,7 +27,7 @@ namespace Memenim.Widgets
         private async void Preview_Click(object sender, RoutedEventArgs e)
         {
             await ButtonPressAction(ValueImage);
-            PageNavigationManager.GoBack();
+            //PageStorage.GoBack();
         }
     }
 }

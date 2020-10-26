@@ -4,11 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:data="clr-namespace:Memenim.Core.Data;assembly=Memenim.Core"
              xmlns:local="clr-namespace:Memenim.Pages"
              xmlns:widgets="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+    <local:PageContent.DataContext>
+        <data:PostData/>
+    </local:PageContent.DataContext>
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel>
