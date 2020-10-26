@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Settings;
 
 namespace Memenim.Pages
 {
@@ -31,7 +32,7 @@ namespace Memenim.Pages
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var result = await UserApi.GetProfileById(AppPersistent.LocalUserId)
+            var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
                 .ConfigureAwait(true);
 
             wdgUserComment.UserAvatarSource = result.data[0].photo;

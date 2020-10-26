@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
+using Memenim.Settings;
 using Microsoft.Win32;
 
 namespace Memenim.Pages
@@ -35,7 +37,7 @@ namespace Memenim.Pages
                 var victimData = await UserApi.GetProfileById(System.Convert.ToInt32(txtStealId.Value))
                     .ConfigureAwait(true);
 
-                await UserApi.EditProfile(victimData.data[0], AppPersistent.UserToken)
+                await UserApi.EditProfile(victimData.data[0], SettingManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 await DialogManager.ShowDialog("Success", "Profile copied")
@@ -60,7 +62,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
                 {
-                    await PostApi.AddRepost(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken)
+                    await PostApi.AddRepost(Convert.ToInt32(txtGroupId.Value), SettingManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
             }
@@ -86,7 +88,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await PostApi.AddView(Convert.ToInt32(txtGroupId.Value), AppPersistent.UserToken)
+                    await PostApi.AddView(Convert.ToInt32(txtGroupId.Value), SettingManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
             }
@@ -117,7 +119,7 @@ namespace Memenim.Pages
                 {
                     await PostApi.AddComment(int.Parse(txtPostId?.Value?.ToString() ?? string.Empty),
                             _spamCommentsList[Random.Next(0, _spamCommentsList.Length - 1)],
-                            bAnonymousComments.IsChecked, AppPersistent.UserToken)
+                            bAnonymousComments.IsChecked, SettingManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
             }
@@ -167,7 +169,7 @@ namespace Memenim.Pages
 
             try
             {
-                var result = await PostApi.EditPost(postRequest, AppPersistent.UserToken)
+                var result = await PostApi.EditPost(postRequest, SettingManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 if (!result.error)

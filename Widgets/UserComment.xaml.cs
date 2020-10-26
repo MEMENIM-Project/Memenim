@@ -5,6 +5,8 @@ using System.Windows.Input;
 using Memenim.Pages;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Widgets
 {
@@ -47,7 +49,7 @@ namespace Memenim.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLikeComment(CurrentCommentData.id, AppPersistent.UserToken)
+            var result = await PostApi.AddLikeComment(CurrentCommentData.id, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -62,7 +64,7 @@ namespace Memenim.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, AppPersistent.UserToken)
+            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)

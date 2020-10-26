@@ -4,6 +4,8 @@ using System.Windows;
 using Memenim.Pages;
 using Memenim.Settings;
 using MahApps.Metro.Controls;
+using Memenim.Localization;
+using Memenim.Utils;
 using RIS.Extensions;
 
 namespace Memenim
@@ -32,13 +34,26 @@ namespace Memenim
 
             try
             {
-                string userToken = AppPersistent.GetFromStore("UserToken");
-                string userId = AppPersistent.GetFromStore("UserId");
+                SettingManager.PersistentSettings.CurrentUserLogin =
+                    SettingManager.PersistentSettings.GetCurrentUserLogin();
 
-                if (userToken != null && userId != null)
+                if (string.IsNullOrEmpty(SettingManager.PersistentSettings.CurrentUserLogin))
                 {
-                    AppPersistent.UserToken = AppPersistent.WinUnprotect(userToken, "UserToken");
-                    AppPersistent.LocalUserId = AppPersistent.WinUnprotect(userId, "UserId").ToInt();
+                    PageNavigationManager.SwitchToPage(new LoginPage());
+                    return;
+                }
+
+                string userToken = SettingManager.PersistentSettings.GetUserToken(
+                    SettingManager.PersistentSettings.CurrentUserLogin);
+                string userId = SettingManager.PersistentSettings.GetUserId(
+                    SettingManager.PersistentSettings.CurrentUserLogin);
+
+                if (!string.IsNullOrEmpty(userToken) && !string.IsNullOrEmpty(userId))
+                {
+                    SettingManager.PersistentSettings.CurrentUserToken =
+                        PersistentUtils.WinUnprotect(userToken, $"UserToken-{SettingManager.PersistentSettings.CurrentUserLogin}");
+                    SettingManager.PersistentSettings.CurrentUserId =
+                        PersistentUtils.WinUnprotect(userId, $"UserId-{SettingManager.PersistentSettings.CurrentUserLogin}").ToInt();
 
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
                 }

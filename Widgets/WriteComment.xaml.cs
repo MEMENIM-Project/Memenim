@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Widgets
 {
@@ -58,7 +60,7 @@ namespace Memenim.Widgets
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostApi.AddComment(PostId, txtContent.Text, IsAnonymous, AppPersistent.UserToken)
+            var res = await PostApi.AddComment(PostId, txtContent.Text, IsAnonymous, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (!res.error)

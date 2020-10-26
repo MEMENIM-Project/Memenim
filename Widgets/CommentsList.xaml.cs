@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
 
 namespace Memenim.Widgets
 {

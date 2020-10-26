@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Data;
+using Memenim.Localization;
 using Memenim.Settings;
 
 namespace Memenim.Pages
@@ -29,7 +30,7 @@ namespace Memenim.Pages
         {
             wdgUserBanner.CurrentProfileData = new ProfileData
             {
-                id = AppPersistent.LocalUserId
+                id = SettingManager.PersistentSettings.CurrentUserId
             };
 
             await wdgUserBanner.UpdateProfile()
@@ -38,8 +39,8 @@ namespace Memenim.Pages
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
         {
-            AppPersistent.RemoveFromStore("UserToken");
-            AppPersistent.RemoveFromStore("UserId");
+            SettingManager.PersistentSettings.RemoveUser(
+                SettingManager.PersistentSettings.CurrentUserLogin);
 
             PageNavigationManager.SwitchToPage(new LoginPage());
         }

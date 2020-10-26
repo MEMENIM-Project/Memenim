@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Commands;
+using Memenim.Settings;
 using Memenim.Widgets;
 using Tenor;
 using Tenor.Schema;
@@ -47,7 +48,7 @@ namespace Memenim.Pages
         {
             var config = new TenorConfiguration
             {
-                ApiKey = AppPersistent.TenorAPIKey,
+                ApiKey = SettingManager.PersistentSettings.GetTenorAPIKey(),
                 Locale = CultureInfo.CurrentCulture,
                 ContentFilter = ContentFilter.Medium,
                 MediaFilter = MediaFilter.Minimal,

@@ -7,6 +7,7 @@ using Memenim.Commands;
 using Memenim.Widgets;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Settings;
 
 namespace Memenim.Pages
 {
@@ -61,7 +62,7 @@ namespace Memenim.Pages
             postsLists.Children.Clear();
             _offset = 0;
 
-            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken)
+            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (postsResponse == null)
@@ -74,7 +75,7 @@ namespace Memenim.Pages
 
         private async Task LoadNewPosts(PostRequest request)
         {
-            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken)
+            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (postsResponse == null)

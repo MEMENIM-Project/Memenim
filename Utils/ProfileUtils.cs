@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Utils
 {
@@ -10,14 +12,14 @@ namespace Memenim.Utils
         {
             try
             {
-                var result = await UserApi.GetProfileById(AppPersistent.LocalUserId)
+                var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
                     .ConfigureAwait(true);
 
                 if (!result.error)
                 {
                     result.data[0].photo = url;
 
-                    var request = await UserApi.EditProfile(result.data[0], AppPersistent.UserToken)
+                    var request = await UserApi.EditProfile(result.data[0], SettingManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
 
                     if (!request.error)
@@ -48,14 +50,14 @@ namespace Memenim.Utils
         {
             try
             {
-                var result = await UserApi.GetProfileById(AppPersistent.LocalUserId)
+                var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
                     .ConfigureAwait(true);
 
                 if (!result.error)
                 {
                     result.data[0].banner = url;
 
-                    var request = await UserApi.EditProfile(result.data[0], AppPersistent.UserToken)
+                    var request = await UserApi.EditProfile(result.data[0], SettingManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
 
                     if (!request.error)

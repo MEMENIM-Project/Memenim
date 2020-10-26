@@ -5,6 +5,7 @@ using Memenim.Pages;
 using Memenim.Utils;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
 
 namespace Memenim.Widgets
 {

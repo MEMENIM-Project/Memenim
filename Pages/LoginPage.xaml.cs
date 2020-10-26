@@ -3,6 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
+using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Pages
 {
@@ -19,6 +22,8 @@ namespace Memenim.Pages
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             btnLogin.IsEnabled = false;
+            txtLogin.IsEnabled = false;
+            txtPassword.IsEnabled = false;
 
             try
             {
@@ -35,18 +40,20 @@ namespace Memenim.Pages
                 {
                     if (chkRememberMe.IsChecked.GetValueOrDefault())
                     {
-                        AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
-                        AppPersistent.AddToStore("UserId",
-                            AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+                        SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                            PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
+                            PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
+                        SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
+
+                        SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                        SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
+                        SettingManager.PersistentSettings.CurrentUserId = result.data.id;
                     }
                     else
                     {
-                        AppPersistent.RemoveFromStore("UserToken");
-                        AppPersistent.RemoveFromStore("UserId");
+                        SettingManager.PersistentSettings.RemoveUser(txtLogin.Text);
                     }
 
-                    AppPersistent.UserToken = result.data.token;
-                    AppPersistent.LocalUserId = result.data.id;
                     PageNavigationManager.SwitchToPage(new ApplicationPage());
 
                     txtLogin.Clear();
@@ -61,6 +68,8 @@ namespace Memenim.Pages
             finally
             {
                 btnLogin.IsEnabled = true;
+                txtLogin.IsEnabled = true;
+                txtPassword.IsEnabled = true;
             }
         }
 

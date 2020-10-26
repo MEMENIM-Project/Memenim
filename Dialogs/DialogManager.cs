@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace Memenim
+namespace Memenim.Dialogs
 {
     public static class DialogManager
     {

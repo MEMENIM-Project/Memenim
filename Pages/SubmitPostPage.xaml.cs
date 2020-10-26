@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Pages
 {
@@ -15,7 +17,7 @@ namespace Memenim.Pages
             DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(SubmitPostPage),
                 new PropertyMetadata(new PostData
                 {
-                    owner_id = AppPersistent.LocalUserId,
+                    owner_id = SettingManager.PersistentSettings.CurrentUserId,
                     open_comments = 1,
                     attachments = new List<AttachmentData>
                     {
@@ -109,7 +111,7 @@ namespace Memenim.Pages
             {
                 CurrentPostData.author_watch++;
 
-                var result = await PostApi.AddPost(CurrentPostData, AppPersistent.UserToken)
+                var result = await PostApi.AddPost(CurrentPostData, SettingManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 if (!result.error)

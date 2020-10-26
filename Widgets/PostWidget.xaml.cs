@@ -7,6 +7,8 @@ using System.Windows.Media.Imaging;
 using Memenim.Utils;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Widgets
 {
@@ -49,7 +51,7 @@ namespace Memenim.Widgets
 
         public async Task UpdatePost()
         {
-            var res = await PostApi.GetById(CurrentPostData.id, AppPersistent.UserToken)
+            var res = await PostApi.GetById(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (res.error)
@@ -133,7 +135,7 @@ namespace Memenim.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLike(CurrentPostData.id, AppPersistent.UserToken)
+            var result = await PostApi.AddLike(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -149,7 +151,7 @@ namespace Memenim.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislike(CurrentPostData.id, AppPersistent.UserToken)
+            var result = await PostApi.AddDislike(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
