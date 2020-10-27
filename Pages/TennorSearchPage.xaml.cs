@@ -1,75 +1,120 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Utils;
-using Memenim.Widgets;
 using Tenor;
 using Tenor.Schema;
+using Memenim.Commands;
+using Memenim.Settings;
+using Memenim.Widgets;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for TennorSearchPage.xaml
-    /// </summary>
     public partial class TennorSearchPage : PageContent
     {
+        public static readonly DependencyProperty SearchCommandProperty =
+            DependencyProperty.Register("SearchCommand", typeof(ICommand), typeof(TennorSearchPage),
+                new PropertyMetadata(new BasicCommand(_ => false)));
+
         public Func<string, Task> OnPicSelect { get; set; }
 
-        public ICommand SearchCommand { get; set; }
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return (ICommand)GetValue(SearchCommandProperty);
+            }
+            set
+            {
+                SetValue(SearchCommandProperty, value);
+            }
+        }
 
         public TennorSearchPage()
         {
             InitializeComponent();
-            SearchCommand = new BasicCommand(
-                o => true,
-                async q => { await ExecuteSearch((string)q); }
-            );
-
             DataContext = this;
+
+            SearchCommand = new BasicCommand(
+                _ => true, async query => await ExecuteSearch((string)query)
+                    .ConfigureAwait(true)
+            );
         }
 
         public async Task ExecuteSearch(string query)
         {
             var config = new TenorConfiguration
             {
-                ApiKey = AppPersistent.TenorAPIKey,
-                Locale = CultureInfo.GetCultureInfo("en"),
+                ApiKey = SettingManager.PersistentSettings.GetTenorAPIKey(),
+                Locale = CultureInfo.CurrentCulture,
                 ContentFilter = ContentFilter.Medium,
                 MediaFilter = MediaFilter.Minimal,
                 AspectRatio = AspectRatio.All
             };
+
             var client = new TenorClient(config);
-            var searchResults = await client.SearchAsync(query, limit: 50);
 
-            lslImages.Children.Clear();
+            IEnumerable<ImagePost> searchResults = !string.IsNullOrEmpty(query)
+                ? (await client.SearchAsync(query, 50)
+                    .ConfigureAwait(true)).Results
+                : (await client.GetTrendingPostsAsync(50)
+                    .ConfigureAwait(true)).Results;
 
-            foreach (var data in searchResults.Results)
+            lstImages.Children.Clear();
+
+            if (searchResults == null)
+                return;
+
+            foreach (var data in searchResults)
             {
-                ImagePreviewButton previewButton = new ImagePreviewButton()
+                ImagePreviewButton previewButton = new ImagePreviewButton
                 {
                     ButtonSize = 150,
                     ButtonPressAction = OnPicSelect
                 };
-                MediaItem value;
+
                 foreach (var media in data.Media)
                 {
-                    media.TryGetValue(MediaType.TinyGif, out value);
-                    previewButton.PreviewImage = value.Url;
-                    media.TryGetValue(MediaType.Gif, out value);
-                    previewButton.ValueImage = value.Url;
+                    if (!media.TryGetValue(MediaType.TinyGif, out MediaItem value))
+                        continue;
+
+                    previewButton.SmallImageSource = value?.Url;
+
+                    if (!media.TryGetValue(MediaType.Gif, out value))
+                        continue;
+
+                    previewButton.ImageSource = value?.Url;
                 }
 
-                lslImages.Children.Add(previewButton);
-            }
+                if (previewButton.SmallImageSource == null
+                    || previewButton.ImageSource == null)
+                {
+                    continue;
+                }
 
+                //var media = data.Media.First();
+
+                //if (!media.TryGetValue(MediaType.TinyGif, out MediaItem value))
+                //    continue;
+
+                //previewButton.SmallImageSource = value?.Url;
+
+                //if (!media.TryGetValue(MediaType.Gif, out value))
+                //    continue;
+
+                //previewButton.ImageSource = value?.Url;
+
+                lstImages.Children.Add(previewButton);
+            }
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            await ExecuteSearch(txtSearchQuery.Text);
+            await ExecuteSearch(txtSearchQuery.Text)
+                .ConfigureAwait(true);
         }
     }
 }

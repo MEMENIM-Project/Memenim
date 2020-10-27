@@ -1,22 +1,35 @@
 ﻿<local:PageContent x:Class="Memenim.Pages.UserProfilePage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:local="clr-namespace:Memenim.Pages"
-             xmlns:widgets ="clr-namespace:Memenim.Widgets"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+                   d:DataContext="{d:DesignInstance local:UserProfilePage}"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:local="clr-namespace:Memenim.Pages"
+                   xmlns:widgets ="clr-namespace:Memenim.Widgets"
+                   mc:Ignorable="d" 
+                   d:DesignHeight="450" d:DesignWidth="800">
+    
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="225" Width="225*"/>
+            <ColumnDefinition Width="575*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding name}" Style="{DynamicResource Header1}"/>
-        <Image Source="{Binding photo}" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="50" Height="200" Width="200" Stretch="Uniform"/>
-        <!--<WrapPanel Grid.Row="1">
-            <uc:UserProfileStat x:Name="wdgStatThink" StatTitle="Thought" StatValue="{Binding Path=think}"/>
-        </WrapPanel>-->
+
+        <TextBlock Grid.ColumnSpan="2" Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
+                   Style="{DynamicResource Header1}"/>
+        <Image Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left"
+               Margin="10,10,0,0" Height="200" Width="200" Stretch="Uniform"
+               Source="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"/>
+        <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="wpStats" Background="{StaticResource MahApps.Brushes.Gray10}">
+                <widgets:UserProfileStat StatTitle="Thoughts" Margin="10"
+                                         StatValue="{Binding Path=CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </local:PageContent>

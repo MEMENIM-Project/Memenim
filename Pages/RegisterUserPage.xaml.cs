@@ -3,18 +3,20 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
 using Memenim.Managers;
+using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for RegisterUser.xaml
-    /// </summary>
     public partial class RegisterUser : PageContent
     {
         public RegisterUser()
+            : base()
         {
             InitializeComponent();
+            DataContext = this;
 
             btnRegister.IsEnabled = false;
         }
@@ -25,27 +27,40 @@ namespace Memenim.Pages
 
             try
             {
-                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
+                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password)
+                    .ConfigureAwait(true);
 
                 if (result.error)
                 {
                     lblErrorMessage.Text = result.message;
-                    btnRegister.IsEnabled = true;
+
+                    txtPassword.Clear();
                 }
                 else
                 {
-                    AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
-                    AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+                    SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                        PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
+                        PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
+                    SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
 
-                    AppPersistent.UserToken = result.data.token;
-                    AppPersistent.LocalUserId = result.data.id;
+                    SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                    SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
+                    SettingManager.PersistentSettings.CurrentUserId = result.data.id;
+
                     NavigationController.Instance.RequestPage<FeedPage>();
-                    //PageNavigationManager.SwitchToPage<ApplicationPage>();
+
+                    txtLogin.Clear();
+                    txtPassword.Clear();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnRegister.IsEnabled = true;
             }
         }
 
@@ -56,22 +71,34 @@ namespace Memenim.Pages
             const string name = "bot";
             ulong counter = 0;
 
-            var result = await UserApi.Register(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+            var result = await UserApi.Register(name + counter.ToString("D10"), "botpass")
+                .ConfigureAwait(true);
 
             while (result.error)
             {
                 ++counter;
-                result = await UserApi.Register(name + counter.ToString("D10"), "botpass").ConfigureAwait(true);
+                result = await UserApi.Register(name + counter.ToString("D10"), "botpass")
+                    .ConfigureAwait(true);
             }
 
-            AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
-            AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+            await DialogManager.ShowDialog("S U C C", "Registered user with username " + name + counter.ToString("D10"))
+                .ConfigureAwait(true);
 
-            AppPersistent.UserToken = result.data.token;
-            AppPersistent.LocalUserId = result.data.id;
+            SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
+                PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
+            SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
 
-            DialogManager.ShowDialog("S U C C", "Registered user with username " + name + counter.ToString("D10"));
+            SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+            SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
+            SettingManager.PersistentSettings.CurrentUserId = result.data.id;
+
             NavigationController.Instance.RequestPage<FeedPage>();
+
+            txtLogin.Clear();
+            txtPassword.Clear();
+
+            //btnAutoReg.IsEnabled = true;
         }
 
         private void btnGoToLogin_Click(object sender, RoutedEventArgs e)

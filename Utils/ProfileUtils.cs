@@ -1,69 +1,87 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Utils
 {
-    static class ProfileUtils
+    public static class ProfileUtils
     {
-        public static async Task ChangeAvatar(string Url)
+        public static async Task ChangeAvatar(string url)
         {
             try
             {
-                var profile = await UserApi.GetProfileById(AppPersistent.LocalUserId);
-                if (!profile.error)
+                var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
+                    .ConfigureAwait(true);
+
+                if (!result.error)
                 {
-                    profile.data[0].photo = Url;
-                    var res = await UserApi.EditProfile(profile.data[0], AppPersistent.UserToken);
-                    if (!res.error)
+                    result.data[0].photo = url;
+
+                    var request = await UserApi.EditProfile(result.data[0], SettingManager.PersistentSettings.CurrentUserToken)
+                        .ConfigureAwait(true);
+
+                    if (!request.error)
                     {
-                        DialogManager.ShowDialog("S U C C", "You changed your avatar.");
+                        await DialogManager.ShowDialog("S U C C", "You changed your avatar.")
+                            .ConfigureAwait(true);
                     }
                     else
                     {
-                        DialogManager.ShowDialog("F U C K", res.message);
+                        await DialogManager.ShowDialog("F U C K", request.message)
+                            .ConfigureAwait(true);
                     }
                 }
                 else
                 {
-                    DialogManager.ShowDialog("F U C K", profile.message);
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
                 }
             }
             catch (Exception ex)
             {
-                DialogManager.ShowDialog("F U C K", ex.Message);
+                await DialogManager.ShowDialog("F U C K", ex.Message)
+                    .ConfigureAwait(true);
             }
         }
 
-        public static async Task ChangeBanner(string Url)
+        public static async Task ChangeBanner(string url)
         {
             try
             {
-                var profile = await UserApi.GetProfileById(AppPersistent.LocalUserId);
-                if (!profile.error)
+                var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
+                    .ConfigureAwait(true);
+
+                if (!result.error)
                 {
-                    profile.data[0].banner = Url;
-                    var res = await UserApi.EditProfile(profile.data[0], AppPersistent.UserToken);
-                    if (!res.error)
+                    result.data[0].banner = url;
+
+                    var request = await UserApi.EditProfile(result.data[0], SettingManager.PersistentSettings.CurrentUserToken)
+                        .ConfigureAwait(true);
+
+                    if (!request.error)
                     {
-                        DialogManager.ShowDialog("S U C C", "You changed your banner.");
+                        await DialogManager.ShowDialog("S U C C", "You changed your banner.")
+                            .ConfigureAwait(true);
                     }
                     else
                     {
-                        DialogManager.ShowDialog("F U C K", res.message);
+                        await DialogManager.ShowDialog("F U C K", request.message)
+                            .ConfigureAwait(true);
                     }
                 }
                 else
                 {
-                    DialogManager.ShowDialog("F U C K", profile.message);
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
                 }
             }
             catch (Exception ex)
             {
-                DialogManager.ShowDialog("F U C K", ex.Message);
+                await DialogManager.ShowDialog("F U C K", ex.Message)
+                    .ConfigureAwait(true);
             }
-
         }
-
     }
 }

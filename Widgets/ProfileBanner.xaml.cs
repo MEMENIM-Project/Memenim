@@ -1,49 +1,109 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using Memenim.Pages;
-using Memenim.Utils;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
+using Memenim.Pages;
+using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for ProfileBanner.xaml
-    /// </summary>
     public partial class ProfileBanner : UserControl
     {
-        public ProfileData UserProfile { get; private set; }
+        public static readonly DependencyProperty CurrentProfileDataProperty =
+            DependencyProperty.Register("CurrentProfileData", typeof(ProfileData), typeof(ProfileBanner),
+                new PropertyMetadata(new ProfileData { id = -1 }));
 
+        public ProfileData CurrentProfileData
+        {
+            get
+            {
+                return (ProfileData)GetValue(CurrentProfileDataProperty);
+            }
+            set
+            {
+                SetValue(CurrentProfileDataProperty, value);
+            }
+        }
 
         public ProfileBanner()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
-        private async void UserBanner_Loaded(object sender, RoutedEventArgs e)
+        public Task UpdateProfile()
         {
-            var profile = await UserApi.GetProfileById(GeneralBlackboard.TryGetValue<int>(BlackBoardValues.EProfileData));
-            UserProfile = profile.data[0];
+            return UpdateProfile(CurrentProfileData.id);
+        }
+        public async Task UpdateProfile(int id)
+        {
+            if (id == -1)
+            {
+                CurrentProfileData = new ProfileData
+                {
+                    name = "Unknown"
+                };
 
-            DataContext = UserProfile;
+                return;
+            }
+
+            var result = await UserApi.GetProfileById(id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+                return;
+            }
+
+            CurrentProfileData = result.data[0];
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            await UpdateProfile()
+                .ConfigureAwait(true);
         }
 
         private void SelectAvatarFromTennor_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
-            //PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeAvatar });
+
+            NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
+            {
+                OnPicSelect = ProfileUtils.ChangeAvatar
+            });
+        }
+
+        private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
+        {
+            string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
+                .ConfigureAwait(true);
+
+            await ProfileUtils.ChangeAvatar(url)
+                .ConfigureAwait(true);
         }
 
         private void SelectBannerFromTennor_Click(object sender, RoutedEventArgs e)
         {
             GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
-            //PageNavigationManager.SwitchToSubpage(new TennorSearchPage() { OnPicSelect = ProfileUtils.ChangeBanner });
+
+            NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
+            {
+                OnPicSelect = ProfileUtils.ChangeBanner
+            });
         }
 
-        private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
+        private async void SelectBannerFromUrl_Click(object sender, RoutedEventArgs e)
         {
-            string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL");
-            await ProfileUtils.ChangeAvatar(url);
+            string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
+                .ConfigureAwait(true);
+
+            await ProfileUtils.ChangeBanner(url)
+                .ConfigureAwait(true);
         }
     }
 }

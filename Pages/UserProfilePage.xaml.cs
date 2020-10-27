@@ -1,35 +1,74 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Dialogs;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for AccountViewPage.xaml
-    /// </summary>
     public partial class UserProfilePage : PageContent
     {
-        public int UserID { get; set; }
+        public static readonly DependencyProperty CurrentProfileDataProperty =
+            DependencyProperty.Register("CurrentProfileData", typeof(ProfileData), typeof(UserProfilePage),
+                new PropertyMetadata(new ProfileData {id = -1}));
 
-        private ProfileData m_UserInfo { get; set; }
+        public ProfileData CurrentProfileData
+        {
+            get
+            {
+                return (ProfileData)GetValue(CurrentProfileDataProperty);
+            }
+            set
+            {
+                SetValue(CurrentProfileDataProperty, value);
+            }
+        }
 
-        public UserProfilePage() : base()
+        public UserProfilePage()
+            : base()
         {
             InitializeComponent();
+            DataContext = this;
+        }
+
+        public Task UpdateProfile()
+        {
+            return UpdateProfile(CurrentProfileData.id);
+        }
+        public async Task UpdateProfile(int id)
+        {
+            if (id == -1)
+            {
+                CurrentProfileData = new ProfileData
+                {
+                    name = "Unknown"
+                };
+                wpStats.Visibility = Visibility.Hidden;
+
+                return;
+            }
+
+            var result = await UserApi.GetProfileById(id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+                return;
+            }
+
+            CurrentProfileData = result.data[0];
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
-            UserID = (int)DataContext.GetType().GetProperty("UserID").GetValue(DataContext, null);
-            var res = await UserApi.GetProfileById(UserID);
-            if (res.error)
-            {
-                await DialogManager.ShowDialog("F U C K", res.message);
-                return;
-            }
-            m_UserInfo = res.data[0];
-            DataContext = m_UserInfo;
+            base.OnEnter(sender, e)
+
+            await UpdateProfile()
+                .ConfigureAwait(true);
         }
     }
 }

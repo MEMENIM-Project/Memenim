@@ -1,45 +1,95 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Memenim.Utils;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
+using Memenim.Settings;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for WriteComment.xaml
-    /// </summary>
     public partial class WriteComment : UserControl
     {
+        public static readonly DependencyProperty UserAvatarSourceProperty =
+            DependencyProperty.Register("UserAvatarSource", typeof(string), typeof(WriteComment), new PropertyMetadata((string) null));
+        public static readonly DependencyProperty PostIdProperty =
+            DependencyProperty.Register("PostId", typeof(int), typeof(WriteComment), new PropertyMetadata(-1));
+        public static readonly DependencyProperty IsAnonymousProperty =
+            DependencyProperty.Register("IsAnonymous", typeof(bool), typeof(WriteComment), new PropertyMetadata(false));
 
-        public string UserAvatarSource { get; set; }
-        public ICommand AnononymCommandPress { get; set; }
-        private bool m_AnonSend = false;
+        private string _realUserAvatarSource;
 
+        public string UserAvatarSource
+        {
+            get
+            {
+                return (string)GetValue(UserAvatarSourceProperty);
+            }
+            set
+            {
+                SetValue(UserAvatarSourceProperty, value);
+            }
+        }
+        public int PostId
+        {
+            get
+            {
+                return (int)GetValue(PostIdProperty);
+            }
+            set
+            {
+                SetValue(PostIdProperty, value);
+            }
+        }
+        public bool IsAnonymous
+        {
+            get
+            {
+                return (bool)GetValue(IsAnonymousProperty);
+            }
+            set
+            {
+                SetValue(IsAnonymousProperty, value);
+            }
+        }
 
         public WriteComment()
         {
             InitializeComponent();
-            AnononymCommandPress = new BasicCommand(o => true, _ => { m_AnonSend = !m_AnonSend; });
-            this.DataContext = this;
+            DataContext = this;
         }
 
-        public int PostID { get; set; }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostApi.AddComment(PostID, txtContent.Text, m_AnonSend, AppPersistent.UserToken);
+            var res = await PostApi.AddComment(PostId, txtContent.Text, IsAnonymous, SettingManager.PersistentSettings.CurrentUserToken)
+                .ConfigureAwait(true);
+
             if (!res.error)
             {
-                DialogManager.ShowDialog("S U C C", "Comment sent");
+                await DialogManager.ShowDialog("S U C C", "Comment sent")
+                    .ConfigureAwait(true);
             }
             else
             {
-                DialogManager.ShowDialog("Not S U C C", res.message);
+                await DialogManager.ShowDialog("F U C K", res.message)
+                    .ConfigureAwait(true);
             }
 
-            txtContent.Text = "";
-            m_AnonSend = false;
+            txtContent.Text = string.Empty;
+        }
+
+        private void btnAnonymous_Click(object sender, RoutedEventArgs e)
+        {
+            IsAnonymous = !IsAnonymous;
+
+            if (!IsAnonymous)
+            {
+                UserAvatarSource = _realUserAvatarSource;
+            }
+            else
+            {
+                _realUserAvatarSource = UserAvatarSource;
+                UserAvatarSource = null;
+            }
         }
     }
 }

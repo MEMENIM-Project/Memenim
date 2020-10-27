@@ -2,48 +2,35 @@
 
 namespace Memenim
 {
-    enum BlackBoardValues
+    public enum BlackBoardValues
     {
         EPageToRedirect,
-        EPostData,
-        EProfileData,
         EBackPage
     }
 
-    static class GeneralBlackboard
+    public static class GeneralBlackboard
     {
-        static private Dictionary<BlackBoardValues, object> m_boardValues;
+        private static readonly Dictionary<BlackBoardValues, object> BoardValues;
 
         static GeneralBlackboard()
         {
-            m_boardValues = new Dictionary<BlackBoardValues, object>();
+            BoardValues = new Dictionary<BlackBoardValues, object>();
         }
 
         public static object TryGetValue(BlackBoardValues key)
         {
-            object value;
-            m_boardValues.TryGetValue(key, out value);
+            BoardValues.TryGetValue(key, out var value);
             return value;
         }
-
         public static T TryGetValue<T>(BlackBoardValues key)
         {
-            object value;
-            m_boardValues.TryGetValue(key, out value);
+            BoardValues.TryGetValue(key, out var value);
             return (T)value;
         }
 
-
         public static void SetValue(BlackBoardValues key, object value)
         {
-            if (!m_boardValues.ContainsKey(key))
-            {
-                m_boardValues.Add(key, value);
-            }
-            else
-            {
-                m_boardValues[key] = value;
-            }
+            BoardValues[key] = value;
         }
     }
 }

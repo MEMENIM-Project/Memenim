@@ -3,18 +3,20 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
+using Memenim.Dialogs;
 using Memenim.Managers;
+using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for LoginPage.xaml
-    /// </summary>
     public partial class LoginPage : PageContent
     {
-        public LoginPage() : base()
+        public LoginPage()
+            : base()
         {
             InitializeComponent();
+            DataContext = this;
 
             btnLogin.IsEnabled = false;
         }
@@ -22,37 +24,54 @@ namespace Memenim.Pages
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             btnLogin.IsEnabled = false;
+            txtLogin.IsEnabled = false;
+            txtPassword.IsEnabled = false;
 
             try
             {
-                var result = await UserApi.Login(txtLogin.Text, txtPassword.Password).ConfigureAwait(true);
+                var result = await UserApi.Login(txtLogin.Text, txtPassword.Password)
+                    .ConfigureAwait(true);
 
                 if (result.error)
                 {
                     lblErrorMessage.Content = result.message;
-                    btnLogin.IsEnabled = true;
+
+                    txtPassword.Clear();
                 }
                 else
                 {
                     if (chkRememberMe.IsChecked.GetValueOrDefault())
                     {
-                        AppPersistent.AddToStore("UserToken", AppPersistent.WinProtect(result.data.token, "UserToken"));
-                        AppPersistent.AddToStore("UserId", AppPersistent.WinProtect(result.data.id.ToString(), "UserId"));
+                        SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                            PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
+                            PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
+                        SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
+
+                        SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                        SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
+                        SettingManager.PersistentSettings.CurrentUserId = result.data.id;
                     }
                     else
                     {
-                        AppPersistent.RemoveFromStore("UserToken");
-                        AppPersistent.RemoveFromStore("UserId");
+                        SettingManager.PersistentSettings.RemoveUser(txtLogin.Text);
                     }
 
-                    AppPersistent.UserToken = result.data.token;
-                    AppPersistent.LocalUserId = result.data.id;
                     NavigationController.Instance.RequestPage<FeedPage>();
+
+                    txtLogin.Clear();
+                    txtPassword.Clear();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "An exception happened");
+                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnLogin.IsEnabled = true;
+                txtLogin.IsEnabled = true;
+                txtPassword.IsEnabled = true;
             }
         }
 

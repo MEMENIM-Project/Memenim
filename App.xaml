@@ -1,8 +1,10 @@
 ﻿<Application x:Class="Memenim.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:convertersLocal="clr-namespace:Memenim.Converters"
              xmlns:local="clr-namespace:Memenim"
              StartupUri="MainWindow.xaml">
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,13 +14,14 @@
                 <!-- Theme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <SolidColorBrush x:Key="Overlay.Background" Color="#c8aaaaaa"/>
-            <Style x:Key="DescriptionHeaderStyle"
+
+            <SolidColorBrush x:Key="Overlay.Background" Color="#E54D4D4D"/>
+
+            <Style x:Key="DescriptionHeader"
                    BasedOn="{StaticResource {x:Type Label}}"
                    TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="22" />
             </Style>
-
             <Style TargetType="TextBlock" x:Key="Header1">
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
@@ -30,6 +33,16 @@
             <Style TargetType="TextBlock" x:Key="Paragraph">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
             </Style>
+
+            <convertersLocal:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <convertersLocal:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
+            <convertersLocal:IntToStringConverter x:Key="IntToStringConverter"/>
+            <convertersLocal:ProfileStatStringToVisibilityConverter x:Key="ProfileStatStringToVisibilityConverter"/>
+            <convertersLocal:UserNameConverter x:Key="UserNameConverter"/>
+            <convertersLocal:UserAvatarImageSourceConverter x:Key="UserAvatarImageSourceConverter"/>
+            <convertersLocal:UserBannerImageSourceConverter x:Key="UserBannerImageSourceConverter"/>
+            <convertersLocal:PostMediumImageSourceConverter x:Key="PostMediumImageSourceConverter"/>
+            <convertersLocal:PreviewImageSourceConverter x:Key="PreviewImageSourceConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -4,12 +4,10 @@ using System.Windows.Controls;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for PlaceholderPage.xaml
-    /// </summary>
     public partial class PlaceholderPage : PageContent
     {
-        private string[] SmilesPool = new string[]
+        private static readonly Random Random = new Random();
+        private static readonly string[] Smiles =
         {
             "(ﾟдﾟ；)",
             "(ó﹏ò｡)",
@@ -18,7 +16,8 @@ namespace Memenim.Pages
             "(* _ω_)…"
         };
 
-        public PlaceholderPage() : base()
+        public PlaceholderPage()
+            : base()
         {
             InitializeComponent();
             DataContext = this;
@@ -27,9 +26,8 @@ namespace Memenim.Pages
         protected override void OnEnter(object sender, RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
-            Random rnd = new Random();
-            int idx = rnd.Next(0, SmilesPool.Length - 1);
-            txtSmile.Text = SmilesPool[idx];
+
+            txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];
         }
     }
 }

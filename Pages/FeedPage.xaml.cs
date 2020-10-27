@@ -3,20 +3,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Utils;
-using Memenim.Widgets;
+using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Managers;
+using Memenim.Settings;
+using Memenim.Widgets;
 
 namespace Memenim.Pages
 {
-    /// <summary>
-    /// Interaction logic for FeedPage.xaml
-    /// </summary>
-    /// 
-
-    public class PostTypeModel
+    public sealed class PostTypeNode
     {
         public string CategoryName { get; set; }
         public PostType CategoryType { get; set; }
@@ -24,95 +20,138 @@ namespace Memenim.Pages
 
     public partial class FeedPage : PageContent
     {
-        public ICommand OnPostScrollEnd { get; set; }
+        public static readonly DependencyProperty OnPostScrollEndProperty =
+            DependencyProperty.Register("OnPostScrollEnd", typeof(ICommand), typeof(FeedPage),
+                new PropertyMetadata(new BasicCommand(_ => false)));
 
-        public List<PostType> PostTypes { get; } = new List<PostType>()
-                { PostType.Popular, PostType.New, PostType.My, PostType.Favorite };
+        private const int OffsetPerTime = 20;
 
-        private int m_PostsCount = 20;
-        private int m_Offset = 0;
+        private int _offset;
 
-        public FeedPage() : base()
+        //public List<PostType> PostTypes { get; } = new List<PostType>
+        //{
+        //    PostType.Popular,
+        //    PostType.New,
+        //    PostType.My,
+        //    PostType.Favorite
+        //};
+        public ICommand OnPostScrollEnd
+        {
+            get
+            {
+                return (ICommand)GetValue(OnPostScrollEndProperty);
+            }
+            set
+            {
+                SetValue(OnPostScrollEndProperty, value);
+            }
+        }
+
+        public FeedPage()
+            : base()
         {
             InitializeComponent();
-            OnPostScrollEnd = new BasicCommand(o => true, async ctx =>
-            {
-                PostRequest request = new PostRequest()
-                {
-                    count = m_PostsCount,
-                    offset = m_Offset,
-                    type = (PostType)lstPostType.SelectedItem
-                };
-                await LoadNewPosts(request);
-            });
-        }
-
-        protected override void OnEnter(object sender, RoutedEventArgs e)
-        {
             DataContext = this;
+
+            OnPostScrollEnd = new BasicCommand(
+                _ => true, async _ => await LoadNewPosts()
+                    .ConfigureAwait(true);
+                );
         }
 
-        async Task<bool> UpdatePosts(PostRequest filters)
+        private Task UpdatePosts()
         {
+            return UpdatePosts(0);
+        }
+        private Task UpdatePosts(int offset)
+        {
+            PostRequest request = new PostRequest
+            {
+                count = OffsetPerTime,
+                offset = offset,
+                type = (PostType)lstPostTypes.SelectedItem
+            };
+
+            return UpdatePosts(request);
+        }
+        private async Task UpdatePosts(PostRequest request)
+        {
+            loadingRing.Visibility = Visibility.Visible;
+
             postsLists.Children.Clear();
-            m_Offset = 0;
-            var postsResponse = await PostApi.GetAll(filters, AppPersistent.UserToken);
 
-            if (postsResponse == null) { return false; }
+            _offset = 0;
+
+            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
+                .ConfigureAwait(true);
+
+            if (postsResponse == null)
+                return;
+
             AddPostsToList(postsResponse.data);
-            return true;
+
+            loadingRing.Visibility = Visibility.Hidden;
         }
 
-        async Task<bool> LoadNewPosts(PostRequest filter)
+        private Task LoadNewPosts()
         {
-            var postsResponse = await PostApi.GetAll(filter, AppPersistent.UserToken);
+            return LoadNewPosts(_offset);
+        }
+        private Task LoadNewPosts(int offset)
+        {
+            PostRequest request = new PostRequest
+            {
+                count = OffsetPerTime,
+                offset = offset,
+                type = (PostType)lstPostTypes.SelectedItem
+            };
 
-            if (postsResponse == null) { return false; }
+            return LoadNewPosts(request);
+        }
+        private async Task LoadNewPosts(PostRequest request)
+        {
+            loadingRing.Visibility = Visibility.Visible;
+
+            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
+                .ConfigureAwait(true);
+
+            if (postsResponse == null)
+                return;
+
             AddPostsToList(postsResponse.data);
-            return true;
 
+            loadingRing.Visibility = Visibility.Hidden;
         }
 
-        void AddPostsToList(List<PostData> posts)
+        private void AddPostsToList(List<PostData> posts)
         {
             foreach (var post in posts)
             {
                 PostWidget widget = new PostWidget()
                 {
-                    PostText = post.text,
-                    ImageURL = post.attachments[0].photo.photo_medium,
                     CurrentPostData = post
                 };
                 widget.PostClick += OnPost_Click;
+
                 postsLists.Children.Add(widget);
             }
-            m_Offset += m_PostsCount;
+
+            _offset += OffsetPerTime;
         }
 
-
-        private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lstPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataContext == null)
-                return;
-
-            loadingRing.Visibility = Visibility.Visible;
-            postsLists.Children.Clear();
-
-            PostRequest request = new PostRequest()
-            {
-                count = m_PostsCount,
-                type = (lstPostType.SelectedItem as PostTypeModel).CategoryType
-            };
-            var postsResponse = await PostApi.GetAll(request, AppPersistent.UserToken);
-            AddPostsToList(postsResponse.data);
-            loadingRing.Visibility = Visibility.Hidden;
+            await UpdatePosts()
+                .ConfigureAwait(true);
         }
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
-            NavigationController.Instance.RequestOverlay<PostOverlayPage>((sender as PostWidget).CurrentPostData);
+            NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayPage
+            {
+                CurrentPostData = (sender as PostWidget)?.CurrentPostData
+            });
         }
-
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {

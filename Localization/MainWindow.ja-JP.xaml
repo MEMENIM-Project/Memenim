@@ -1,16 +1,17 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    <sys:String x:Key="ResourceDictionaryName">loc-ja-JP</sys:String>
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
-    <sys:String x:Key="Login">ユーザー名前</sys:String>
-    <sys:String x:Key="Password">パスワード</sys:String>
-    <sys:String x:Key="RememberMe">ユーザーを覚えている</sys:String>
+    <system:String x:Key="ResourceDictionaryName">loc-ja-JP</system:String>
 
-    <sys:String x:Key="ErrorTitle">エーラー</sys:String>
+    <system:String x:Key="Login">ユーザー名前</system:String>
+    <system:String x:Key="Password">パスワード</system:String>
+    <system:String x:Key="RememberMe">ユーザーを覚えている</system:String>
 
-    <sys:String x:Key="FeedTitle">フィードー</sys:String>
+    <system:String x:Key="ErrorTitle">エーラー</system:String>
 
-    <sys:String x:Key="SignOut">サインアウト</sys:String>
-    <sys:String x:Key="LanguageTitle">言語</sys:String>
+    <system:String x:Key="FeedTitle">フィードー</system:String>
+
+    <system:String x:Key="SignOut">サインアウト</system:String>
+    <system:String x:Key="LanguageTitle">言語</system:String>
 </ResourceDictionary>

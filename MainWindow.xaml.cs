@@ -4,30 +4,28 @@ using System.Windows;
 using Memenim.Pages;
 using Memenim.Settings;
 using MahApps.Metro.Controls;
-using RIS.Extensions;
+using Memenim.Localization;
 using Memenim.Managers;
+using Memenim.Utils;
+using RIS.Extensions;
 
 namespace Memenim
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public static MainWindow CurrentMainWindow;
+        public static MainWindow CurrentInstance { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
 
-            CurrentMainWindow = this;
+            CurrentInstance = this;
 
-            Loaded += (s, e) => 
+            Loaded += (_, _) =>
             {
                 rootLayout.Children.Add(NavigationController.Instance);
             };
-
-            SettingManager.MainWindow = this;
 
             Width = SettingManager.AppSettings.WindowWidth;
             Height = SettingManager.AppSettings.WindowHeight;
@@ -36,20 +34,30 @@ namespace Memenim
             Top = SettingManager.AppSettings.WindowPositionY - (Height / 2.0);
             WindowState = (WindowState)SettingManager.AppSettings.WindowState;
 
-            DialogManager.WindowRef = this;
-
-            LocalizationManager.MainWindow = this;
-            LocalizationManager.SwitchLanguage(SettingManager.AppSettings.Language);
+            LocalizationManager.SwitchLanguage(SettingManager.AppSettings.Language).Wait();
 
             try
             {
-                string userToken = AppPersistent.GetFromStore("UserToken");
-                string userId = AppPersistent.GetFromStore("UserId");
+                SettingManager.PersistentSettings.CurrentUserLogin =
+                    SettingManager.PersistentSettings.GetCurrentUserLogin();
 
-                if (userToken != null && userId != null)
+                if (string.IsNullOrEmpty(SettingManager.PersistentSettings.CurrentUserLogin))
                 {
-                    AppPersistent.UserToken = AppPersistent.WinUnprotect(userToken, "UserToken");
-                    AppPersistent.LocalUserId = AppPersistent.WinUnprotect(userId, "UserId").ToInt();
+                    PageNavigationManager.SwitchToPage(new LoginPage());
+                    return;
+                }
+
+                string userToken = SettingManager.PersistentSettings.GetUserToken(
+                    SettingManager.PersistentSettings.CurrentUserLogin);
+                string userId = SettingManager.PersistentSettings.GetUserId(
+                    SettingManager.PersistentSettings.CurrentUserLogin);
+
+                if (!string.IsNullOrEmpty(userToken) && !string.IsNullOrEmpty(userId))
+                {
+                    SettingManager.PersistentSettings.CurrentUserToken =
+                        PersistentUtils.WinUnprotect(userToken, $"UserToken-{SettingManager.PersistentSettings.CurrentUserLogin}");
+                    SettingManager.PersistentSettings.CurrentUserId =
+                        PersistentUtils.WinUnprotect(userId, $"UserId-{SettingManager.PersistentSettings.CurrentUserLogin}").ToInt();
 
                     NavigationController.Instance.RequestPage<FeedPage>();
                 }
@@ -71,6 +79,7 @@ namespace Memenim
             SettingManager.AppSettings.WindowPositionX = Left + (Width / 2.0);
             SettingManager.AppSettings.WindowPositionY = Top + (Height / 2.0);
             SettingManager.AppSettings.WindowState = (int)WindowState;
+
             SettingManager.AppSettings.Save();
         }
     }
