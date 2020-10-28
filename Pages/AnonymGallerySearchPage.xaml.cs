@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Widgets;
 using Memenim.Core.Api;
 
@@ -48,6 +47,8 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             await ExecuteSearch()
                 .ConfigureAwait(true);
         }

@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Widgets"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="136" d:DesignWidth="800">
 
     <Grid MouseLeftButtonUp="OnPoster_MouseUp">
@@ -14,18 +14,17 @@
             <ColumnDefinition MinWidth="100" Width="300*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Grid.Column="0" Source="{Binding Path=UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}" Stretch="Uniform"/>
+        <Image Grid.Column="0" Stretch="Uniform"
+               Source="{Binding Path=UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"/>
         <StackPanel Grid.Column="1" Margin="20 0 0 0">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=UserName, Converter={StaticResource UserNameConverter}}"
-                           Style="{DynamicResource Header2}"
-                           IsEnabled="{Binding Path=IsAnonymous}"/>
+                           Style="{DynamicResource Header2}"/>
                 <TextBlock Text="Anonymous" Style="{DynamicResource Paragraph}"
                            VerticalAlignment="Bottom" Margin="5"
-                           Visibility="{Binding Path=IsAnonymous, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
+                           Visibility="{Binding Path=IsAnonymous, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
             <TextBlock Text="{Binding Path=PostTime}" Style="{DynamicResource Paragraph}"/>
         </StackPanel>
     </Grid>
-        
 </UserControl>

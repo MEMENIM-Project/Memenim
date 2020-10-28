@@ -6,8 +6,6 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                   xmlns:widgets="clr-namespace:Memenim.Widgets"
                    mc:Ignorable="d" 
                    d:DesignHeight="720" d:DesignWidth="1280">
     
@@ -27,18 +25,21 @@
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Row="0">
-            <Label Content="{DynamicResource FeedTitle}" Style="{DynamicResource DescriptionHeader}" DockPanel.Dock="Left"/>
-            <!--<controls:SplitButton Name="lstPostTypes" ItemsSource="{Binding PostTypes}"
-                                  SelectedIndex="0" Margin="5 10 5 8" DockPanel.Dock="Left" SelectionChanged="lstPostTypes_SelectionChanged"/>-->
-            <controls:SplitButton Name="lstPostTypes" ItemsSource="{Binding Source={StaticResource PostTypes}}" DisplayMemberPath="CategoryName"
-                                  SelectedIndex="0" Margin="5 10 5 8" DockPanel.Dock="Left" SelectionChanged="lstPostTypes_SelectionChanged"/>
-            <Button Content="{DynamicResource WriteNewPost}" Style="{StaticResource MahApps.Styles.Button.Square}"
+            <Label Content="{DynamicResource FeedTitle}"
+                   Style="{DynamicResource DescriptionHeader}" DockPanel.Dock="Left"/>
+            <controls:SplitButton Name="lstPostTypes"
+                                  ItemsSource="{Binding Source={StaticResource PostTypes}}"
+                                  DisplayMemberPath="CategoryName" Margin="5 10 5 8"
+                                  DockPanel.Dock="Left" SelectionChanged="lstPostTypes_SelectionChanged"/>
+            <Button Content="{DynamicResource WriteNewPost}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
                     HorizontalAlignment="Right" Click="Button_Click"/>
         </DockPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
                       controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding OnPostScrollEnd}">
             <WrapPanel Name="postsList" ItemWidth="400"/>
         </ScrollViewer>
-        <controls:ProgressRing Grid.Row="2" x:Name="loadingRing" Width="80" Height="80" IsActive="True" IsLarge="True" Visibility="Visible"/>
+        <controls:ProgressRing Grid.Row="1" x:Name="loadingRing" Width="80" Height="80"
+                               IsActive="True" IsLarge="True" Visibility="Visible"/>
     </Grid>
 </local:PageContent>

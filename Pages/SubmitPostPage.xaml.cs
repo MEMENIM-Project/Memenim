@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
-using Memenim.Managers;
+using Memenim.Navigation;
 using Memenim.Settings;
 
 namespace Memenim.Pages
@@ -58,9 +58,11 @@ namespace Memenim.Pages
             DataContext = this;
         }
 
-        private async Task SelectPhoto(string url)
+        private Task SelectPhoto(string url)
         {
             LoadImage(url);
+
+            return Task.CompletedTask;
         }
 
         public void ShowPreviewImage()
@@ -95,7 +97,7 @@ namespace Memenim.Pages
             wdgPostPreview.HideImage();
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -132,8 +134,6 @@ namespace Memenim.Pages
 
         private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-
             if (rbImageRaw.IsChecked == true)
             {
                 string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
+using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Utils;
 
@@ -70,8 +71,6 @@ namespace Memenim.Widgets
 
         private void SelectAvatarFromTennor_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
-
             NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
             {
                 OnPicSelect = ProfileUtils.ChangeAvatar
@@ -89,8 +88,6 @@ namespace Memenim.Widgets
 
         private void SelectBannerFromTennor_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, new SettingsPage());
-
             NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
             {
                 OnPicSelect = ProfileUtils.ChangeBanner

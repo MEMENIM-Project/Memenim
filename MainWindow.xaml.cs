@@ -5,7 +5,7 @@ using Memenim.Pages;
 using Memenim.Settings;
 using MahApps.Metro.Controls;
 using Memenim.Localization;
-using Memenim.Managers;
+using Memenim.Navigation;
 using Memenim.Utils;
 using RIS.Extensions;
 
@@ -13,19 +13,16 @@ namespace Memenim
 {
     public partial class MainWindow : MetroWindow
     {
-        public static MainWindow CurrentInstance { get; private set; }
+        public static MainWindow Instance { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
 
-            CurrentInstance = this;
+            Instance = this;
 
-            Loaded += (_, _) =>
-            {
-                rootLayout.Children.Add(NavigationController.Instance);
-            };
+            rootLayout.Children.Add(NavigationController.Instance);
 
             Width = SettingManager.AppSettings.WindowWidth;
             Height = SettingManager.AppSettings.WindowHeight;
@@ -43,7 +40,7 @@ namespace Memenim
 
                 if (string.IsNullOrEmpty(SettingManager.PersistentSettings.CurrentUserLogin))
                 {
-                    PageNavigationManager.SwitchToPage(new LoginPage());
+                    NavigationController.Instance.RequestPage<LoginPage>();
                     return;
                 }
 

@@ -6,18 +6,12 @@ using System.Windows.Input;
 using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
-using Memenim.Managers;
+using Memenim.Navigation;
 using Memenim.Settings;
 using Memenim.Widgets;
 
 namespace Memenim.Pages
 {
-    public sealed class PostTypeNode
-    {
-        public string CategoryName { get; set; }
-        public PostType CategoryType { get; set; }
-    }
-
     public partial class FeedPage : PageContent
     {
         public static readonly DependencyProperty OnPostScrollEndProperty =
@@ -28,13 +22,6 @@ namespace Memenim.Pages
 
         private int _offset;
 
-        //public List<PostType> PostTypes { get; } = new List<PostType>
-        //{
-        //    PostType.Popular,
-        //    PostType.New,
-        //    PostType.My,
-        //    PostType.Favorite
-        //};
         public ICommand OnPostScrollEnd
         {
             get
@@ -48,15 +35,16 @@ namespace Memenim.Pages
         }
 
         public FeedPage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;
 
             OnPostScrollEnd = new BasicCommand(
                 _ => true, async _ => await LoadNewPosts()
-                    .ConfigureAwait(true);
+                    .ConfigureAwait(true)
                 );
+
+            lstPostTypes.SelectedIndex = 0;
         }
 
         private Task UpdatePosts()
@@ -69,7 +57,7 @@ namespace Memenim.Pages
             {
                 count = OffsetPerTime,
                 offset = offset,
-                type = (PostType)lstPostTypes.SelectedItem
+                type = ((PostTypeNode)lstPostTypes.SelectedItem).CategoryType
             };
 
             return UpdatePosts(request);
@@ -78,7 +66,7 @@ namespace Memenim.Pages
         {
             loadingRing.Visibility = Visibility.Visible;
 
-            postsLists.Children.Clear();
+            postsList.Children.Clear();
 
             _offset = 0;
 
@@ -103,7 +91,7 @@ namespace Memenim.Pages
             {
                 count = OffsetPerTime,
                 offset = offset,
-                type = (PostType)lstPostTypes.SelectedItem
+                type = ((PostTypeNode)lstPostTypes.SelectedItem).CategoryType
             };
 
             return LoadNewPosts(request);
@@ -133,7 +121,7 @@ namespace Memenim.Pages
                 };
                 widget.PostClick += OnPost_Click;
 
-                postsLists.Children.Add(widget);
+                postsList.Children.Add(widget);
             }
 
             _offset += OffsetPerTime;
@@ -155,7 +143,6 @@ namespace Memenim.Pages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
             NavigationController.Instance.RequestPage<SubmitPostPage>();
         }
     }

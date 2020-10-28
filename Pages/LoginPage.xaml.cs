@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
-using Memenim.Managers;
+using Memenim.Navigation;
 using Memenim.Settings;
 using Memenim.Utils;
 
@@ -13,7 +13,6 @@ namespace Memenim.Pages
     public partial class LoginPage : PageContent
     {
         public LoginPage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;
@@ -21,9 +20,15 @@ namespace Memenim.Pages
             btnLogin.IsEnabled = false;
         }
 
+        private bool NeedBlockLogin()
+        {
+            return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
+        }
+
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             btnLogin.IsEnabled = false;
+            btnGoToRegister.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
 
@@ -40,7 +45,7 @@ namespace Memenim.Pages
                 }
                 else
                 {
-                    if (chkRememberMe.IsChecked.GetValueOrDefault())
+                    if (chkRememberMe.IsChecked == true)
                     {
                         SettingManager.PersistentSettings.SetUser(txtLogin.Text,
                             PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
@@ -70,6 +75,7 @@ namespace Memenim.Pages
             finally
             {
                 btnLogin.IsEnabled = true;
+                btnGoToRegister.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
             }
@@ -77,7 +83,7 @@ namespace Memenim.Pages
 
         private void btnGoToRegister_Click(object sender, RoutedEventArgs e)
         {
-            NavigationController.Instance.RequestPage<RegisterUser>();
+            NavigationController.Instance.RequestPage<RegisterPage>();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)
@@ -109,11 +115,6 @@ namespace Memenim.Pages
         private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnLogin.IsEnabled = !NeedBlockLogin();
-        }
-
-        private bool NeedBlockLogin()
-        {
-            return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
         }
     }
 }

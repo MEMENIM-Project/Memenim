@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
@@ -17,16 +16,9 @@ namespace Memenim.Pages
         private string[] _spamCommentsList;
 
         public MemesPage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;
-        }
-
-        private void LockButtons(bool state)
-        {
-            btnSharesBoost.IsEnabled = !state;
-            btnViewsBoost.IsEnabled = !state;
         }
 
         private async void btnSteal_Click(object sender, RoutedEventArgs e)
@@ -55,58 +47,6 @@ namespace Memenim.Pages
             }
         }
 
-        private async void btnSharesBoost_Click(object sender, RoutedEventArgs e)
-        {
-            LockButtons(true);
-
-            try
-            {
-                for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
-                {
-                    await PostApi.AddRepost(Convert.ToInt32(txtGroupId.Value), SettingManager.PersistentSettings.CurrentUserToken)
-                        .ConfigureAwait(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message)
-                    .ConfigureAwait(true);
-            }
-            finally
-            {
-                LockButtons(false);
-            }
-
-            await DialogManager.ShowDialog("Success", "BOOOOSTED")
-                .ConfigureAwait(true);
-        }
-
-        private async void btnViewsBoost_Click(object sender, RoutedEventArgs e)
-        {
-            LockButtons(true);
-
-            try
-            {
-                for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
-                {
-                    await PostApi.AddView(Convert.ToInt32(txtGroupId.Value), SettingManager.PersistentSettings.CurrentUserToken)
-                        .ConfigureAwait(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message)
-                    .ConfigureAwait(true);
-            }
-            finally
-            {
-                LockButtons(false);
-            }
-
-            await DialogManager.ShowDialog("Success", "BOOOOSTED")
-                .ConfigureAwait(true);
-        }
-
         private async void btnSpamComments_Click(object sender, RoutedEventArgs e)
         {
             if (_spamCommentsList == null || _spamCommentsList.Length == 0)
@@ -118,11 +58,14 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < txtCommentsCount.Value; ++i)
                 {
-                    await PostApi.AddComment(int.Parse(txtPostId?.Value?.ToString() ?? string.Empty),
+                    await PostApi.AddComment(int.Parse(txtCommentsPostId?.Value?.ToString() ?? string.Empty),
                             _spamCommentsList[Random.Next(0, _spamCommentsList.Length - 1)],
-                            bAnonymousComments.IsChecked, SettingManager.PersistentSettings.CurrentUserToken)
+                            chkAnonymousComments.IsChecked, SettingManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
+
+                await DialogManager.ShowDialog("Success", "Comment section destroyed ;)")
+                    .ConfigureAwait(true);
             }
             catch (Exception ex)
             {
@@ -133,9 +76,6 @@ namespace Memenim.Pages
             {
                 btnSpamComments.IsEnabled = true;
             }
-
-            await DialogManager.ShowDialog("Success", "Comment section destroyed ;)")
-                .ConfigureAwait(true);
         }
 
         private async void btnOpenCommentsFile_Click(object sender, RoutedEventArgs e)
@@ -158,13 +98,65 @@ namespace Memenim.Pages
             }
         }
 
+        private async void btnSharesBoost_Click(object sender, RoutedEventArgs e)
+        {
+            btnSharesBoost.IsEnabled = false;
+
+            try
+            {
+                for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
+                {
+                    await PostApi.AddRepost(Convert.ToInt32(txtPostsPostId.Value), SettingManager.PersistentSettings.CurrentUserToken)
+                        .ConfigureAwait(true);
+                }
+
+                await DialogManager.ShowDialog("Success", "BOOOOSTED")
+                    .ConfigureAwait(true);
+            }
+            catch (Exception ex)
+            {
+                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnSharesBoost.IsEnabled = true;
+            }
+        }
+
+        private async void btnViewsBoost_Click(object sender, RoutedEventArgs e)
+        {
+            btnViewsBoost.IsEnabled = false;
+
+            try
+            {
+                for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
+                {
+                    await PostApi.AddView(Convert.ToInt32(txtPostsPostId.Value), SettingManager.PersistentSettings.CurrentUserToken)
+                        .ConfigureAwait(true);
+                }
+
+                await DialogManager.ShowDialog("Success", "BOOOOSTED")
+                    .ConfigureAwait(true);
+            }
+            catch (Exception ex)
+            {
+                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnViewsBoost.IsEnabled = true;
+            }
+        }
+
         private async void btnEditPost_Click(object sender, RoutedEventArgs e)
         {
             btnEditPost.IsEnabled = false;
 
             EditPostRequest postRequest = new EditPostRequest
             {
-                id = int.Parse(txtGroupId?.Value?.ToString() ?? string.Empty),
+                id = Convert.ToInt32(txtPostsPostId.Value),
                 text = txtPostText.Text
             };
 

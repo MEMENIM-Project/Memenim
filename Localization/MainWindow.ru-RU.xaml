@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Memenim.Localization"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
     <system:String x:Key="ResourceDictionaryName">loc-ru-RU</system:String>
@@ -7,10 +8,10 @@
     <system:String x:Key="Login">Логин</system:String>
     <system:String x:Key="Password">Пароль</system:String>
     <system:String x:Key="RememberMe">Запомнить пользователя</system:String>
-    <system:String x:Key="RegisterProposeTitle">Новый пользователь? Зарегистрироваться</system:String>
+    <system:String x:Key="GoToRegister">Новый пользователь? Зарегистрируйтесь сейчас</system:String>
     <system:String x:Key="SignIn">Войти в аккаунт</system:String>
     <system:String x:Key="GoToLogin">Уже зарегистрированы?</system:String>
-    <system:String x:Key="Register">Зарегистрировать нового пользователя</system:String>
+    <system:String x:Key="SignUp">Зарегистрировать нового пользователя</system:String>
 
     <system:String x:Key="ErrorTitle">Б Л Я Т Ь</system:String>
     <system:String x:Key="SuccessTitle">З А Б Ц А</system:String>
@@ -23,7 +24,7 @@
     <system:String x:Key="SubmitPostTitle">Отправка нового поста</system:String>
     <system:String x:Key="PostContent">Введите содержимое</system:String>
     <system:String x:Key="OpenComments">Открыть комментарии</system:String>
-    <system:String x:Key="PostAnon">Спалить имя :)</system:String>
+    <system:String x:Key="PostAnonymous">Спалить имя :)</system:String>
     <system:String x:Key="SelectPhoto">Выбрать фото для поста</system:String>
     <system:String x:Key="SubmitPostButton">Отправить пост</system:String>
 

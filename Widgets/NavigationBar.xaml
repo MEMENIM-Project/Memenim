@@ -5,13 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
-             xmlns:pages="clr-namespace:Memenim.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="40">
 
     <Control.Resources>
-        <SolidColorBrush x:Key="NavBarBackground" Color="#013a89" />
-
         <Style x:Key="Navbar" TargetType="Grid">
             <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent}"/>
         </Style>
@@ -19,12 +16,12 @@
 
     <Grid Style="{StaticResource Navbar}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition MinHeight="40" Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition MinHeight="40" Height="40"/>
         </Grid.RowDefinitions>
 
-        <local:IconButton x:Name="btnNavBack" PageName="Back" IconKind="ArrowLeft" IconButtonClick="OnNavButtonClick"/>
+        <local:IconButton Grid.Row="0" x:Name="btnNavBack" IconButtonClick="OnNavButtonClick" PageName="Back" IconKind="ArrowLeft" Height="40"/>
         <StackPanel Grid.Row="1" VerticalAlignment="Center">
             <local:IconButton x:Name="btnNavSearch" IconButtonClick="OnNavButtonClick" PageName="PlaceholderPage" IconKind="Magnify" Height="40"/>
             <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" PageName="FeedPage" IconKind="Newspaper" Height="40"/>
@@ -32,6 +29,6 @@
             <local:IconButton x:Name="btnNavGroups" IconButtonClick="OnNavButtonClick" PageName="PlaceholderPage" IconKind="Group" Height="40"/>
             <local:IconButton x:Name="btnNavMemes" IconButtonClick="OnNavButtonClick" PageName="MemesPage" IconKind="SmileyHappy" Height="40"/>
         </StackPanel>
-        <local:IconButton Grid.Row="2" x:Name="btnNavSettings" IconKind="Settings" PageName="SettingsPage" IconButtonClick="OnNavButtonClick"/>
+        <local:IconButton Grid.Row="2" x:Name="btnNavSettings" IconButtonClick="OnNavButtonClick" PageName="SettingsPage" IconKind="Settings" Height="40"/>
     </Grid>
 </UserControl>

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
-using Memenim.Managers;
 using Memenim.Settings;
 
 namespace Memenim.Pages
@@ -27,25 +24,19 @@ namespace Memenim.Pages
         }
 
         public PostOverlayPage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
-            base.OnEnter(e, sender);
+            base.OnEnter(sender, e);
 
             var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
                 .ConfigureAwait(true);
 
             wdgUserComment.UserAvatarSource = result.data[0].photo;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //PageNavigationManager.CloseOverlay();
         }
     }
 }

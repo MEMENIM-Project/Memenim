@@ -11,7 +11,8 @@
 
     <Border BorderThickness="0" Padding="5">
         <Grid>
-            <Button Height="{Binding Path=ButtonSize}" Click="Preview_Click" Style="{StaticResource MahApps.Styles.Button.Square}">
+            <Button Height="{Binding Path=ButtonSize}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}" Click="Preview_Click">
                 <Image gif:ImageBehavior.AnimatedSource="{Binding Path=SmallImageSource, Converter={StaticResource PreviewImageSourceConverter}}"/>
             </Button>
         </Grid>

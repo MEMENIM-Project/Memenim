@@ -1,12 +1,13 @@
-﻿<UserControl x:Class="Memenim.Widgets.IconButton"
-             d:DataContext="{d:DesignInstance local:IconButton}"
+﻿<UserControl x:Class="Memenim.Navigation.NavigationController"
+             d:DataContext="{d:DesignInstance local:NavigationController}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:local="clr-namespace:Memenim.Widgets"
-             mc:Ignorable="d"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:widgets="clr-namespace:Memenim.Widgets"
+             xmlns:local="clr-namespace:Memenim.Navigation"
+             mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Control.Resources>
@@ -17,14 +18,12 @@
         <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
         <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
 
-        <Style x:Key="IconButton" TargetType="Button">
+        <Style x:Key="OverlayButton" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" BorderBrush="{StaticResource Button.Border}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Background="{StaticResource Button.Static.Background}"
-                                SnapsToDevicePixels="true">
+                        <Border x:Name="border" BorderBrush="{StaticResource Button.Border}" BorderThickness="0"
+                                Background="{DynamicResource Overlay.Background}" SnapsToDevicePixels="true">
                             <ContentPresenter x:Name="contentPresenter" Focusable="False"
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -62,10 +61,24 @@
             </Setter>
         </Style>
     </Control.Resources>
-    
+
     <Grid>
-        <Button Style="{StaticResource IconButton}" Click="Button_Click">
-            <iconPacks:PackIconModern Kind="{Binding Path=IconKind}"/>
-        </Button>
+        <controls:SplitView DisplayMode="CompactInline" CompactPaneLength="40"
+                            MinimumOpenPaneLength="40" MaximumOpenPaneLength="40">
+            <controls:SplitView.Pane>
+                <Grid MinWidth="40" Width="40" HorizontalAlignment="Left">
+                    <widgets:NavigationBar/>
+                </Grid>
+            </controls:SplitView.Pane>
+
+            <Grid>
+                <controls:TransitioningContentControl Name="PageContent"/>
+                <Grid x:Name="OverlayLayout">
+                    <Button Background="{DynamicResource Overlay.Background}" Style="{StaticResource OverlayButton}"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OverlayBackgroundClick"/>
+                    <controls:TransitioningContentControl Margin="50" x:Name="OverlayContent"/>
+                </Grid>
+            </Grid>
+        </controls:SplitView>
     </Grid>
 </UserControl>

@@ -7,13 +7,15 @@
                    xmlns:local="clr-namespace:Memenim.Pages"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition />
+            <RowDefinition MinHeight="50" Height="50"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Select a Photo" Style="{DynamicResource Header1}"/>
+        <TextBlock Grid.Row="0" Text="Select a Photo"
+                   Style="{DynamicResource Header1}"/>
         <ScrollViewer Grid.Row="1">
             <WrapPanel x:Name="lstImages"/>
         </ScrollViewer>

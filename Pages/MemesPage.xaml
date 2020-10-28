@@ -4,8 +4,8 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:local="clr-namespace:Memenim.Pages"
+                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
 
@@ -21,8 +21,7 @@
                     <StackPanel Grid.Row="0">
                         <controls:MetroHeader Header="Steal user profile"/>
                         <controls:NumericUpDown Name="txtStealId"
-                                                controls:TextBoxHelper.Watermark="Victim Id">
-                        </controls:NumericUpDown>
+                                                controls:TextBoxHelper.Watermark="Victim Id"/>
                         <Button Name="btnSteal" Click="btnSteal_Click"
                                 Style="{StaticResource MahApps.Styles.Button.Square.Accent}">Do some dirty work</Button>
                     </StackPanel>
@@ -37,9 +36,9 @@
 
                     <StackPanel Grid.Row="0">
                         <controls:MetroHeader Header="Comment Spam"/>
-                        <controls:NumericUpDown controls:TextBoxHelper.Watermark="Post Id"
-                                                controls:TextBoxHelper.SelectAllOnFocus="True"
-                                                Name="txtPostId"/>
+                        <controls:NumericUpDown Name="txtCommentsPostId" Minimum="0"
+                                                controls:TextBoxHelper.Watermark="Post Id"
+                                                controls:TextBoxHelper.SelectAllOnFocus="True"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBox Width="600" IsEnabled="False" Name="txtCommentsFilePath"/>
                             <Button Click="btnOpenCommentsFile_Click" Name="btnOpenCommentsFile">Open File</Button>
@@ -47,7 +46,7 @@
                         <controls:NumericUpDown Name="txtCommentsCount" Minimum="1"
                                                 controls:TextBoxHelper.Watermark="Comments Count"
                                                 controls:TextBoxHelper.SelectAllOnFocus="True"/>
-                        <CheckBox Name="bAnonymousComments">Send anonymously</CheckBox>
+                        <CheckBox Name="chkAnonymousComments">Send anonymously</CheckBox>
                         <Button Name="btnSpamComments" Click="btnSpamComments_Click" HorizontalAlignment="Right"
                                 Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}">Spam Comments</Button>
                     </StackPanel>
@@ -62,10 +61,9 @@
 
                     <StackPanel Grid.Row="0">
                         <controls:MetroHeader Header="Boost stats"/>
-                        <controls:NumericUpDown Name="txtGroupId"
-                                 controls:TextBoxHelper.AutoWatermark="True"
-                                 controls:TextBoxHelper.SelectAllOnFocus="True"
-                                 controls:TextBoxHelper.Watermark="Post ID"/>
+                        <controls:NumericUpDown Name="txtPostsPostId" Minimum="0"
+                                                controls:TextBoxHelper.Watermark="Post Id"
+                                                controls:TextBoxHelper.SelectAllOnFocus="True"/>
                         <controls:NumericUpDown Name="txtViewsCount" Minimum="1"
                                                 controls:TextBoxHelper.Watermark="Views count"
                                                 controls:TextBoxHelper.SelectAllOnFocus="True"/>

@@ -111,8 +111,10 @@ namespace Memenim.Pages
             }
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             await ExecuteSearch(txtSearchQuery.Text)
                 .ConfigureAwait(true);
         }

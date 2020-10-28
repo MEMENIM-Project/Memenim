@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Data;
 using Memenim.Localization;
-using Memenim.Managers;
+using Memenim.Navigation;
 using Memenim.Settings;
 
 namespace Memenim.Pages
@@ -18,7 +18,6 @@ namespace Memenim.Pages
         };
 
         public SettingsPage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;
@@ -28,8 +27,10 @@ namespace Memenim.Pages
                 Locales[SettingManager.AppSettings.Language]);
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             wdgUserBanner.CurrentProfileData = new ProfileData
             {
                 id = SettingManager.PersistentSettings.CurrentUserId

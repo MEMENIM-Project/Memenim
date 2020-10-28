@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Managers;
-using Memenim.Pages;
 
 namespace Memenim.Widgets
 {
@@ -13,6 +11,8 @@ namespace Memenim.Widgets
             DependencyProperty.Register("ImageSource", typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
         public static readonly DependencyProperty SmallImageSourceProperty =
             DependencyProperty.Register("SmallImageSource", typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
+        public static readonly DependencyProperty ButtonSizeProperty =
+            DependencyProperty.Register("ButtonSize", typeof(int), typeof(ImagePreviewButton), new PropertyMetadata(100));
 
         public Func<string, Task> ButtonPressAction;
 
@@ -38,7 +38,17 @@ namespace Memenim.Widgets
                 SetValue(SmallImageSourceProperty, value);
             }
         }
-        public int ButtonSize { get; set; }
+        public int ButtonSize
+        {
+            get
+            {
+                return (int)GetValue(ButtonSizeProperty);
+            }
+            set
+            {
+                SetValue(ButtonSizeProperty, value);
+            }
+        }
 
         public ImagePreviewButton()
         {
@@ -51,7 +61,7 @@ namespace Memenim.Widgets
             await ButtonPressAction(ImageSource)
                 .ConfigureAwait(true);
 
-            //PageStorage.GoBack();
+            //NavigationController.Instance.GoBack();
         }
     }
 }

@@ -11,15 +11,18 @@
     <Border Padding="5" BorderThickness="0">
         <Grid Background="{StaticResource MahApps.Brushes.Gray10}" Loaded="Grid_Loaded">
             <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition />
+                <RowDefinition MinHeight="35" Height="35"/>
+                <RowDefinition MinHeight="40" Height="40"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <TextBlock Style="{DynamicResource Header2}" Text="{DynamicResource ResourceKey=CommentsTitle}" Margin="16 5 0 0" Grid.Row="0" />
-            <Button x:Name="btnLoadMore" Click="btnLoadMore_Click" Margin="16 5 16 5" Content="{DynamicResource ResourceKey=LoadComments}" Style="{StaticResource MahApps.Styles.Button.Square}" Grid.Row="1"/>
-            <ItemsControl Grid.Row="2" Name="lstComments" Margin="16 5 16 5" HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Stretch">
+            <TextBlock Grid.Row="0" Text="{DynamicResource ResourceKey=CommentsTitle}"
+                       Style="{DynamicResource Header2}" Margin="16 5 0 0"/>
+            <Button Grid.Row="1" x:Name="btnLoadMore" Content="{DynamicResource ResourceKey=LoadComments}"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Margin="16 5 16 5" Click="btnLoadMore_Click"/>
+            <ItemsControl Grid.Row="2" Name="lstComments" Margin="16 5 16 5"
+                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch"/>

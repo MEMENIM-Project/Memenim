@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
@@ -12,7 +10,7 @@ namespace Memenim.Pages
     {
         public static readonly DependencyProperty CurrentProfileDataProperty =
             DependencyProperty.Register("CurrentProfileData", typeof(ProfileData), typeof(UserProfilePage),
-                new PropertyMetadata(new ProfileData {id = -1}));
+                new PropertyMetadata(new ProfileData { id = -1 }));
 
         public ProfileData CurrentProfileData
         {
@@ -27,7 +25,6 @@ namespace Memenim.Pages
         }
 
         public UserProfilePage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;
@@ -65,7 +62,7 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
-            base.OnEnter(sender, e)
+            base.OnEnter(sender, e);
 
             await UpdateProfile()
                 .ConfigureAwait(true);

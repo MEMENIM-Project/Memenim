@@ -13,7 +13,7 @@ namespace Memenim.Localization
     {
         private static string GetAppName()
         {
-            return GetAppName(MainWindow.CurrentInstance);
+            return GetAppName(MainWindow.Instance);
         }
         private static string GetAppName(FrameworkElement element)
         {
@@ -25,7 +25,7 @@ namespace Memenim.Localization
 
         private static string GetElementName()
         {
-            return GetElementName(MainWindow.CurrentInstance);
+            return GetElementName(MainWindow.Instance);
         }
         private static string GetElementName(FrameworkElement element)
         {
@@ -41,7 +41,7 @@ namespace Memenim.Localization
 
         private static string GetLocXamlFilePath(string сultureName)
         {
-            return GetLocXamlFilePath(MainWindow.CurrentInstance, сultureName);
+            return GetLocXamlFilePath(MainWindow.Instance, сultureName);
         }
         private static string GetLocXamlFilePath(FrameworkElement element, string сultureName)
         {
@@ -55,7 +55,7 @@ namespace Memenim.Localization
 
         private static Task SetLanguageResourceDictionary(string resourceFile)
         {
-            return SetLanguageResourceDictionary(MainWindow.CurrentInstance, resourceFile);
+            return SetLanguageResourceDictionary(MainWindow.Instance, resourceFile);
         }
         private static async Task SetLanguageResourceDictionary(FrameworkElement element, string resourceFile)
         {
@@ -114,7 +114,7 @@ namespace Memenim.Localization
 
         public static Task SetDefaultLanguage()
         {
-            return SetDefaultLanguage(MainWindow.CurrentInstance);
+            return SetDefaultLanguage(MainWindow.Instance);
         }
         public static Task SetDefaultLanguage(FrameworkElement element)
         {
@@ -123,7 +123,7 @@ namespace Memenim.Localization
 
         public static Task SwitchLanguage(string сultureName)
         {
-            return SwitchLanguage(MainWindow.CurrentInstance, сultureName);
+            return SwitchLanguage(MainWindow.Instance, сultureName);
         }
         public static async Task SwitchLanguage(FrameworkElement element, string сultureName)
         {

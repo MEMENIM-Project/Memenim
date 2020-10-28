@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Memenim.Localization"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
     <system:String x:Key="ResourceDictionaryName">loc-en-US</system:String>
@@ -7,10 +8,10 @@
     <system:String x:Key="Login">Login</system:String>
     <system:String x:Key="Password">Password</system:String>
     <system:String x:Key="RememberMe">Remember Me</system:String>
-    <system:String x:Key="RegisterProposeTitle">New user? Register now</system:String>
+    <system:String x:Key="GoToRegister">New user? Register now</system:String>
     <system:String x:Key="SignIn">Sign In</system:String>
     <system:String x:Key="GoToLogin">Already registered?</system:String>
-    <system:String x:Key="Register">Register new user</system:String>
+    <system:String x:Key="SignUp">Register new user</system:String>
     
     <system:String x:Key="ErrorTitle">F U C K</system:String>
     <system:String x:Key="SuccessTitle">S U C C</system:String>
@@ -23,7 +24,7 @@
     <system:String x:Key="SubmitPostTitle">Submit new post</system:String>
     <system:String x:Key="PostContent">Enter Post Content</system:String>
     <system:String x:Key="OpenComments">Open comments</system:String>
-    <system:String x:Key="PostAnon">Show your name :)</system:String>
+    <system:String x:Key="PostAnonymous">Show your name :)</system:String>
     <system:String x:Key="SelectPhoto">Select photo for a post</system:String>
     <system:String x:Key="SubmitPostButton">Submit</system:String>
 

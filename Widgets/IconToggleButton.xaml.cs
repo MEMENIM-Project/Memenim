@@ -7,7 +7,7 @@ namespace Memenim.Widgets
 {
     public partial class IconToggleButton : UserControl
     {
-        public static readonly RoutedEvent OnIconToggleButtonClicked = EventManager.RegisterRoutedEvent("OnIconToggleButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));
+        public static readonly RoutedEvent OnIconToggleButtonClicked = EventManager.RegisterRoutedEvent("OnIconToggleButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconToggleButton));
 
         public event EventHandler<RoutedEventArgs> IconToggleButtonClick
         {
@@ -21,8 +21,8 @@ namespace Memenim.Widgets
             }
         }
 
-        public PackIconModernKind IconKind { get; set; }
-        public string RedirectTag { get; set; } = string.Empty;
+        public string PageName { get; set; }
+        public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;
 
         public IconToggleButton()
         {

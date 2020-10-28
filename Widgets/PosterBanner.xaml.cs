@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Data;
+using Memenim.Navigation;
 using Memenim.Pages;
 
 namespace Memenim.Widgets
@@ -95,6 +96,8 @@ namespace Memenim.Widgets
                     id = UserId
                 }
             });
+
+            e.Handled = true;
         }
     }
 }

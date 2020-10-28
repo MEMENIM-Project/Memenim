@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Memenim.Pages
 {
@@ -17,7 +16,6 @@ namespace Memenim.Pages
         };
 
         public PlaceholderPage()
-            : base()
         {
             InitializeComponent();
             DataContext = this;

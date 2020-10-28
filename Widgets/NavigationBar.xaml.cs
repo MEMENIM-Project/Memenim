@@ -1,62 +1,55 @@
-﻿using MahApps.Metro.Controls;
-using Memenim.Managers;
-using Memenim.Pages;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Dialogs;
+using Memenim.Navigation;
 
 namespace Memenim.Widgets
 {
-    /// <summary>
-    /// Interaction logic for NavigationPersistent.xaml
-    /// </summary>
     public partial class NavigationBar : UserControl
     {
-        public static readonly RoutedEvent RedirectEvent;
+        public static readonly RoutedEvent RedirectEvent =
+            EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));
+
+        public event EventHandler<RoutedEventArgs> RedirectRequested
+        {
+            add
+            {
+                AddHandler(RedirectEvent, value);
+            }
+            remove
+            {
+                RemoveHandler(RedirectEvent, value);
+            }
+        }
 
         public object PageContent { get; set; }
-
-
-        static NavigationBar()
-        {
-            RedirectEvent = EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(NavigationBar));
-        }
 
         public NavigationBar()
         {
             InitializeComponent();
+            DataContext = this;
         }
-
-        public event RoutedEventHandler RedirectRequested
-        {
-            add { AddHandler(NavigationBar.RedirectEvent, value); }
-            remove { RemoveHandler(NavigationBar.RedirectEvent, value); }
-        }
-
-        void RaiseRedirectEvent()
-        {
-            RoutedEventArgs newEventArgs = new RoutedEventArgs(NavigationBar.RedirectEvent);
-            RaiseEvent(newEventArgs);
-        }
-
 
         private async void OnNavButtonClick(object sender, RoutedEventArgs e)
         {
-            IconButton btn = sender as IconButton;
-
             try
             {
-                Type t = Type.GetType("Memenim.Pages." + btn.PageName);
-                NavigationController.Instance.RequestPage(t);
+                if (sender is IconButton button)
+                {
+                    if (button.PageName == "Back")
+                        NavigationController.Instance.GoBack();
+                    else
+                        NavigationController.Instance.RequestPage(Type.GetType("Memenim.Pages." + button.PageName));
+                }
             }
-            catch(TypeLoadException ex)
+            catch (Exception ex)
             {
-                await DialogManager.ShowDialog("Error", ex.Message);
+                await DialogManager.ShowDialog("Navigation error", ex.Message)
+                    .ConfigureAwait(true);
             }
 
-            RaiseRedirectEvent();
+            RaiseEvent(new RoutedEventArgs(RedirectEvent));
         }
-
-
     }
 }

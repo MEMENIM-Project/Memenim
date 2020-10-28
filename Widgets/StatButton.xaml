@@ -7,14 +7,17 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
-             d:DesignHeight="48" d:DesignWidth="1000">
+             d:DesignHeight="48" d:DesignWidth="800">
 
     <Border Padding="5">
         <StackPanel Orientation="Horizontal">
-            <Button Width="{Binding Path=ButtonSize}" Height="{Binding Path=ButtonSize}" Margin="5" Click="Button_Click" Foreground="{DynamicResource MahApps.Brushes.Accent}" Style="{DynamicResource MahApps.Styles.Button.Circle}" >
-                <iconPacks:PackIconModern Kind="{Binding Path=Icon}"></iconPacks:PackIconModern>
+            <Button Width="{Binding Path=ButtonSize}" Height="{Binding Path=ButtonSize}"
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}" Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                    Margin="5" Click="Button_Click">
+                <iconPacks:PackIconModern Kind="{Binding Path=IconKind}"/>
             </Button>
-            <TextBlock x:Name="tbValue" Text="{Binding Path=StatValue}" VerticalAlignment="Center" Foreground="{StaticResource MahApps.Brushes.Text}"></TextBlock>
+            <TextBlock Text="{Binding Path=StatValue}"
+                       Foreground="{StaticResource MahApps.Brushes.Text}" VerticalAlignment="Center"/>
         </StackPanel>
     </Border>
 </UserControl>

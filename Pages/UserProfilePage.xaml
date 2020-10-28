@@ -4,7 +4,6 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:widgets ="clr-namespace:Memenim.Widgets"
                    mc:Ignorable="d" 
@@ -16,18 +15,18 @@
             <ColumnDefinition Width="575*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition MinHeight="40" Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.ColumnSpan="2" Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
-                   Style="{DynamicResource Header1}"/>
-        <Image Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left"
-               Margin="10,10,0,0" Height="200" Width="200" Stretch="Uniform"
-               Source="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource Header1}"
+                   Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"/>
+        <Image Grid.Row="1" Grid.Column="0" Height="200" Width="200" Stretch="Uniform"
+               Source="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
+               VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10 0 0"/>
         <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
             <StackPanel x:Name="wpStats" Background="{StaticResource MahApps.Brushes.Gray10}">
-                <widgets:UserProfileStat StatTitle="Thoughts" Margin="10"
+                <widgets:UserProfileStat Margin="10" StatTitle="Thoughts"
                                          StatValue="{Binding Path=CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
         </ScrollViewer>

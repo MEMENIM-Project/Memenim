@@ -68,17 +68,18 @@ namespace Memenim.Widgets
         {
             lstComments.Items.Clear();
 
-            var res = await PostApi.GetComments(PostId)
+            var result = await PostApi.GetComments(PostId)
                 .ConfigureAwait(true);
 
-            if (res.error)
+            if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", res.message)
+                await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
                 return;
             }
 
-            AddComments(res.data);
+            AddComments(result.data);
+
             _offset += OffsetPerTime;
         }
 
@@ -86,17 +87,18 @@ namespace Memenim.Widgets
         {
             btnLoadMore.IsEnabled = false;
 
-            var res = await PostApi.GetComments(PostId, _offset)
+            var result = await PostApi.GetComments(PostId, _offset)
                 .ConfigureAwait(true);
 
-            if (res.error)
+            if (result.error)
             {
                 await DialogManager.ShowDialog("F U C K", "Cannot load comments")
                     .ConfigureAwait(true);
                 return;
             }
 
-            AddComments(res.data);
+            AddComments(result.data);
+
             _offset += OffsetPerTime;
 
             btnLoadMore.IsEnabled = true;

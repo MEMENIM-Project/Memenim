@@ -4,15 +4,14 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                   xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                   xmlns:gif="http://wpfanimatedgif.codeplex.com"
-                   xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
 
-    <Grid Margin="16 0" Loaded="Grid_Loaded">
+    <Grid Margin="16 0">
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="160"/>
             <RowDefinition Height="2.8*"/>
@@ -30,7 +29,7 @@
             <controls:SplitButton Name="slcLanguage" ItemsSource="{Binding Locales}" DisplayMemberPath="Value"
                                   SelectionChanged="slcLanguage_SelectionChanged" Margin="0 5">
                 <controls:SplitButton.Icon>
-                    <iconPacks:PackIconModern Margin="6" Kind="Globe" />
+                    <iconPacks:PackIconModern Margin="6" Kind="Globe"/>
                 </controls:SplitButton.Icon>
             </controls:SplitButton>
             <Button Click="btnSignOut_Click" Content="{DynamicResource ResourceKey=SignOut}" Margin="0 5"

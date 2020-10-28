@@ -5,7 +5,7 @@ using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
-using Memenim.Managers;
+using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
 
