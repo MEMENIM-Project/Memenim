@@ -21,8 +21,8 @@ namespace Memenim.Widgets
             }
         }
 
-        public PackIconModernKind IconKind { get; set; }
-        public string RedirectTag { get; set; } = string.Empty;
+        public string PageName { get; set; }
+        public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;
 
         public IconButton()
         {

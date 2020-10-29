@@ -4,9 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:local="clr-namespace:Memenim.Widgets"
+             xmlns:gif="http://wpfanimatedgif.codeplex.com"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="400">
 
@@ -19,11 +18,12 @@
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
 
-            <Image gif:ImageBehavior.AnimatedSource="{Binding UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"  Height="40" Width="40"/>
-            <TextBox Name="txtContent" Grid.Column="1" Margin="10 5 10 5"
+            <Image Grid.Column="0" Height="40" Width="40"
+                   gif:ImageBehavior.AnimatedSource="{Binding UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"/>
+            <TextBox Grid.Column="1" Name="txtContent" Margin="10 5 10 5"
                      Style="{DynamicResource MahApps.Styles.TextBox}"/>
-            <local:IconToggleButton Grid.Column="2" IconKind="UserDelete" IconToggleButtonClick="btnAnonymous_Click" />
-            <local:IconButton Grid.Column="3" IconKind="MessageSend" IconButtonClick="btnSend_Click" />
+            <local:IconToggleButton Grid.Column="2" IconKind="UserDelete" IconToggleButtonClick="btnAnonymous_Click"/>
+            <local:IconButton Grid.Column="3" IconKind="MessageSend" IconButtonClick="btnSend_Click"/>
         </Grid>
     </Border>
 </UserControl>

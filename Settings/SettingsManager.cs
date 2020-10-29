@@ -2,12 +2,12 @@
 
 namespace Memenim.Settings
 {
-    public static class SettingManager
+    public static class SettingsManager
     {
         public static AppSettings AppSettings { get; }
         public static PersistentSettings PersistentSettings { get; }
 
-        static SettingManager()
+        static SettingsManager()
         {
             AppSettings = new AppSettings();
             PersistentSettings = new PersistentSettings();

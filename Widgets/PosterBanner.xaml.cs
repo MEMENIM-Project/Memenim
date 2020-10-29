@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Data;
+using Memenim.Navigation;
 using Memenim.Pages;
 
 namespace Memenim.Widgets
@@ -88,14 +89,15 @@ namespace Memenim.Widgets
             if (UserId == -1)
                 return;
 
-            PageNavigationManager.SwitchToSubPage(new UserProfilePage
+            NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfilePage
             {
                 CurrentProfileData = new ProfileData
                 {
                     id = UserId
                 }
             });
-            PageNavigationManager.CloseOverlay();
+
+            e.Handled = true;
         }
     }
 }

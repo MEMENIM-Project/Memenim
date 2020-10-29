@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Memenim.Pages
 {
-    public partial class PlaceholderPage : UserControl
+    public partial class PlaceholderPage : PageContent
     {
         private static readonly Random Random = new Random();
         private static readonly string[] Smiles =
@@ -22,8 +21,10 @@ namespace Memenim.Pages
             DataContext = this;
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];
         }
     }

@@ -39,8 +39,8 @@ namespace Memenim.Settings
             WindowPositionX = System.Windows.SystemParameters.PrimaryScreenWidth / 2.0;
             WindowPositionY = System.Windows.SystemParameters.PrimaryScreenHeight / 2.0;
             WindowState = (int)System.Windows.WindowState.Normal;
-            WindowWidth = MainWindow.CurrentInstance.Width;
-            WindowHeight = MainWindow.CurrentInstance.Height;
+            WindowWidth = MainWindow.Instance.Width;
+            WindowHeight = MainWindow.Instance.Height;
             AppVersion = "0.0.0";
 
             Load();

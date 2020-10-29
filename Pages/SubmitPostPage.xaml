@@ -1,46 +1,56 @@
-﻿<UserControl x:Class="Memenim.Pages.SubmitPostPage"
-             d:DataContext="{d:DesignInstance local:SubmitPostPage}"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:widgets="clr-namespace:Memenim.Widgets"
-             xmlns:local="clr-namespace:Memenim.Pages"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-
-    <Grid Loaded="Grid_Loaded">
+﻿<local:PageContent x:Class="Memenim.Pages.SubmitPostPage"
+                   d:DataContext="{d:DesignInstance local:SubmitPostPage}"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:local="clr-namespace:Memenim.Pages"
+                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   mc:Ignorable="d"
+                   d:DesignHeight="450" d:DesignWidth="800">
+    
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
+            <RowDefinition MinHeight="45" Height="45"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{DynamicResource ResourceKey=SubmitPostTitle}" Style="{DynamicResource Header1}" Margin="16 5" Grid.Row="0" />
-        <controls:MetroAnimatedTabControl Grid.Row="1" Margin="16 5" controls:TabControlHelper.Underlined="TabItems">
+        <TextBlock Grid.Row="0" Text="{DynamicResource ResourceKey=SubmitPostTitle}"
+                   Style="{DynamicResource Header1}" Margin="15 5"/>
+        <controls:MetroAnimatedTabControl Grid.Row="1" Margin="15 5"
+                                          controls:TabControlHelper.Underlined="TabItems">
             <TabItem Header="{DynamicResource ResourceKey=EditTitle}">
-                <ScrollViewer  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBox MinHeight="200" controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}" TextWrapping="Wrap" AcceptsReturn="True"
-                                 Text="{Binding Path=CurrentPostData.text, Mode=TwoWay}" Margin="0 5"/>
+                        <TextBox MinHeight="200" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 5"
+                                 Text="{Binding Path=CurrentPostData.text, Mode=TwoWay}"
+                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}"/>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
                                 <TextBlock Style="{DynamicResource Header2}" Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
-                                <RadioButton Content="{DynamicResource ResourceKey=URLSelect}" Name="rbImageRaw" GroupName="ImageSource" IsChecked="True" Margin="0 5"/>
-                                <RadioButton Content="{DynamicResource ResourceKey=TennorSelect}" Name="rbImageTennor" GroupName="ImageSource" Margin="0 5"/>
-                                <RadioButton Content="{DynamicResource ResourceKey=GallerySelect}" Name="rbImageGallery" GroupName="ImageSource" Margin="0 5"/>
+                                <RadioButton Name="rbImageRaw" GroupName="ImageSource" Content="{DynamicResource ResourceKey=URLSelect}" IsChecked="True" Margin="0 5"/>
+                                <RadioButton Name="rbImageTennor" GroupName="ImageSource" Content="{DynamicResource ResourceKey=TennorSelect}" Margin="0 5"/>
+                                <RadioButton Name="rbImageGallery" GroupName="ImageSource" Content="{DynamicResource ResourceKey=GallerySelect}" Margin="0 5"/>
                             </StackPanel>
                             <Image x:Name="imgPreview" Height="100" Width="100" Margin="10" Stretch="Uniform"
                                    Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostMediumImageSourceConverter}}"/>
                         </StackPanel>
-
-                        <Button Click="SelectPhoto_Click" Content="{DynamicResource ResourceKey=SelectPhoto}" Style="{StaticResource MahApps.Styles.Button.Square}" Margin="0 5"/>
-                        <Button Click="ClearPhoto_Click" Content="Clear photo" Style="{StaticResource MahApps.Styles.Button.Square}" Margin="0 5"/>
+                        <Button Content="{DynamicResource ResourceKey=SelectPhoto}"
+                                Style="{StaticResource MahApps.Styles.Button.Square}"
+                                Margin="0 5" Click="SelectPhoto_Click"/>
+                        <Button Content="Clear photo"
+                                Style="{StaticResource MahApps.Styles.Button.Square}"
+                                Margin="0 5" Click="ClearPhoto_Click"/>
                         <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}">Show post</CheckBox>-->
-                        <CheckBox IsChecked="{Binding Path=CurrentPostData.open_comments, Mode=TwoWay}" Content="{DynamicResource ResourceKey=OpenComments}" Margin="0 5"/>
-                        <CheckBox IsChecked="{Binding Path=CurrentPostData.adult, Mode=TwoWay}" Margin="0 5">18+</CheckBox>
-                        <CheckBox IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}" Content="{DynamicResource ResourceKey=PostAnon}" Margin="0 5"/>
-                        <Button Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"/> 
+                        <CheckBox Content="{DynamicResource ResourceKey=OpenComments}" Margin="0 5"
+                                  IsChecked="{Binding Path=CurrentPostData.open_comments, Mode=TwoWay}"/>
+                        <CheckBox Margin="0 5"
+                                  IsChecked="{Binding Path=CurrentPostData.adult, Mode=TwoWay}">18+</CheckBox>
+                        <CheckBox Content="{DynamicResource ResourceKey=PostAnonymous}" Margin="0 5"
+                                  IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"/>
+                        <Button Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"
+                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="Button_Click"/> 
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -49,7 +59,5 @@
                                     CurrentPostData="{Binding Path=CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
             </TabItem>
         </controls:MetroAnimatedTabControl>
-        
-
     </Grid>
-</UserControl>
+</local:PageContent>

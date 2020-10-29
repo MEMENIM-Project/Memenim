@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Widgets;
 using Memenim.Core.Api;
 
 namespace Memenim.Pages
 {
-    public partial class AnonymGallerySearchPage : UserControl
+    public partial class AnonymGallerySearchPage : PageContent
     {
         public Func<string, Task> OnPicSelect { get; set; }
 
@@ -46,8 +45,10 @@ namespace Memenim.Pages
             }
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             await ExecuteSearch()
                 .ConfigureAwait(true);
         }

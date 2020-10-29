@@ -2,10 +2,11 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Pages;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
+using Memenim.Navigation;
+using Memenim.Pages;
 using Memenim.Settings;
 
 namespace Memenim.Widgets
@@ -49,7 +50,7 @@ namespace Memenim.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLikeComment(CurrentCommentData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddLikeComment(CurrentCommentData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -64,7 +65,7 @@ namespace Memenim.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -82,14 +83,13 @@ namespace Memenim.Widgets
             if (CurrentCommentData.user.id == -1)
                 return;
 
-            PageNavigationManager.SwitchToSubPage(new UserProfilePage
+            NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfilePage
             {
                 CurrentProfileData = new ProfileData
                 {
                     id = CurrentCommentData.user.id
                 }
             });
-            PageNavigationManager.CloseOverlay();
         }
     }
 }

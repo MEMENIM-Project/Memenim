@@ -4,53 +4,60 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Commands;
-using Memenim.Widgets;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
+using Memenim.Navigation;
 using Memenim.Settings;
+using Memenim.Widgets;
 
 namespace Memenim.Pages
 {
-    public partial class FeedPage : UserControl
+    public partial class FeedPage : PageContent
     {
+        public static readonly DependencyProperty OnPostScrollEndProperty =
+            DependencyProperty.Register("OnPostScrollEnd", typeof(ICommand), typeof(FeedPage),
+                new PropertyMetadata(new BasicCommand(_ => false)));
+
         private const int OffsetPerTime = 20;
 
         private int _offset;
 
-        public List<PostType> PostTypes { get; } = new List<PostType>
+        public ICommand OnPostScrollEnd
         {
-            PostType.Popular,
-            PostType.New,
-            PostType.My,
-            PostType.Favorite
-        };
-        public ICommand OnPostScrollEnd { get; set; }
+            get
+            {
+                return (ICommand)GetValue(OnPostScrollEndProperty);
+            }
+            set
+            {
+                SetValue(OnPostScrollEndProperty, value);
+            }
+        }
 
         public FeedPage()
         {
             InitializeComponent();
             DataContext = this;
-            OnPostScrollEnd = new BasicCommand(_ => true, async _ =>
-            {
-                PostRequest request = new PostRequest
-                {
-                    count = OffsetPerTime,
-                    offset = _offset,
-                    type = (PostType)lstPostType.SelectedItem
-                };
 
-                await LoadNewPosts(request)
-                    .ConfigureAwait(true);
-            });
+            OnPostScrollEnd = new BasicCommand(
+                _ => true, async _ => await LoadNewPosts()
+                    .ConfigureAwait(true)
+                );
+
+            lstPostTypes.SelectedIndex = 0;
         }
 
         private Task UpdatePosts()
         {
-            PostRequest request = new PostRequest()
+            return UpdatePosts(0);
+        }
+        private Task UpdatePosts(int offset)
+        {
+            PostRequest request = new PostRequest
             {
                 count = OffsetPerTime,
-                offset = 0,
-                type = (PostType)lstPostType.SelectedItem
+                offset = offset,
+                type = ((PostTypeNode)lstPostTypes.SelectedItem).CategoryType
             };
 
             return UpdatePosts(request);
@@ -59,10 +66,11 @@ namespace Memenim.Pages
         {
             loadingRing.Visibility = Visibility.Visible;
 
-            postsLists.Children.Clear();
+            postsList.Children.Clear();
+
             _offset = 0;
 
-            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
+            var postsResponse = await PostApi.GetAll(request, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (postsResponse == null)
@@ -73,15 +81,34 @@ namespace Memenim.Pages
             loadingRing.Visibility = Visibility.Hidden;
         }
 
+        private Task LoadNewPosts()
+        {
+            return LoadNewPosts(_offset);
+        }
+        private Task LoadNewPosts(int offset)
+        {
+            PostRequest request = new PostRequest
+            {
+                count = OffsetPerTime,
+                offset = offset,
+                type = ((PostTypeNode)lstPostTypes.SelectedItem).CategoryType
+            };
+
+            return LoadNewPosts(request);
+        }
         private async Task LoadNewPosts(PostRequest request)
         {
-            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
+            loadingRing.Visibility = Visibility.Visible;
+
+            var postsResponse = await PostApi.GetAll(request, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (postsResponse == null)
                 return;
 
             AddPostsToList(postsResponse.data);
+
+            loadingRing.Visibility = Visibility.Hidden;
         }
 
         private void AddPostsToList(List<PostData> posts)
@@ -94,13 +121,13 @@ namespace Memenim.Pages
                 };
                 widget.PostClick += OnPost_Click;
 
-                postsLists.Children.Add(widget);
+                postsList.Children.Add(widget);
             }
 
             _offset += OffsetPerTime;
         }
 
-        private async void lstPostType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void lstPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await UpdatePosts()
                 .ConfigureAwait(true);
@@ -108,7 +135,7 @@ namespace Memenim.Pages
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
-            PageNavigationManager.OpenOverlay(new PostOverlayPage
+            NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayPage
             {
                 CurrentPostData = (sender as PostWidget)?.CurrentPostData
             });
@@ -116,8 +143,7 @@ namespace Memenim.Pages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-            PageNavigationManager.SwitchToSubPage(new SubmitPostPage());
+            NavigationController.Instance.RequestPage<SubmitPostPage>();
         }
     }
 }

@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Memenim.TabLayouts"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+
+    <system:String x:Key="ResourceDictionaryName">TabLayout_Default</system:String>
+
+    <x:Array x:Key="TriggeredOnPage" Type="system:String">
+        <system:String>FeedPage</system:String>
+        <system:String>PlaceholderPage</system:String>
+        <system:String>SettingsPage</system:String>
+    </x:Array>
+
+    <x:Array x:Key="CentralNav" Type="local:NavRedirectButtonNode">
+        <local:NavRedirectButtonNode PageName="PlaceholderPage" IconKind="Magnify"/>
+        <local:NavRedirectButtonNode PageName="FeedPage" IconKind="Newspaper"/>
+        <local:NavRedirectButtonNode PageName="Placeholder" IconKind="Chat"/>
+    </x:Array>
+</ResourceDictionary>

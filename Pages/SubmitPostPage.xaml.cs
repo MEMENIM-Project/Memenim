@@ -7,17 +7,18 @@ using System.Windows.Media.Imaging;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
+using Memenim.Navigation;
 using Memenim.Settings;
 
 namespace Memenim.Pages
 {
-    public partial class SubmitPostPage : UserControl
+    public partial class SubmitPostPage : PageContent
     {
         public static readonly DependencyProperty CurrentPostDataProperty =
             DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(SubmitPostPage),
                 new PropertyMetadata(new PostData
                 {
-                    owner_id = SettingManager.PersistentSettings.CurrentUserId,
+                    owner_id = SettingsManager.PersistentSettings.CurrentUserId,
                     open_comments = 1,
                     attachments = new List<AttachmentData>
                     {
@@ -57,6 +58,13 @@ namespace Memenim.Pages
             DataContext = this;
         }
 
+        private Task SelectPhoto(string url)
+        {
+            LoadImage(url);
+
+            return Task.CompletedTask;
+        }
+
         public void ShowPreviewImage()
         {
             imgPreview.Source = CurrentPostData?.attachments?[0]?.photo?.photo_medium != null
@@ -89,13 +97,10 @@ namespace Memenim.Pages
             wdgPostPreview.HideImage();
         }
 
-        private async Task SelectPhotoForPost(string url)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
-            LoadImage(url);
-        }
+            base.OnEnter(sender, e);
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
             if (CurrentPostData?.owner_id.HasValue == true)
             {
                 var result = await UserApi.GetProfileById(CurrentPostData.owner_id.Value)
@@ -111,7 +116,7 @@ namespace Memenim.Pages
             {
                 CurrentPostData.author_watch++;
 
-                var result = await PostApi.AddPost(CurrentPostData, SettingManager.PersistentSettings.CurrentUserToken)
+                var result = await PostApi.AddPost(CurrentPostData, SettingsManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 if (!result.error)
@@ -129,28 +134,26 @@ namespace Memenim.Pages
 
         private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
         {
-            GeneralBlackboard.SetValue(BlackBoardValues.EBackPage, this);
-
             if (rbImageRaw.IsChecked == true)
             {
                 string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
                     .ConfigureAwait(true);
 
-                await SelectPhotoForPost(url)
+                await SelectPhoto(url)
                     .ConfigureAwait(true);
             }
             else if (rbImageTennor.IsChecked == true)
             {
-                PageNavigationManager.SwitchToSubPage(new TennorSearchPage
+                NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
                 {
-                    OnPicSelect = SelectPhotoForPost
+                    OnPicSelect = SelectPhoto
                 });
             }
             else if (rbImageGallery.IsChecked == true)
             {
-                PageNavigationManager.SwitchToSubPage(new AnonymGallerySearchPage
+                NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchPage
                 {
-                    OnPicSelect = SelectPhotoForPost
+                    OnPicSelect = SelectPhoto
                 });
             }
         }

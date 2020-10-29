@@ -51,7 +51,7 @@ namespace Memenim.Widgets
 
         public async Task UpdatePost()
         {
-            var res = await PostApi.GetById(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var res = await PostApi.GetById(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (res.error)
@@ -97,9 +97,9 @@ namespace Memenim.Widgets
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L).ToString(CultureInfo.CurrentCulture);
-            wdgPoster.IsAnonymous = CurrentPostData?.author_watch == 2;
+            wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 2;
 
-            if (CurrentPostData?.owner_id.HasValue == true)
+            if (CurrentPostData?.owner_id.HasValue == true && CurrentPostData?.owner_id != -1)
             {
                 var result = await UserApi.GetProfileById(CurrentPostData.owner_id.Value)
                     .ConfigureAwait(true);
@@ -114,7 +114,7 @@ namespace Memenim.Widgets
                 wdgPoster.PostTime = (CurrentPostData?.date ?? 0L) == 0L
                     ? DateTime.UtcNow.ToLocalTime().ToString(CultureInfo.CurrentCulture)
                     : wdgPoster.PostTime;
-                wdgPoster.IsAnonymous = CurrentPostData?.author_watch == 1;
+                wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 1;
 
                 stLikes.IsEnabled = false;
                 stDislikes.IsEnabled = false;
@@ -135,7 +135,7 @@ namespace Memenim.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLike(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddLike(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -151,7 +151,7 @@ namespace Memenim.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislike(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddDislike(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)

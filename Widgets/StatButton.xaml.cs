@@ -10,6 +10,8 @@ namespace Memenim.Widgets
         public static readonly RoutedEvent OnButtonClicked = EventManager.RegisterRoutedEvent("ButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StatButton));
         public static readonly DependencyProperty StatValueProperty =
             DependencyProperty.Register("StatValue", typeof(string), typeof(StatButton), new PropertyMetadata("0"));
+        public static readonly DependencyProperty ButtonSizeProperty =
+            DependencyProperty.Register("ButtonSize", typeof(int), typeof(StatButton), new PropertyMetadata(48));
 
         public event EventHandler<RoutedEventArgs> ButtonClick
         {
@@ -23,8 +25,6 @@ namespace Memenim.Widgets
             }
         }
 
-        public PackIconModernKind Icon { get; set; } = PackIconModernKind.Xbox;
-        public int ButtonSize { get; set; } = 48;
         public string StatValue
         {
             get
@@ -36,6 +36,18 @@ namespace Memenim.Widgets
                 SetValue(StatValueProperty, value);
             }
         }
+        public int ButtonSize
+        {
+            get
+            {
+                return (int)GetValue(ButtonSizeProperty);
+            }
+            set
+            {
+                SetValue(ButtonSizeProperty, value);
+            }
+        }
+        public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;
 
         public StatButton()
         {

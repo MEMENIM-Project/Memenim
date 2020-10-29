@@ -1,18 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Data;
 using Memenim.Dialogs;
 
 namespace Memenim.Pages
 {
-    public partial class UserProfilePage : UserControl
+    public partial class UserProfilePage : PageContent
     {
         public static readonly DependencyProperty CurrentProfileDataProperty =
             DependencyProperty.Register("CurrentProfileData", typeof(ProfileData), typeof(UserProfilePage),
-                new PropertyMetadata(new ProfileData {id = -1}));
+                new PropertyMetadata(new ProfileData { id = -1 }));
 
         public ProfileData CurrentProfileData
         {
@@ -62,8 +60,10 @@ namespace Memenim.Pages
             CurrentProfileData = result.data[0];
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             await UpdateProfile()
                 .ConfigureAwait(true);
         }

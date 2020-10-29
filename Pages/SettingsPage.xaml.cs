@@ -3,13 +3,14 @@ using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Data;
 using Memenim.Localization;
+using Memenim.Navigation;
 using Memenim.Settings;
 
 namespace Memenim.Pages
 {
-    public partial class SettingsPage : UserControl
+    public partial class SettingsPage : PageContent
     {
-        public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>()
+        public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>
         {
             {"en-US", "English" },
             {"ru-RU", "Русский" },
@@ -22,15 +23,17 @@ namespace Memenim.Pages
             DataContext = this;
 
             slcLanguage.SelectedItem = new KeyValuePair<string, string>(
-                SettingManager.AppSettings.Language,
-                Locales[SettingManager.AppSettings.Language]);
+                SettingsManager.AppSettings.Language,
+                Locales[SettingsManager.AppSettings.Language]);
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             wdgUserBanner.CurrentProfileData = new ProfileData
             {
-                id = SettingManager.PersistentSettings.CurrentUserId
+                id = SettingsManager.PersistentSettings.CurrentUserId
             };
 
             await wdgUserBanner.UpdateProfile()
@@ -39,15 +42,16 @@ namespace Memenim.Pages
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
         {
-            SettingManager.PersistentSettings.RemoveUser(
-                SettingManager.PersistentSettings.CurrentUserLogin);
+            SettingsManager.PersistentSettings.RemoveUser(
+                SettingsManager.PersistentSettings.CurrentUserLogin);
 
-            PageNavigationManager.SwitchToPage(new LoginPage());
+            NavigationController.Instance.RequestPage<LoginPage>();
         }
 
         private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedPair = (KeyValuePair<string, string>) slcLanguage.SelectedItem;
+            var selectedPair = (KeyValuePair<string, string>)slcLanguage.SelectedItem;
+
             await LocalizationManager.SwitchLanguage(selectedPair.Key)
                 .ConfigureAwait(true);
         }

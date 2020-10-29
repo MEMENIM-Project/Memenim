@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Tenor;
+using Tenor.Schema;
 using Memenim.Commands;
 using Memenim.Settings;
 using Memenim.Widgets;
-using Tenor;
-using Tenor.Schema;
 
 namespace Memenim.Pages
 {
-    public partial class TennorSearchPage : UserControl
+    public partial class TennorSearchPage : PageContent
     {
         public static readonly DependencyProperty SearchCommandProperty =
             DependencyProperty.Register("SearchCommand", typeof(ICommand), typeof(TennorSearchPage),
@@ -48,7 +48,7 @@ namespace Memenim.Pages
         {
             var config = new TenorConfiguration
             {
-                ApiKey = SettingManager.PersistentSettings.GetTenorAPIKey(),
+                ApiKey = SettingsManager.PersistentSettings.GetTenorAPIKey(),
                 Locale = CultureInfo.CurrentCulture,
                 ContentFilter = ContentFilter.Medium,
                 MediaFilter = MediaFilter.Minimal,
@@ -70,7 +70,7 @@ namespace Memenim.Pages
 
             foreach (var data in searchResults)
             {
-                ImagePreviewButton previewButton = new ImagePreviewButton()
+                ImagePreviewButton previewButton = new ImagePreviewButton
                 {
                     ButtonSize = 150,
                     ButtonPressAction = OnPicSelect
@@ -111,8 +111,10 @@ namespace Memenim.Pages
             }
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             await ExecuteSearch(txtSearchQuery.Text)
                 .ConfigureAwait(true);
         }
