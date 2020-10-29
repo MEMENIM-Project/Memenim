@@ -133,9 +133,9 @@ namespace Memenim.Localization
             Thread.CurrentThread.CurrentCulture = new CultureInfo(сultureName);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(сultureName);
 
-            SettingManager.AppSettings.Language = сultureName;
+            SettingsManager.AppSettings.Language = сultureName;
 
-            SettingManager.AppSettings.Save();
+            SettingsManager.AppSettings.Save();
         }
     }
 }

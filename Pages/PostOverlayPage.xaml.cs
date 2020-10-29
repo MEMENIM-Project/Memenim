@@ -33,7 +33,7 @@ namespace Memenim.Pages
         {
             base.OnEnter(sender, e);
 
-            var result = await UserApi.GetProfileById(SettingManager.PersistentSettings.CurrentUserId)
+            var result = await UserApi.GetProfileById(SettingsManager.PersistentSettings.CurrentUserId)
                 .ConfigureAwait(true);
 
             wdgUserComment.UserAvatarSource = result.data[0].photo;

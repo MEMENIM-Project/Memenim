@@ -8,11 +8,13 @@ namespace Memenim
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            Memenim.MainWindow.Instance.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            SettingManager.AppSettings.Save();
+            SettingsManager.AppSettings.Save();
 
             base.OnExit(e);
         }

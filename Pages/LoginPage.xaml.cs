@@ -47,18 +47,18 @@ namespace Memenim.Pages
                 {
                     if (chkRememberMe.IsChecked == true)
                     {
-                        SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                        SettingsManager.PersistentSettings.SetUser(txtLogin.Text,
                             PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
                             PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
-                        SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
+                        SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
 
-                        SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                        SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
-                        SettingManager.PersistentSettings.CurrentUserId = result.data.id;
+                        SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                        SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
+                        SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
                     }
                     else
                     {
-                        SettingManager.PersistentSettings.RemoveUser(txtLogin.Text);
+                        SettingsManager.PersistentSettings.RemoveUser(txtLogin.Text);
                     }
 
                     NavigationController.Instance.RequestPage<FeedPage>();

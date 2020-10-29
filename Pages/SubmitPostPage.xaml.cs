@@ -18,7 +18,7 @@ namespace Memenim.Pages
             DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(SubmitPostPage),
                 new PropertyMetadata(new PostData
                 {
-                    owner_id = SettingManager.PersistentSettings.CurrentUserId,
+                    owner_id = SettingsManager.PersistentSettings.CurrentUserId,
                     open_comments = 1,
                     attachments = new List<AttachmentData>
                     {
@@ -116,7 +116,7 @@ namespace Memenim.Pages
             {
                 CurrentPostData.author_watch++;
 
-                var result = await PostApi.AddPost(CurrentPostData, SettingManager.PersistentSettings.CurrentUserToken)
+                var result = await PostApi.AddPost(CurrentPostData, SettingsManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 if (!result.error)

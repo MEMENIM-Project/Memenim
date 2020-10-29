@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using Memenim.Pages;
+using RIS;
 
 namespace Memenim.Navigation
 {
@@ -9,10 +9,15 @@ namespace Memenim.Navigation
     {
         private static Dictionary<Type, PageContent> _pagesInstances = new Dictionary<Type, PageContent>();
 
-        private static PageContent FindPageInternal(Type type)
+        private static PageContent FindPage(Type type)
         {
             if (!typeof(PageContent).IsAssignableFrom(type))
-                return null;
+            {
+                var exception =
+                    new ArgumentException("The page class must be derived from the PageContent", nameof(type));
+                Events.OnError(null, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                throw exception;
+            }
 
             _pagesInstances.TryGetValue(type, out PageContent page);
 
@@ -22,12 +27,30 @@ namespace Memenim.Navigation
         private static PageContent CreatePage(Type type)
         {
             if (!typeof(PageContent).IsAssignableFrom(type))
-                return null;
+            {
+                var exception =
+                    new ArgumentException("The page class must be derived from the PageContent", nameof(type));
+                Events.OnError(null, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                throw exception;
+            }
 
-            PageContent page = Activator.CreateInstance(type) as PageContent;
+            PageContent page;
 
-            if (page != null)
-                _pagesInstances.Add(type, page);
+            try
+            {
+                page = Activator.CreateInstance(type) as PageContent;
+
+                if (page == null)
+                    throw new Exception();
+            }
+            catch (Exception)
+            {
+                var exception = new TypeLoadException("Failed to create a page");
+                Events.OnError(null, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                throw exception;
+            }
+
+            _pagesInstances.Add(type, page);
 
             return page;
         }
@@ -35,14 +58,11 @@ namespace Memenim.Navigation
         public static PageContent GetPage<T>()
             where T : PageContent
         {
-            return FindPageInternal(typeof(T));
+            return FindPage(typeof(T));
         }
         public static PageContent GetPage(Type type)
         {
-            if (!typeof(PageContent).IsAssignableFrom(type))
-                return null;
-
-            return FindPageInternal(type);
+            return FindPage(type);
         }
     }
 }

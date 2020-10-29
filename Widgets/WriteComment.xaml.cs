@@ -60,7 +60,7 @@ namespace Memenim.Widgets
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostApi.AddComment(PostId, txtContent.Text, IsAnonymous, SettingManager.PersistentSettings.CurrentUserToken)
+            var res = await PostApi.AddComment(PostId, txtContent.Text, IsAnonymous, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (!res.error)

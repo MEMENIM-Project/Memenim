@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Pages;
+using RIS;
 
 namespace Memenim.Navigation
 {
-    public partial class NavigationController : UserControl
+    public sealed partial class NavigationController : UserControl
     {
         private static NavigationController _instance;
         public static NavigationController Instance
@@ -20,7 +21,7 @@ namespace Memenim.Navigation
         private readonly Stack<NavigationHistoryNode> _navigationHistory = new Stack<NavigationHistoryNode>();
         private PageContentType _currentPageContentType = PageContentType.Page;
 
-        public NavigationController()
+        private NavigationController()
         {
             InitializeComponent();
             DataContext = this;
@@ -31,7 +32,17 @@ namespace Memenim.Navigation
         private void SetPage(PageContent page, PageContent dataContext = null)
         {
             if (dataContext != null)
+            {
+                if (dataContext.GetType() != page.GetType())
+                {
+                    var exception =
+                        new ArgumentException($"The {nameof(dataContext)} type must match the {nameof(page)} type", nameof(dataContext));
+                    Events.OnError(this, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                    throw exception;
+                }
+
                 page = dataContext;
+            }
 
             SaveContentToHistory();
 
@@ -44,7 +55,17 @@ namespace Memenim.Navigation
         private void SetOverlay(PageContent page, PageContent dataContext = null)
         {
             if (dataContext != null)
+            {
+                if (dataContext.GetType() != page.GetType())
+                {
+                    var exception =
+                        new ArgumentException($"The {nameof(dataContext)} type must match the {nameof(page)} type", nameof(dataContext));
+                    Events.OnError(this, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                    throw exception;
+                }
+
                 page = dataContext;
+            }
 
             SaveContentToHistory();
 
@@ -137,9 +158,6 @@ namespace Memenim.Navigation
         }
         public void RequestPage(Type type, PageContent dataContext = null)
         {
-            if (!typeof(PageContent).IsAssignableFrom(type))
-                return;
-
             PageContent page = PageStorage.GetPage(type);
 
             SetPage(page, dataContext);
@@ -154,9 +172,6 @@ namespace Memenim.Navigation
         }
         public void RequestOverlay(Type type, PageContent dataContext = null)
         {
-            if (!typeof(PageContent).IsAssignableFrom(type))
-                return;
-
             PageContent page = PageStorage.GetPage(type);
 
             SetOverlay(page, dataContext);

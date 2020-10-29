@@ -45,14 +45,14 @@ namespace Memenim.Pages
                 }
                 else
                 {
-                    SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                    SettingsManager.PersistentSettings.SetUser(txtLogin.Text,
                         PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
                         PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
-                    SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
+                    SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
 
-                    SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                    SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
-                    SettingManager.PersistentSettings.CurrentUserId = result.data.id;
+                    SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                    SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
+                    SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
 
                     NavigationController.Instance.RequestPage<FeedPage>();
 
@@ -99,14 +99,14 @@ namespace Memenim.Pages
                 await DialogManager.ShowDialog("S U C C", "Registered user with login: " + name + counter.ToString("D10"))
                     .ConfigureAwait(true);
 
-                SettingManager.PersistentSettings.SetUser(txtLogin.Text,
+                SettingsManager.PersistentSettings.SetUser(txtLogin.Text,
                     PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
                     PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
-                SettingManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
+                SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
 
-                SettingManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                SettingManager.PersistentSettings.CurrentUserToken = result.data.token;
-                SettingManager.PersistentSettings.CurrentUserId = result.data.id;
+                SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
+                SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
 
                 NavigationController.Instance.RequestPage<FeedPage>();
 

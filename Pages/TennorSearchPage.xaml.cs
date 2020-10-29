@@ -48,7 +48,7 @@ namespace Memenim.Pages
         {
             var config = new TenorConfiguration
             {
-                ApiKey = SettingManager.PersistentSettings.GetTenorAPIKey(),
+                ApiKey = SettingsManager.PersistentSettings.GetTenorAPIKey(),
                 Locale = CultureInfo.CurrentCulture,
                 ContentFilter = ContentFilter.Medium,
                 MediaFilter = MediaFilter.Minimal,

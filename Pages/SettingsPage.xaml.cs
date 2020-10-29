@@ -23,8 +23,8 @@ namespace Memenim.Pages
             DataContext = this;
 
             slcLanguage.SelectedItem = new KeyValuePair<string, string>(
-                SettingManager.AppSettings.Language,
-                Locales[SettingManager.AppSettings.Language]);
+                SettingsManager.AppSettings.Language,
+                Locales[SettingsManager.AppSettings.Language]);
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
@@ -33,7 +33,7 @@ namespace Memenim.Pages
 
             wdgUserBanner.CurrentProfileData = new ProfileData
             {
-                id = SettingManager.PersistentSettings.CurrentUserId
+                id = SettingsManager.PersistentSettings.CurrentUserId
             };
 
             await wdgUserBanner.UpdateProfile()
@@ -42,8 +42,8 @@ namespace Memenim.Pages
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
         {
-            SettingManager.PersistentSettings.RemoveUser(
-                SettingManager.PersistentSettings.CurrentUserLogin);
+            SettingsManager.PersistentSettings.RemoveUser(
+                SettingsManager.PersistentSettings.CurrentUserLogin);
 
             NavigationController.Instance.RequestPage<LoginPage>();
         }

@@ -51,7 +51,7 @@ namespace Memenim.Widgets
 
         public async Task UpdatePost()
         {
-            var res = await PostApi.GetById(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var res = await PostApi.GetById(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (res.error)
@@ -135,7 +135,7 @@ namespace Memenim.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLike(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddLike(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -151,7 +151,7 @@ namespace Memenim.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislike(CurrentPostData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddDislike(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)

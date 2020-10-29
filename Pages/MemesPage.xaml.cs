@@ -30,7 +30,7 @@ namespace Memenim.Pages
                 var victimData = await UserApi.GetProfileById(Convert.ToInt32(txtStealId.Value))
                     .ConfigureAwait(true);
 
-                await UserApi.EditProfile(victimData.data[0], SettingManager.PersistentSettings.CurrentUserToken)
+                await UserApi.EditProfile(victimData.data[0], SettingsManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 await DialogManager.ShowDialog("Success", "Profile copied")
@@ -60,7 +60,7 @@ namespace Memenim.Pages
                 {
                     await PostApi.AddComment(int.Parse(txtCommentsPostId?.Value?.ToString() ?? string.Empty),
                             _spamCommentsList[Random.Next(0, _spamCommentsList.Length - 1)],
-                            chkAnonymousComments.IsChecked, SettingManager.PersistentSettings.CurrentUserToken)
+                            chkAnonymousComments.IsChecked, SettingsManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
 
@@ -106,7 +106,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
                 {
-                    await PostApi.AddRepost(Convert.ToInt32(txtPostsPostId.Value), SettingManager.PersistentSettings.CurrentUserToken)
+                    await PostApi.AddRepost(Convert.ToInt32(txtPostsPostId.Value), SettingsManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
 
@@ -132,7 +132,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await PostApi.AddView(Convert.ToInt32(txtPostsPostId.Value), SettingManager.PersistentSettings.CurrentUserToken)
+                    await PostApi.AddView(Convert.ToInt32(txtPostsPostId.Value), SettingsManager.PersistentSettings.CurrentUserToken)
                         .ConfigureAwait(true);
                 }
 
@@ -162,7 +162,7 @@ namespace Memenim.Pages
 
             try
             {
-                var result = await PostApi.EditPost(postRequest, SettingManager.PersistentSettings.CurrentUserToken)
+                var result = await PostApi.EditPost(postRequest, SettingsManager.PersistentSettings.CurrentUserToken)
                     .ConfigureAwait(true);
 
                 if (!result.error)

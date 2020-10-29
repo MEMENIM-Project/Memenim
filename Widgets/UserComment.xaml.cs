@@ -50,7 +50,7 @@ namespace Memenim.Widgets
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLikeComment(CurrentCommentData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddLikeComment(CurrentCommentData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -65,7 +65,7 @@ namespace Memenim.Widgets
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, SettingManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.AddDislikeComment(CurrentCommentData.id, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (result.error)

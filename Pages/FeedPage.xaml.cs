@@ -70,7 +70,7 @@ namespace Memenim.Pages
 
             _offset = 0;
 
-            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
+            var postsResponse = await PostApi.GetAll(request, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (postsResponse == null)
@@ -100,7 +100,7 @@ namespace Memenim.Pages
         {
             loadingRing.Visibility = Visibility.Visible;
 
-            var postsResponse = await PostApi.GetAll(request, SettingManager.PersistentSettings.CurrentUserToken)
+            var postsResponse = await PostApi.GetAll(request, SettingsManager.PersistentSettings.CurrentUserToken)
                 .ConfigureAwait(true);
 
             if (postsResponse == null)

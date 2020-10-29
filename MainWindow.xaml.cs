@@ -11,50 +11,57 @@ using RIS.Extensions;
 
 namespace Memenim
 {
-    public partial class MainWindow : MetroWindow
+    public sealed partial class MainWindow : MetroWindow
     {
-        public static MainWindow Instance { get; private set; }
+        public static MainWindow _instance;
+        public static MainWindow Instance
+        {
+            get
+            {
+                return _instance ??= new MainWindow();
+            }
+        }
 
-        public MainWindow()
+        private MainWindow()
         {
             InitializeComponent();
             DataContext = this;
 
-            Instance = this;
+            _instance = this;
 
             rootLayout.Children.Add(NavigationController.Instance);
 
-            Width = SettingManager.AppSettings.WindowWidth;
-            Height = SettingManager.AppSettings.WindowHeight;
+            Width = SettingsManager.AppSettings.WindowWidth;
+            Height = SettingsManager.AppSettings.WindowHeight;
             WindowStartupLocation = WindowStartupLocation.Manual;
-            Left = SettingManager.AppSettings.WindowPositionX - (Width / 2.0);
-            Top = SettingManager.AppSettings.WindowPositionY - (Height / 2.0);
-            WindowState = (WindowState)SettingManager.AppSettings.WindowState;
+            Left = SettingsManager.AppSettings.WindowPositionX - (Width / 2.0);
+            Top = SettingsManager.AppSettings.WindowPositionY - (Height / 2.0);
+            WindowState = (WindowState)SettingsManager.AppSettings.WindowState;
 
-            LocalizationManager.SwitchLanguage(SettingManager.AppSettings.Language).Wait();
+            LocalizationManager.SwitchLanguage(SettingsManager.AppSettings.Language).Wait();
 
             try
             {
-                SettingManager.PersistentSettings.CurrentUserLogin =
-                    SettingManager.PersistentSettings.GetCurrentUserLogin();
+                SettingsManager.PersistentSettings.CurrentUserLogin =
+                    SettingsManager.PersistentSettings.GetCurrentUserLogin();
 
-                if (string.IsNullOrEmpty(SettingManager.PersistentSettings.CurrentUserLogin))
+                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUserLogin))
                 {
                     NavigationController.Instance.RequestPage<LoginPage>();
                     return;
                 }
 
-                string userToken = SettingManager.PersistentSettings.GetUserToken(
-                    SettingManager.PersistentSettings.CurrentUserLogin);
-                string userId = SettingManager.PersistentSettings.GetUserId(
-                    SettingManager.PersistentSettings.CurrentUserLogin);
+                string userToken = SettingsManager.PersistentSettings.GetUserToken(
+                    SettingsManager.PersistentSettings.CurrentUserLogin);
+                string userId = SettingsManager.PersistentSettings.GetUserId(
+                    SettingsManager.PersistentSettings.CurrentUserLogin);
 
                 if (!string.IsNullOrEmpty(userToken) && !string.IsNullOrEmpty(userId))
                 {
-                    SettingManager.PersistentSettings.CurrentUserToken =
-                        PersistentUtils.WinUnprotect(userToken, $"UserToken-{SettingManager.PersistentSettings.CurrentUserLogin}");
-                    SettingManager.PersistentSettings.CurrentUserId =
-                        PersistentUtils.WinUnprotect(userId, $"UserId-{SettingManager.PersistentSettings.CurrentUserLogin}").ToInt();
+                    SettingsManager.PersistentSettings.CurrentUserToken =
+                        PersistentUtils.WinUnprotect(userToken, $"UserToken-{SettingsManager.PersistentSettings.CurrentUserLogin}");
+                    SettingsManager.PersistentSettings.CurrentUserId =
+                        PersistentUtils.WinUnprotect(userId, $"UserId-{SettingsManager.PersistentSettings.CurrentUserLogin}").ToInt();
 
                     NavigationController.Instance.RequestPage<FeedPage>();
                 }
@@ -71,13 +78,13 @@ namespace Memenim
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            SettingManager.AppSettings.WindowWidth = Width;
-            SettingManager.AppSettings.WindowHeight = Height;
-            SettingManager.AppSettings.WindowPositionX = Left + (Width / 2.0);
-            SettingManager.AppSettings.WindowPositionY = Top + (Height / 2.0);
-            SettingManager.AppSettings.WindowState = (int)WindowState;
+            SettingsManager.AppSettings.WindowWidth = Width;
+            SettingsManager.AppSettings.WindowHeight = Height;
+            SettingsManager.AppSettings.WindowPositionX = Left + (Width / 2.0);
+            SettingsManager.AppSettings.WindowPositionY = Top + (Height / 2.0);
+            SettingsManager.AppSettings.WindowState = (int)WindowState;
 
-            SettingManager.AppSettings.Save();
+            SettingsManager.AppSettings.Save();
         }
     }
 }
