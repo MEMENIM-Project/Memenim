@@ -8,16 +8,26 @@ namespace Memenim.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null || ((string)value).Length == 0
+            string result = null;
+
+            if (value is string stringValue)
+                result = stringValue;
+
+            return string.IsNullOrEmpty(result)
                 ? "Unknown"
-                : value;
+                : result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null || ((string)value).Length == 0
-                ? "Unknown"
-                : value;
+            string result = null;
+
+            if (value is string stringValue)
+                result = stringValue;
+
+            return string.IsNullOrEmpty(result) || result == "Unknown"
+                ? string.Empty
+                : result;
         }
     }
 }

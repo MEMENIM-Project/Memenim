@@ -5,6 +5,8 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
+                   xmlns:controlsRis="clr-namespace:RIS.Graphics.WPF.Controls;assembly=RIS.Graphics"
+                   xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    mc:Ignorable="d" 
                    d:DesignHeight="720" d:DesignWidth="1280">
@@ -33,13 +35,23 @@
                                   DockPanel.Dock="Left" SelectionChanged="lstPostTypes_SelectionChanged"/>
             <Button Content="{DynamicResource WriteNewPost}"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
-                    HorizontalAlignment="Right" Click="Button_Click"/>
+                    Margin="5 5 5 5" HorizontalAlignment="Right" Click="Button_Click"/>
         </DockPanel>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
-                      controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding OnPostScrollEnd}">
-            <WrapPanel Name="postsList" ItemWidth="400"/>
-        </ScrollViewer>
-        <controls:ProgressRing Grid.Row="1" x:Name="loadingRing" Width="80" Height="80"
-                               IsActive="True" IsLarge="True" Visibility="Visible"/>
+        <Grid Grid.Row="1" Margin="16 5 16 5"
+              HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <controlsRis:ExtendedScrollViewer x:Name="svPosts" SpeedRatio="1.7"
+                                              VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
+                                              controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True"
+                                              controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding Path=OnPostScrollEnd}">
+                    <WrapPanel Name="lstPosts" ItemWidth="400"
+                               ItemHeight="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
+                               Orientation="Horizontal" VerticalAlignment="Stretch"/>
+                </controlsRis:ExtendedScrollViewer>
+        </Grid>
+        <Grid Grid.Row="0" Grid.RowSpan="2" x:Name="loadingGrid" Visibility="Collapsed"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="True" Visibility="Visible"/>
+        </Grid>
     </Grid>
 </local:PageContent>

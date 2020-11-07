@@ -2,17 +2,18 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Navigation;
 
 namespace Memenim.Widgets
 {
     public partial class ImagePreviewButton : UserControl
     {
         public static readonly DependencyProperty ImageSourceProperty =
-            DependencyProperty.Register("ImageSource", typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
+            DependencyProperty.Register(nameof(ImageSource), typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
         public static readonly DependencyProperty SmallImageSourceProperty =
-            DependencyProperty.Register("SmallImageSource", typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
+            DependencyProperty.Register(nameof(SmallImageSource), typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
         public static readonly DependencyProperty ButtonSizeProperty =
-            DependencyProperty.Register("ButtonSize", typeof(int), typeof(ImagePreviewButton), new PropertyMetadata(100));
+            DependencyProperty.Register(nameof(ButtonSize), typeof(int), typeof(ImagePreviewButton), new PropertyMetadata(100));
 
         public Func<string, Task> ButtonPressAction;
 
@@ -61,7 +62,7 @@ namespace Memenim.Widgets
             await ButtonPressAction(ImageSource)
                 .ConfigureAwait(true);
 
-            //NavigationController.Instance.GoBack();
+            NavigationController.Instance.GoBack();
         }
     }
 }

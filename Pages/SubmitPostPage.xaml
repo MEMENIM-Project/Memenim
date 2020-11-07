@@ -33,8 +33,8 @@
                                 <RadioButton Name="rbImageTennor" GroupName="ImageSource" Content="{DynamicResource ResourceKey=TennorSelect}" Margin="0 5"/>
                                 <RadioButton Name="rbImageGallery" GroupName="ImageSource" Content="{DynamicResource ResourceKey=GallerySelect}" Margin="0 5"/>
                             </StackPanel>
-                            <Image x:Name="imgPreview" Height="100" Width="100" Margin="10" Stretch="Uniform"
-                                   Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostMediumImageSourceConverter}}"/>
+                            <Image Height="100" Width="100" Margin="10" Stretch="Uniform"
+                                   Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"/>
                         </StackPanel>
                         <Button Content="{DynamicResource ResourceKey=SelectPhoto}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
@@ -55,7 +55,7 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="{DynamicResource ResourceKey=PreviewTitle}">
-                <widgets:PostWidget x:Name="wdgPostPreview" PreviewMode="True"
+                <widgets:PostWidget PreviewMode="True"
                                     CurrentPostData="{Binding Path=CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
             </TabItem>
         </controls:MetroAnimatedTabControl>

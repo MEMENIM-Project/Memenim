@@ -5,9 +5,10 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
+                   xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                   xmlns:widgets="clr-namespace:Memenim.Widgets"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
 
@@ -35,5 +36,10 @@
             <Button Click="btnSignOut_Click" Content="{DynamicResource ResourceKey=SignOut}" Margin="0 5"
                     Style="{StaticResource MahApps.Styles.Button.Square.Accent}"/>
         </StackPanel>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" x:Name="loadingGrid" Visibility="Collapsed"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+        </Grid>
     </Grid>
 </local:PageContent>

@@ -130,6 +130,9 @@ namespace Memenim.Pages
         private void btnGoToLogin_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<LoginPage>();
+
+            txtLogin.Clear();
+            txtPassword.Clear();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

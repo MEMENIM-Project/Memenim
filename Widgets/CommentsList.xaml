@@ -13,7 +13,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="35" Height="35"/>
                 <RowDefinition MinHeight="40" Height="40"/>
-                <RowDefinition/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="{DynamicResource ResourceKey=CommentsTitle}"
@@ -21,14 +21,20 @@
             <Button Grid.Row="1" x:Name="btnLoadMore" Content="{DynamicResource ResourceKey=LoadComments}"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
                     Margin="16 5 16 5" Click="btnLoadMore_Click"/>
-            <ItemsControl Grid.Row="2" Name="lstComments" Margin="16 5 16 5"
+            <Grid Grid.Row="2" Margin="16 5 16 5"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <WrapPanel Name="lstComments"
+                           ItemWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
+                           Orientation="Vertical" HorizontalAlignment="Stretch"/>
+            </Grid>
+            <!--<ItemsControl Grid.Row="2" Name="lstComments" Margin="16 5 16 5"
                           HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            </ItemsControl>-->
         </Grid>
     </Border>
 </UserControl>

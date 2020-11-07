@@ -9,20 +9,19 @@ namespace Memenim.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string stringValue = null;
+            string result = null;
 
-            if (value is string boolean)
-                stringValue = boolean;
+            if (value is string stringValue)
+                result = stringValue;
 
-            return !string.IsNullOrEmpty(stringValue) ? Visibility.Visible : Visibility.Collapsed;
+            return !string.IsNullOrEmpty(result)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Visibility visibility)
-                return visibility == Visibility.Visible;
-
-            return false;
+            return Binding.DoNothing;
         }
     }
 }

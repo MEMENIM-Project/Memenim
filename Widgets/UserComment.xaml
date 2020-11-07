@@ -15,23 +15,26 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
+                <RowDefinition MinHeight="15" Height="15"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="20"/>
+                <RowDefinition MinHeight="20" Height="20"/>
             </Grid.RowDefinitions>
 
             <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="100" Height="100"
                    Source="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
-                   Stretch="UniformToFill" MouseUp="Avatar_MouseUp" VerticalAlignment="Top"/>
+                   Stretch="Uniform" MouseUp="Avatar_MouseUp" VerticalAlignment="Top"/>
             <TextBlock Grid.Row="0" Grid.Column="1" Style="{DynamicResource Header2}"
                        Text="{Binding Path=CurrentCommentData.user.name, Converter={StaticResource UserNameConverter}}"
                        TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="5"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Style="{DynamicResource Paragraph}"
                        Text="{Binding Path=CurrentCommentData.text}"
-                       TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Stretch" TextAlignment="Left" Margin="5"/>
+                       TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                       TextAlignment="Left" Margin="5"/>
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <local:StatButton ButtonSize="16" IconKind="ThumbsUp" ButtonClick="Like_Click"/>
-                <local:StatButton ButtonSize="16" IconKind="ThumbsDown" ButtonClick="Dislike_Click"/>
+                <local:StatButton x:Name="stLikes" ButtonSize="16" IconKind="ThumbsUp" ButtonClick="Like_Click"
+                                  StatValue="{Binding Path=CurrentCommentData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"/>
+                <local:StatButton x:Name="stDislikes" ButtonSize="16" IconKind="ThumbsDown" ButtonClick="Dislike_Click"
+                                  StatValue="{Binding Path=CurrentCommentData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"/>
             </StackPanel>
         </Grid>
     </Border>

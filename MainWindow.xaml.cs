@@ -1,26 +1,39 @@
 ﻿using System;
-using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows;
-using Memenim.Pages;
+using System.Windows.Interop;
 using Memenim.Settings;
 using MahApps.Metro.Controls;
-using Memenim.Localization;
+using Memenim.Native.Window;
 using Memenim.Navigation;
-using Memenim.Utils;
-using RIS.Extensions;
 
 namespace Memenim
 {
-    public sealed partial class MainWindow : MetroWindow
+    public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow
     {
-        public static MainWindow _instance;
+        private static object InstanceSyncRoot = new object();
+        private static volatile MainWindow _instance;
         public static MainWindow Instance
         {
             get
             {
-                return _instance ??= new MainWindow();
+                if (_instance == null)
+                {
+                    lock (InstanceSyncRoot)
+                    {
+                        if (_instance == null)
+                            _instance = new MainWindow();
+                    }
+                }
+
+                return _instance;
             }
         }
+
+        private HwndSource _hwndSource;
+        private WindowState _previousState;
+
+        public bool DuringRestoreToMaximized { get; private set; }
 
         private MainWindow()
         {
@@ -29,7 +42,7 @@ namespace Memenim
 
             _instance = this;
 
-            rootLayout.Children.Add(NavigationController.Instance);
+            RootLayout.Children.Add(NavigationController.Instance);
 
             Width = SettingsManager.AppSettings.WindowWidth;
             Height = SettingsManager.AppSettings.WindowHeight;
@@ -38,41 +51,71 @@ namespace Memenim
             Top = SettingsManager.AppSettings.WindowPositionY - (Height / 2.0);
             WindowState = (WindowState)SettingsManager.AppSettings.WindowState;
 
-            LocalizationManager.SwitchLanguage(SettingsManager.AppSettings.Language).Wait();
+            _previousState = WindowState;
+            DuringRestoreToMaximized = WindowState == WindowState.Maximized;
+        }
 
-            try
+        public Task ShowLoadingGrid(bool status)
+        {
+            if (status)
             {
-                SettingsManager.PersistentSettings.CurrentUserLogin =
-                    SettingsManager.PersistentSettings.GetCurrentUserLogin();
+                loadingIndicator.IsActive = true;
+                loadingGrid.Opacity = 1.0;
+                loadingGrid.IsHitTestVisible = true;
+                loadingGrid.Visibility = Visibility.Visible;
 
-                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUserLogin))
-                {
-                    NavigationController.Instance.RequestPage<LoginPage>();
-                    return;
-                }
-
-                string userToken = SettingsManager.PersistentSettings.GetUserToken(
-                    SettingsManager.PersistentSettings.CurrentUserLogin);
-                string userId = SettingsManager.PersistentSettings.GetUserId(
-                    SettingsManager.PersistentSettings.CurrentUserLogin);
-
-                if (!string.IsNullOrEmpty(userToken) && !string.IsNullOrEmpty(userId))
-                {
-                    SettingsManager.PersistentSettings.CurrentUserToken =
-                        PersistentUtils.WinUnprotect(userToken, $"UserToken-{SettingsManager.PersistentSettings.CurrentUserLogin}");
-                    SettingsManager.PersistentSettings.CurrentUserId =
-                        PersistentUtils.WinUnprotect(userId, $"UserId-{SettingsManager.PersistentSettings.CurrentUserLogin}").ToInt();
-
-                    NavigationController.Instance.RequestPage<FeedPage>();
-                }
-                else
-                {
-                    NavigationController.Instance.RequestPage<LoginPage>();
-                }
+                return Task.CompletedTask;
             }
-            catch (CryptographicException)
+
+            loadingIndicator.IsActive = false;
+
+            return Task.Run(async () =>
             {
-                NavigationController.Instance.RequestPage<LoginPage>();
+                for (double i = 1.0; i > 0.0; i -= 0.025)
+                {
+                    var opacity = i;
+
+                    if (opacity < 0.7)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            loadingGrid.IsHitTestVisible = false;
+                        });
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        loadingGrid.Opacity = opacity;
+                    });
+
+                    await Task.Delay(4)
+                        .ConfigureAwait(false);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    loadingGrid.Visibility = Visibility.Collapsed;
+                });
+            });
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            _hwndSource = (HwndSource) PresentationSource.FromVisual(this);
+            _hwndSource?.AddHook(WindowUtils.HwndSourceHook);
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            _previousState = WindowState;
+
+            base.OnStateChanged(e);
+
+            if (_previousState != WindowState.Minimized)
+            {
+                DuringRestoreToMaximized = WindowState == WindowState.Maximized;
             }
         }
 

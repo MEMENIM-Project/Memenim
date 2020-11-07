@@ -3,10 +3,9 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using Memenim.Utils;
 using Memenim.Core.Api;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Settings;
 
@@ -14,9 +13,11 @@ namespace Memenim.Widgets
 {
     public partial class PostWidget : UserControl
     {
-        public static readonly RoutedEvent OnPostClicked = EventManager.RegisterRoutedEvent("OnPostClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
+        public static readonly RoutedEvent OnPostClicked =
+            EventManager.RegisterRoutedEvent("OnPostClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
         public static readonly DependencyProperty CurrentPostDataProperty =
-            DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(PostWidget), new PropertyMetadata((PostData) null));
+            DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(PostWidget),
+                new PropertyMetadata((PostSchema) null));
 
         public event EventHandler<RoutedEventArgs> PostClick
         {
@@ -30,11 +31,11 @@ namespace Memenim.Widgets
             }
         }
 
-        public PostData CurrentPostData
+        public PostSchema CurrentPostData
         {
             get
             {
-                return (PostData)GetValue(CurrentPostDataProperty);
+                return (PostSchema)GetValue(CurrentPostDataProperty);
             }
             set
             {
@@ -51,30 +52,24 @@ namespace Memenim.Widgets
 
         public async Task UpdatePost()
         {
-            var res = await PostApi.GetById(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
+            var result = await PostApi.GetById(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id)
                 .ConfigureAwait(true);
 
-            if (res.error)
+            if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", res.message)
+                await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
                 return;
             }
 
-            CurrentPostData = res.data[0];
-        }
+            if (result.data == null)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+                return;
+            }
 
-        public void ShowImage()
-        {
-            imgPost.Source = CurrentPostData?.attachments?[0]?.photo?.photo_medium != null
-                             && Uri.TryCreate(CurrentPostData.attachments[0].photo.photo_medium, UriKind.Absolute, out Uri uri)
-                ? new BitmapImage(uri)
-                : null;
-        }
-
-        public void HideImage()
-        {
-            imgPost.Source = null;
+            CurrentPostData = result.data;
         }
 
         public void LoadImage(string url)
@@ -83,31 +78,17 @@ namespace Memenim.Widgets
                 return;
 
             CurrentPostData.attachments[0].photo.photo_medium = url;
-
-            ShowImage();
         }
 
         public void ClearImage()
         {
             CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
-
-            HideImage();
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L).ToString(CultureInfo.CurrentCulture);
             wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 2;
-
-            if (CurrentPostData?.owner_id.HasValue == true && CurrentPostData?.owner_id != -1)
-            {
-                var result = await UserApi.GetProfileById(CurrentPostData.owner_id.Value)
-                    .ConfigureAwait(true);
-
-                CurrentPostData.owner_name = result.data[0].name;
-                wdgPoster.UserName = result.data[0].name;
-                wdgPoster.UserAvatarSource = result.data[0].photo;
-            }
 
             if (PreviewMode)
             {
@@ -128,15 +109,27 @@ namespace Memenim.Widgets
             RaiseEvent(new RoutedEventArgs(OnPostClicked));
         }
 
-        private void CopyPostID_Click(object sender, RoutedEventArgs e)
+        private void CopyPostId_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(CurrentPostData.id.ToString());
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddLike(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
-                .ConfigureAwait(true);
+            stLikes.IsEnabled = false;
+
+            ApiResponse<CountSchema> result;
+
+            if (CurrentPostData.likes.my == 0)
+            {
+                result = await PostApi.AddLike(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id)
+                    .ConfigureAwait(true);
+            }
+            else
+            {
+                result = await PostApi.RemoveLike(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id)
+                    .ConfigureAwait(true);
+            }
 
             if (result.error)
             {
@@ -145,14 +138,32 @@ namespace Memenim.Widgets
                 return;
             }
 
-            await UpdatePost()
-                .ConfigureAwait(true);
+            if (CurrentPostData.likes.my == 0)
+                ++CurrentPostData.likes.my;
+            else
+                --CurrentPostData.likes.my;
+
+            CurrentPostData.likes.count = result.data.count;
+
+            stLikes.IsEnabled = true;
         }
 
         private async void Dislike_Click(object sender, RoutedEventArgs e)
         {
-            var result = await PostApi.AddDislike(CurrentPostData.id, SettingsManager.PersistentSettings.CurrentUserToken)
-                .ConfigureAwait(true);
+            stDislikes.IsEnabled = false;
+
+            ApiResponse<CountSchema> result;
+
+            if (CurrentPostData.dislikes.my == 0)
+            {
+                result = await PostApi.AddDislike(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id)
+                    .ConfigureAwait(true);
+            }
+            else
+            {
+                result = await PostApi.RemoveDislike(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id)
+                    .ConfigureAwait(true);
+            }
 
             if (result.error)
             {
@@ -161,8 +172,14 @@ namespace Memenim.Widgets
                 return;
             }
 
-            await UpdatePost()
-                .ConfigureAwait(true);
+            if (CurrentPostData.dislikes.my == 0)
+                ++CurrentPostData.dislikes.my;
+            else
+                --CurrentPostData.dislikes.my;
+
+            CurrentPostData.dislikes.count = result.data.count;
+
+            stDislikes.IsEnabled = true;
         }
     }
 }

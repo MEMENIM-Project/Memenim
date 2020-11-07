@@ -63,11 +63,11 @@
     </Control.Resources>
 
     <Grid>
-        <controls:SplitView DisplayMode="CompactInline" CompactPaneLength="40"
+        <controls:SplitView x:Name="RootLayout" DisplayMode="Inline" CompactPaneLength="40"
                             MinimumOpenPaneLength="40" MaximumOpenPaneLength="40">
             <controls:SplitView.Pane>
                 <Grid MinWidth="40" Width="40" HorizontalAlignment="Left">
-                    <widgets:NavigationBar/>
+                    <widgets:NavigationBar x:Name="NavBar"/>
                 </Grid>
             </controls:SplitView.Pane>
 
@@ -75,7 +75,7 @@
                 <controls:TransitioningContentControl Name="PageContent"/>
                 <Grid x:Name="OverlayLayout">
                     <Button Background="{DynamicResource Overlay.Background}" Style="{StaticResource OverlayButton}"
-                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OverlayBackgroundClick"/>
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="OverlayBackground_Click"/>
                     <controls:TransitioningContentControl Margin="50" x:Name="OverlayContent"/>
                 </Grid>
             </Grid>

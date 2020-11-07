@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using Memenim.Core.Api;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Settings;
@@ -15,36 +12,17 @@ namespace Memenim.Pages
     public partial class SubmitPostPage : PageContent
     {
         public static readonly DependencyProperty CurrentPostDataProperty =
-            DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(SubmitPostPage),
-                new PropertyMetadata(new PostData
+            DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(SubmitPostPage),
+                new PropertyMetadata(new PostSchema
                 {
-                    owner_id = SettingsManager.PersistentSettings.CurrentUserId,
-                    open_comments = 1,
-                    attachments = new List<AttachmentData>
-                    {
-                        new AttachmentData
-                        {
-                            photo = new PhotoData
-                            {
-                                photo_big = string.Empty,
-                                photo_medium = string.Empty,
-                                photo_small = string.Empty,
-                                size = new PhotoSizeData()
-                                {
-                                    photo_big = new RectangleData(),
-                                    photo_medium = new RectangleData(),
-                                    photo_small = new RectangleData()
-                                }
-                            }
-                        }
-                    }
+                    owner_id = SettingsManager.PersistentSettings.CurrentUserId
                 }));
 
-        public PostData CurrentPostData
+        public PostSchema CurrentPostData
         {
             get
             {
-                return (PostData)GetValue(CurrentPostDataProperty);
+                return (PostSchema)GetValue(CurrentPostDataProperty);
             }
             set
             {
@@ -65,36 +43,17 @@ namespace Memenim.Pages
             return Task.CompletedTask;
         }
 
-        public void ShowPreviewImage()
-        {
-            imgPreview.Source = CurrentPostData?.attachments?[0]?.photo?.photo_medium != null
-                                && Uri.TryCreate(CurrentPostData.attachments[0].photo.photo_medium, UriKind.Absolute, out Uri uri)
-                ? new BitmapImage(uri)
-                : null;
-        }
-
-        public void HidePreviewImage()
-        {
-            imgPreview.Source = null;
-        }
-
         public void LoadImage(string url)
         {
             if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
                 return;
 
             CurrentPostData.attachments[0].photo.photo_medium = url;
-
-            ShowPreviewImage();
-            wdgPostPreview.ShowImage();
         }
 
         public void ClearImage()
         {
             CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
-
-            HidePreviewImage();
-            wdgPostPreview.HideImage();
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
@@ -103,10 +62,17 @@ namespace Memenim.Pages
 
             if (CurrentPostData?.owner_id.HasValue == true)
             {
+                if (CurrentPostData.owner_id == -1)
+                    return;
+
                 var result = await UserApi.GetProfileById(CurrentPostData.owner_id.Value)
                     .ConfigureAwait(true);
 
-                CurrentPostData.owner_name = result.data[0].name;
+                if (result.data == null)
+                    return;
+
+                CurrentPostData.owner_name = result.data.name;
+                CurrentPostData.owner_photo = result.data.photo;
             }
         }
 
@@ -116,7 +82,7 @@ namespace Memenim.Pages
             {
                 CurrentPostData.author_watch++;
 
-                var result = await PostApi.AddPost(CurrentPostData, SettingsManager.PersistentSettings.CurrentUserToken)
+                var result = await PostApi.AddPost(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData)
                     .ConfigureAwait(true);
 
                 if (!result.error)

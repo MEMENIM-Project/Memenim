@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -13,14 +13,14 @@ namespace Memenim.Widgets
     public partial class ProfileBanner : UserControl
     {
         public static readonly DependencyProperty CurrentProfileDataProperty =
-            DependencyProperty.Register("CurrentProfileData", typeof(ProfileData), typeof(ProfileBanner),
-                new PropertyMetadata(new ProfileData { id = -1 }));
+            DependencyProperty.Register(nameof(CurrentProfileData), typeof(ProfileSchema), typeof(ProfileBanner),
+                new PropertyMetadata(new ProfileSchema { id = -1 }));
 
-        public ProfileData CurrentProfileData
+        public ProfileSchema CurrentProfileData
         {
             get
             {
-                return (ProfileData)GetValue(CurrentProfileDataProperty);
+                return (ProfileSchema)GetValue(CurrentProfileDataProperty);
             }
             set
             {
@@ -42,7 +42,7 @@ namespace Memenim.Widgets
         {
             if (id == -1)
             {
-                CurrentProfileData = new ProfileData
+                CurrentProfileData = new ProfileSchema
                 {
                     name = "Unknown"
                 };
@@ -60,7 +60,17 @@ namespace Memenim.Widgets
                 return;
             }
 
-            CurrentProfileData = result.data[0];
+            if (result.data == null)
+            {
+                CurrentProfileData = new ProfileSchema
+                {
+                    name = "Unknown"
+                };
+
+                return;
+            }
+
+            CurrentProfileData = result.data;
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)

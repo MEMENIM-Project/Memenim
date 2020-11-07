@@ -51,15 +51,15 @@ namespace Memenim.Pages
                             PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
                             PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
                         SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
-
-                        SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                        SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
-                        SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
                     }
                     else
                     {
                         SettingsManager.PersistentSettings.RemoveUser(txtLogin.Text);
                     }
+
+                    SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
+                    SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
+                    SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
 
                     NavigationController.Instance.RequestPage<FeedPage>();
 
@@ -84,6 +84,9 @@ namespace Memenim.Pages
         private void btnGoToRegister_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<RegisterPage>();
+
+            txtLogin.Clear();
+            txtPassword.Clear();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

@@ -9,16 +9,26 @@ namespace Memenim.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null || !Uri.TryCreate((string)value, UriKind.Absolute, out Uri _)
+            string result = null;
+
+            if (value is string stringValue)
+                result = stringValue;
+
+            return result == null || !Uri.TryCreate(result, UriKind.Absolute, out Uri _)
                 ? DependencyProperty.UnsetValue //Binding.DoNothing
-                : value;
+                : result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null || !Uri.TryCreate((string)value, UriKind.Absolute, out Uri _)
-                ? DependencyProperty.UnsetValue //Binding.DoNothing
-                : value;
+            string result = null;
+
+            if (value is string stringValue)
+                result = stringValue;
+
+            return result == null || !Uri.TryCreate(result, UriKind.Absolute, out Uri _)
+                ? string.Empty
+                : result;
         }
     }
 }

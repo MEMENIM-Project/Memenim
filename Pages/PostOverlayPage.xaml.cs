@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Memenim.Core.Api;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Settings;
 
 namespace Memenim.Pages
@@ -9,13 +9,14 @@ namespace Memenim.Pages
     public partial class PostOverlayPage : PageContent
     {
         public static readonly DependencyProperty CurrentPostDataProperty =
-            DependencyProperty.Register("CurrentPostData", typeof(PostData), typeof(PostOverlayPage), new PropertyMetadata((PostData)null));
+            DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(PostOverlayPage),
+                new PropertyMetadata((PostSchema) null));
 
-        public PostData CurrentPostData
+        public PostSchema CurrentPostData
         {
             get
             {
-                return (PostData)GetValue(CurrentPostDataProperty);
+                return (PostSchema)GetValue(CurrentPostDataProperty);
             }
             set
             {
@@ -36,7 +37,10 @@ namespace Memenim.Pages
             var result = await UserApi.GetProfileById(SettingsManager.PersistentSettings.CurrentUserId)
                 .ConfigureAwait(true);
 
-            wdgUserComment.UserAvatarSource = result.data[0].photo;
+            if (result.data == null)
+                return;
+
+            wdgUserComment.UserAvatarSource = result.data.photo;
         }
     }
 }

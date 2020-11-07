@@ -10,11 +10,11 @@ namespace Memenim.Widgets
     public partial class WriteComment : UserControl
     {
         public static readonly DependencyProperty UserAvatarSourceProperty =
-            DependencyProperty.Register("UserAvatarSource", typeof(string), typeof(WriteComment), new PropertyMetadata((string) null));
+            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(WriteComment), new PropertyMetadata((string) null));
         public static readonly DependencyProperty PostIdProperty =
-            DependencyProperty.Register("PostId", typeof(int), typeof(WriteComment), new PropertyMetadata(-1));
+            DependencyProperty.Register(nameof(PostId), typeof(int), typeof(WriteComment), new PropertyMetadata(-1));
         public static readonly DependencyProperty IsAnonymousProperty =
-            DependencyProperty.Register("IsAnonymous", typeof(bool), typeof(WriteComment), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(WriteComment), new PropertyMetadata(false));
 
         private string _realUserAvatarSource;
 
@@ -60,7 +60,7 @@ namespace Memenim.Widgets
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            var res = await PostApi.AddComment(PostId, txtContent.Text, IsAnonymous, SettingsManager.PersistentSettings.CurrentUserToken)
+            var res = await PostApi.AddComment(SettingsManager.PersistentSettings.CurrentUserToken, PostId, txtContent.Text, IsAnonymous)
                 .ConfigureAwait(true);
 
             if (!res.error)

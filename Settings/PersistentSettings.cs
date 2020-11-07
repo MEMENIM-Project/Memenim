@@ -25,6 +25,10 @@ namespace Memenim.Settings
             SettingsFilePath = SettingsFileName;
             SettingsFile = new IniFile();
 
+            CurrentUserLogin = string.Empty;
+            CurrentUserToken = string.Empty;
+            CurrentUserId = -1;
+
             Load();
 
             if (File.Exists("PersistentStore.store"))
@@ -63,6 +67,8 @@ namespace Memenim.Settings
             lock (SyncRoot)
             {
                 SettingsFile.RemoveSection(sectionName);
+
+                Save();
             }
         }
 
@@ -126,7 +132,7 @@ namespace Memenim.Settings
 
         public string GetTenorAPIKey()
         {
-            return GetDefault("CurrentUserLogin", "TKAGGYAX27OJ");
+            return GetDefault("TenorAPIKey", "TKAGGYAX27OJ");
         }
 
         public string GetCurrentUserLogin()
@@ -136,7 +142,7 @@ namespace Memenim.Settings
 
         public void SetTenorAPIKey(string apiKey)
         {
-            SetDefault("CurrentUserLogin", apiKey);
+            SetDefault("TenorAPIKey", apiKey);
         }
 
         public void SetCurrentUserLogin(string login)
@@ -180,6 +186,9 @@ namespace Memenim.Settings
         public void RemoveUser(string login)
         {
             RemoveSection(login);
+
+            if (GetCurrentUserLogin() == login)
+                SetCurrentUserLogin(string.Empty);
         }
     }
 }

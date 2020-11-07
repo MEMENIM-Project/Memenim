@@ -9,12 +9,26 @@ namespace Memenim.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.ToString();
+            try
+            {
+                return value?.ToString() ?? string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((string)value).ToInt();
+            try
+            {
+                return ((string)value)?.ToInt() ?? 0;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
         }
     }
 }

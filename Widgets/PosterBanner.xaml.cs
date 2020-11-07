@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
 
@@ -12,15 +12,20 @@ namespace Memenim.Widgets
     public partial class PosterBanner : UserControl
     {
         public static readonly DependencyProperty UserIdProperty =
-            DependencyProperty.Register("UserId", typeof(int), typeof(PosterBanner), new PropertyMetadata(-1));
+            DependencyProperty.Register(nameof(UserId), typeof(int), typeof(PosterBanner),
+                new PropertyMetadata(-1));
         public static readonly DependencyProperty UserNameProperty =
-            DependencyProperty.Register("UserName", typeof(string), typeof(PosterBanner), new PropertyMetadata("Unknown"));
+            DependencyProperty.Register(nameof(UserName), typeof(string), typeof(PosterBanner),
+                new PropertyMetadata("Unknown"));
         public static readonly DependencyProperty UserAvatarSourceProperty =
-            DependencyProperty.Register("UserAvatarSource", typeof(string), typeof(PosterBanner), new PropertyMetadata((string) null));
+            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(PosterBanner),
+                new PropertyMetadata((string) null));
         public static readonly DependencyProperty PostTimeProperty =
-            DependencyProperty.Register("PostTime", typeof(string), typeof(PosterBanner), new PropertyMetadata(DateTime.MinValue.ToString(CultureInfo.CurrentCulture)));
+            DependencyProperty.Register(nameof(PostTime), typeof(string), typeof(PosterBanner),
+                new PropertyMetadata(DateTime.MinValue.ToString(CultureInfo.CurrentCulture)));
         public static readonly DependencyProperty IsAnonymousProperty =
-            DependencyProperty.Register("IsAnonymous", typeof(bool), typeof(PosterBanner), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PosterBanner),
+                new PropertyMetadata(false));
 
         public int UserId
         {
@@ -91,7 +96,7 @@ namespace Memenim.Widgets
 
             NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfilePage
             {
-                CurrentProfileData = new ProfileData
+                CurrentProfileData = new ProfileSchema
                 {
                     id = UserId
                 }

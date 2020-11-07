@@ -57,21 +57,22 @@ namespace Memenim.Localization
         {
             return SetLanguageResourceDictionary(MainWindow.Instance, resourceFile);
         }
-        private static async Task SetLanguageResourceDictionary(FrameworkElement element, string resourceFile)
+        private static async Task SetLanguageResourceDictionary(FrameworkElement element, string resourceFilePath)
         {
-            if (!File.Exists(resourceFile))
+            if (!File.Exists(resourceFilePath))
             {
-                await DialogManager.ShowDialog("F U C K", "'" + resourceFile + "' not found.")
+                await DialogManager.ShowDialog("F U C K", "'" + resourceFilePath + "' not found.")
                     .ConfigureAwait(true);
+                return;
             }
 
             ResourceDictionary languageDictionary = new ResourceDictionary
             {
-                Source = new Uri(resourceFile)
+                Source = new Uri(resourceFilePath)
             };
 
-            if (!languageDictionary.Contains("ResourceDictionaryName") ||
-                languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
+            if (!languageDictionary.Contains("ResourceDictionaryName")
+                || languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
             {
                 return;
             }
@@ -83,8 +84,8 @@ namespace Memenim.Localization
             {
                 ResourceDictionary dictionary = element.Resources.MergedDictionaries[i];
 
-                if (!dictionary.Contains("ResourceDictionaryName") ||
-                    dictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
+                if (!dictionary.Contains("ResourceDictionaryName")
+                    || dictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
                 {
                     continue;
                 }
@@ -104,7 +105,7 @@ namespace Memenim.Localization
                 return;
             }
 
-            element.Resources.MergedDictionaries[1] = languageDictionary;
+            element.Resources.MergedDictionaries[dictionaryIndex] = languageDictionary;
         }
 
         public static string GetCurrentCultureName()

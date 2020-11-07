@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 
 namespace Memenim.Widgets
@@ -11,9 +11,9 @@ namespace Memenim.Widgets
     public partial class CommentsList : UserControl
     {
         public static readonly DependencyProperty PostIdProperty =
-            DependencyProperty.Register("PostId", typeof(int), typeof(CommentsList), new PropertyMetadata(-1));
+            DependencyProperty.Register(nameof(PostId), typeof(int), typeof(CommentsList), new PropertyMetadata(-1));
         public static readonly DependencyProperty CommentsCountProperty =
-            DependencyProperty.Register("CommentsCount", typeof(int), typeof(CommentsList), new PropertyMetadata(0));
+            DependencyProperty.Register(nameof(CommentsCount), typeof(int), typeof(CommentsList), new PropertyMetadata(0));
 
         private const int OffsetPerTime = 20;
 
@@ -48,7 +48,7 @@ namespace Memenim.Widgets
             DataContext = this;
         }
 
-        public void AddComments(List<CommentData> comments)
+        public void AddComments(List<CommentSchema> comments)
         {
             foreach (var comment in comments)
             {
@@ -57,18 +57,20 @@ namespace Memenim.Widgets
                     CurrentCommentData = comment
                 };
 
-                lstComments.Items.Insert(0, commentWidget);
+                lstComments.Children.Insert(0, commentWidget);
             }
 
-            if (lstComments.Items.Count >= CommentsCount - 1)
+            if (lstComments.Children.Count >= CommentsCount - 1)
                 btnLoadMore.Visibility = Visibility.Collapsed;
+
+            _offset += OffsetPerTime;
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            lstComments.Items.Clear();
+            lstComments.Children.Clear();
 
-            var result = await PostApi.GetComments(PostId)
+            var result = await PostApi.GetComments(PostId, OffsetPerTime, _offset)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -79,15 +81,13 @@ namespace Memenim.Widgets
             }
 
             AddComments(result.data);
-
-            _offset += OffsetPerTime;
         }
 
         private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
         {
             btnLoadMore.IsEnabled = false;
 
-            var result = await PostApi.GetComments(PostId, _offset)
+            var result = await PostApi.GetComments(PostId, OffsetPerTime, _offset)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -98,8 +98,6 @@ namespace Memenim.Widgets
             }
 
             AddComments(result.data);
-
-            _offset += OffsetPerTime;
 
             btnLoadMore.IsEnabled = true;
         }

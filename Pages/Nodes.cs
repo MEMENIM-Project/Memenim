@@ -1,5 +1,5 @@
 ﻿using System;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 
 namespace Memenim.Pages
 {

@@ -7,31 +7,41 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
                    mc:Ignorable="d" 
-                   d:DesignHeight="450" d:DesignWidth="800">
+                   Height="250" Width="250"
+                   MinHeight="250" MinWidth="250">
 
     <Grid>
         <StackPanel Width="200" VerticalAlignment="Center" HorizontalAlignment="Center">
             <TextBlock Name="lblErrorMessage" Foreground="Red" HorizontalAlignment="Center"
                        Margin="5 5 5 5"/>
-            <TextBox Name="txtLogin" Margin="0 0 0 5"
+            <TextBox Name="txtLogin" MinWidth="200" MinHeight="25"
                      controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
-                     controls:TextBoxHelper.SelectAllOnFocus="True"
+                     controls:TextBoxHelper.SelectAllOnFocus="True" Margin="0 0 0 5"
+                     VerticalAlignment="Top" HorizontalAlignment="Center"
+                     VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                      TextChanged="txtLogin_TextChanged" KeyUp="txtLogin_KeyUp"/>
-            <PasswordBox Name="txtPassword"
+            <PasswordBox Name="txtPassword" MinWidth="200" MinHeight="25"
                          controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
                          controls:TextBoxHelper.SelectAllOnFocus="True" Margin="0 0 0 5"
                          Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
+                         VerticalAlignment="Top" HorizontalAlignment="Center"
+                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                          PasswordChanged="txtPassword_PasswordChanged" KeyUp="txtPassword_KeyUp"/>
-            <Button Name="btnGoToLogin" Width="190" Height="30"
-                    Content="{DynamicResource ResourceKey=GoToLogin}" Margin="5 5 5 5"
-                    Style="{StaticResource MahApps.Styles.Button.Square}" Click="btnGoToLogin_Click"/>
-            <Button Name="btnRegister" Width="190" MinHeight="30" Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Margin="5 5 5 5"
-                    Click="btnRegister_Click">
-                <TextBlock Text="{DynamicResource ResourceKey=SignUp}" MinHeight="10"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
+            <Button Name="btnGoToLogin" Width="160" MinHeight="30"
+                    FontSize="10" Margin="5 5 5 20"
+                    Style="{StaticResource MahApps.Styles.Button.Square}" Click="btnGoToLogin_Click">
+                <TextBlock Text="{DynamicResource ResourceKey=GoToLogin}" MinHeight="10"
+                           FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"
                            TextAlignment="Center" TextWrapping="Wrap"/>
             </Button>
-            <Button Name="btnAutoRegister" Width="190" Height="30" Visibility="Collapsed"
+            <Button Name="btnRegister" Width="190" MinHeight="30" FontSize="17"
+                    Style="{StaticResource MahApps.Styles.Button.Square.Accent}"
+                    Margin="5 5 5 5" Click="btnRegister_Click">
+                <TextBlock Text="{DynamicResource ResourceKey=SignUp}" MinHeight="10"
+                           FontSize="17" VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center" TextWrapping="Wrap"/>
+            </Button>
+            <Button Name="btnAutoRegister" Width="190" Height="30" FontSize="17" Visibility="Collapsed"
                     Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}" Margin="5 5 5 5"
                     Click="btnAutoRegister_Click">Auto register</Button>
         </StackPanel>

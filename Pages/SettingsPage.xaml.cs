@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Settings;
@@ -27,16 +28,66 @@ namespace Memenim.Pages
                 Locales[SettingsManager.AppSettings.Language]);
         }
 
+        public Task ShowLoadingGrid(bool status)
+        {
+            if (status)
+            {
+                loadingIndicator.IsActive = true;
+                loadingGrid.Opacity = 1.0;
+                loadingGrid.IsHitTestVisible = true;
+                loadingGrid.Visibility = Visibility.Visible;
+
+                return Task.CompletedTask;
+            }
+
+            loadingIndicator.IsActive = false;
+
+            return Task.Run(async () =>
+            {
+                for (double i = 1.0; i > 0.0; i -= 0.025)
+                {
+                    var opacity = i;
+
+                    if (opacity < 0.7)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            loadingGrid.IsHitTestVisible = false;
+                        });
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        loadingGrid.Opacity = opacity;
+                    });
+
+                    await Task.Delay(4)
+                        .ConfigureAwait(false);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    loadingGrid.Visibility = Visibility.Collapsed;
+                });
+            });
+        }
+
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            await ShowLoadingGrid(true)
+                .ConfigureAwait(true);
+
             base.OnEnter(sender, e);
 
-            wdgUserBanner.CurrentProfileData = new ProfileData
+            wdgUserBanner.CurrentProfileData = new ProfileSchema
             {
                 id = SettingsManager.PersistentSettings.CurrentUserId
             };
 
             await wdgUserBanner.UpdateProfile()
+                .ConfigureAwait(true);
+
+            await ShowLoadingGrid(false)
                 .ConfigureAwait(true);
         }
 

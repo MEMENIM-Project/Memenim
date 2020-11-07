@@ -18,6 +18,9 @@ namespace Memenim.Pages
 
         public async Task ExecuteSearch()
         {
+            await ShowLoadingGrid(true)
+                .ConfigureAwait(true);
+
             var searchResults = await PhotoApi.GetLibraryPhotos()
                 .ConfigureAwait(true);
 
@@ -43,6 +46,56 @@ namespace Memenim.Pages
 
                 lstImages.Children.Add(previewButton);
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(1))
+                .ConfigureAwait(true);
+
+            await ShowLoadingGrid(false)
+                .ConfigureAwait(true);
+        }
+
+        public Task ShowLoadingGrid(bool status)
+        {
+            if (status)
+            {
+                loadingIndicator.IsActive = true;
+                loadingGrid.Opacity = 1.0;
+                loadingGrid.IsHitTestVisible = true;
+                loadingGrid.Visibility = Visibility.Visible;
+
+                return Task.CompletedTask;
+            }
+
+            loadingIndicator.IsActive = false;
+
+            return Task.Run(async () =>
+            {
+                for (double i = 1.0; i > 0.0; i -= 0.025)
+                {
+                    var opacity = i;
+
+                    if (opacity < 0.7)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            loadingGrid.IsHitTestVisible = false;
+                        });
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        loadingGrid.Opacity = opacity;
+                    });
+
+                    await Task.Delay(4)
+                        .ConfigureAwait(false);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    loadingGrid.Visibility = Visibility.Collapsed;
+                });
+            });
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)

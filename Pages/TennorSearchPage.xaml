@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Pages"
+             xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -21,18 +22,23 @@
                  controls:TextBoxHelper.Watermark="Enter parameter"
                  Style="{DynamicResource MahApps.Styles.TextBox.Search}"
                  controls:TextBoxHelper.ButtonCommand="{Binding Path=SearchCommand, Mode=OneWay}"
-                 controls:TextBoxHelper.ButtonCommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}}">
+                 controls:TextBoxHelper.ButtonCommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=Self}}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Return"
                             Command="{Binding Path=SearchCommand, Mode=OneWay}"
-                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}}"/>
+                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox, AncestorLevel=1}}"/>
                 <KeyBinding Key="Enter"
                             Command="{Binding Path=SearchCommand, Mode=OneWay}"
-                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}}"/>
+                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox, AncestorLevel=1}}"/>
             </TextBox.InputBindings>
         </TextBox>
         <ScrollViewer Grid.Row="2">
             <WrapPanel x:Name="lstImages"/>
         </ScrollViewer>
+        <Grid Grid.Row="1" Grid.RowSpan="2" x:Name="loadingGrid" Visibility="Collapsed"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="True" Visibility="Visible"/>
+        </Grid>
     </Grid>
 </local:PageContent>

@@ -8,10 +8,10 @@
     <system:String x:Key="Login">Login</system:String>
     <system:String x:Key="Password">Password</system:String>
     <system:String x:Key="RememberMe">Remember Me</system:String>
-    <system:String x:Key="GoToRegister">New user? Register now</system:String>
+    <system:String x:Key="GoToRegister">New user? Sign Up now</system:String>
     <system:String x:Key="SignIn">Sign In</system:String>
-    <system:String x:Key="GoToLogin">Already registered?</system:String>
-    <system:String x:Key="SignUp">Register new user</system:String>
+    <system:String x:Key="GoToLogin">Already registered? Sign In now</system:String>
+    <system:String x:Key="SignUp">Sign Up</system:String>
     
     <system:String x:Key="ErrorTitle">F U C K</system:String>
     <system:String x:Key="SuccessTitle">S U C C</system:String>

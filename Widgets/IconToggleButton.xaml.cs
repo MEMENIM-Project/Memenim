@@ -7,7 +7,14 @@ namespace Memenim.Widgets
 {
     public partial class IconToggleButton : UserControl
     {
-        public static readonly RoutedEvent OnIconToggleButtonClicked = EventManager.RegisterRoutedEvent("OnIconToggleButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconToggleButton));
+        public static readonly RoutedEvent OnIconToggleButtonClicked =
+            EventManager.RegisterRoutedEvent("OnIconToggleButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconToggleButton));
+        public static readonly DependencyProperty PageNameProperty =
+            DependencyProperty.Register(nameof(PageName), typeof(string), typeof(IconToggleButton),
+                new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty IconKindProperty =
+            DependencyProperty.Register(nameof(IconKind), typeof(PackIconModernKind), typeof(IconToggleButton),
+                new PropertyMetadata(PackIconModernKind.Xbox));
 
         public event EventHandler<RoutedEventArgs> IconToggleButtonClick
         {
@@ -21,8 +28,28 @@ namespace Memenim.Widgets
             }
         }
 
-        public string PageName { get; set; }
-        public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;
+        public string PageName
+        {
+            get
+            {
+                return (string)GetValue(PageNameProperty);
+            }
+            set
+            {
+                SetValue(PageNameProperty, value);
+            }
+        }
+        public PackIconModernKind IconKind
+        {
+            get
+            {
+                return (PackIconModernKind)GetValue(IconKindProperty);
+            }
+            set
+            {
+                SetValue(IconKindProperty, value);
+            }
+        }
 
         public IconToggleButton()
         {

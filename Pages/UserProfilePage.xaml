@@ -6,6 +6,7 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:widgets ="clr-namespace:Memenim.Widgets"
+                   xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
     
@@ -20,7 +21,8 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource Header1}"
-                   Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"/>
+                   Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
+                   VerticalAlignment="Bottom" Margin="20 0 20 0"/>
         <Image Grid.Row="1" Grid.Column="0" Height="200" Width="200" Stretch="Uniform"
                Source="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10 0 0"/>
@@ -30,5 +32,10 @@
                                          StatValue="{Binding Path=CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
         </ScrollViewer>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" x:Name="loadingGrid"
+              Visibility="Collapsed" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+        </Grid>
     </Grid>
 </local:PageContent>

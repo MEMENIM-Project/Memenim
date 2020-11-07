@@ -7,7 +7,7 @@ namespace Memenim.Widgets
     public partial class UserProfileStat : UserControl
     {
         public static readonly DependencyProperty StatValueProperty =
-            DependencyProperty.Register("StatValue", typeof(string), typeof(UserProfileStat), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register(nameof(StatValue), typeof(string), typeof(UserProfileStat), new PropertyMetadata(string.Empty));
 
         public string StatTitle { get; set; }
         public string StatValue

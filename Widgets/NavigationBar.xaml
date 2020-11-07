@@ -9,26 +9,43 @@
              d:DesignHeight="450" d:DesignWidth="40">
 
     <Control.Resources>
-        <Style x:Key="Navbar" TargetType="Grid">
-            <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent}"/>
-        </Style>
+        <ResourceDictionary>
+            <Style x:Key="NavBar" TargetType="Grid">
+                <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Accent}"/>
+            </Style>
+        </ResourceDictionary>
     </Control.Resources>
 
-    <Grid Style="{StaticResource Navbar}">
+    <Grid Style="{StaticResource NavBar}">
         <Grid.RowDefinitions>
-            <RowDefinition MinHeight="40" Height="40"/>
+            <RowDefinition MinHeight="40" Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition MinHeight="40" Height="40"/>
+            <RowDefinition MinHeight="40" Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <local:IconButton Grid.Row="0" x:Name="btnNavBack" IconButtonClick="OnNavButtonClick" PageName="Back" IconKind="ArrowLeft" Height="40"/>
-        <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <local:IconButton x:Name="btnNavSearch" IconButtonClick="OnNavButtonClick" PageName="PlaceholderPage" IconKind="Magnify" Height="40"/>
-            <local:IconButton x:Name="btnNavHome" IconButtonClick="OnNavButtonClick" PageName="FeedPage" IconKind="Newspaper" Height="40"/>
-            <local:IconButton x:Name="btnNavMessages" IconButtonClick="OnNavButtonClick" PageName="PlaceholderPage" IconKind="Chat" Height="40"/>
-            <local:IconButton x:Name="btnNavGroups" IconButtonClick="OnNavButtonClick" PageName="PlaceholderPage" IconKind="Group" Height="40"/>
-            <local:IconButton x:Name="btnNavMemes" IconButtonClick="OnNavButtonClick" PageName="MemesPage" IconKind="SmileyHappy" Height="40"/>
-        </StackPanel>
-        <local:IconButton Grid.Row="2" x:Name="btnNavSettings" IconButtonClick="OnNavButtonClick" PageName="SettingsPage" IconKind="Settings" Height="40"/>
+        <ItemsControl Grid.Row="0"
+                      ItemsSource="{Binding Path=TopNavButtons}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel VerticalAlignment="Top"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <ItemsControl Grid.Row="1"
+                      ItemsSource="{Binding Path=CentralNavButtons}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel VerticalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <ItemsControl Grid.Row="2"
+                      ItemsSource="{Binding Path=BottomNavButtons}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel VerticalAlignment="Bottom"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </Grid>
 </UserControl>

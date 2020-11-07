@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows;
 using Memenim.Core.Api;
-using Memenim.Core.Data;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Settings;
 using Microsoft.Win32;
@@ -30,7 +30,10 @@ namespace Memenim.Pages
                 var victimData = await UserApi.GetProfileById(Convert.ToInt32(txtStealId.Value))
                     .ConfigureAwait(true);
 
-                await UserApi.EditProfile(victimData.data[0], SettingsManager.PersistentSettings.CurrentUserToken)
+                if (victimData.data == null)
+                    throw new Exception();
+
+                await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken, victimData.data)
                     .ConfigureAwait(true);
 
                 await DialogManager.ShowDialog("Success", "Profile copied")
@@ -58,9 +61,10 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < txtCommentsCount.Value; ++i)
                 {
-                    await PostApi.AddComment(int.Parse(txtCommentsPostId?.Value?.ToString() ?? string.Empty),
+                    await PostApi.AddComment(SettingsManager.PersistentSettings.CurrentUserToken,
+                            int.Parse(txtCommentsPostId?.Value?.ToString() ?? string.Empty),
                             _spamCommentsList[Random.Next(0, _spamCommentsList.Length - 1)],
-                            chkAnonymousComments.IsChecked, SettingsManager.PersistentSettings.CurrentUserToken)
+                            chkAnonymousComments.IsChecked)
                         .ConfigureAwait(true);
                 }
 
@@ -106,7 +110,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtSharesCount.Value); ++i)
                 {
-                    await PostApi.AddRepost(Convert.ToInt32(txtPostsPostId.Value), SettingsManager.PersistentSettings.CurrentUserToken)
+                    await PostApi.AddRepost(Convert.ToInt32(txtPostsPostId.Value))
                         .ConfigureAwait(true);
                 }
 
@@ -132,7 +136,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await PostApi.AddView(Convert.ToInt32(txtPostsPostId.Value), SettingsManager.PersistentSettings.CurrentUserToken)
+                    await PostApi.AddView(Convert.ToInt32(txtPostsPostId.Value))
                         .ConfigureAwait(true);
                 }
 
@@ -154,25 +158,51 @@ namespace Memenim.Pages
         {
             btnEditPost.IsEnabled = false;
 
-            EditPostRequest postRequest = new EditPostRequest
-            {
-                id = Convert.ToInt32(txtPostsPostId.Value),
-                text = txtPostText.Text
-            };
-
             try
             {
-                var result = await PostApi.EditPost(postRequest, SettingsManager.PersistentSettings.CurrentUserToken)
+                var result = await PostApi.GetById(SettingsManager.PersistentSettings.CurrentUserToken,
+                        Convert.ToInt32(txtPostsPostId.Value))
                     .ConfigureAwait(true);
 
-                if (!result.error)
+                if (result.error)
+                {
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
+                    return;
+                }
+
+                if (result.data == null)
+                {
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
+                    return;
+                }
+
+                PostEditSchema postRequest = new PostEditSchema
+                {
+                    id = Convert.ToInt32(txtPostsPostId.Value),
+                    text = txtPostText.Text,
+                    adult = result.data.adult,
+                    author_watch = result.data.author_watch,
+                    category = result.data.category,
+                    filter = result.data.filter,
+                    hidden = result.data.hidden,
+                    open_comments = result.data.open_comments,
+                    type = result.data.type
+                };
+
+                var resultEdit = await PostApi.EditPost(SettingsManager.PersistentSettings.CurrentUserToken,
+                        postRequest)
+                    .ConfigureAwait(true);
+
+                if (!resultEdit.error)
                 {
                     await DialogManager.ShowDialog("S U C C", "Post editing done")
                         .ConfigureAwait(true);
                 }
                 else
                 {
-                    await DialogManager.ShowDialog("Not S U C C", result.message)
+                    await DialogManager.ShowDialog("F U C K", resultEdit.message)
                         .ConfigureAwait(true);
                 }
             }

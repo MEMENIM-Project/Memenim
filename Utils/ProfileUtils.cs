@@ -17,9 +17,17 @@ namespace Memenim.Utils
 
                 if (!result.error)
                 {
-                    result.data[0].photo = url;
+                    if (result.data == null)
+                    {
+                        await DialogManager.ShowDialog("F U C K", result.message)
+                            .ConfigureAwait(true);
+                        return;
+                    }
 
-                    var request = await UserApi.EditProfile(result.data[0], SettingsManager.PersistentSettings.CurrentUserToken)
+                    result.data.photo = url;
+
+                    var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                            result.data)
                         .ConfigureAwait(true);
 
                     if (!request.error)
@@ -55,9 +63,17 @@ namespace Memenim.Utils
 
                 if (!result.error)
                 {
-                    result.data[0].banner = url;
+                    if (result.data == null)
+                    {
+                        await DialogManager.ShowDialog("F U C K", result.message)
+                            .ConfigureAwait(true);
+                        return;
+                    }
 
-                    var request = await UserApi.EditProfile(result.data[0], SettingsManager.PersistentSettings.CurrentUserToken)
+                    result.data.banner = url;
+
+                    var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                            result.data)
                         .ConfigureAwait(true);
 
                     if (!request.error)
