@@ -5,23 +5,32 @@ using System.Windows.Controls;
 using Memenim.Core.Schema;
 using Memenim.Localization;
 using Memenim.Navigation;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 
 namespace Memenim.Pages
 {
     public partial class SettingsPage : PageContent
     {
-        public Dictionary<string, string> Locales { get; } = new Dictionary<string, string>
+        public static Dictionary<string, string> Locales { get; } = new Dictionary<string, string>
         {
             {"en-US", "English" },
             {"ru-RU", "Русский" },
             {"ja-JP", "日本語" }
         };
 
+        public SettingsViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as SettingsViewModel;
+            }
+        }
+
         public SettingsPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new SettingsViewModel();
 
             slcLanguage.SelectedItem = new KeyValuePair<string, string>(
                 SettingsManager.AppSettings.Language,
@@ -74,6 +83,12 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
 

@@ -1,37 +1,36 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using Memenim.Core.Api;
-using Memenim.Core.Schema;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 
 namespace Memenim.Pages
 {
     public partial class PostOverlayPage : PageContent
     {
-        public static readonly DependencyProperty CurrentPostDataProperty =
-            DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(PostOverlayPage),
-                new PropertyMetadata((PostSchema) null));
-
-        public PostSchema CurrentPostData
+        public PostOverlayViewModel ViewModel
         {
             get
             {
-                return (PostSchema)GetValue(CurrentPostDataProperty);
-            }
-            set
-            {
-                SetValue(CurrentPostDataProperty, value);
+                return DataContext as PostOverlayViewModel;
             }
         }
 
         public PostOverlayPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new PostOverlayViewModel();
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             base.OnEnter(sender, e);
 
             var result = await UserApi.GetProfileById(SettingsManager.PersistentSettings.CurrentUserId)
@@ -41,6 +40,13 @@ namespace Memenim.Pages
                 return;
 
             wdgUserComment.UserAvatarSource = result.data.photo;
+
+            svPost.ScrollToVerticalOffset(0.0);
+        }
+
+        private void SvPost_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            ViewModel.ScrollOffset = e.VerticalOffset;
         }
     }
 }

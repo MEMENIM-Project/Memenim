@@ -6,6 +6,7 @@ using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages;
+using Memenim.Pages.ViewModel;
 using Memenim.Utils;
 
 namespace Memenim.Widgets
@@ -79,9 +80,9 @@ namespace Memenim.Widgets
                 .ConfigureAwait(true);
         }
 
-        private void SelectAvatarFromTennor_Click(object sender, RoutedEventArgs e)
+        private void SelectAvatarFromTenor_Click(object sender, RoutedEventArgs e)
         {
-            NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
+            NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
                 OnPicSelect = ProfileUtils.ChangeAvatar
             });
@@ -96,9 +97,9 @@ namespace Memenim.Widgets
                 .ConfigureAwait(true);
         }
 
-        private void SelectBannerFromTennor_Click(object sender, RoutedEventArgs e)
+        private void SelectBannerFromTenor_Click(object sender, RoutedEventArgs e)
         {
-            NavigationController.Instance.RequestPage<TennorSearchPage>(new TennorSearchPage
+            NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
                 OnPicSelect = ProfileUtils.ChangeBanner
             });

@@ -3,36 +3,29 @@ using System.Windows;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Pages.ViewModel;
 
 namespace Memenim.Pages
 {
     public partial class UserProfilePage : PageContent
     {
-        public static readonly DependencyProperty CurrentProfileDataProperty =
-            DependencyProperty.Register(nameof(CurrentProfileData), typeof(ProfileSchema), typeof(UserProfilePage),
-                new PropertyMetadata(new ProfileSchema { id = -1 }));
-
-        public ProfileSchema CurrentProfileData
+        public UserProfileViewModel ViewModel
         {
             get
             {
-                return (ProfileSchema)GetValue(CurrentProfileDataProperty);
-            }
-            set
-            {
-                SetValue(CurrentProfileDataProperty, value);
+                return DataContext as UserProfileViewModel;
             }
         }
 
         public UserProfilePage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new UserProfileViewModel();
         }
 
         public Task UpdateProfile()
         {
-            return UpdateProfile(CurrentProfileData.id);
+            return UpdateProfile(ViewModel.CurrentProfileData.id);
         }
         public async Task UpdateProfile(int id)
         {
@@ -41,7 +34,7 @@ namespace Memenim.Pages
 
             if (id == -1)
             {
-                CurrentProfileData = new ProfileSchema
+                ViewModel.CurrentProfileData = new ProfileSchema
                 {
                     name = "Unknown"
                 };
@@ -62,7 +55,7 @@ namespace Memenim.Pages
 
             if (result.data == null)
             {
-                CurrentProfileData = new ProfileSchema
+                ViewModel.CurrentProfileData = new ProfileSchema
                 {
                     name = "Unknown"
                 };
@@ -71,7 +64,7 @@ namespace Memenim.Pages
                 return;
             }
 
-            CurrentProfileData = result.data;
+            ViewModel.CurrentProfileData = result.data;
 
             await ShowLoadingGrid(false)
                 .ConfigureAwait(true);
@@ -123,7 +116,16 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             base.OnEnter(sender, e);
+
+            await ShowLoadingGrid(true)
+                .ConfigureAwait(true);
 
             await UpdateProfile()
                 .ConfigureAwait(true);

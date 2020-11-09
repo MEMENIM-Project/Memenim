@@ -1,10 +1,11 @@
 ﻿<local:PageContent x:Class="Memenim.Pages.SubmitPostPage"
-                   d:DataContext="{d:DesignInstance local:SubmitPostPage}"
+                   d:DataContext="{d:DesignInstance viewModel:SubmitPostViewModel}"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    xmlns:local="clr-namespace:Memenim.Pages"
+                   xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
                    mc:Ignorable="d"
@@ -30,7 +31,7 @@
                             <StackPanel>
                                 <TextBlock Style="{DynamicResource Header2}" Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
                                 <RadioButton Name="rbImageRaw" GroupName="ImageSource" Content="{DynamicResource ResourceKey=URLSelect}" IsChecked="True" Margin="0 5"/>
-                                <RadioButton Name="rbImageTennor" GroupName="ImageSource" Content="{DynamicResource ResourceKey=TennorSelect}" Margin="0 5"/>
+                                <RadioButton Name="rbImageTenor" GroupName="ImageSource" Content="{DynamicResource ResourceKey=TenorSelect}" Margin="0 5"/>
                                 <RadioButton Name="rbImageGallery" GroupName="ImageSource" Content="{DynamicResource ResourceKey=GallerySelect}" Margin="0 5"/>
                             </StackPanel>
                             <Image Height="100" Width="100" Margin="10" Stretch="Uniform"
@@ -56,7 +57,7 @@
             </TabItem>
             <TabItem Header="{DynamicResource ResourceKey=PreviewTitle}">
                 <widgets:PostWidget PreviewMode="True"
-                                    CurrentPostData="{Binding Path=CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
+                                    CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>

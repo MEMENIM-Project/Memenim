@@ -3,47 +3,31 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using Tenor;
 using Tenor.Schema;
 using Memenim.Commands;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Widgets;
+using WpfAnimatedGif;
 
 namespace Memenim.Pages
 {
-    public partial class TennorSearchPage : PageContent
+    public partial class TenorSearchPage : PageContent
     {
-        public static readonly DependencyProperty SearchCommandProperty =
-            DependencyProperty.Register(nameof(SearchCommand), typeof(ICommand), typeof(TennorSearchPage),
-                new PropertyMetadata(new BasicCommand(_ => false)));
+        private static TenorConfiguration TenorConfig { get; }
+        private static TenorClient TenorClient { get; }
 
-        public Func<string, Task> OnPicSelect { get; set; }
-        public TenorConfiguration TenorConfig { get; set; }
-        public TenorClient TenorClient { get; set; }
-
-        public ICommand SearchCommand
+        public TenorSearchViewModel ViewModel
         {
             get
             {
-                return (ICommand)GetValue(SearchCommandProperty);
-            }
-            set
-            {
-                SetValue(SearchCommandProperty, value);
+                return DataContext as TenorSearchViewModel;
             }
         }
 
-        public TennorSearchPage()
+        static TenorSearchPage()
         {
-            InitializeComponent();
-            DataContext = this;
-
-            SearchCommand = new BasicCommand(
-                _ => true, async query => await ExecuteSearch((string)query)
-                    .ConfigureAwait(true)
-            );
-
             TenorConfig = new TenorConfiguration
             {
                 ApiKey = SettingsManager.PersistentSettings.GetTenorAPIKey(),
@@ -56,15 +40,21 @@ namespace Memenim.Pages
             TenorClient = new TenorClient(TenorConfig);
         }
 
+        public TenorSearchPage()
+        {
+            InitializeComponent();
+            DataContext = new TenorSearchViewModel();
+        }
+
         public async Task ExecuteSearch(string query)
         {
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
 
             IEnumerable<ImagePost> searchResults = !string.IsNullOrEmpty(query)
-                ? (await TenorClient.SearchAsync(query, 50)
+                ? (await TenorClient.SearchAsync(query, 40)
                     .ConfigureAwait(true)).Results
-                : (await TenorClient.GetTrendingPostsAsync(50)
+                : (await TenorClient.GetTrendingPostsAsync(40)
                     .ConfigureAwait(true)).Results;
 
             lstImages.Children.Clear();
@@ -77,7 +67,7 @@ namespace Memenim.Pages
                 ImagePreviewButton previewButton = new ImagePreviewButton
                 {
                     ButtonSize = 150,
-                    ButtonPressAction = OnPicSelect
+                    ButtonPressAction = ViewModel.OnPicSelect
                 };
 
                 foreach (var media in data.Media)
@@ -98,18 +88,6 @@ namespace Memenim.Pages
                 {
                     continue;
                 }
-
-                //var media = data.Media.First();
-
-                //if (!media.TryGetValue(MediaType.TinyGif, out MediaItem value))
-                //    continue;
-
-                //previewButton.SmallImageSource = value?.Url;
-
-                //if (!media.TryGetValue(MediaType.Gif, out value))
-                //    continue;
-
-                //previewButton.ImageSource = value?.Url;
 
                 lstImages.Children.Add(previewButton);
             }
@@ -167,10 +145,56 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             base.OnEnter(sender, e);
+
+            await ShowLoadingGrid(true)
+                .ConfigureAwait(true);
+
+            await Task.Delay(TimeSpan.FromSeconds(1))
+                .ConfigureAwait(true);
+
+            ViewModel.SearchCommand = new BasicCommand(
+                _ => true, async query =>
+                {
+                    await ExecuteSearch((string)query)
+                        .ConfigureAwait(true);
+                });
 
             await ExecuteSearch(txtSearchQuery.Text)
                 .ConfigureAwait(true);
+        }
+
+        protected override void OnExit(object sender, RoutedEventArgs e)
+        {
+            foreach (var button in lstImages.Children)
+            {
+                ImagePreviewButton imageButton = button as ImagePreviewButton;
+
+                if (imageButton == null)
+                    continue;
+
+                ImageBehavior.SetAnimatedSource(imageButton.img, null);
+            }
+
+            lstImages.Children.Clear();
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            base.OnExit(sender, e);
         }
     }
 }

@@ -3,17 +3,24 @@ using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Widgets;
 using Memenim.Core.Api;
+using Memenim.Pages.ViewModel;
 
 namespace Memenim.Pages
 {
     public partial class AnonymGallerySearchPage : PageContent
     {
-        public Func<string, Task> OnPicSelect { get; set; }
+        public AnonymGallerySearchViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as AnonymGallerySearchViewModel;
+            }
+        }
 
         public AnonymGallerySearchPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new AnonymGallerySearchViewModel();
         }
 
         public async Task ExecuteSearch()
@@ -39,7 +46,15 @@ namespace Memenim.Pages
                 ImagePreviewButton previewButton = new ImagePreviewButton()
                 {
                     ButtonSize = 200,
-                    ButtonPressAction = OnPicSelect,
+                    ButtonPressAction = arg =>
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            lstImages.Children.Clear();
+                        });
+
+                        return ViewModel.OnPicSelect(arg);
+                    },
                     SmallImageSource = img.photo_small,
                     ImageSource = img.photo_medium
                 };
@@ -100,10 +115,46 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             base.OnEnter(sender, e);
+
+            await ShowLoadingGrid(true)
+                .ConfigureAwait(true);
 
             await ExecuteSearch()
                 .ConfigureAwait(true);
+        }
+
+        protected override void OnExit(object sender, RoutedEventArgs e)
+        {
+            foreach (var button in lstImages.Children)
+            {
+                ImagePreviewButton imageButton = button as ImagePreviewButton;
+
+                if (imageButton == null)
+                    continue;
+
+                imageButton.img.Source = null;
+            }
+
+            lstImages.Children.Clear();
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            base.OnExit(sender, e);
         }
     }
 }

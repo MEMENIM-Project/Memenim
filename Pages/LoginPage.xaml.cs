@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Navigation;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
 
@@ -12,10 +13,18 @@ namespace Memenim.Pages
 {
     public partial class LoginPage : PageContent
     {
+        public LoginViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as LoginViewModel;
+            }
+        }
+
         public LoginPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new LoginViewModel();
 
             btnLogin.IsEnabled = false;
         }

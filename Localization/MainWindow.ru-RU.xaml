@@ -34,7 +34,7 @@
 
     <system:String x:Key="ImageSourceTitle">Источник картинки</system:String>
     <system:String x:Key="GallerySelect">Выбрать из галлереи</system:String>
-    <system:String x:Key="TennorSelect">Выбрать в Tennor</system:String>
+    <system:String x:Key="TenorSelect">Выбрать в Tenor</system:String>
     <system:String x:Key="URLSelect">Вставить URL</system:String>
     <system:String x:Key="UploadSelect">Загрузить свою картинку</system:String>
 

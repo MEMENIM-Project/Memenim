@@ -13,7 +13,7 @@
         <Grid>
             <Button Height="{Binding Path=ButtonSize}"
                     Style="{StaticResource MahApps.Styles.Button.Square}" Click="Preview_Click">
-                <Image gif:ImageBehavior.AnimatedSource="{Binding Path=SmallImageSource, Converter={StaticResource PreviewImageSourceConverter}}"/>
+                <Image x:Name="img" gif:ImageBehavior.AnimatedSource="{Binding Path=SmallImageSource, Converter={StaticResource PreviewImageSourceConverter}}"/>
             </Button>
         </Grid>
     </Border>
