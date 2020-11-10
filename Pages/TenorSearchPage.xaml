@@ -1,10 +1,11 @@
-﻿<local:PageContent x:Class="Memenim.Pages.TennorSearchPage"
-             d:DataContext="{d:DesignInstance local:TennorSearchPage}"
+﻿<local:PageContent x:Class="Memenim.Pages.TenorSearchPage"
+             d:DataContext="{d:DesignInstance viewModel:TenorSearchViewModel}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Pages"
+             xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
              xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
@@ -17,8 +18,11 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Content="Select a GIF" Style="{DynamicResource DescriptionHeader}"/>
+        <Label Grid.Row="0" Content="Select a GIF"
+               Style="{DynamicResource DescriptionHeader}"
+               Margin="10 0 0 0"/>
         <TextBox Grid.Row="1" x:Name="txtSearchQuery" Margin="5 5 5 5"
+                 Text="{Binding Path=SearchText, Mode=TwoWay}"
                  controls:TextBoxHelper.Watermark="Enter parameter"
                  Style="{DynamicResource MahApps.Styles.TextBox.Search}"
                  controls:TextBoxHelper.ButtonCommand="{Binding Path=SearchCommand, Mode=OneWay}"

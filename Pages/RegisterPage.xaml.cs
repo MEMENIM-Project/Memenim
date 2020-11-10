@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Navigation;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
 
@@ -12,10 +13,18 @@ namespace Memenim.Pages
 {
     public partial class RegisterPage : PageContent
     {
+        public RegisterViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as RegisterViewModel;
+            }
+        }
+
         public RegisterPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new RegisterViewModel();
 
             btnRegister.IsEnabled = false;
         }

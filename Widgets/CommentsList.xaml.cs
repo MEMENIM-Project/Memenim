@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Pages;
 
 namespace Memenim.Widgets
 {
     public partial class CommentsList : UserControl
     {
         public static readonly DependencyProperty PostIdProperty =
-            DependencyProperty.Register(nameof(PostId), typeof(int), typeof(CommentsList), new PropertyMetadata(-1));
+            DependencyProperty.Register(nameof(PostId), typeof(int), typeof(CommentsList),
+                new PropertyMetadata(-1, PostIdChangedCallback));
         public static readonly DependencyProperty CommentsCountProperty =
-            DependencyProperty.Register(nameof(CommentsCount), typeof(int), typeof(CommentsList), new PropertyMetadata(0));
+            DependencyProperty.Register(nameof(CommentsCount), typeof(int), typeof(CommentsList),
+                new PropertyMetadata(0));
 
         private const int OffsetPerTime = 20;
 
@@ -48,46 +53,27 @@ namespace Memenim.Widgets
             DataContext = this;
         }
 
-        public void AddComments(List<CommentSchema> comments)
-        {
-            foreach (var comment in comments)
-            {
-                UserComment commentWidget = new UserComment
-                {
-                    CurrentCommentData = comment
-                };
-
-                lstComments.Children.Insert(0, commentWidget);
-            }
-
-            if (lstComments.Children.Count >= CommentsCount - 1)
-                btnLoadMore.Visibility = Visibility.Collapsed;
-
-            _offset += OffsetPerTime;
-        }
-
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        public async Task UpdateComments()
         {
             lstComments.Children.Clear();
 
-            var result = await PostApi.GetComments(PostId, OffsetPerTime, _offset)
+            _offset = 0;
+
+            await LoadNewComments()
                 .ConfigureAwait(true);
 
-            if (result.error)
-            {
-                await DialogManager.ShowDialog("F U C K", result.message)
-                    .ConfigureAwait(true);
-                return;
-            }
+            PostOverlayPage page = this.TryFindParent<PostOverlayPage>();
 
-            AddComments(result.data);
+            page?.svPost.ScrollToVerticalOffset(0.0);
         }
 
-        private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
+        public Task LoadNewComments()
         {
-            btnLoadMore.IsEnabled = false;
-
-            var result = await PostApi.GetComments(PostId, OffsetPerTime, _offset)
+            return LoadNewComments(_offset);
+        }
+        public async Task LoadNewComments(int offset)
+        {
+            var result = await PostApi.GetComments(PostId, OffsetPerTime, offset)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -97,7 +83,62 @@ namespace Memenim.Widgets
                 return;
             }
 
-            AddComments(result.data);
+            await AddComments(result.data)
+                .ConfigureAwait(true);
+        }
+
+        public Task AddComments(List<CommentSchema> comments)
+        {
+            return Task.Run(() =>
+            {
+                foreach (var comment in comments)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        UserComment commentWidget = new UserComment
+                        {
+                            CurrentCommentData = comment
+                        };
+
+                        lstComments.Children.Insert(0, commentWidget);
+                    });
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    if (lstComments.Children.Count >= CommentsCount - 1)
+                        btnLoadMore.Visibility = Visibility.Collapsed;
+
+                    _offset += OffsetPerTime;
+                });
+            });
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            await UpdateComments()
+                .ConfigureAwait(true);
+        }
+
+#pragma warning disable SS001 // Async methods should return a Task to make them awaitable
+        private static async void PostIdChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            CommentsList commentsList = d as CommentsList;
+
+            if (commentsList == null)
+                return;
+
+            await commentsList.UpdateComments()
+                .ConfigureAwait(true);
+        }
+#pragma warning restore SS001 // Async methods should return a Task to make them awaitable
+
+        private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
+        {
+            btnLoadMore.IsEnabled = false;
+
+            await LoadNewComments()
+                .ConfigureAwait(true);
 
             btnLoadMore.IsEnabled = true;
         }

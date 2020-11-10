@@ -7,6 +7,7 @@ using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 
 namespace Memenim.Widgets
@@ -125,7 +126,7 @@ namespace Memenim.Widgets
             if (CurrentCommentData.user.id == -1)
                 return;
 
-            NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfilePage
+            NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
             {
                 CurrentProfileData = new ProfileSchema()
                 {

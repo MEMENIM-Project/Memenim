@@ -34,7 +34,7 @@
 
     <system:String x:Key="ImageSourceTitle">Image Source</system:String>
     <system:String x:Key="GallerySelect">Select from Anonym Gallery</system:String>
-    <system:String x:Key="TennorSelect">Select from Tennor</system:String>
+    <system:String x:Key="TenorSelect">Select from Tenor</system:String>
     <system:String x:Key="URLSelect">Paste an raw URL</system:String>
     <system:String x:Key="UploadSelect">Upload your picture</system:String>
     

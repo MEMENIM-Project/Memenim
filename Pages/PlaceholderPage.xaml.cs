@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Memenim.Pages.ViewModel;
 
 namespace Memenim.Pages
 {
@@ -15,14 +16,28 @@ namespace Memenim.Pages
             "(* _ω_)…"
         };
 
+        public PlaceholderViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as PlaceholderViewModel;
+            }
+        }
+
         public PlaceholderPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new PlaceholderViewModel();
         }
 
         protected override void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             base.OnEnter(sender, e);
 
             txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Navigation;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Widgets;
 
@@ -15,40 +15,20 @@ namespace Memenim.Pages
 {
     public partial class FeedPage : PageContent
     {
-        public static readonly DependencyProperty OnPostScrollEndProperty =
-            DependencyProperty.Register(nameof(OnPostScrollEnd), typeof(ICommand), typeof(FeedPage),
-                new PropertyMetadata(new BasicCommand(_ => false)));
-
         private const int OffsetPerTime = 20;
 
-        private int _offset;
-
-        public ICommand OnPostScrollEnd
+        public FeedViewModel ViewModel
         {
             get
             {
-                return (ICommand)GetValue(OnPostScrollEndProperty);
-            }
-            set
-            {
-                SetValue(OnPostScrollEndProperty, value);
+                return DataContext as FeedViewModel;
             }
         }
 
         public FeedPage()
         {
             InitializeComponent();
-            DataContext = this;
-
-            OnPostScrollEnd = new BasicCommand(
-                _ => true, async _ =>
-                {
-                    if (svPosts.HorizontalOffset == 0)
-                        return;
-
-                    await LoadNewPosts()
-                        .ConfigureAwait(true);
-                });
+            DataContext = new FeedViewModel();
 
             lstPostTypes.SelectedIndex = 0;
         }
@@ -66,15 +46,15 @@ namespace Memenim.Pages
             lstPosts.Children.Clear();
             svPosts.ScrollToHorizontalOffset(0);
 
-            _offset = 0;
+            ViewModel.Offset = 0;
 
-            await LoadNewPosts(type, count, _offset)
+            await LoadNewPosts(type, count, ViewModel.Offset)
                 .ConfigureAwait(true);
         }
 
         private Task LoadNewPosts()
         {
-            return LoadNewPosts(_offset);
+            return LoadNewPosts(ViewModel.Offset);
         }
         private Task LoadNewPosts(int offset)
         {
@@ -122,7 +102,10 @@ namespace Memenim.Pages
                     });
                 }
 
-                _offset += OffsetPerTime;
+                Dispatcher.Invoke(() =>
+                {
+                    ViewModel.Offset += OffsetPerTime;
+                });
             });
         }
 
@@ -170,6 +153,27 @@ namespace Memenim.Pages
             });
         }
 
+        protected override void OnEnter(object sender, RoutedEventArgs e)
+        {
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            base.OnEnter(sender, e);
+
+            ViewModel.OnPostScrollEnd = new BasicCommand(
+                _ => true, async _ =>
+                {
+                    if (svPosts.HorizontalOffset == 0)
+                        return;
+
+                    await LoadNewPosts()
+                        .ConfigureAwait(true);
+                });
+        }
+
         private async void lstPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await UpdatePosts()
@@ -178,7 +182,7 @@ namespace Memenim.Pages
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
-            NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayPage
+            NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
             {
                 CurrentPostData = (sender as PostWidget)?.CurrentPostData
             });

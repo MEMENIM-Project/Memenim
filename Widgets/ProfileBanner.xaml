@@ -23,7 +23,7 @@
             <Image.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Select image from URL" Click="SelectBannerFromUrl_Click"/>
-                    <MenuItem Header="Select GIF from Tenor" Click="SelectBannerFromTennor_Click"/>
+                    <MenuItem Header="Select GIF from Tenor" Click="SelectBannerFromTenor_Click"/>
                 </ContextMenu>
             </Image.ContextMenu>
         </Image>
@@ -39,7 +39,7 @@
             <Image.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Select image from URL" Click="SelectAvatarFromUrl_Click"/>
-                    <MenuItem Header="Select GIF from Tenor" Click="SelectAvatarFromTennor_Click"/>
+                    <MenuItem Header="Select GIF from Tenor" Click="SelectAvatarFromTenor_Click"/>
                 </ContextMenu>
             </Image.ContextMenu>
         </Image>

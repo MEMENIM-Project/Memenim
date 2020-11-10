@@ -4,6 +4,7 @@ using System.Windows;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Microsoft.Win32;
 
@@ -15,10 +16,18 @@ namespace Memenim.Pages
 
         private string[] _spamCommentsList;
 
+        public MemesViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as MemesViewModel;
+            }
+        }
+
         public MemesPage()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new MemesViewModel();
         }
 
         private async void btnSteal_Click(object sender, RoutedEventArgs e)
