@@ -45,6 +45,10 @@ namespace Memenim.Widgets
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            if(SettingsManager.PersistentSettings.CurrentUserId == CurrentCommentData.user.id)
+            {
+                btnDelete.Visibility = Visibility.Visible;
+            }
             UpdateComment();
         }
 
@@ -128,6 +132,17 @@ namespace Memenim.Widgets
                     id = CurrentCommentData.user.id
                 }
             });
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await PostApi.RemoveComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id);
+            if(result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+                return;
+            }
         }
     }
 }
