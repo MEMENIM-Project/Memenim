@@ -51,10 +51,14 @@
                               BorderSize="0" IsEnabled="False" HorizontalAlignment="Center"
                               StatValue="{Binding Path=CurrentPostData.comments.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
             <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                <local:StatButton x:Name="stLikes" ButtonSize="28" IconKind="ThumbsUp" HorizontalAlignment="Right" ButtonClick="Like_Click"
-                                  StatValue="{Binding Path=CurrentPostData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-                <local:StatButton x:Name="stDislikes" ButtonSize="28" IconKind="ThumbsDown" HorizontalAlignment="Right" ButtonClick="Dislike_Click"
-                                  StatValue="{Binding Path=CurrentPostData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                <local:StatButton x:Name="stLikes" ButtonSize="28" IconKind="ThumbsUp" HorizontalAlignment="Right"
+                                  StatValue="{Binding Path=CurrentPostData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  BorderBackground="{Binding Path=CurrentPostData.likes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  ButtonClick="Like_Click"/>
+                <local:StatButton x:Name="stDislikes" ButtonSize="28" IconKind="ThumbsDown" HorizontalAlignment="Right"
+                                  StatValue="{Binding Path=CurrentPostData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  BorderBackground="{Binding Path=CurrentPostData.dislikes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  ButtonClick="Dislike_Click"/>
             </StackPanel>
         </Grid>
     </Border>

@@ -11,9 +11,12 @@
 
     <Border Padding="5">
         <StackPanel Orientation="Horizontal">
-            <Button Width="{Binding Path=ButtonSize}" Height="{Binding Path=ButtonSize}"
-                    Style="{StaticResource MahApps.Styles.Button.Circle}" Foreground="{DynamicResource MahApps.Brushes.Accent}"
-                    BorderThickness="{Binding Path=BorderSize}" Margin="1" Click="Button_Click">
+            <Button x:Name="button"
+                    Width="{Binding Path=ButtonSize}" Height="{Binding Path=ButtonSize}"
+                    Style="{StaticResource MahApps.Styles.Button.Circle}"
+                    Background="{Binding Path=ButtonBackground}" Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                    BorderThickness="{Binding Path=BorderSize}" BorderBrush="{Binding Path=BorderBackground}"
+                    Margin="1" Click="Button_Click">
                 <iconPacks:PackIconModern Kind="{Binding Path=IconKind}"
                                           Width="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"
                                           Height="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"/>
