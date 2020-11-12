@@ -15,7 +15,8 @@
                       ScrollChanged="SvPost_ScrollChanged">
             <StackPanel>
                 <widgets:PostWidget CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
-                <widgets:CommentsList PostId="{Binding Path=DataContext.CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                <widgets:CommentsList x:Name="wdgCommentsList"
+                                      PostId="{Binding Path=DataContext.CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentsCount="{Binding Path=DataContext.CurrentPostData.comments, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentDelete="CommentsList_CommentDelete"/>
                 <widgets:WriteComment x:Name="wdgWriteComment"

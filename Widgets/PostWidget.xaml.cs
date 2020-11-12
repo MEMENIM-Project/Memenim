@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.IconPacks;
 using Memenim.Utils;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
@@ -40,6 +41,13 @@ namespace Memenim.Widgets
             set
             {
                 SetValue(CurrentPostDataProperty, value);
+            }
+        }
+        public bool CommentsIsOpen
+        {
+            get
+            {
+                return CurrentPostData?.open_comments == 1;
             }
         }
         public bool PreviewMode { get; set; }
@@ -89,6 +97,10 @@ namespace Memenim.Widgets
         {
             wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L).ToString(CultureInfo.CurrentCulture);
             wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 2;
+
+            stComments.Visibility = !CommentsIsOpen
+                ? Visibility.Collapsed
+                : Visibility.Visible;
 
             if (PreviewMode)
             {

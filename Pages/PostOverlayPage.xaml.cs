@@ -17,6 +17,13 @@ namespace Memenim.Pages
                 return DataContext as PostOverlayViewModel;
             }
         }
+        public bool CommentsIsOpen
+        {
+            get
+            {
+                return ViewModel.CurrentPostData?.open_comments == 1;
+            }
+        }
 
         public PostOverlayPage()
         {
@@ -26,6 +33,17 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            if (!CommentsIsOpen)
+            {
+                wdgWriteComment.Visibility = Visibility.Collapsed;
+                wdgCommentsList.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                wdgCommentsList.Visibility = Visibility.Visible;
+                wdgWriteComment.Visibility = Visibility.Visible;
+            }
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -37,10 +55,8 @@ namespace Memenim.Pages
             var result = await UserApi.GetProfileById(SettingsManager.PersistentSettings.CurrentUserId)
                 .ConfigureAwait(true);
 
-            if (result.data == null)
-                return;
-
-            wdgWriteComment.UserAvatarSource = result.data.photo;
+            if (result.data != null)
+                wdgWriteComment.UserAvatarSource = result.data.photo;
 
             svPost.ScrollToVerticalOffset(0.0);
         }
