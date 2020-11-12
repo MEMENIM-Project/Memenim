@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Settings;
@@ -87,6 +88,15 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        private void txtContent_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (btnSend.IsEnabled)
+                    btnSend_Click(this, new RoutedEventArgs());
+            }
         }
 
         private async void btnSend_Click(object sender, RoutedEventArgs e)

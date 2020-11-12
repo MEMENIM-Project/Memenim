@@ -77,7 +77,7 @@ namespace Memenim.Pages
             --ViewModel.CurrentPostData.comments.my;
         }
 
-        private void WriteComment_CommentAdd(object sender, RoutedEventArgs e)
+        private async void WriteComment_CommentAdd(object sender, RoutedEventArgs e)
         {
             WriteComment writeComment = sender as WriteComment;
 
@@ -86,6 +86,9 @@ namespace Memenim.Pages
 
             ++ViewModel.CurrentPostData.comments.count;
             ++ViewModel.CurrentPostData.comments.my;
+
+            await wdgCommentsList.LoadNewComments()
+                .ConfigureAwait(true);
         }
     }
 }

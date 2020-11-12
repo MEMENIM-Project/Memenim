@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
@@ -36,7 +37,7 @@ namespace Memenim.Widgets
 
         private const int OffsetPerTime = 20;
 
-        private int _offset;
+        private readonly Timer _autoUpdateTimer;
         private bool _postIdChangedUpdate;
 
         public int PostId
@@ -61,30 +62,49 @@ namespace Memenim.Widgets
                 SetValue(CommentsCountProperty, value);
             }
         }
+        public int Offset { get; set; }
 
         public CommentsList()
         {
             InitializeComponent();
             DataContext = this;
+
+            _autoUpdateTimer = new Timer(TimeSpan.FromSeconds(15).TotalMilliseconds);
+            _autoUpdateTimer.Elapsed += AutoUpdateTimerCallback;
+            _autoUpdateTimer.Stop();
         }
 
-        public Task UpdateComments()
+        public Task UpdateComments(bool resetScroll = true)
         {
             lstComments.Children.Clear();
 
-            _offset = 0;
+            Offset = 0;
             btnLoadMore.Visibility = Visibility.Visible;
 
-            PostOverlayPage page = this.TryFindParent<PostOverlayPage>();
+            if (resetScroll)
+            {
+                PostOverlayPage page = this.TryFindParent<PostOverlayPage>();
 
-            page?.svPost.ScrollToVerticalOffset(0.0);
+                page?.svPost?.ScrollToVerticalOffset(0.0);
+            }
 
             return LoadMoreComments();
         }
 
-        public Task LoadMoreComments()
+        public async Task LoadMoreComments()
         {
-            return LoadMoreComments(_offset);
+            if (lstComments.Children.Count != 0)
+            {
+                _autoUpdateTimer.Stop();
+
+                Offset += await GetNewCommentsCount()
+                    .ConfigureAwait(true);
+
+                _autoUpdateTimer.Start();
+            }
+
+            await LoadMoreComments(Offset)
+                .ConfigureAwait(true);
         }
         public Task LoadMoreComments(int offset)
         {
@@ -129,7 +149,179 @@ namespace Memenim.Widgets
                     if (lstComments.Children.Count >= CommentsCount.count)
                         btnLoadMore.Visibility = Visibility.Collapsed;
 
-                    _offset += comments.Count;
+                    Offset += comments.Count;
+                });
+            });
+        }
+
+        public Task<int> GetNewCommentsCount(int offset = 0)
+        {
+            return GetNewCommentsCount(OffsetPerTime, offset);
+        }
+        public async Task<int> GetNewCommentsCount(int countPerTime, int offset)
+        {
+            int commentsCount = 0;
+
+            Dispatcher.Invoke(() =>
+            {
+                commentsCount = lstComments.Children.Count;
+            });
+
+            if (commentsCount == 0)
+            {
+                await UpdateComments(false)
+                    .ConfigureAwait(true);
+
+                return 0;
+            }
+
+            int headOldId = -1;
+
+            Dispatcher.Invoke(() =>
+            {
+                headOldId = (lstComments.Children[^1] as UserComment)?
+                    .CurrentCommentData.id ?? -1;
+            });
+
+            if (headOldId == -1)
+                return 0;
+
+            int postId = -1;
+
+            Dispatcher.Invoke(() =>
+            {
+                postId = PostId;
+            });
+
+            if (postId == -1)
+                return 0;
+
+            return await Task.Run(async () =>
+            {
+                int countNew = 0;
+                bool headOldIsFind = false;
+
+                while (!headOldIsFind)
+                {
+                    var result = await PostApi.GetComments(postId, countPerTime, offset)
+                        .ConfigureAwait(false);
+
+                    if (result?.error != false)
+                        continue;
+
+                    if (result.data.Count == 0)
+                    {
+                        await Dispatcher.Invoke(async () =>
+                        {
+                            await UpdateComments(false)
+                                .ConfigureAwait(true);
+                        }).ConfigureAwait(true);
+
+                        return 0;
+                    }
+
+                    foreach (var comment in result.data)
+                    {
+                        if (comment.id == headOldId)
+                        {
+                            headOldIsFind = true;
+                            break;
+                        }
+
+                        ++countNew;
+                    }
+
+                    offset += countPerTime;
+                }
+
+                return countNew;
+            }).ConfigureAwait(true);
+        }
+
+        public async Task LoadNewComments(int offset = 0)
+        {
+            _autoUpdateTimer.Stop();
+
+            int count = await GetNewCommentsCount(offset)
+                .ConfigureAwait(true);
+
+            if (count == 0)
+            {
+                _autoUpdateTimer.Start();
+                return;
+            }
+
+            int postId = -1;
+
+            Dispatcher.Invoke(() =>
+            {
+                postId = PostId;
+            });
+
+            if (postId == -1)
+                return;
+
+            var result = await PostApi.GetComments(postId, count, offset)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await Dispatcher.Invoke(async () =>
+                {
+                    await DialogManager.ShowDialog("F U C K", "Cannot load comments")
+                        .ConfigureAwait(true);
+                }).ConfigureAwait(true);
+
+                _autoUpdateTimer.Start();
+                return;
+            }
+
+            PostOverlayPage page = null;
+            double verticalOffset = 0.0;
+            double extentHeight = 1.0;
+
+            Dispatcher.Invoke(() =>
+            {
+                page = this.TryFindParent<PostOverlayPage>();
+                verticalOffset = page?.svPost?.VerticalOffset ?? 0.0;
+                extentHeight = page?.svPost?.ScrollableHeight ?? 1.0;
+            });
+
+            await AddNewComments(result.data)
+                .ConfigureAwait(true);
+
+            Dispatcher.Invoke(() =>
+            {
+                if (verticalOffset >= extentHeight)
+                    page?.svPost?.ScrollToEnd();
+            });
+
+            _autoUpdateTimer.Start();
+        }
+
+        public Task AddNewComments(List<CommentSchema> comments)
+        {
+            return Task.Run(() =>
+            {
+                for (var i = comments.Count - 1; i >= 0; --i)
+                {
+                    var comment = comments[i];
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        UserComment commentWidget = new UserComment
+                        {
+                            CurrentCommentData = comment
+                        };
+                        commentWidget.CommentDelete += Comment_CommentDelete;
+
+                        lstComments.Children.Add(commentWidget);
+                    });
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    Offset += comments.Count;
                 });
             });
         }
@@ -137,10 +329,20 @@ namespace Memenim.Widgets
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             if (_postIdChangedUpdate)
+            {
+                _autoUpdateTimer.Start();
                 return;
+            }
 
             await UpdateComments()
                 .ConfigureAwait(true);
+
+            _autoUpdateTimer.Start();
+        }
+
+        private void Grid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _autoUpdateTimer.Stop();
         }
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
@@ -159,6 +361,12 @@ namespace Memenim.Widgets
             commentsList._postIdChangedUpdate = false;
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
+
+        private async void AutoUpdateTimerCallback(object sender, ElapsedEventArgs e)
+        {
+            await LoadNewComments()
+                .ConfigureAwait(true);
+        }
 
         private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
         {
@@ -179,7 +387,7 @@ namespace Memenim.Widgets
 
             lstComments.Children.Remove(comment);
 
-            --_offset;
+            --Offset;
 
             RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
         }

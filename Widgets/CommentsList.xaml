@@ -10,7 +10,7 @@
 
     <Border Padding="5" BorderThickness="0">
         <Grid Background="{StaticResource MahApps.Brushes.Gray10}"
-              Loaded="Grid_Loaded">
+              Loaded="Grid_Loaded" Unloaded="Grid_Unloaded">
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="35" Height="35"/>
                 <RowDefinition MinHeight="40" Height="40"/>
