@@ -14,7 +14,7 @@ namespace Memenim.Widgets
     public partial class PostWidget : UserControl
     {
         public static readonly RoutedEvent OnPostClicked =
-            EventManager.RegisterRoutedEvent("OnPostClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
+            EventManager.RegisterRoutedEvent(nameof(PostClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
         public static readonly DependencyProperty CurrentPostDataProperty =
             DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(PostWidget),
                 new PropertyMetadata((PostSchema) null));

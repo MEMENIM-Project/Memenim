@@ -8,7 +8,7 @@ namespace Memenim.Widgets
     public partial class StatButton : UserControl
     {
         public static readonly RoutedEvent OnButtonClicked =
-            EventManager.RegisterRoutedEvent("ButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StatButton));
+            EventManager.RegisterRoutedEvent(nameof(ButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StatButton));
         public static readonly DependencyProperty StatValueProperty =
             DependencyProperty.Register(nameof(StatValue), typeof(string), typeof(StatButton),
                 new PropertyMetadata("0"));

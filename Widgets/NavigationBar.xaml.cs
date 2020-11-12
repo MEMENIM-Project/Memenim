@@ -12,8 +12,8 @@ namespace Memenim.Widgets
 {
     public partial class NavigationBar : UserControl
     {
-        public static readonly RoutedEvent RedirectEvent =
-            EventManager.RegisterRoutedEvent("RedirectRequested", RoutingStrategy.Bubble, typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));
+        public static readonly RoutedEvent OnRedirectRequested =
+            EventManager.RegisterRoutedEvent(nameof(RedirectRequest), RoutingStrategy.Bubble, typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));
         public static readonly DependencyProperty TopNavButtonsProperty =
             DependencyProperty.Register(nameof(TopNavButtons), typeof(ObservableCollection<IconButton>), typeof(NavigationBar),
                 new PropertyMetadata(new ObservableCollection<IconButton>()));
@@ -24,15 +24,15 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(BottomNavButtons), typeof(ObservableCollection<IconButton>), typeof(NavigationBar),
                 new PropertyMetadata(new ObservableCollection<IconButton>()));
 
-        public event EventHandler<RoutedEventArgs> RedirectRequested
+        public event EventHandler<RoutedEventArgs> RedirectRequest
         {
             add
             {
-                AddHandler(RedirectEvent, value);
+                AddHandler(OnRedirectRequested, value);
             }
             remove
             {
-                RemoveHandler(RedirectEvent, value);
+                RemoveHandler(OnRedirectRequested, value);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Memenim.Widgets
                     .ConfigureAwait(true);
             }
 
-            RaiseEvent(new RoutedEventArgs(RedirectEvent));
+            RaiseEvent(new RoutedEventArgs(OnRedirectRequested));
         }
     }
 }

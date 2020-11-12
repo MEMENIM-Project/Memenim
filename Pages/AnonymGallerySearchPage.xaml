@@ -22,10 +22,11 @@
         <ScrollViewer Grid.Row="1">
             <WrapPanel x:Name="lstImages"/>
         </ScrollViewer>
-        <Grid Grid.Row="1" x:Name="loadingGrid" Visibility="Collapsed"
+        <Grid Grid.Row="1" x:Name="loadingGrid"
+              Visibility="Collapsed" ZIndex="2147483647"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
             <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="True" Visibility="Visible"/>
+                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
         </Grid>
     </Grid>
 </local:PageContent>

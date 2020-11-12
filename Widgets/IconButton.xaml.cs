@@ -8,7 +8,7 @@ namespace Memenim.Widgets
     public partial class IconButton : UserControl
     {
         public static readonly RoutedEvent OnIconButtonClicked =
-            EventManager.RegisterRoutedEvent("OnIconButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));
+            EventManager.RegisterRoutedEvent(nameof(IconButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));
         public static readonly DependencyProperty PageNameProperty =
             DependencyProperty.Register(nameof(PageName), typeof(string), typeof(IconButton),
                 new PropertyMetadata(string.Empty));

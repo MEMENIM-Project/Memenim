@@ -46,6 +46,7 @@
             <convertersLocal:PostImageSourceToVisibilityConverter x:Key="PostImageSourceToVisibilityConverter"/>
             <convertersLocal:PostImageSourceToRowSpanConverter x:Key="PostImageSourceToRowSpanConverter"/>
             <convertersLocal:PreviewImageSourceConverter x:Key="PreviewImageSourceConverter"/>
+            <convertersLocal:WriteCommentTextConverter x:Key="WriteCommentTextConverter"/>
 
             <convertersRis:SimpleArithmeticConverter x:Key="SimpleArithmeticConverter"/>
             <convertersRis:ScriptEvaluatorConverter x:Key="ScriptEvaluatorConverter"/>

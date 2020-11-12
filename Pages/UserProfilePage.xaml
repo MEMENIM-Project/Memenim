@@ -33,8 +33,9 @@
                                          StatValue="{Binding Path=DataContext.CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
         </ScrollViewer>
-        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" x:Name="loadingGrid"
-              Visibility="Collapsed" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
+              x:Name="loadingGrid" Visibility="Collapsed" ZIndex="2147483647"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}">
             <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
                                                 SpeedRatio="2" IsActive="False" Visibility="Visible"/>
         </Grid>

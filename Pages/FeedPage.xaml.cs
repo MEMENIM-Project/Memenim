@@ -48,34 +48,34 @@ namespace Memenim.Pages
 
             ViewModel.Offset = 0;
 
-            await LoadNewPosts(type, count, ViewModel.Offset)
+            await LoadMorePosts(type, count, ViewModel.Offset)
                 .ConfigureAwait(true);
         }
 
-        private Task LoadNewPosts()
+        private Task LoadMorePosts()
         {
-            return LoadNewPosts(ViewModel.Offset);
+            return LoadMorePosts(ViewModel.Offset);
         }
-        private Task LoadNewPosts(int offset)
+        private Task LoadMorePosts(int offset)
         {
-            return LoadNewPosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType,
+            return LoadMorePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType,
                 OffsetPerTime, offset);
         }
-        private async Task LoadNewPosts(PostType type, int count, int offset)
+        private async Task LoadMorePosts(PostType type, int count, int offset)
         {
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
 
             svPosts.IsEnabled = false;
 
-            var postsResponse = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
+            var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
                     type, count, offset)
                 .ConfigureAwait(true);
 
-            if (postsResponse == null)
+            if (result == null)
                 return;
 
-            await AddPostsToList(postsResponse.data)
+            await AddMorePosts(result.data)
                 .ConfigureAwait(true);
 
             svPosts.IsEnabled = true;
@@ -84,7 +84,7 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
         }
 
-        private Task AddPostsToList(List<PostSchema> posts)
+        private Task AddMorePosts(List<PostSchema> posts)
         {
             return Task.Run(() =>
             {
@@ -104,7 +104,7 @@ namespace Memenim.Pages
 
                 Dispatcher.Invoke(() =>
                 {
-                    ViewModel.Offset += OffsetPerTime;
+                    ViewModel.Offset += posts.Count;
                 });
             });
         }
@@ -169,7 +169,7 @@ namespace Memenim.Pages
                     if (svPosts.HorizontalOffset == 0)
                         return;
 
-                    await LoadNewPosts()
+                    await LoadMorePosts()
                         .ConfigureAwait(true);
                 });
         }
@@ -191,6 +191,11 @@ namespace Memenim.Pages
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<SubmitPostPage>();
+        }
+
+        private void SvPosts_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            ViewModel.ScrollOffset = e.HorizontalOffset;
         }
     }
 }

@@ -32,6 +32,19 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(Offset));
             }
         }
+        private double _scrollOffset;
+        public double ScrollOffset
+        {
+            get
+            {
+                return _scrollOffset;
+            }
+            set
+            {
+                _scrollOffset = value;
+                OnPropertyChanged(nameof(ScrollOffset));
+            }
+        }
 
         public FeedViewModel()
             : base(typeof(FeedPage))

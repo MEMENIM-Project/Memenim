@@ -35,7 +35,7 @@
                                   Visibility="Collapsed" IconButtonClick="Delete_Click"/>
                 <Border x:Name="brdActions" Width="1"
                         Background="{DynamicResource MahApps.Brushes.Window.FlyoutOverlay}"
-                        Visibility="Collapsed" Margin="3 3 3 3"/>
+                        Visibility="Collapsed" Margin="3 8 3 8"/>
                 <local:StatButton x:Name="stLikes" ButtonSize="22" IconKind="ThumbsUp" ButtonClick="Like_Click"
                                   StatValue="{Binding Path=CurrentCommentData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"/>
                 <local:StatButton x:Name="stDislikes" ButtonSize="22" IconKind="ThumbsDown" ButtonClick="Dislike_Click"

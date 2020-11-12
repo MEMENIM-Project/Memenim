@@ -8,7 +8,7 @@ namespace Memenim.Widgets
     public partial class IconToggleButton : UserControl
     {
         public static readonly RoutedEvent OnIconToggleButtonClicked =
-            EventManager.RegisterRoutedEvent("OnIconToggleButtonClick", RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconToggleButton));
+            EventManager.RegisterRoutedEvent(nameof(IconToggleButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconToggleButton));
         public static readonly DependencyProperty PageNameProperty =
             DependencyProperty.Register(nameof(PageName), typeof(string), typeof(IconToggleButton),
                 new PropertyMetadata(string.Empty));

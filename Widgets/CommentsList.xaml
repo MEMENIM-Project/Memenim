@@ -9,7 +9,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Border Padding="5" BorderThickness="0">
-        <Grid Background="{StaticResource MahApps.Brushes.Gray10}" Loaded="Grid_Loaded">
+        <Grid Background="{StaticResource MahApps.Brushes.Gray10}"
+              Loaded="Grid_Loaded">
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="35" Height="35"/>
                 <RowDefinition MinHeight="40" Height="40"/>
@@ -27,14 +28,6 @@
                            ItemWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
                            Orientation="Vertical" HorizontalAlignment="Stretch"/>
             </Grid>
-            <!--<ItemsControl Grid.Row="2" Name="lstComments" Margin="16 5 16 5"
-                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>-->
         </Grid>
     </Border>
 </UserControl>

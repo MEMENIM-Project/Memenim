@@ -14,9 +14,23 @@ namespace Memenim.Widgets
 {
     public partial class UserComment : UserControl
     {
+        public static readonly RoutedEvent OnCommentDeleted =
+            EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserComment));
         public static readonly DependencyProperty CurrentCommentDataProperty =
             DependencyProperty.Register(nameof(CurrentCommentData), typeof(CommentSchema), typeof(UserComment),
                 new PropertyMetadata(new CommentSchema { user = new CommentUserSchema {id = -1} }));
+
+        public event EventHandler<RoutedEventArgs> CommentDelete
+        {
+            add
+            {
+                AddHandler(OnCommentDeleted, value);
+            }
+            remove
+            {
+                RemoveHandler(OnCommentDeleted, value);
+            }
+        }
 
         public CommentSchema CurrentCommentData
         {
@@ -71,6 +85,10 @@ namespace Memenim.Widgets
                 btnDelete.IsEnabled = true;
                 return;
             }
+
+            Visibility = Visibility.Collapsed;
+
+            RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
 
             btnDelete.IsEnabled = true;
         }
