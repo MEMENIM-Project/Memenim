@@ -15,6 +15,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty ButtonSizeProperty =
             DependencyProperty.Register(nameof(ButtonSize), typeof(int), typeof(StatButton),
                 new PropertyMetadata(48));
+        public static readonly DependencyProperty BorderSizeProperty =
+            DependencyProperty.Register(nameof(BorderSize), typeof(double), typeof(StatButton),
+                new PropertyMetadata(1.5));
 
         public event EventHandler<RoutedEventArgs> ButtonClick
         {
@@ -48,6 +51,17 @@ namespace Memenim.Widgets
             set
             {
                 SetValue(ButtonSizeProperty, value);
+            }
+        }
+        public double BorderSize
+        {
+            get
+            {
+                return (double)GetValue(BorderSizeProperty);
+            }
+            set
+            {
+                SetValue(BorderSizeProperty, value);
             }
         }
         public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;

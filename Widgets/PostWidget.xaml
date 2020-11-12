@@ -42,10 +42,13 @@
             <Image Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" MinWidth="300" MaxHeight="500"
                    Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
                    Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
-                   Stretch="Uniform" StretchDirection="Both" VerticalAlignment="Bottom" Margin="15 5 15 0"/>
-            <local:StatButton Grid.Row="3" Grid.Column="0" x:Name="stShare" ButtonSize="28" IconKind="Share" IsEnabled="False" HorizontalAlignment="Left"
+                   Stretch="Uniform" StretchDirection="Both" Margin="15 5 15 0"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <local:StatButton Grid.Row="3" Grid.Column="0" x:Name="stShare" ButtonSize="28" IconKind="Share"
+                              BorderSize="0" IsEnabled="False" HorizontalAlignment="Left"
                               StatValue="{Binding Path=CurrentPostData.reposts, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-            <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" ButtonSize="28" IconKind="Message" IsEnabled="False" HorizontalAlignment="Center"
+            <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" ButtonSize="28" IconKind="Message"
+                              BorderSize="0" IsEnabled="False" HorizontalAlignment="Center"
                               StatValue="{Binding Path=CurrentPostData.comments.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
             <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                 <local:StatButton x:Name="stLikes" ButtonSize="28" IconKind="ThumbsUp" HorizontalAlignment="Right" ButtonClick="Like_Click"

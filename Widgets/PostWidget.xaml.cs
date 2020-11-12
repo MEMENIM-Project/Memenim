@@ -135,6 +135,8 @@ namespace Memenim.Widgets
             {
                 await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
+
+                stLikes.IsEnabled = true;
                 return;
             }
 
@@ -169,6 +171,8 @@ namespace Memenim.Widgets
             {
                 await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
+
+                stDislikes.IsEnabled = true;
                 return;
             }
 

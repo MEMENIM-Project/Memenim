@@ -41,16 +41,38 @@ namespace Memenim.Widgets
             if (CurrentCommentData.user.id == -1)
             {
                 CurrentCommentData.user.name = "Unknown";
+                return;
+            }
+
+            if (CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUserId)
+            {
+                brdActions.Visibility = Visibility.Visible;
+                btnDelete.Visibility = Visibility.Visible;
             }
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            if(SettingsManager.PersistentSettings.CurrentUserId == CurrentCommentData.user.id)
-            {
-                btnDelete.Visibility = Visibility.Visible;
-            }
             UpdateComment();
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            btnDelete.IsEnabled = false;
+
+            var result = await PostApi.RemoveComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+
+                btnDelete.IsEnabled = true;
+                return;
+            }
+
+            btnDelete.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)
@@ -74,6 +96,8 @@ namespace Memenim.Widgets
             {
                 await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
+
+                stLikes.IsEnabled = true;
                 return;
             }
 
@@ -108,6 +132,8 @@ namespace Memenim.Widgets
             {
                 await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
+
+                stDislikes.IsEnabled = true;
                 return;
             }
 
@@ -133,17 +159,6 @@ namespace Memenim.Widgets
                     id = CurrentCommentData.user.id
                 }
             });
-        }
-
-        private async void Delete_Click(object sender, RoutedEventArgs e)
-        {
-            var result = await PostApi.RemoveComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id);
-            if(result.error)
-            {
-                await DialogManager.ShowDialog("F U C K", result.message)
-                    .ConfigureAwait(true);
-                return;
-            }
         }
     }
 }

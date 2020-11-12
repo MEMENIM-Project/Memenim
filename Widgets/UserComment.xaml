@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="400">
+             d:DesignHeight="150" d:DesignWidth="400">
 
     <Border Padding="5">
         <Grid Loaded="Grid_Loaded">
@@ -15,9 +15,9 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition MinHeight="15" Height="15"/>
+                <RowDefinition MinHeight="30" Height="30"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition MinHeight="20" Height="20"/>
+                <RowDefinition MinHeight="30" Height="30"/>
             </Grid.RowDefinitions>
 
             <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="100" Height="100"
@@ -25,16 +25,20 @@
                    Stretch="Uniform" MouseUp="Avatar_MouseUp" VerticalAlignment="Top"/>
             <TextBlock Grid.Row="0" Grid.Column="1" Style="{DynamicResource Header2}"
                        Text="{Binding Path=CurrentCommentData.user.name, Converter={StaticResource UserNameConverter}}"
-                       TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="5"/>
+                       TextWrapping="Wrap" VerticalAlignment="Center" Margin="5"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Style="{DynamicResource Paragraph}"
                        Text="{Binding Path=CurrentCommentData.text}"
                        TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Stretch"
                        TextAlignment="Left" Margin="5"/>
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <local:IconButton IconKind="Delete" IconButtonClick="Delete_Click" x:Name="btnDelete" Visibility="Collapsed"/>
-                <local:StatButton x:Name="stLikes" ButtonSize="16" IconKind="ThumbsUp" ButtonClick="Like_Click"
+                <local:IconButton x:Name="btnDelete" IconKind="Delete"
+                                  Visibility="Collapsed" IconButtonClick="Delete_Click"/>
+                <Border x:Name="brdActions" Width="1"
+                        Background="{DynamicResource MahApps.Brushes.Window.FlyoutOverlay}"
+                        Visibility="Collapsed" Margin="3 3 3 3"/>
+                <local:StatButton x:Name="stLikes" ButtonSize="22" IconKind="ThumbsUp" ButtonClick="Like_Click"
                                   StatValue="{Binding Path=CurrentCommentData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"/>
-                <local:StatButton x:Name="stDislikes" ButtonSize="16" IconKind="ThumbsDown" ButtonClick="Dislike_Click"
+                <local:StatButton x:Name="stDislikes" ButtonSize="22" IconKind="ThumbsDown" ButtonClick="Dislike_Click"
                                   StatValue="{Binding Path=CurrentCommentData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"/>
             </StackPanel>
         </Grid>
