@@ -72,8 +72,15 @@ namespace Memenim.Pages
             await LoadMorePosts(type)
                 .ConfigureAwait(true);
 
-            ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as PostWidget)?
-                .CurrentPostData.id ?? -1;
+            if (lstPosts.Children.Count == 0)
+            {
+                ViewModel.LastNewHeadPostId = -1;
+            }
+            else
+            {
+                ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as PostWidget)?
+                    .CurrentPostData.id ?? -1;
+            }
 
             svPosts.IsEnabled = true;
 
