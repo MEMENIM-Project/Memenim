@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.8.8.0</AssemblyVersion>
-    <FileVersion>0.8.8.0</FileVersion>
+    <AssemblyVersion>0.8.9.0</AssemblyVersion>
+    <FileVersion>0.8.9.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.8.8</Version>
+    <Version>0.8.9</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -25,7 +25,7 @@
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.3.4" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.8.0" />
-    <PackageReference Include="Memenim.Core" Version="0.3.0" />
+    <PackageReference Include="Memenim.Core" Version="0.3.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="RIS" Version="3.4.4" />
