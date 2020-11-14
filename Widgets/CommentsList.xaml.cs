@@ -169,8 +169,11 @@ namespace Memenim.Widgets
 
             if (commentsCount == 0)
             {
-                await UpdateComments(false)
-                    .ConfigureAwait(true);
+                await Dispatcher.Invoke(async () =>
+                {
+                    await UpdateComments(false)
+                        .ConfigureAwait(true);
+                }).ConfigureAwait(true);
 
                 return 0;
             }
@@ -199,9 +202,9 @@ namespace Memenim.Widgets
             return await Task.Run(async () =>
             {
                 int countNew = 0;
-                bool headOldIsFind = false;
+                bool headOldIsFound = false;
 
-                while (!headOldIsFind)
+                while (!headOldIsFound)
                 {
                     var result = await PostApi.GetComments(postId, countPerTime, offset)
                         .ConfigureAwait(false);
@@ -224,11 +227,22 @@ namespace Memenim.Widgets
                     {
                         if (comment.id == headOldId)
                         {
-                            headOldIsFind = true;
+                            headOldIsFound = true;
                             break;
                         }
 
                         ++countNew;
+                    }
+
+                    if (countNew >= 500)
+                    {
+                        await Dispatcher.Invoke(async () =>
+                        {
+                            await UpdateComments(false)
+                                .ConfigureAwait(true);
+                        }).ConfigureAwait(true);
+
+                        return 0;
                     }
 
                     offset += countPerTime;

@@ -32,6 +32,32 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(Offset));
             }
         }
+        private int _lastNewHeadPostId = -1;
+        public int LastNewHeadPostId
+        {
+            get
+            {
+                return _lastNewHeadPostId;
+            }
+            set
+            {
+                _lastNewHeadPostId = value;
+                OnPropertyChanged(nameof(LastNewHeadPostId));
+            }
+        }
+        private int _newPostsCount;
+        public int NewPostsCount
+        {
+            get
+            {
+                return _newPostsCount;
+            }
+            set
+            {
+                _newPostsCount = value;
+                OnPropertyChanged(nameof(NewPostsCount));
+            }
+        }
         private double _scrollOffset;
         public double ScrollOffset
         {

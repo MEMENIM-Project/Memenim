@@ -37,6 +37,8 @@
             <convertersLocal:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <convertersLocal:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
             <convertersLocal:IntToStringConverter x:Key="IntToStringConverter"/>
+            <convertersLocal:NewPostsCountConverter x:Key="NewPostsCountConverter"/>
+            <convertersLocal:NewPostsCountToVisibilityConverter x:Key="NewPostsCountToVisibilityConverter"/>
             <convertersLocal:StatIntToBorderBackgroundConverter x:Key="StatIntToBorderBackgroundConverter"/>
             <convertersLocal:ProfileStatStringToVisibilityConverter x:Key="ProfileStatStringToVisibilityConverter"/>
             <convertersLocal:ProfileStatIntToVisibilityConverter x:Key="ProfileStatIntToVisibilityConverter"/>

@@ -36,20 +36,31 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0">
+        <DockPanel Grid.Row="0" Margin="15 0 15 0">
+            <Button Width="40" Height="40" FontSize="14"
+                    Content="{Binding Path=NewPostsCount, Converter={StaticResource NewPostsCountConverter}}"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    Style="{DynamicResource MahApps.Styles.Button.MetroSquare.Accent}"
+                    Visibility="{Binding Path=NewPostsCount, Converter={StaticResource NewPostsCountToVisibilityConverter}}"
+                    VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                    Margin="0 5 10 5" Padding="0 0 0 0" DockPanel.Dock="Left"
+                    Click="btnNewPostsCount_Click"/>
             <Label Content="{DynamicResource FeedTitle}"
-                   Style="{DynamicResource DescriptionHeader}" DockPanel.Dock="Left"/>
+                   Style="{DynamicResource DescriptionHeader}"
+                   VerticalContentAlignment="Center" DockPanel.Dock="Left"/>
             <controls:SplitButton Name="lstPostTypes"
                                   ItemsSource="{Binding Source={StaticResource PostTypes}}"
-                                  DisplayMemberPath="CategoryName" Margin="5 10 5 8"
-                                  DockPanel.Dock="Left" SelectionChanged="lstPostTypes_SelectionChanged"/>
+                                  DisplayMemberPath="CategoryName" Margin="5 15 5 12"
+                                  HorizontalAlignment="Center" DockPanel.Dock="Left"
+                                  SelectionChanged="lstPostTypes_SelectionChanged"/>
             <Button Content="{DynamicResource WriteNewPost}"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
-                    Margin="5 5 5 5" HorizontalAlignment="Right" Click="Button_Click"/>
+                    HorizontalAlignment="Right" Margin="5 10 0 10"
+                    DockPanel.Dock="Right" Click="Button_Click"/>
         </DockPanel>
         <Grid Grid.Row="1" Margin="16 5 16 5"
               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

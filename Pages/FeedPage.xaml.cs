@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -17,6 +18,8 @@ namespace Memenim.Pages
     public partial class FeedPage : PageContent
     {
         private const int OffsetPerTime = 20;
+
+        private readonly Timer _autoUpdateCountTimer;
 
         public readonly Storyboard LoadingMoreEnterAnimation;
         public readonly Storyboard LoadingMoreExitAnimation;
@@ -37,20 +40,27 @@ namespace Memenim.Pages
             LoadingMoreEnterAnimation = (Storyboard) FindResource(nameof(LoadingMoreEnterAnimation));
             LoadingMoreExitAnimation = (Storyboard) FindResource(nameof(LoadingMoreExitAnimation));
 
+            _autoUpdateCountTimer = new Timer(TimeSpan.FromSeconds(60).TotalMilliseconds);
+            _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimerCallback;
+            _autoUpdateCountTimer.Stop();
+
             lstPostTypes.SelectedIndex = 0;
         }
 
-        private Task UpdatePosts()
+        public Task UpdatePosts()
         {
-            return UpdatePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType,
-                OffsetPerTime);
+            return UpdatePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType);
         }
-        private async Task UpdatePosts(PostType type, int count)
+        public async Task UpdatePosts(PostType type)
         {
+            _autoUpdateCountTimer.Stop();
+
             lstPostTypes.IsEnabled = false;
 
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
+
+            ViewModel.NewPostsCount = 0;
 
             svPosts.IsEnabled = false;
 
@@ -59,8 +69,11 @@ namespace Memenim.Pages
 
             ViewModel.Offset = 0;
 
-            await LoadMorePosts(type, count, ViewModel.Offset)
+            await LoadMorePosts(type)
                 .ConfigureAwait(true);
+
+            ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as PostWidget)?
+                .CurrentPostData.id ?? -1;
 
             svPosts.IsEnabled = true;
 
@@ -68,18 +81,37 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
 
             lstPostTypes.IsEnabled = true;
+
+            _autoUpdateCountTimer.Start();
         }
 
-        private Task LoadMorePosts()
+        public Task LoadMorePosts()
         {
-            return LoadMorePosts(ViewModel.Offset);
+            return LoadMorePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType);
         }
-        private Task LoadMorePosts(int offset)
+        public async Task LoadMorePosts(PostType type)
         {
-            return LoadMorePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType,
-                OffsetPerTime, offset);
+            if (lstPosts.Children.Count != 0)
+            {
+                _autoUpdateCountTimer.Stop();
+
+                int newPostsCount = await GetNewPostsCount()
+                    .ConfigureAwait(true);
+
+                ViewModel.Offset += newPostsCount;
+                ViewModel.NewPostsCount += newPostsCount;
+
+                _autoUpdateCountTimer.Start();
+            }
+
+            await LoadMorePosts(type, ViewModel.Offset)
+                .ConfigureAwait(true);
         }
-        private async Task LoadMorePosts(PostType type, int count, int offset)
+        public Task LoadMorePosts(PostType type, int offset)
+        {
+            return LoadMorePosts(type, OffsetPerTime, offset);
+        }
+        public async Task LoadMorePosts(PostType type, int count, int offset)
         {
             ShowLoadingMoreGrid(true);
 
@@ -96,7 +128,7 @@ namespace Memenim.Pages
             ShowLoadingMoreGrid(false);
         }
 
-        private Task AddMorePosts(List<PostSchema> posts)
+        public Task AddMorePosts(List<PostSchema> posts)
         {
             return Task.Run(() =>
             {
@@ -119,6 +151,143 @@ namespace Memenim.Pages
                     ViewModel.Offset += posts.Count;
                 });
             });
+        }
+
+        public Task<int> GetNewPostsCount(int offset = 0)
+        {
+            PostType postType = PostType.Popular;
+
+            Dispatcher.Invoke(() =>
+            {
+                postType = ((PostTypeNode)lstPostTypes.SelectedItem).CategoryType;
+            });
+
+            return GetNewPostsCount(postType, OffsetPerTime, offset);
+        }
+        public async Task<int> GetNewPostsCount(PostType type, int countPerTime, int offset)
+        {
+            int postsCount = 0;
+
+            Dispatcher.Invoke(() =>
+            {
+                postsCount = lstPosts.Children.Count;
+            });
+
+            if (postsCount == 0)
+            {
+                if (type == PostType.My || type == PostType.Favorite)
+                {
+                    return await GetAllPostsCount(type, countPerTime, offset)
+                        .ConfigureAwait(true);
+                }
+
+                return 0;
+            }
+
+            int headOldId = -1;
+
+            Dispatcher.Invoke(() =>
+            {
+                headOldId = ViewModel.LastNewHeadPostId;
+            });
+
+            if (headOldId == -1)
+                return 0;
+
+            return await Task.Run(async () =>
+            {
+                int countNew = 0;
+                int headNewId = -1;
+                bool headOldIsFound = false;
+                bool isFirstRequest = true;
+
+                while (!headOldIsFound)
+                {
+                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
+                            type, countPerTime, offset)
+                        .ConfigureAwait(false);
+
+                    if (result?.error != false)
+                        continue;
+
+                    if (result.data.Count == 0)
+                    {
+                        await Dispatcher.Invoke(async () =>
+                        {
+                            await UpdatePosts()
+                                .ConfigureAwait(true);
+                        }).ConfigureAwait(true);
+
+                        return 0;
+                    }
+
+                    if (isFirstRequest)
+                    {
+                        headNewId = result.data[0].id;
+                        isFirstRequest = false;
+                    }
+
+                    foreach (var post in result.data)
+                    {
+                        if (post.id == headOldId)
+                        {
+                            headOldIsFound = true;
+                            break;
+                        }
+
+                        ++countNew;
+                    }
+
+                    if (countNew >= 500)
+                    {
+                        await Dispatcher.Invoke(async () =>
+                        {
+                            await UpdatePosts()
+                                .ConfigureAwait(true);
+                        }).ConfigureAwait(true);
+
+                        return 0;
+                    }
+
+                    offset += countPerTime;
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    ViewModel.LastNewHeadPostId = headNewId;
+                });
+
+                return countNew;
+            }).ConfigureAwait(true);
+        }
+
+        private async Task<int> GetAllPostsCount(PostType type, int countPerTime, int offset)
+        {
+            if (!(type == PostType.My || type == PostType.Favorite))
+                return 0;
+
+            return await Task.Run(async () =>
+            {
+                int countNew = 0;
+
+                while (true)
+                {
+                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
+                            type, countPerTime, offset)
+                        .ConfigureAwait(false);
+
+                    if (result?.error != false)
+                        continue;
+
+                    if (result.data.Count == 0)
+                        break;
+
+                    countNew += result.data.Count;
+                    offset += countPerTime;
+                }
+
+                return countNew;
+            }).ConfigureAwait(true);
         }
 
         public Task ShowLoadingGrid(bool status)
@@ -204,9 +373,44 @@ namespace Memenim.Pages
                     await LoadMorePosts()
                         .ConfigureAwait(true);
                 });
+
+            _autoUpdateCountTimer.Start();
+        }
+
+        protected override void OnExit(object sender, RoutedEventArgs e)
+        {
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            _autoUpdateCountTimer.Stop();
+        }
+
+        private async void AutoUpdateCountTimerCallback(object sender, ElapsedEventArgs e)
+        {
+            _autoUpdateCountTimer.Stop();
+
+            int newPostsCount = await GetNewPostsCount()
+                .ConfigureAwait(true);
+
+            Dispatcher.Invoke(() =>
+            {
+                ViewModel.Offset += newPostsCount;
+                ViewModel.NewPostsCount += newPostsCount;
+            });
+
+            _autoUpdateCountTimer.Start();
         }
 
         private async void lstPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            await UpdatePosts()
+                .ConfigureAwait(true);
+        }
+
+        private async void btnNewPostsCount_Click(object sender, RoutedEventArgs e)
         {
             await UpdatePosts()
                 .ConfigureAwait(true);
