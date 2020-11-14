@@ -19,6 +19,19 @@
             <local:PostTypeNode CategoryName="My" CategoryType="My"/>
             <local:PostTypeNode CategoryName="Favorite" CategoryType="Favorite"/>
         </x:Array>
+
+        <Storyboard x:Key="LoadingMoreEnterAnimation">
+            <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
+                                Storyboard.TargetProperty="Margin"
+                                To="0 0 -15 0"
+                                Duration="0:0:0.35"/>
+        </Storyboard>
+        <Storyboard x:Key="LoadingMoreExitAnimation">
+            <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
+                                Storyboard.TargetProperty="Margin"
+                                To="0 0 -85 0"
+                                Duration="0:0:0.75"/>
+        </Storyboard>
     </local:PageContent.Resources>
 
     <Grid>
@@ -50,7 +63,17 @@
                                Orientation="Horizontal" VerticalAlignment="Stretch"/>
                 </controlsRis:ExtendedScrollViewer>
         </Grid>
-        <Grid Grid.Row="0" Grid.RowSpan="2" x:Name="loadingGrid"
+        <Grid Grid.Row="1" x:Name="loadingMoreGrid"
+              Height="80" Width="80" Margin="0 0 -85 0"
+              HorizontalAlignment="Right" VerticalAlignment="Center"
+              Visibility="Visible" ZIndex="2147483646">
+            <Border CornerRadius="20" Background="{DynamicResource MahApps.Brushes.Window.Background}">
+                <indicatorsLoading:LoadingIndicator x:Name="loadingMoreIndicator" Mode="Arcs"
+                                                    SpeedRatio="2" Margin="-15 0 0 0"
+                                                    IsActive="False" Visibility="Visible"/>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="loadingGrid"
               Visibility="Collapsed" ZIndex="2147483647"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
             <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"

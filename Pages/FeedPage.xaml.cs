@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
@@ -17,6 +18,9 @@ namespace Memenim.Pages
     {
         private const int OffsetPerTime = 20;
 
+        public readonly Storyboard LoadingMoreEnterAnimation;
+        public readonly Storyboard LoadingMoreExitAnimation;
+
         public FeedViewModel ViewModel
         {
             get
@@ -30,6 +34,9 @@ namespace Memenim.Pages
             InitializeComponent();
             DataContext = new FeedViewModel();
 
+            LoadingMoreEnterAnimation = (Storyboard) FindResource(nameof(LoadingMoreEnterAnimation));
+            LoadingMoreExitAnimation = (Storyboard) FindResource(nameof(LoadingMoreExitAnimation));
+
             lstPostTypes.SelectedIndex = 0;
         }
 
@@ -40,8 +47,12 @@ namespace Memenim.Pages
         }
         private async Task UpdatePosts(PostType type, int count)
         {
+            lstPostTypes.IsEnabled = false;
+
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
+
+            svPosts.IsEnabled = false;
 
             lstPosts.Children.Clear();
             svPosts.ScrollToHorizontalOffset(0);
@@ -50,6 +61,13 @@ namespace Memenim.Pages
 
             await LoadMorePosts(type, count, ViewModel.Offset)
                 .ConfigureAwait(true);
+
+            svPosts.IsEnabled = true;
+
+            await ShowLoadingGrid(false)
+                .ConfigureAwait(true);
+
+            lstPostTypes.IsEnabled = true;
         }
 
         private Task LoadMorePosts()
@@ -63,10 +81,7 @@ namespace Memenim.Pages
         }
         private async Task LoadMorePosts(PostType type, int count, int offset)
         {
-            await ShowLoadingGrid(true)
-                .ConfigureAwait(true);
-
-            svPosts.IsEnabled = false;
+            ShowLoadingMoreGrid(true);
 
             var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
                     type, count, offset)
@@ -78,10 +93,7 @@ namespace Memenim.Pages
             await AddMorePosts(result.data)
                 .ConfigureAwait(true);
 
-            svPosts.IsEnabled = true;
-
-            await ShowLoadingGrid(false)
-                .ConfigureAwait(true);
+            ShowLoadingMoreGrid(false);
         }
 
         private Task AddMorePosts(List<PostSchema> posts)
@@ -129,7 +141,7 @@ namespace Memenim.Pages
                 {
                     var opacity = i;
 
-                    if (opacity < 0.7)
+                    if (opacity == 0.7)
                     {
                         Dispatcher.Invoke(() =>
                         {
@@ -151,6 +163,26 @@ namespace Memenim.Pages
                     loadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
+        }
+
+        public void ShowLoadingMoreGrid(bool status)
+        {
+            if (status)
+            {
+                loadingMoreIndicator.IsActive = true;
+                loadingMoreGrid.IsHitTestVisible = true;
+
+                //LoadingPostEnterAnimation.Begin();
+                loadingMoreGrid.BeginStoryboard(LoadingMoreEnterAnimation);
+
+                return;
+            }
+
+            loadingMoreIndicator.IsActive = false;
+            loadingMoreGrid.IsHitTestVisible = false;
+
+            //LoadingPostExitAnimation.Begin();
+            loadingMoreGrid.BeginStoryboard(LoadingMoreExitAnimation);
         }
 
         protected override void OnEnter(object sender, RoutedEventArgs e)

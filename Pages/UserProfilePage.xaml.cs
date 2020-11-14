@@ -90,7 +90,7 @@ namespace Memenim.Pages
                 {
                     var opacity = i;
 
-                    if (opacity < 0.7)
+                    if (opacity == 0.7)
                     {
                         Dispatcher.Invoke(() =>
                         {
