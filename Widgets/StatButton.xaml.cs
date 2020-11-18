@@ -13,6 +13,12 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty StatValueProperty =
             DependencyProperty.Register(nameof(StatValue), typeof(string), typeof(StatButton),
                 new PropertyMetadata("0"));
+        public static readonly DependencyProperty StatValueOnLeftProperty =
+            DependencyProperty.Register(nameof(StatValueOnLeft), typeof(bool), typeof(StatButton),
+                new PropertyMetadata(false));
+        public static readonly DependencyProperty StatValueFontSizeProperty =
+            DependencyProperty.Register(nameof(StatValueFontSize), typeof(double), typeof(StatButton),
+                new PropertyMetadata((double) TextBlock.FontSizeProperty.DefaultMetadata.DefaultValue));
         public static readonly DependencyProperty ButtonSizeProperty =
             DependencyProperty.Register(nameof(ButtonSize), typeof(int), typeof(StatButton),
                 new PropertyMetadata(48));
@@ -47,6 +53,28 @@ namespace Memenim.Widgets
             set
             {
                 SetValue(StatValueProperty, value);
+            }
+        }
+        public bool StatValueOnLeft
+        {
+            get
+            {
+                return (bool)GetValue(StatValueOnLeftProperty);
+            }
+            set
+            {
+                SetValue(StatValueOnLeftProperty, value);
+            }
+        }
+        public double StatValueFontSize
+        {
+            get
+            {
+                return (double)GetValue(StatValueFontSizeProperty);
+            }
+            set
+            {
+                SetValue(StatValueFontSizeProperty, value);
             }
         }
         public int ButtonSize

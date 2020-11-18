@@ -11,6 +11,11 @@
 
     <Border Padding="5">
         <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding Path=StatValue}"
+                       FontSize="{Binding Path=StatValueFontSize}"
+                       Foreground="{StaticResource MahApps.Brushes.Text}"
+                       VerticalAlignment="Center" Margin="3 0 3 0"
+                       Visibility="{Binding Path=StatValueOnLeft, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <Button x:Name="button"
                     Width="{Binding Path=ButtonSize}" Height="{Binding Path=ButtonSize}"
                     Style="{StaticResource MahApps.Styles.Button.Circle}"
@@ -22,8 +27,10 @@
                                           Height="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"/>
             </Button>
             <TextBlock Text="{Binding Path=StatValue}"
+                       FontSize="{Binding Path=StatValueFontSize}"
                        Foreground="{StaticResource MahApps.Brushes.Text}"
-                       VerticalAlignment="Center" Margin="3 0 0 0"/>
+                       VerticalAlignment="Center" Margin="3 0 3 0"
+                       Visibility="{Binding Path=StatValueOnLeft, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
         </StackPanel>
     </Border>
 </UserControl>

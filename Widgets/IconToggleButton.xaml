@@ -14,7 +14,7 @@
         <SolidColorBrush x:Key="Button.Border" Color="#00ffffff"/>
         <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#c8aaaaaa"/>
         <SolidColorBrush x:Key="Button.Pressed.Background" Color="#E54D4D4D"/>
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
 
         <Style x:Key="IconToggleButton" TargetType="ToggleButton">

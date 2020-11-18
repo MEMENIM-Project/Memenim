@@ -3,8 +3,12 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Navigation;
+using Memenim.Pages;
+using Memenim.Pages.ViewModel;
+using Memenim.Settings;
 using Memenim.TabLayouts;
 using Memenim.TabLayouts.NavigationBar;
 
@@ -116,9 +120,30 @@ namespace Memenim.Widgets
                 if (sender is IconButton button)
                 {
                     if (button.PageName == "Back")
+                    {
                         NavigationController.Instance.GoBack();
+                    }
+                    else if (button.PageName == "UserProfilePage")
+                    {
+                        if (NavigationController.Instance.PageContent.Content is UserProfilePage page
+                            && page.DataContext is UserProfileViewModel viewModel
+                            && viewModel.CurrentProfileData.id == SettingsManager.PersistentSettings.CurrentUserId)
+                        {
+                            return;
+                        }
+
+                        NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
+                        {
+                            CurrentProfileData = new ProfileSchema
+                            {
+                                id = SettingsManager.PersistentSettings.CurrentUserId
+                            }
+                        });
+                    }
                     else
+                    {
                         NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.PageName}"));
+                    }
                 }
             }
             catch (Exception ex)

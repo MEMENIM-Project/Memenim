@@ -7,6 +7,7 @@ using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
 {
@@ -57,7 +58,7 @@ namespace Memenim.Pages
                 {
                     var opacity = i;
 
-                    if (opacity == 0.7)
+                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
                     {
                         Dispatcher.Invoke(() =>
                         {

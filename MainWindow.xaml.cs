@@ -6,6 +6,7 @@ using Memenim.Settings;
 using MahApps.Metro.Controls;
 using Memenim.Native.Window;
 using Memenim.Navigation;
+using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
@@ -75,7 +76,7 @@ namespace Memenim
                 {
                     var opacity = i;
 
-                    if (opacity == 0.7)
+                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
                     {
                         Dispatcher.Invoke(() =>
                         {

@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro.IconPacks;
 using Memenim.Utils;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
@@ -112,7 +111,8 @@ namespace Memenim.Widgets
                 stLikes.IsEnabled = false;
                 stDislikes.IsEnabled = false;
                 stComments.IsEnabled = false;
-                stShare.IsEnabled = false;
+                stViews.IsEnabled = false;
+                stReposts.IsEnabled = false;
             }
         }
 

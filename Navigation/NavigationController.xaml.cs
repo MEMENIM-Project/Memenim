@@ -115,10 +115,16 @@ namespace Memenim.Navigation
 
         private void SetPage(PageContent page, PageViewModel dataContext = null)
         {
-            if (ReferenceEquals(PageContent.Content, page))
+            if (ReferenceEquals(PageContent.Content, page)
+                && (dataContext == null
+                    || ReferenceEquals((PageContent.Content as PageContent)?.DataContext, dataContext)))
+            {
                 return;
+            }
 
             IsContentEventsActive(false);
+
+            SaveContentToHistory();
 
             if (dataContext != null)
             {
@@ -132,8 +138,6 @@ namespace Memenim.Navigation
 
                 page.DataContext = dataContext;
             }
-
-            SaveContentToHistory();
 
             PageContent.Content = page;
             _currentPageContentType = PageContentType.Page;
@@ -148,10 +152,16 @@ namespace Memenim.Navigation
 
         private void SetOverlay(PageContent page, PageViewModel dataContext = null)
         {
-            if (ReferenceEquals(PageContent.Content, page))
+            if (ReferenceEquals(OverlayContent.Content, page)
+                && (dataContext == null
+                    || ReferenceEquals((OverlayContent.Content as PageContent)?.DataContext, dataContext)))
+            {
                 return;
+            }
 
             IsContentEventsActive(false);
+
+            SaveContentToHistory();
 
             if (dataContext != null)
             {
@@ -165,8 +175,6 @@ namespace Memenim.Navigation
 
                 page.DataContext = dataContext;
             }
-
-            SaveContentToHistory();
 
             OverlayContent.Content = page;
             _currentPageContentType = PageContentType.Overlay;
@@ -334,6 +342,18 @@ namespace Memenim.Navigation
         public void ClearHistory()
         {
             _navigationHistory.Clear();
+        }
+
+        public void LockNavigation(bool state)
+        {
+            if (state)
+            {
+                NavBar.IsEnabled = false;
+
+                return;
+            }
+
+            NavBar.IsEnabled = true;
         }
 
         private void OverlayBackground_Click(object sender, RoutedEventArgs e)

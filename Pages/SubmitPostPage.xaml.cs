@@ -77,7 +77,7 @@ namespace Memenim.Pages
             {
                 ViewModel.CurrentPostData.author_watch++;
 
-                var result = await PostApi.AddPost(SettingsManager.PersistentSettings.CurrentUserToken, ViewModel.CurrentPostData)
+                var result = await PostApi.Add(SettingsManager.PersistentSettings.CurrentUserToken, ViewModel.CurrentPostData)
                     .ConfigureAwait(true);
 
                 if (!result.error)

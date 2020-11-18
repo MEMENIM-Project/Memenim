@@ -200,7 +200,7 @@ namespace Memenim.Pages
                     type = result.data.type
                 };
 
-                var resultEdit = await PostApi.EditPost(SettingsManager.PersistentSettings.CurrentUserToken,
+                var resultEdit = await PostApi.Edit(SettingsManager.PersistentSettings.CurrentUserToken,
                         postRequest)
                     .ConfigureAwait(true);
 

@@ -9,6 +9,7 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Pages;
+using Memenim.Settings;
 
 namespace Memenim.Widgets
 {
@@ -112,7 +113,8 @@ namespace Memenim.Widgets
         }
         public async Task LoadMoreComments(int count, int offset)
         {
-            var result = await PostApi.GetComments(PostId, count, offset)
+            var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUserToken,
+                    PostId, count, offset)
                 .ConfigureAwait(true);
 
             if (result.error)
@@ -206,7 +208,8 @@ namespace Memenim.Widgets
 
                 while (!headOldIsFound)
                 {
-                    var result = await PostApi.GetComments(postId, countPerTime, offset)
+                    var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUserToken,
+                            postId, countPerTime, offset)
                         .ConfigureAwait(false);
 
                     if (result?.error != false)
@@ -275,7 +278,8 @@ namespace Memenim.Widgets
             if (postId == -1)
                 return;
 
-            var result = await PostApi.GetComments(postId, count, offset)
+            var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUserToken,
+                    postId, count, offset)
                 .ConfigureAwait(true);
 
             if (result.error)

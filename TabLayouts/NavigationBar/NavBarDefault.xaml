@@ -24,6 +24,7 @@
         <local:NavRedirectButtonNode PageName="PlaceholderPage" IconKind="Chat"/>
     </x:Array>
     <x:Array x:Key="BottomNavButtons" Type="local:NavRedirectButtonNode">
+        <local:NavRedirectButtonNode PageName="UserProfilePage" IconKind="PeopleProfile"/>
         <local:NavRedirectButtonNode PageName="SettingsPage" IconKind="Settings"/>
     </x:Array>
 </ResourceDictionary>
