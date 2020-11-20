@@ -64,7 +64,9 @@
     </Control.Resources>
     
     <Grid>
-        <ToggleButton Style="{StaticResource IconToggleButton}" Click="Button_Click">
+        <ToggleButton IsChecked="{Binding Path=IsChecked, Mode=TwoWay}"
+                      Style="{StaticResource IconToggleButton}"
+                      Click="Button_Click">
             <iconPacks:PackIconModern Kind="{Binding Path=IconKind}"/>
         </ToggleButton>
     </Grid>

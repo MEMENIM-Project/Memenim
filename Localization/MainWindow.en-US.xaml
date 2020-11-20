@@ -42,4 +42,8 @@
     <system:String x:Key="LanguageTitle">Language</system:String>
     <system:String x:Key="NewPassword">New password</system:String>
     <system:String x:Key="ChangePassword">Change password</system:String>
+
+    <system:String x:Key="ProfileStatSexUnknown">Unknown</system:String>
+    <system:String x:Key="ProfileStatSexMale">Male</system:String>
+    <system:String x:Key="ProfileStatSexFemale">Female</system:String>
 </ResourceDictionary>

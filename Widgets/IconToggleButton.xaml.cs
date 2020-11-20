@@ -15,6 +15,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty IconKindProperty =
             DependencyProperty.Register(nameof(IconKind), typeof(PackIconModernKind), typeof(IconToggleButton),
                 new PropertyMetadata(PackIconModernKind.Xbox));
+        public static readonly DependencyProperty IsCheckedProperty =
+            DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(IconToggleButton),
+                new PropertyMetadata(false));
 
         public event EventHandler<RoutedEventArgs> IconToggleButtonClick
         {
@@ -48,6 +51,17 @@ namespace Memenim.Widgets
             set
             {
                 SetValue(IconKindProperty, value);
+            }
+        }
+        public bool IsChecked
+        {
+            get
+            {
+                return (bool)GetValue(IsCheckedProperty);
+            }
+            set
+            {
+                SetValue(IsCheckedProperty, value);
             }
         }
 

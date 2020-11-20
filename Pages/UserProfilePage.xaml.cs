@@ -1,17 +1,27 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
+using Memenim.Converters;
 using Memenim.Core.Api;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Pages.ViewModel;
+using Memenim.Settings;
+using Memenim.Widgets;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
 {
     public partial class UserProfilePage : PageContent
     {
+        public static readonly DependencyProperty IsEditModeProperty =
+            DependencyProperty.Register(nameof(IsEditMode), typeof(bool), typeof(UserProfilePage),
+                new PropertyMetadata(false));
+
         private readonly SemaphoreSlim _profileUpdateLock = new SemaphoreSlim(1, 1);
         private int _profileUpdateWaitingCount;
         private bool _loadingGridShowing;
@@ -21,6 +31,18 @@ namespace Memenim.Pages
             get
             {
                 return DataContext as UserProfileViewModel;
+            }
+        }
+
+        public bool IsEditMode
+        {
+            get
+            {
+                return (bool)GetValue(IsEditModeProperty);
+            }
+            set
+            {
+                SetValue(IsEditModeProperty, value);
             }
         }
 
@@ -54,6 +76,8 @@ namespace Memenim.Pages
 
             try
             {
+                btnEditMode.IsChecked = false;
+
                 if (id == -1)
                     return;
 
@@ -71,6 +95,11 @@ namespace Memenim.Pages
                     return;
 
                 ViewModel.CurrentProfileData = result.data;
+
+                wpStatBlock1.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
+                wpStatBlock2.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
+                wpStatBlock3.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
+                wpStatBlock4.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
             }
             finally
             {
@@ -158,6 +187,171 @@ namespace Memenim.Pages
             {
                 await UpdateProfile()
                     .ConfigureAwait(true);
+            }
+        }
+
+        private async void EditSinglelineText_Click(object sender, RoutedEventArgs e)
+        {
+            UserProfileStat element = sender as UserProfileStat;
+
+            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+
+            if (binding == null)
+                return;
+
+            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
+            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+
+            if (sourceClass == null || sourceProperty == null)
+                return;
+
+            string oldValue = (string)sourceProperty.GetValue(sourceClass);
+            string value = await DialogManager.ShowSinglelineTextDialog("Edit profile",
+                    $"Enter {element.StatTitle}", oldValue)
+                .ConfigureAwait(true);
+
+            if (value == null)
+                return;
+
+            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
+            sourceProperty.SetValue(sourceClass, value);
+
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                    ViewModel.CurrentProfileData)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                sourceProperty.SetValue(sourceClass, oldValue);
+            }
+        }
+
+        private async void EditMultilineText_Click(object sender, RoutedEventArgs e)
+        {
+            UserProfileStat element = sender as UserProfileStat;
+
+            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+
+            if (binding == null)
+                return;
+
+            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
+            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+
+            if (sourceClass == null || sourceProperty == null)
+                return;
+
+            string oldValue = (string)sourceProperty.GetValue(sourceClass);
+            string value = await DialogManager.ShowMultilineTextDialog("Edit profile",
+                    $"Enter {element.StatTitle}", oldValue)
+                .ConfigureAwait(true);
+
+            if (value == null)
+                return;
+
+            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
+            sourceProperty.SetValue(sourceClass, value);
+
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                    ViewModel.CurrentProfileData)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                sourceProperty.SetValue(sourceClass, oldValue);
+            }
+        }
+
+        private void EditComboBoxPurpose_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void EditComboBoxSex_Click(object sender, RoutedEventArgs e)
+        {
+            UserProfileStat element = sender as UserProfileStat;
+
+            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+
+            if (binding == null)
+                return;
+
+            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
+            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+
+            if (sourceClass == null || sourceProperty == null)
+                return;
+
+            int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
+            string valueName = await DialogManager.ShowComboBoxDialog("Edit profile",
+                    $"Enter {element.StatTitle}", ProfileStatSex.GetNames(true),
+                    ProfileStatSex.ParseValue((byte)oldValue, true))
+                .ConfigureAwait(true);
+
+            if (valueName == null)
+                return;
+
+            int value = ProfileStatSex.ParseName(valueName, true);
+
+            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
+            sourceProperty.SetValue(sourceClass, value);
+
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                    ViewModel.CurrentProfileData)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                sourceProperty.SetValue(sourceClass, oldValue);
+            }
+        }
+
+        private async void EditNumericAge_Click(object sender, RoutedEventArgs e)
+        {
+            UserProfileStat element = sender as UserProfileStat;
+
+            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+
+            if (binding == null)
+                return;
+
+            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
+            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+
+            if (sourceClass == null || sourceProperty == null)
+                return;
+
+            int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
+            double? value = await DialogManager.ShowNumericDialog("Edit profile",
+                    $"Enter {element.StatTitle}", Convert.ToDouble(oldValue),
+                    0.0, 100.0, 1.0, "F0")
+                .ConfigureAwait(true);
+
+            if (value == null)
+                return;
+
+            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
+            sourceProperty.SetValue(sourceClass, Convert.ToInt32(value));
+
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                    ViewModel.CurrentProfileData)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                sourceProperty.SetValue(sourceClass, oldValue);
             }
         }
     }

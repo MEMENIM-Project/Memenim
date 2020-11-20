@@ -21,16 +21,189 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource Header1}"
-                   Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
-                   VerticalAlignment="Bottom" Margin="20 0 20 0"/>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <TextBlock Style="{DynamicResource Header1}" Margin="20 0 20 0"
+                       Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
+                       HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+            <widgets:IconToggleButton x:Name="btnEditMode" IconKind="EditBox" Width="40" HorizontalAlignment="Right"
+                                      Visibility="{Binding Path=DataContext.EditAllowed, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                      IsChecked="{Binding Path=IsEditMode, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
+        </Grid>
         <Image Grid.Row="1" Grid.Column="0" Height="200" Width="200" Stretch="Uniform"
                Source="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10 0 0"/>
         <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel x:Name="wpStats" Background="{StaticResource MahApps.Brushes.Gray10}">
-                <widgets:UserProfileStat Margin="10" StatTitle="Thoughts"
-                                         StatValue="{Binding Path=DataContext.CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
+            <StackPanel>
+                <StackPanel x:Name="wpStatBlock1" Background="{StaticResource MahApps.Brushes.Gray10}"
+                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                    <widgets:UserProfileStat Margin="10" StatTitle="Thoughts"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.think" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                </StackPanel>
+                <StackPanel x:Name="wpStatBlock2" Background="{StaticResource MahApps.Brushes.Gray10}"
+                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                    <widgets:UserProfileStat Margin="10" StatTitle="Purpose"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.target, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditComboBoxPurpose_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.target" Converter="{StaticResource ProfileStatIntToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="My dream"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.dream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.dream" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="My values"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.hvalues, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.hvalues" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                </StackPanel>
+                <StackPanel x:Name="wpStatBlock3" Background="{StaticResource MahApps.Brushes.Gray10}"
+                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                    <widgets:UserProfileStat Margin="10" StatTitle="Interests"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.interests, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.interests" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Favorite music"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.fmusic, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.fmusic" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Favorite books"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.fbooks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.fbooks" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Favorite movies"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.ffilms, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.ffilms" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                </StackPanel>
+                <StackPanel x:Name="wpStatBlock4" Background="{StaticResource MahApps.Brushes.Gray10}"
+                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                    <widgets:UserProfileStat Margin="10" StatTitle="About me"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.about, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.about" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Emotional portrait"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.tempo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.tempo" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Attitude to others"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.attitude, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditMultilineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.attitude" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Age"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.age, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditNumericAge_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.age" Converter="{StaticResource ProfileStatIntToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="Sex"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.sex, Converter={StaticResource ProfileStatSexConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditComboBoxSex_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.sex" Converter="{StaticResource ProfileStatIntToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <widgets:UserProfileStat Margin="10" StatTitle="City"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.city, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             EditClick="EditSinglelineText_Click">
+                        <widgets:UserProfileStat.Visibility>
+                            <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
+                                <Binding Path="DataContext.CurrentProfileData.city" Converter="{StaticResource ProfileStatStringToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                            </MultiBinding>
+                        </widgets:UserProfileStat.Visibility>
+                    </widgets:UserProfileStat>
+                    <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
         <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"

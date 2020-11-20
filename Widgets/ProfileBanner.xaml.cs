@@ -80,14 +80,6 @@ namespace Memenim.Widgets
                 .ConfigureAwait(true);
         }
 
-        private void SelectAvatarFromTenor_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
-            {
-                OnPicSelect = ProfileUtils.ChangeAvatar
-            });
-        }
-
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
         {
             string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
@@ -97,11 +89,19 @@ namespace Memenim.Widgets
                 .ConfigureAwait(true);
         }
 
-        private void SelectBannerFromTenor_Click(object sender, RoutedEventArgs e)
+        private void SelectAvatarFromAnonymGallery_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
+            {
+                OnPicSelect = ProfileUtils.ChangeAvatar
+            });
+        }
+
+        private void SelectAvatarFromTenor_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
-                OnPicSelect = ProfileUtils.ChangeBanner
+                OnPicSelect = ProfileUtils.ChangeAvatar
             });
         }
 
@@ -112,6 +112,22 @@ namespace Memenim.Widgets
 
             await ProfileUtils.ChangeBanner(url)
                 .ConfigureAwait(true);
+        }
+
+        private void SelectBannerFromAnonymGallery_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
+            {
+                OnPicSelect = ProfileUtils.ChangeBanner
+            });
+        }
+
+        private void SelectBannerFromTenor_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
+            {
+                OnPicSelect = ProfileUtils.ChangeBanner
+            });
         }
     }
 }

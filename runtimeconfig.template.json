@@ -1,6 +1,5 @@
 {
-  "additionalProbingPaths": [
-    "bin",
-    "lib"
-  ]
+  "configProperties": {
+    "System.Threading.ThreadPool.MinThreads": 4
+  }
 }
