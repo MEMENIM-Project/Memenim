@@ -25,7 +25,8 @@
             
             <Grid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copy Post Id" Click="CopyPostId_Click"></MenuItem>
+                    <MenuItem Header="Copy Post Id" Click="CopyPostId_Click"/>
+                    <MenuItem Header="Delete Post" Visibility="Collapsed" Name="btnDeletePost" Click="DeletePost_Click"/>
                 </ContextMenu>
             </Grid.ContextMenu>
 

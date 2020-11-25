@@ -149,7 +149,7 @@ namespace Memenim.Pages
                             CurrentPostData = post
                         };
                         widget.PostClick += OnPost_Click;
-
+                        widget.PostDeleted += OnPost_Deleted;
                         lstPosts.Children.Add(widget);
                     });
                 }
@@ -159,6 +159,11 @@ namespace Memenim.Pages
                     ViewModel.Offset += posts.Count;
                 });
             });
+        }
+
+        private async void OnPost_Deleted(object sender, RoutedEventArgs e)
+        {
+            await UpdatePosts().ConfigureAwait(true);
         }
 
         public Task<int> GetNewPostsCount(int offset = 0)

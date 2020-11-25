@@ -72,25 +72,28 @@ namespace Memenim.Widgets
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-            btnDelete.IsEnabled = false;
-
-            var result = await PostApi.RemoveComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
-                .ConfigureAwait(true);
-
-            if (result.error)
+            if (await DialogManager.ShowDialog("Confirmation", "are you sure", MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                btnDelete.IsEnabled = false;
+
+                var result = await PostApi.RemoveComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
                     .ConfigureAwait(true);
 
+                if (result.error)
+                {
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
+
+                    btnDelete.IsEnabled = true;
+                    return;
+                }
+
+                Visibility = Visibility.Collapsed;
+
+                RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
+
                 btnDelete.IsEnabled = true;
-                return;
             }
-
-            Visibility = Visibility.Collapsed;
-
-            RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
-
-            btnDelete.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)
