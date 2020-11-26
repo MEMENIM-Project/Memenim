@@ -19,7 +19,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="225" Width="225*"/>
+            <ColumnDefinition MinWidth="240" Width="240*"/>
             <ColumnDefinition Width="575*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -38,31 +38,47 @@
                                       Visibility="{Binding Path=DataContext.EditAllowed, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                       IsChecked="{Binding Path=IsEditMode, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
         </Grid>
-        <Image Grid.Row="1" Grid.Column="0" Height="200" Width="200" Stretch="Uniform"
-               Source="{Binding Path=DataContext.CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
-               VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10 0 0"
-               IsHitTestVisible="{Binding Path=DataContext.EditAllowed, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
-               DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
-               d:DataContext="{d:DesignInstance local:UserProfilePage}">
-            <Image.ContextMenu>
-                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
-                             d:DataContext="{d:DesignInstance Image}">
-                    <MenuItem Header="Select image from URL"
-                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
-                              Click="SelectAvatarFromUrl_Click"/>
-                    <MenuItem Header="Select image from Anonym Gallery"
-                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
-                              Click="SelectAvatarFromAnonymGallery_Click"/>
-                    <MenuItem Header="Select GIF from Tenor"
-                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
-                              Click="SelectAvatarFromTenor_Click"/>
-                    <MenuItem Header="Remove image"
-                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
-                              Click="RemoveAvatar_Click"/>
-                </ContextMenu>
-            </Image.ContextMenu>
-        </Image>
-        <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+        <Grid Grid.Row="1" Grid.Column="0"
+              MinWidth="200" MinHeight="200"
+              Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+              MaxHeight="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+              Margin="20 20 20 20"
+              VerticalAlignment="Top">
+            <Grid.OpacityMask>
+                <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
+            </Grid.OpacityMask>
+
+            <Border Name="ImageBorder" SnapsToDevicePixels="True"
+                    CornerRadius="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
+                    Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+            <Image MinHeight="200" MinWidth="200"
+                   Source="{Binding Path=DataContext.CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                   Stretch="UniformToFill" StretchDirection="Both"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   IsHitTestVisible="{Binding Path=DataContext.EditAllowed, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                   DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
+                   d:DataContext="{d:DesignInstance local:UserProfilePage}">
+                <Image.ContextMenu>
+                    <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
+                                 d:DataContext="{d:DesignInstance Image}">
+                        <MenuItem Header="Select image from URL"
+                                  Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                  Click="SelectAvatarFromUrl_Click"/>
+                        <MenuItem Header="Select image from Anonym Gallery"
+                                  Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                  Click="SelectAvatarFromAnonymGallery_Click"/>
+                        <MenuItem Header="Select GIF from Tenor"
+                                  Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                  Click="SelectAvatarFromTenor_Click"/>
+                        <MenuItem Header="Remove image"
+                                  Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                  Click="RemoveAvatar_Click"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
+        </Grid>
+        <ScrollViewer Grid.Row="1" Grid.Column="1"
+                      VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <StackPanel x:Name="wpStatBlock1" Background="{StaticResource MahApps.Brushes.Gray10}"
                             Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
