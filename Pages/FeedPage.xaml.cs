@@ -149,7 +149,8 @@ namespace Memenim.Pages
                             CurrentPostData = post
                         };
                         widget.PostClick += OnPost_Click;
-                        widget.PostDeleted += OnPost_Deleted;
+                        widget.PostDelete += OnPost_Deleted;
+
                         lstPosts.Children.Add(widget);
                     });
                 }
@@ -159,11 +160,6 @@ namespace Memenim.Pages
                     ViewModel.Offset += posts.Count;
                 });
             });
-        }
-
-        private async void OnPost_Deleted(object sender, RoutedEventArgs e)
-        {
-            await UpdatePosts().ConfigureAwait(true);
         }
 
         public Task<int> GetNewPostsCount(int offset = 0)
@@ -435,6 +431,34 @@ namespace Memenim.Pages
             {
                 CurrentPostData = (sender as PostWidget)?.CurrentPostData
             });
+        }
+
+        private async void OnPost_Deleted(object sender, RoutedEventArgs e)
+        {
+            _autoUpdateCountTimer.Stop();
+
+            PostWidget post = sender as PostWidget;
+
+            if (post == null)
+            {
+                _autoUpdateCountTimer.Start();
+                return;
+            }
+
+            if (ViewModel.LastNewHeadPostId == post.CurrentPostData.id)
+            {
+                await UpdatePosts()
+                    .ConfigureAwait(true);
+
+                _autoUpdateCountTimer.Start();
+                return;
+            }
+
+            lstPosts.Children.Remove(post);
+
+            --ViewModel.Offset;
+
+            _autoUpdateCountTimer.Start();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -92,7 +92,7 @@ namespace Memenim.Widgets
 
         private void txtContent_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.Enter)
             {
                 if (btnSend.IsEnabled)
                     btnSend_Click(this, new RoutedEventArgs());

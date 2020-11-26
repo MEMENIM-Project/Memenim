@@ -18,17 +18,45 @@
             <ColumnDefinition MinWidth="100" Width="0.5*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Stretch="UniformToFill"
-               gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentProfileData.banner, Converter={StaticResource UserBannerImageSourceConverter}}">
-            <Image.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Select image from URL" Click="SelectBannerFromUrl_Click"/>
-                    <MenuItem Header="Select image from Anonym Gallery" Click="SelectBannerFromAnonymGallery_Click"/>
-                    <MenuItem Header="Select GIF from Tenor" Click="SelectBannerFromTenor_Click"/>
-                    <MenuItem Header="Remove image" Click="RemoveBanner_Click"/>
-                </ContextMenu>
-            </Image.ContextMenu>
-        </Image>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
+              HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Image MinHeight="140" MinWidth="140"
+                   gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentProfileData.banner, Converter={StaticResource UserBannerImageSourceConverter}}"
+                   Stretch="UniformToFill" StretchDirection="Both"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Select image from URL" Click="SelectBannerFromUrl_Click"/>
+                        <MenuItem Header="Select image from Anonym Gallery" Click="SelectBannerFromAnonymGallery_Click"/>
+                        <MenuItem Header="Select GIF from Tenor" Click="SelectBannerFromTenor_Click"/>
+                        <MenuItem Header="Remove image" Click="RemoveBanner_Click"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+              Width="140" Height="140" Margin="10 10 10 10"
+              HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Grid.OpacityMask>
+                <VisualBrush Visual="{Binding ElementName=ImageBorderAvatar}" />
+            </Grid.OpacityMask>
+
+            <Border Name="ImageBorderAvatar" CornerRadius="140" SnapsToDevicePixels="True"
+                    Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+            <Image MinHeight="140" MinWidth="140"
+                   gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
+                   Stretch="UniformToFill" StretchDirection="Both"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Select image from URL" Click="SelectAvatarFromUrl_Click"/>
+                        <MenuItem Header="Select image from Anonym Gallery" Click="SelectAvatarFromAnonymGallery_Click"/>
+                        <MenuItem Header="Select GIF from Tenor" Click="SelectAvatarFromTenor_Click"/>
+                        <MenuItem Header="Remove image" Click="RemoveAvatar_Click"/>
+                    </ContextMenu>
+                </Image.ContextMenu>
+            </Image>
+        </Grid>
         <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Left"
                     Background="{StaticResource MahApps.Brushes.Badged.Background}" Height="40">
             <TextBlock Margin="10 3 10 0" Foreground="{StaticResource MahApps.Brushes.Text}"
@@ -36,16 +64,5 @@
             <TextBlock Margin="10 3 10 0" Foreground="{StaticResource MahApps.Brushes.Text}"
                        Text="{Binding Path=CurrentProfileData.login, Converter={StaticResource UserNameConverter}}"/>
         </StackPanel>
-        <Image Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-               gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}">
-            <Image.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Select image from URL" Click="SelectAvatarFromUrl_Click"/>
-                    <MenuItem Header="Select image from Anonym Gallery" Click="SelectAvatarFromAnonymGallery_Click"/>
-                    <MenuItem Header="Select GIF from Tenor" Click="SelectAvatarFromTenor_Click"/>
-                    <MenuItem Header="Remove image" Click="RemoveAvatar_Click"/>
-                </ContextMenu>
-            </Image.ContextMenu>
-        </Image>
     </Grid>
 </UserControl>

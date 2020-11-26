@@ -72,28 +72,37 @@ namespace Memenim.Widgets
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-            if (await DialogManager.ShowDialog("Confirmation", "are you sure", MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
-            {
-                btnDelete.IsEnabled = false;
+            btnDelete.IsEnabled = false;
 
-                var result = await PostApi.RemoveComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
+            var confirmResult = await DialogManager.ShowDialog("Confirmation", "Are you sure?",
+                    MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative)
+                .ConfigureAwait(true);
+
+            if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+            {
+                btnDelete.IsEnabled = true;
+                return;
+            }
+
+            var result = await PostApi.RemoveComment(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    CurrentCommentData.id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
                     .ConfigureAwait(true);
 
-                if (result.error)
-                {
-                    await DialogManager.ShowDialog("F U C K", result.message)
-                        .ConfigureAwait(true);
-
-                    btnDelete.IsEnabled = true;
-                    return;
-                }
-
-                Visibility = Visibility.Collapsed;
-
-                RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
-
                 btnDelete.IsEnabled = true;
+                return;
             }
+
+            Visibility = Visibility.Collapsed;
+
+            RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
+
+            btnDelete.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)

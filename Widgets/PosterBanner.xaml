@@ -6,16 +6,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d"
-             d:DesignHeight="136" d:DesignWidth="800">
+             d:DesignHeight="136" d:DesignWidth="800"
+             MinHeight="70">
 
     <Grid MouseLeftButtonUp="OnPoster_MouseUp">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="50" Width="50*"/>
+            <ColumnDefinition MinWidth="60" Width="60"/>
             <ColumnDefinition MinWidth="100" Width="300*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Grid.Column="0" Stretch="Uniform"
-               Source="{Binding Path=UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"/>
+        <Grid Grid.Column="0" Width="50" Height="50"
+              Margin="5 5 5 5" VerticalAlignment="Top">
+            <Grid.OpacityMask>
+                <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
+            </Grid.OpacityMask>
+
+            <Border Name="ImageBorder" CornerRadius="50" SnapsToDevicePixels="True"
+                    Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+            <Image MinHeight="50" MinWidth="50"
+                   Source="{Binding Path=UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"
+                   Stretch="UniformToFill" StretchDirection="Both"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
         <StackPanel Grid.Column="1" Margin="20 0 0 0">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Path=UserName, Converter={StaticResource UserNameConverter}}"

@@ -398,16 +398,23 @@ namespace Memenim.Widgets
 
         private void Comment_CommentDelete(object sender, RoutedEventArgs e)
         {
+            _autoUpdateTimer.Stop();
+
             UserComment comment = sender as UserComment;
 
             if (comment == null)
+            {
+                _autoUpdateTimer.Start();
                 return;
+            }
 
             lstComments.Children.Remove(comment);
 
             --Offset;
 
             RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
+
+            _autoUpdateTimer.Start();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Memenim.Widgets
         public static readonly RoutedEvent OnPostClicked =
             EventManager.RegisterRoutedEvent(nameof(PostClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
         public static readonly RoutedEvent OnPostDeleted =
-            EventManager.RegisterRoutedEvent(nameof(PostDeleted), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
+            EventManager.RegisterRoutedEvent(nameof(PostDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
         public static readonly DependencyProperty CurrentPostDataProperty =
             DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(PostWidget),
                 new PropertyMetadata((PostSchema) null));
@@ -32,8 +32,7 @@ namespace Memenim.Widgets
                 RemoveHandler(OnPostClicked, value);
             }
         }
-
-        public event EventHandler<RoutedEventArgs> PostDeleted
+        public event EventHandler<RoutedEventArgs> PostDelete
         {
             add
             {
@@ -108,16 +107,18 @@ namespace Memenim.Widgets
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L).ToString(CultureInfo.CurrentCulture);
+            wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L)
+                .ToString(CultureInfo.CurrentCulture);
             wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 2;
+
+            btnDelete.Visibility =
+                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUserId
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
 
             stComments.Visibility = !CommentsIsOpen
                 ? Visibility.Collapsed
                 : Visibility.Visible;
-
-            btnDeletePost.Visibility = CurrentPostData.owner_id == SettingsManager.PersistentSettings.CurrentUserId
-                ? Visibility.Visible
-                : Visibility.Collapsed;
 
             if (PreviewMode)
             {
@@ -125,6 +126,9 @@ namespace Memenim.Widgets
                     ? DateTime.UtcNow.ToLocalTime().ToString(CultureInfo.CurrentCulture)
                     : wdgPoster.PostTime;
                 wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 1;
+
+                postMenu.IsEnabled = false;
+                postMenu.Visibility = Visibility.Collapsed;
 
                 stLikes.IsEnabled = false;
                 stDislikes.IsEnabled = false;
@@ -142,6 +146,46 @@ namespace Memenim.Widgets
         private void CopyPostId_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(CurrentPostData.id.ToString());
+        }
+
+        private void CopyPostText_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(CurrentPostData.text);
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            btnDelete.IsEnabled = false;
+
+            var confirmResult = await DialogManager.ShowDialog("Confirmation", "Are you sure?",
+                    MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative)
+                .ConfigureAwait(true);
+
+            if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+            {
+                btnDelete.IsEnabled = true;
+                return;
+            }
+
+            var result = await PostApi.Remove(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    CurrentPostData.id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+
+                btnDelete.IsEnabled = true;
+                return;
+            }
+
+            Visibility = Visibility.Collapsed;
+
+            RaiseEvent(new RoutedEventArgs(OnPostDeleted));
+
+            btnDelete.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)
@@ -214,26 +258,6 @@ namespace Memenim.Widgets
             CurrentPostData.dislikes.count = result.data.count;
 
             stDislikes.IsEnabled = true;
-        }
-
-        private async void DeletePost_Click(object sender, RoutedEventArgs e)
-        {
-            if(await DialogManager.ShowDialog("Confirmation", "are you sure", MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
-            {
-                var result = await PostApi.Remove(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id).ConfigureAwait(true);
-
-                if (result.error)
-                {
-                    await DialogManager.ShowDialog("F U C K", result.message)
-                        .ConfigureAwait(true);
-                }
-                else
-                {
-                    await DialogManager.ShowDialog("S U C C", "Post was succesfuly removed")
-                        .ConfigureAwait(true);
-                    RaiseEvent(new RoutedEventArgs(OnPostDeleted));
-                }
-            }
         }
     }
 }
