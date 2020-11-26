@@ -10,7 +10,13 @@
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
-    
+
+    <UserControl.Resources>
+        <FrameworkElement x:Key="ProxyElement"
+                          d:DataContext="{d:DesignInstance local:UserProfilePage}"
+                          DataContext="{Binding}"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="225" Width="225*"/>
@@ -21,6 +27,9 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <ContentControl Grid.Row="0" Grid.Column="0" Visibility="Collapsed"
+                        Content="{StaticResource ProxyElement}"/>
+
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <TextBlock Style="{DynamicResource Header1}" Margin="20 0 20 0"
                        Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
@@ -30,8 +39,29 @@
                                       IsChecked="{Binding Path=IsEditMode, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
         </Grid>
         <Image Grid.Row="1" Grid.Column="0" Height="200" Width="200" Stretch="Uniform"
-               Source="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
-               VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10 0 0"/>
+               Source="{Binding Path=DataContext.CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+               VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 10 0 0"
+               IsHitTestVisible="{Binding Path=DataContext.EditAllowed, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+               DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
+               d:DataContext="{d:DesignInstance local:UserProfilePage}">
+            <Image.ContextMenu>
+                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
+                             d:DataContext="{d:DesignInstance Image}">
+                    <MenuItem Header="Select image from URL"
+                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                              Click="SelectAvatarFromUrl_Click"/>
+                    <MenuItem Header="Select image from Anonym Gallery"
+                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                              Click="SelectAvatarFromAnonymGallery_Click"/>
+                    <MenuItem Header="Select GIF from Tenor"
+                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                              Click="SelectAvatarFromTenor_Click"/>
+                    <MenuItem Header="Remove image"
+                              Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                              Click="RemoveAvatar_Click"/>
+                </ContextMenu>
+            </Image.ContextMenu>
+        </Image>
         <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <StackPanel x:Name="wpStatBlock1" Background="{StaticResource MahApps.Brushes.Gray10}"

@@ -27,6 +27,8 @@ namespace Memenim.Settings
         public double WindowWidth { get; set; }
         [SettingCategory("Window")]
         public double WindowHeight { get; set; }
+        [SettingCategory("Log")]
+        public int LogRetentionDaysPeriod { get; set; }
         [SettingCategory("Version")]
         public string AppVersion { get; set; }
 
@@ -41,6 +43,7 @@ namespace Memenim.Settings
             WindowState = (int)System.Windows.WindowState.Normal;
             WindowWidth = MainWindow.Instance.Width;
             WindowHeight = MainWindow.Instance.Height;
+            LogRetentionDaysPeriod = 7;
             AppVersion = "0.0.0";
 
             Load();
@@ -53,7 +56,8 @@ namespace Memenim.Settings
                 base.Load(options);
 
                 string currentAppVersion = FileVersionInfo
-                    .GetVersionInfo(Path.Combine(Environment.ExecAppDirectoryName, Environment.ExecAppFileName))
+                    .GetVersionInfo(Path.Combine(Environment.ExecAppDirectoryName,
+                        Path.ChangeExtension(Environment.ExecAppFileName, "dll") ?? string.Empty))
                     .ProductVersion;
 
                 if (AppVersion != currentAppVersion)

@@ -23,8 +23,9 @@
             <Image.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Select image from URL" Click="SelectBannerFromUrl_Click"/>
-                    <MenuItem Header="Select image from URL" Click="SelectBannerFromAnonymGallery_Click"/>
+                    <MenuItem Header="Select image from Anonym Gallery" Click="SelectBannerFromAnonymGallery_Click"/>
                     <MenuItem Header="Select GIF from Tenor" Click="SelectBannerFromTenor_Click"/>
+                    <MenuItem Header="Remove image" Click="RemoveBanner_Click"/>
                 </ContextMenu>
             </Image.ContextMenu>
         </Image>
@@ -40,8 +41,9 @@
             <Image.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Select image from URL" Click="SelectAvatarFromUrl_Click"/>
-                    <MenuItem Header="Select image from URL" Click="SelectAvatarFromAnonymGallery_Click"/>
+                    <MenuItem Header="Select image from Anonym Gallery" Click="SelectAvatarFromAnonymGallery_Click"/>
                     <MenuItem Header="Select GIF from Tenor" Click="SelectAvatarFromTenor_Click"/>
+                    <MenuItem Header="Remove image" Click="RemoveAvatar_Click"/>
                 </ContextMenu>
             </Image.ContextMenu>
         </Image>

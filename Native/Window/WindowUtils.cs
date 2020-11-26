@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 
 namespace Memenim.Native.Window
 {
@@ -7,7 +8,7 @@ namespace Memenim.Native.Window
         public static IntPtr HwndSourceHook(IntPtr hwnd, int msg,
             IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            App.Instance.OnWndProc(App.Current.MainWindow, hwnd, (uint) msg,
+            App.Instance.OnWndProc(Application.Current.MainWindow, hwnd, (uint) msg,
                 wParam, lParam, true, true);
 
             return IntPtr.Zero;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using RIS.Settings.Ini;
 
@@ -30,9 +29,6 @@ namespace Memenim.Settings
             CurrentUserId = -1;
 
             Load();
-
-            if (File.Exists("PersistentStore.store"))
-                File.Delete("PersistentStore.store");
         }
 
         public void Load()

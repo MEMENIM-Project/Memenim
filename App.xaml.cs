@@ -1,14 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+using Memenim.Cryptography;
 using Memenim.Localization;
+using Memenim.Logs;
 using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
 using Memenim.Utils;
+using RIS;
 using RIS.Extensions;
+using Environment = RIS.Environment;
 
 namespace Memenim
 {
@@ -39,20 +51,163 @@ namespace Memenim
             }
         }
 
-        private static void SingleInstanceMain(string[] args)
+        private static bool CreateHashFiles { get; set; }
+
+        public static Process Process { get; private set; }
+        public static string ExecFilePath { get; private set; }
+        public static string ExecFileDirectoryName { get; private set; }
+        public static string ExecFileName { get; private set; }
+        public static string ExecFileNameWithoutExtension { get; private set; }
+        public static bool IsStandalone { get; private set; }
+        public static bool IsSingleFile { get; private set; }
+
+        private static void SingleInstanceMain()
         {
+            LogManager.Log.Info("App Run");
+
+            Events.Information += OnInformation;
+            Events.Warning += OnWarning;
+            Events.Error += OnError;
+
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            AppDomain.CurrentDomain.FirstChanceException += OnFirstChanceException;
+            AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += OnAssemblyResolve;
+            AppDomain.CurrentDomain.TypeResolve += OnResolve;
+            AppDomain.CurrentDomain.ResourceResolve += OnResolve;
+
             App app = new App();
+
+            Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
+
+            Process = Process.GetCurrentProcess();
+            ExecFilePath = Process.MainModule?.FileName ?? "Unknown";
+            ExecFileDirectoryName = Path.GetDirectoryName(ExecFilePath);
+            ExecFileName = Path.GetFileName(ExecFilePath);
+            ExecFileNameWithoutExtension = Path.GetFileNameWithoutExtension(ExecFileName);
+
+            if (File.Exists(Path.Combine(Environment.ExecAppDirectoryName, "hostfxr.dll"))
+                && File.Exists(Path.Combine(Environment.ExecAppDirectoryName, "hostpolicy.dll")))
+            {
+                IsStandalone = true;
+            }
+
+            if (!File.Exists(Path.Combine(ExecFileDirectoryName ?? string.Empty,
+                Path.ChangeExtension(ExecFileName, "dll") ?? string.Empty)))
+            {
+                IsSingleFile = true;
+            }
+
+            LogManager.Log.Info($"Libraries Directory - {Environment.ExecAppDirectoryName}");
+            LogManager.Log.Info($"Execution File Directory - {ExecFileDirectoryName}");
+            LogManager.Log.Info($"Is Standalone App - {IsStandalone}");
+            LogManager.Log.Info($"Is Single File App - {IsSingleFile}");
+
+            string librariesHash = HashManager.GetLibrariesHash();
+            string exeHash = HashManager.GetExeHash();
+            string exePdbHash = HashManager.GetExePdbHash();
+
+            LogManager.Log.Info($"Libraries SHA512 - {librariesHash}");
+            LogManager.Log.Info($"Exe SHA512 - {exeHash}");
+            LogManager.Log.Info($"Exe PDB SHA512 - {exePdbHash}");
+
+            if (CreateHashFiles)
+            {
+                const string hashType = "sha512";
+
+                LogManager.Log.Info($"Hash file creation started - {hashType}");
+
+                CreateHashFile(librariesHash, "LibrariesHash", hashType);
+                CreateHashFile(exeHash, "ExeHash", hashType);
+                CreateHashFile(exePdbHash, "ExePdbHash", hashType);
+
+                LogManager.Log.Info($"Hash files creation completed - {hashType}");
+
+                Current.Shutdown(0x0);
+                return;
+            }
+
             app.InitializeComponent();
-            app.Run();
+            app.Run(Memenim.MainWindow.Instance);
         }
 
         [STAThread]
         private static void Main(string[] args)
         {
+#pragma warning disable SS002 // DateTime.Now was referenced
+            NLog.GlobalDiagnosticsContext.Set("AppStartupTime", DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture));
+#pragma warning restore SS002 // DateTime.Now was referenced
+
+            ParseArgs(args);
+
             Instance.Run(() =>
             {
-                SingleInstanceMain(args);
+                SingleInstanceMain();
             });
+        }
+
+        private static void ParseArgs(string[] args)
+        {
+            var wrapper = WrapArgs(args);
+
+            foreach (var argEntry in wrapper)
+            {
+                switch (argEntry.Key)
+                {
+                    case "createHashFiles":
+                        CreateHashFiles = bool.Parse(argEntry.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private static List<(string Key, string Value)> WrapArgs(string[] args)
+        {
+            var argsEntries = new List<(string Key, string Value)>();
+
+            foreach (var arg in args)
+            {
+                if (string.IsNullOrWhiteSpace(arg))
+                    continue;
+
+                string[] argEntryComponents = arg.Split(':');
+
+                if (argEntryComponents.Length > 1)
+                {
+                    argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), argEntryComponents[1].Trim(' ', '\'', '\"')));
+
+                    continue;
+                }
+
+                argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), string.Empty));
+            }
+
+            return argsEntries;
+        }
+
+        private static void CreateHashFile(string hash, string hashName, string hashType)
+        {
+            string currentAppVersion = FileVersionInfo
+                .GetVersionInfo(Path.Combine(Environment.ExecAppDirectoryName,
+                    Path.ChangeExtension(Environment.ExecAppFileName, "dll") ?? string.Empty))
+                .ProductVersion;
+            string hashFileNameWithoutExtension = $"{ExecFileNameWithoutExtension}." +
+                                                  $"v{currentAppVersion.Replace('.', '_')}." +
+                                                  $"{(!IsStandalone ? "!" : string.Empty)}{nameof(IsStandalone)}." +
+                                                  $"{(!IsSingleFile ? "!" : string.Empty)}{nameof(IsSingleFile)}";
+            string hashFileDirectoryName =
+                Path.Combine(ExecFileDirectoryName ?? string.Empty, "hash", hashType);
+
+            if (!Directory.Exists(hashFileDirectoryName))
+                Directory.CreateDirectory(hashFileDirectoryName);
+
+            using (var file = new StreamWriter(Path.Combine(hashFileDirectoryName, $"{hashName}.{hashFileNameWithoutExtension}.{hashType}"),
+                false, Encoding.UTF8))
+            {
+                file.WriteLine(hash);
+            }
         }
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
@@ -67,14 +222,16 @@ namespace Memenim
 
             base.OnStartup(e);
 
-            await Task.Delay(TimeSpan.FromSeconds(1))
-                .ConfigureAwait(true);
-
             await LocalizationManager.SwitchLanguage(SettingsManager.AppSettings.Language)
                 .ConfigureAwait(true);
 
             await Task.Run(() =>
             {
+                LogManager.Log.Info("Deleted older logs - " +
+                                    $"{LogManager.DeleteLogs(Path.Combine(ExecFileDirectoryName ?? string.Empty, "logs"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
+                LogManager.Log.Info("Deleted older debug logs - " +
+                                    $"{LogManager.DeleteLogs(Path.Combine(ExecFileDirectoryName ?? string.Empty, "logs", "debug"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
+
                 try
                 {
                     SettingsManager.PersistentSettings.CurrentUserLogin =
@@ -138,7 +295,56 @@ namespace Memenim
         {
             SettingsManager.AppSettings.Save();
 
+            LogManager.Log.Info($"App Exit Code - {e.ApplicationExitCode}");
+            NLog.LogManager.Shutdown();
+
             base.OnExit(e);
+        }
+
+        private static void OnInformation(object sender, RInformationEventArgs e)
+        {
+            LogManager.Log.Info($"{e.Message}");
+        }
+
+        private static void OnWarning(object sender, RWarningEventArgs e)
+        {
+            LogManager.Log.Warn($"{e.Message}");
+        }
+
+        private static void OnError(object sender, RErrorEventArgs e)
+        {
+            LogManager.Log.Error($"Unknown - Message={e.Message},StackTrace=\n{e.Stacktrace ?? "Unknown"}");
+        }
+
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception exception = e.ExceptionObject as Exception;
+
+            LogManager.Log.Fatal($"{exception?.GetType().Name ?? "Unknown"} - Message={exception?.Message ?? "Unknown"},HResult={exception?.HResult ?? 0}");
+        }
+
+        private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            LogManager.Log.Error($"{e.Exception.GetType().Name} - Message={e.Exception.Message},HResult={e.Exception.HResult},StackTrace=\n{e.Exception.StackTrace ?? "Unknown"}");
+        }
+
+        private static void OnFirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+        {
+            LogManager.DebugLog.Error($"{e.Exception.GetType().Name} - Message={e.Exception.Message},HResult={e.Exception.HResult},StackTrace=\n{e.Exception.StackTrace ?? "Unknown"}");
+        }
+
+        private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs e)
+        {
+            LogManager.DebugLog.Info($"Resolve - Name={e.Name ?? "Unknown"},RequestingAssembly={e.RequestingAssembly?.FullName ?? "Unknown"}");
+
+            return e.RequestingAssembly;
+        }
+
+        private static Assembly OnResolve(object sender, ResolveEventArgs e)
+        {
+            LogManager.DebugLog.Info($"Resolve - Name={e.Name ?? "Unknown"},RequestingAssembly={e.RequestingAssembly?.FullName ?? "Unknown"}");
+
+            return e.RequestingAssembly;
         }
     }
 }

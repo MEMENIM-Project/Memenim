@@ -9,8 +9,10 @@ using Memenim.Converters;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 using Memenim.Widgets;
 using Math = RIS.Mathematics.Math;
 
@@ -56,7 +58,6 @@ namespace Memenim.Pages
         {
             return UpdateProfile(ViewModel.CurrentProfileData.id);
         }
-
         public async Task UpdateProfile(int id)
         {
             await ShowLoadingGrid(true)
@@ -188,6 +189,71 @@ namespace Memenim.Pages
                 await UpdateProfile()
                     .ConfigureAwait(true);
             }
+        }
+
+        private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
+        {
+            string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
+                .ConfigureAwait(true);
+
+            if (string.IsNullOrWhiteSpace(url))
+                return;
+
+            await ProfileUtils.ChangeAvatar(url)
+                .ConfigureAwait(true);
+
+            ViewModel.CurrentProfileData.photo = url;
+        }
+
+        private void SelectAvatarFromAnonymGallery_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
+            {
+                OnPicSelect = async url =>
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                        return;
+
+                    await ProfileUtils.ChangeAvatar(url)
+                        .ConfigureAwait(true);
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        ViewModel.CurrentProfileData.photo = url;
+                    });
+                }
+            });
+        }
+
+        private void SelectAvatarFromTenor_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
+            {
+                OnPicSelect = async url =>
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                        return;
+
+                    await ProfileUtils.ChangeAvatar(url)
+                        .ConfigureAwait(true);
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        ViewModel.CurrentProfileData.photo = url;
+                    });
+                }
+            });
+        }
+
+        private async void RemoveAvatar_Click(object sender, RoutedEventArgs e)
+        {
+            await ProfileUtils.RemoveAvatar()
+                .ConfigureAwait(true);
+
+            Dispatcher.Invoke(() =>
+            { 
+                ViewModel.CurrentProfileData.photo = string.Empty;
+            });
         }
 
         private async void EditSinglelineText_Click(object sender, RoutedEventArgs e)

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using MahApps.Metro.Controls.Dialogs;
+using Memenim.Logs;
 
 namespace Memenim.Dialogs
 {
@@ -10,6 +11,8 @@ namespace Memenim.Dialogs
             MessageDialogStyle style = MessageDialogStyle.Affirmative,
             MetroDialogSettings settings = null)
         {
+            LogManager.Log.Info($"{title} - {message}");
+
             return MainWindow.Instance.ShowMessageAsync(title, message, style, settings);
         }
 

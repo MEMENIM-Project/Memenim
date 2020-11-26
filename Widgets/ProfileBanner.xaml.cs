@@ -85,7 +85,15 @@ namespace Memenim.Widgets
             string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
                 .ConfigureAwait(true);
 
+            if (string.IsNullOrWhiteSpace(url))
+                return;
+
             await ProfileUtils.ChangeAvatar(url)
+                .ConfigureAwait(true);
+
+            //CurrentProfileData.photo = url;
+
+            await UpdateProfile()
                 .ConfigureAwait(true);
         }
 
@@ -93,7 +101,22 @@ namespace Memenim.Widgets
         {
             NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
             {
-                OnPicSelect = ProfileUtils.ChangeAvatar
+                OnPicSelect = async url =>
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                        return;
+
+                    await ProfileUtils.ChangeAvatar(url)
+                        .ConfigureAwait(true);
+
+                    //Dispatcher.Invoke(() =>
+                    //{
+                    //    CurrentProfileData.photo = url;
+                    //});
+
+                    await UpdateProfile()
+                        .ConfigureAwait(true);
+                }
             });
         }
 
@@ -101,8 +124,37 @@ namespace Memenim.Widgets
         {
             NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
-                OnPicSelect = ProfileUtils.ChangeAvatar
+                OnPicSelect = async url =>
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                        return;
+
+                    await ProfileUtils.ChangeAvatar(url)
+                        .ConfigureAwait(true);
+
+                    //Dispatcher.Invoke(() =>
+                    //{
+                    //    CurrentProfileData.photo = url;
+                    //});
+
+                    await UpdateProfile()
+                        .ConfigureAwait(true);
+                }
             });
+        }
+
+        private async void RemoveAvatar_Click(object sender, RoutedEventArgs e)
+        {
+            await ProfileUtils.RemoveAvatar()
+                .ConfigureAwait(true);
+
+            //Dispatcher.Invoke(() =>
+            //{
+            //    CurrentProfileData.photo = string.Empty;
+            //});
+
+            await UpdateProfile()
+                .ConfigureAwait(true);
         }
 
         private async void SelectBannerFromUrl_Click(object sender, RoutedEventArgs e)
@@ -110,7 +162,15 @@ namespace Memenim.Widgets
             string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
                 .ConfigureAwait(true);
 
+            if (string.IsNullOrWhiteSpace(url))
+                return;
+
             await ProfileUtils.ChangeBanner(url)
+                .ConfigureAwait(true);
+
+            //CurrentProfileData.banner = url;
+
+            await UpdateProfile()
                 .ConfigureAwait(true);
         }
 
@@ -118,7 +178,22 @@ namespace Memenim.Widgets
         {
             NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
             {
-                OnPicSelect = ProfileUtils.ChangeBanner
+                OnPicSelect = async url =>
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                        return;
+
+                    await ProfileUtils.ChangeBanner(url)
+                        .ConfigureAwait(true);
+
+                    //Dispatcher.Invoke(() =>
+                    //{
+                    //    CurrentProfileData.banner = url;
+                    //});
+
+                    await UpdateProfile()
+                        .ConfigureAwait(true);
+                }
             });
         }
 
@@ -126,8 +201,37 @@ namespace Memenim.Widgets
         {
             NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
-                OnPicSelect = ProfileUtils.ChangeBanner
+                OnPicSelect = async url =>
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                        return;
+
+                    await ProfileUtils.ChangeBanner(url)
+                        .ConfigureAwait(true);
+
+                    //Dispatcher.Invoke(() =>
+                    //{
+                    //    CurrentProfileData.banner = url;
+                    //});
+
+                    await UpdateProfile()
+                        .ConfigureAwait(true);
+                }
             });
+        }
+
+        private async void RemoveBanner_Click(object sender, RoutedEventArgs e)
+        {
+            await ProfileUtils.RemoveBanner()
+                .ConfigureAwait(true);
+
+            //Dispatcher.Invoke(() =>
+            //{
+            //    CurrentProfileData.banner = string.Empty;
+            //});
+
+            await UpdateProfile()
+                .ConfigureAwait(true);
         }
     }
 }
