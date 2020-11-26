@@ -15,6 +15,8 @@ namespace Memenim.Widgets
     {
         public static readonly RoutedEvent OnPostClicked =
             EventManager.RegisterRoutedEvent(nameof(PostClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
+        public static readonly RoutedEvent OnPostDeleted =
+            EventManager.RegisterRoutedEvent(nameof(PostDeleted), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
         public static readonly DependencyProperty CurrentPostDataProperty =
             DependencyProperty.Register(nameof(CurrentPostData), typeof(PostSchema), typeof(PostWidget),
                 new PropertyMetadata((PostSchema) null));
@@ -28,6 +30,18 @@ namespace Memenim.Widgets
             remove
             {
                 RemoveHandler(OnPostClicked, value);
+            }
+        }
+
+        public event EventHandler<RoutedEventArgs> PostDeleted
+        {
+            add
+            {
+                AddHandler(OnPostDeleted, value);
+            }
+            remove
+            {
+                RemoveHandler(OnPostDeleted, value);
             }
         }
 
@@ -100,6 +114,10 @@ namespace Memenim.Widgets
             stComments.Visibility = !CommentsIsOpen
                 ? Visibility.Collapsed
                 : Visibility.Visible;
+
+            btnDeletePost.Visibility = CurrentPostData.owner_id == SettingsManager.PersistentSettings.CurrentUserId
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             if (PreviewMode)
             {
@@ -196,6 +214,26 @@ namespace Memenim.Widgets
             CurrentPostData.dislikes.count = result.data.count;
 
             stDislikes.IsEnabled = true;
+        }
+
+        private async void DeletePost_Click(object sender, RoutedEventArgs e)
+        {
+            if(await DialogManager.ShowDialog("Confirmation", "are you sure", MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative) == MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+            {
+                var result = await PostApi.Remove(SettingsManager.PersistentSettings.CurrentUserToken, CurrentPostData.id).ConfigureAwait(true);
+
+                if (result.error)
+                {
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
+                }
+                else
+                {
+                    await DialogManager.ShowDialog("S U C C", "Post was succesfuly removed")
+                        .ConfigureAwait(true);
+                    RaiseEvent(new RoutedEventArgs(OnPostDeleted));
+                }
+            }
         }
     }
 }

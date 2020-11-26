@@ -22,7 +22,7 @@
 
             <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="100" Height="100"
                    Source="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
-                   Stretch="Uniform" MouseUp="Avatar_MouseUp" VerticalAlignment="Top"/>
+                   Stretch="UniformToFill" MouseUp="Avatar_MouseUp" VerticalAlignment="Top"/>
             <TextBlock Grid.Row="0" Grid.Column="1" Style="{DynamicResource Header2}"
                        Text="{Binding Path=CurrentCommentData.user.name, Converter={StaticResource UserNameConverter}}"
                        TextWrapping="Wrap" VerticalAlignment="Center" Margin="5"/>
