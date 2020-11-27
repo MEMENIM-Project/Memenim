@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using RIS.Settings;
 using RIS.Settings.Ini;
@@ -56,8 +55,7 @@ namespace Memenim.Settings
                 base.Load(options);
 
                 string currentAppVersion = FileVersionInfo
-                    .GetVersionInfo(Path.Combine(Environment.ExecAppDirectoryName,
-                        Path.ChangeExtension(Environment.ExecAppFileName, "dll") ?? string.Empty))
+                    .GetVersionInfo(Environment.ExecAppAssemblyFilePath)
                     .ProductVersion;
 
                 if (AppVersion != currentAppVersion)

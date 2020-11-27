@@ -53,14 +53,6 @@ namespace Memenim
 
         private static bool CreateHashFiles { get; set; }
 
-        public static Process Process { get; private set; }
-        public static string ExecFilePath { get; private set; }
-        public static string ExecFileDirectoryName { get; private set; }
-        public static string ExecFileName { get; private set; }
-        public static string ExecFileNameWithoutExtension { get; private set; }
-        public static bool IsStandalone { get; private set; }
-        public static bool IsSingleFile { get; private set; }
-
         private static void SingleInstanceMain()
         {
             LogManager.Log.Info("App Run");
@@ -80,28 +72,10 @@ namespace Memenim
 
             Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
 
-            Process = Process.GetCurrentProcess();
-            ExecFilePath = Process.MainModule?.FileName ?? "Unknown";
-            ExecFileDirectoryName = Path.GetDirectoryName(ExecFilePath);
-            ExecFileName = Path.GetFileName(ExecFilePath);
-            ExecFileNameWithoutExtension = Path.GetFileNameWithoutExtension(ExecFileName);
-
-            if (File.Exists(Path.Combine(Environment.ExecAppDirectoryName, "hostfxr.dll"))
-                && File.Exists(Path.Combine(Environment.ExecAppDirectoryName, "hostpolicy.dll")))
-            {
-                IsStandalone = true;
-            }
-
-            if (!File.Exists(Path.Combine(ExecFileDirectoryName ?? string.Empty,
-                Path.ChangeExtension(ExecFileName, "dll") ?? string.Empty)))
-            {
-                IsSingleFile = true;
-            }
-
             LogManager.Log.Info($"Libraries Directory - {Environment.ExecAppDirectoryName}");
-            LogManager.Log.Info($"Execution File Directory - {ExecFileDirectoryName}");
-            LogManager.Log.Info($"Is Standalone App - {IsStandalone}");
-            LogManager.Log.Info($"Is Single File App - {IsSingleFile}");
+            LogManager.Log.Info($"Execution File Directory - {Environment.ExecProcessDirectoryName}");
+            LogManager.Log.Info($"Is Standalone App - {Environment.IsStandalone}");
+            LogManager.Log.Info($"Is Single File App - {Environment.IsSingleFile}");
 
             string librariesHash = HashManager.GetLibrariesHash();
             string exeHash = HashManager.GetExeHash();
@@ -190,15 +164,14 @@ namespace Memenim
         private static void CreateHashFile(string hash, string hashName, string hashType)
         {
             string currentAppVersion = FileVersionInfo
-                .GetVersionInfo(Path.Combine(Environment.ExecAppDirectoryName,
-                    Path.ChangeExtension(Environment.ExecAppFileName, "dll") ?? string.Empty))
+                .GetVersionInfo(Environment.ExecAppAssemblyFilePath)
                 .ProductVersion;
-            string hashFileNameWithoutExtension = $"{ExecFileNameWithoutExtension}." +
+            string hashFileNameWithoutExtension = $"{Environment.ExecProcessFileNameWithoutExtension}." +
                                                   $"v{currentAppVersion.Replace('.', '_')}." +
-                                                  $"{(!IsStandalone ? "!" : string.Empty)}{nameof(IsStandalone)}." +
-                                                  $"{(!IsSingleFile ? "!" : string.Empty)}{nameof(IsSingleFile)}";
+                                                  $"{(!Environment.IsStandalone ? "!" : string.Empty)}{nameof(Environment.IsStandalone)}." +
+                                                  $"{(!Environment.IsSingleFile ? "!" : string.Empty)}{nameof(Environment.IsSingleFile)}";
             string hashFileDirectoryName =
-                Path.Combine(ExecFileDirectoryName ?? string.Empty, "hash", hashType);
+                Path.Combine(Environment.ExecProcessDirectoryName ?? string.Empty, "hash", hashType);
 
             if (!Directory.Exists(hashFileDirectoryName))
                 Directory.CreateDirectory(hashFileDirectoryName);
@@ -228,9 +201,9 @@ namespace Memenim
             await Task.Run(() =>
             {
                 LogManager.Log.Info("Deleted older logs - " +
-                                    $"{LogManager.DeleteLogs(Path.Combine(ExecFileDirectoryName ?? string.Empty, "logs"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
+                                    $"{LogManager.DeleteLogs(Path.Combine(Environment.ExecProcessDirectoryName, "logs"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
                 LogManager.Log.Info("Deleted older debug logs - " +
-                                    $"{LogManager.DeleteLogs(Path.Combine(ExecFileDirectoryName ?? string.Empty, "logs", "debug"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
+                                    $"{LogManager.DeleteLogs(Path.Combine(Environment.ExecProcessDirectoryName, "logs", "debug"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
 
                 try
                 {

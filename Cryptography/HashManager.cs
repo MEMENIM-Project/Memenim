@@ -36,12 +36,14 @@ namespace Memenim.Cryptography
 
         public static string GetExeHash()
         {
-            return Service.GetFileHash(Path.ChangeExtension(App.ExecFilePath, "exe"));
+            return Service.GetFileHash(Path.ChangeExtension(
+                Environment.ExecProcessFilePath, "exe"));
         }
 
         public static string GetExePdbHash()
         {
-            return Service.GetFileHash(Path.ChangeExtension(App.ExecFilePath, "pdb"));
+            return Service.GetFileHash(Path.ChangeExtension(
+                Environment.ExecProcessFilePath, "pdb"));
         }
     }
 }
