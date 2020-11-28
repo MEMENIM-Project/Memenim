@@ -46,11 +46,16 @@
                        Style="{DynamicResource Paragraph}"
                        TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center"
                        TextAlignment="Left" Margin="15 5 15 5"/>
-            <Image Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" MinWidth="300" MaxHeight="500"
-                   Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
-                   Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
-                   Stretch="Uniform" StretchDirection="Both" Margin="15 5 15 0"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                  MaxWidth="500" MinHeight="300"
+                  Margin="15 5 15 5"
+                  VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Image MaxWidth="400" MinHeight="300"
+                       Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
+                       Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
+                       Stretch="UniformToFill" StretchDirection="Both"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
             <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
                 <local:StatButton x:Name="stReposts" ButtonSize="28" IconKind="Share"
                                   BorderSize="0" IsEnabled="False" HorizontalAlignment="Left"

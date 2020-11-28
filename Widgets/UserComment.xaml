@@ -27,7 +27,7 @@
                     <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
                 </Grid.OpacityMask>
 
-                <Border Name="ImageBorder" CornerRadius="100" SnapsToDevicePixels="True"
+                <Border Name="ImageBorder" CornerRadius="0" SnapsToDevicePixels="True"
                         Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 <Image MinHeight="100" MinWidth="100"
                        Source="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"

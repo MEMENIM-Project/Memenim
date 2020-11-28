@@ -41,7 +41,7 @@
                 <VisualBrush Visual="{Binding ElementName=ImageBorderAvatar}" />
             </Grid.OpacityMask>
 
-            <Border Name="ImageBorderAvatar" CornerRadius="140" SnapsToDevicePixels="True"
+            <Border Name="ImageBorderAvatar" CornerRadius="0" SnapsToDevicePixels="True"
                     Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
             <Image MinHeight="140" MinWidth="140"
                    gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"

@@ -11,7 +11,13 @@ namespace Memenim.Converters
         {
             try
             {
-                return $"+{((int)(value ?? 0) > 0 ? value : 0)}";
+                int count = (int)((int)(value ?? 0) > 0
+                    ? value ?? 0
+                    : 0);
+
+                return count > 99
+                    ? "+99"
+                    : $"+{count}";
             }
             catch (Exception)
             {

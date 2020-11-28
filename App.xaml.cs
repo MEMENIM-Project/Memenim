@@ -20,6 +20,7 @@ using Memenim.Settings;
 using Memenim.Utils;
 using RIS;
 using RIS.Extensions;
+using RIS.Wrappers;
 using Environment = RIS.Environment;
 
 namespace Memenim
@@ -122,14 +123,14 @@ namespace Memenim
 
         private static void ParseArgs(string[] args)
         {
-            var wrapper = WrapArgs(args);
+            var wrapper = UnwrapArgs(args);
 
-            foreach (var argEntry in wrapper)
+            foreach (var argEntry in wrapper.Enumerate())
             {
                 switch (argEntry.Key)
                 {
                     case "createHashFiles":
-                        CreateHashFiles = bool.Parse(argEntry.Value);
+                        CreateHashFiles = bool.Parse((string)argEntry.Value);
                         break;
                     default:
                         break;
@@ -137,9 +138,9 @@ namespace Memenim
             }
         }
 
-        private static List<(string Key, string Value)> WrapArgs(string[] args)
+        private static ArgsKeyedWrapper UnwrapArgs(string[] args)
         {
-            var argsEntries = new List<(string Key, string Value)>();
+            var argsEntries = new List<(string Key, object Value)>();
 
             foreach (var arg in args)
             {
@@ -158,7 +159,7 @@ namespace Memenim
                 argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), string.Empty));
             }
 
-            return argsEntries;
+            return new ArgsKeyedWrapper(argsEntries);
         }
 
         private static void CreateHashFile(string hash, string hashName, string hashType)

@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="lblErrorMessage" Foreground="Red"
-               VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+               VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 5"/>
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -32,7 +32,8 @@
                     <ColumnDefinition MinWidth="113" Width="113*"/>
                 </Grid.ColumnDefinitions>
 
-                <iconPacks:PackIconModern Grid.Column="0" Kind="User" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <iconPacks:PackIconModern Grid.Column="0" Kind="User"
+                                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <TextBox Name="txtLogin" Grid.Column="0" Grid.ColumnSpan="2" MinWidth="200" MinHeight="25"
                          controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
                          controls:TextBoxHelper.SelectAllOnFocus="True" Margin="25 5 25 5"
@@ -47,7 +48,8 @@
                     <ColumnDefinition MinWidth="113" Width="113*"/>
                 </Grid.ColumnDefinitions>
 
-                <iconPacks:PackIconModern Grid.Column="0" Kind="Key" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <iconPacks:PackIconModern Grid.Column="0" Kind="Key"
+                                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                 <PasswordBox Grid.Column="0" Grid.ColumnSpan="2" Name="txtPassword" MinWidth="200" MinHeight="25"
                              controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
                              controls:TextBoxHelper.SelectAllOnFocus="True" Margin="25 0 25 2"
@@ -67,9 +69,15 @@
                            TextAlignment="Center" TextWrapping="Wrap"/>
             </Button>
         </StackPanel>
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="btnLogin"
-                Content="{DynamicResource ResourceKey=SignIn}" FontSize="17"
-                Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                Click="btnLogin_Click" Margin="25 8 25 8"/>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                    VerticalAlignment="Bottom">
+            <Button Name="btnLogin" MinHeight="20" FontSize="17"
+                    Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
+                    Click="btnLogin_Click" Margin="25 5 25 5">
+                <TextBlock Text="{DynamicResource ResourceKey=SignIn}" MinHeight="10"
+                           FontSize="17" VerticalAlignment="Center" HorizontalAlignment="Center"
+                           TextAlignment="Center" TextWrapping="Wrap"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </local:PageContent>

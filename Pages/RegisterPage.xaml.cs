@@ -8,6 +8,7 @@ using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
+using RIS.Text.Generating;
 
 namespace Memenim.Pages
 {
@@ -34,9 +35,40 @@ namespace Memenim.Pages
             return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
         }
 
+        private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
+        {
+            btnRegister.IsEnabled = false;
+            btnAutoRegister.IsEnabled = false;
+            btnGoToLogin.IsEnabled = false;
+            txtLogin.IsEnabled = false;
+            txtPassword.IsEnabled = false;
+
+            try
+            {
+                string password = StringGenerator.GenerateString(20);
+
+                txtPassword.Password = password;
+                Clipboard.SetText(password);
+            }
+            catch (Exception ex)
+            {
+                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnRegister.IsEnabled = true;
+                btnAutoRegister.IsEnabled = true;
+                btnGoToLogin.IsEnabled = true;
+                txtLogin.IsEnabled = true;
+                txtPassword.IsEnabled = true;
+            }
+        }
+
         private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
+            btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
@@ -48,7 +80,7 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    lblErrorMessage.Text = result.message;
+                    lblErrorMessage.Content = result.message;
 
                     txtPassword.Clear();
                 }
@@ -77,6 +109,7 @@ namespace Memenim.Pages
             finally
             {
                 btnRegister.IsEnabled = true;
+                btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
@@ -85,6 +118,7 @@ namespace Memenim.Pages
 
         private async void btnAutoRegister_Click(object sender, RoutedEventArgs e)
         {
+            btnRegister.IsEnabled = false;
             btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
@@ -129,6 +163,7 @@ namespace Memenim.Pages
             }
             finally
             {
+                btnRegister.IsEnabled = true;
                 btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;

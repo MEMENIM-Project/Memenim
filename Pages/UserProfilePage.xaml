@@ -48,8 +48,9 @@
                 <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
             </Grid.OpacityMask>
 
+            <!--CornerRadius="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"-->
             <Border Name="ImageBorder" SnapsToDevicePixels="True"
-                    CornerRadius="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
+                    CornerRadius="0"
                     Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
             <Image MinHeight="200" MinWidth="200"
                    Source="{Binding Path=DataContext.CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
