@@ -8,6 +8,7 @@
                  xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                  xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                  xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  mc:Ignorable="d"
                  ShowTitleBar="True"
                  ShowIconOnTitleBar="False"
@@ -26,7 +27,34 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+    <controls:MetroWindow.Flyouts>
+        <controls:FlyoutsControl>
+            <controls:Flyout x:Name="settingsFlyout"
+                             Header="Settings"
+                             Position="Right"
+                             Theme="Adapt"
+                             MinWidth="300">
+                <Grid Margin="10">
+                    <StackPanel Grid.Row="1">
+                        <PasswordBox Name="txtNewPassword" Margin="0 5"
+                                    controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=NewPassword}"
+                                    controls:TextBoxHelper.SelectAllOnFocus="True"
+                                    Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"/>
+                        <Button Content="{DynamicResource ResourceKey=ChangePassword}" Margin="0 5"
+                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}"/>
+                        <controls:SplitButton Name="slcLanguage" ItemsSource="{Binding Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
+                                  DisplayMemberPath="Value" SelectionChanged="slcLanguage_SelectionChanged" Margin="0 5">
+                            <controls:SplitButton.Icon>
+                                <iconPacks:PackIconModern Margin="6" Kind="Globe"/>
+                            </controls:SplitButton.Icon>
+                        </controls:SplitButton>
+                        <Button Click="btnSignOut_Click" Content="{DynamicResource ResourceKey=SignOut}" Margin="0 5"
+                            Style="{StaticResource MahApps.Styles.Button.Square.Accent}"/>
+                    </StackPanel>
+                </Grid>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+    </controls:MetroWindow.Flyouts>
     <Grid x:Name="RootLayout">
         <Grid Grid.Row="0" Grid.Column="0" x:Name="loadingGrid"
               Visibility="Collapsed" ZIndex="2147483647"

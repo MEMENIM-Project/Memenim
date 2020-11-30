@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
+             xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="400">
 
@@ -30,7 +31,7 @@
                 <Border Name="ImageBorder" CornerRadius="0" SnapsToDevicePixels="True"
                         Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 <Image MinHeight="100" MinWidth="100"
-                       Source="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
+                       gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        MouseUp="Avatar_MouseUp"/>

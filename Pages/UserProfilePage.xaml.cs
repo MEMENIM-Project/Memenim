@@ -399,7 +399,7 @@ namespace Memenim.Pages
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
             double? value = await DialogManager.ShowNumericDialog("Edit profile",
                     $"Enter {element.StatTitle}", Convert.ToDouble(oldValue),
-                    0.0, 100.0, 1.0, "F0")
+                    0.0, 255.0, 1.0, "F0")
                 .ConfigureAwait(true);
 
             if (value == null)

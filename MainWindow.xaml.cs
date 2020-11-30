@@ -7,11 +7,23 @@ using MahApps.Metro.Controls;
 using Memenim.Native.Window;
 using Memenim.Navigation;
 using Math = RIS.Mathematics.Math;
+using Memenim.Pages;
+using System.Windows.Controls;
+using System.Collections.Generic;
+using Memenim.Localization;
 
 namespace Memenim
 {
     public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow
     {
+
+        public static Dictionary<string, string> Locales { get; } = new Dictionary<string, string>
+        {
+            {"en-US", "English" },
+            {"ru-RU", "Русский" },
+            {"ja-JP", "日本語" }
+        };
+
         private static object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;
         public static MainWindow Instance
@@ -54,6 +66,10 @@ namespace Memenim
 
             _previousState = WindowState;
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
+
+            slcLanguage.SelectedItem = new KeyValuePair<string, string>(
+                        SettingsManager.AppSettings.Language,
+                        Locales[SettingsManager.AppSettings.Language]);
         }
 
         public Task ShowLoadingGrid(bool status)
@@ -118,6 +134,34 @@ namespace Memenim
             {
                 DuringRestoreToMaximized = WindowState == WindowState.Maximized;
             }
+        }
+
+        public void ShowSettings()
+        {
+            settingsFlyout.IsOpen = true;
+        }
+
+        public void HideSettings()
+        {
+            settingsFlyout.IsOpen = false;
+        }
+
+        private void btnSignOut_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.PersistentSettings.RemoveUser(
+                SettingsManager.PersistentSettings.CurrentUserLogin);
+
+            HideSettings();
+
+            NavigationController.Instance.RequestPage<LoginPage>();
+        }
+
+        private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedPair = (KeyValuePair<string, string>)slcLanguage.SelectedItem;
+
+            await LocalizationManager.SwitchLanguage(selectedPair.Key)
+                .ConfigureAwait(true);
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

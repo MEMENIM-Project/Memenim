@@ -461,7 +461,7 @@ namespace Memenim.Pages
             _autoUpdateCountTimer.Start();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CreatePost_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<SubmitPostPage>();
         }

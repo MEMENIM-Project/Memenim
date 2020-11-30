@@ -140,10 +140,14 @@ namespace Memenim.Widgets
                             }
                         });
                     }
-                    else
+                    else if (button.PageName == "SettingsFlyout")
                     {
-                        NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.PageName}"));
+                        MainWindow.Instance.ShowSettings();
                     }
+                else
+                {
+                    NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.PageName}"));
+                }
                 }
             }
             catch (Exception ex)

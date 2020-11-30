@@ -145,7 +145,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < Convert.ToInt32(txtViewsCount.Value); ++i)
                 {
-                    await PostApi.AddView(Convert.ToInt32(txtPostsPostId.Value))
+                    await PostApi.GetById(Convert.ToInt32(txtPostsPostId.Value))
                         .ConfigureAwait(true);
                 }
 

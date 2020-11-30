@@ -60,7 +60,7 @@
             <Button Content="{DynamicResource WriteNewPost}"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
                     HorizontalAlignment="Right" Margin="5 10 0 10"
-                    DockPanel.Dock="Right" Click="Button_Click"/>
+                    DockPanel.Dock="Right" Click="CreatePost_Click"/>
         </DockPanel>
         <Grid Grid.Row="1" Margin="16 5 16 5"
               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

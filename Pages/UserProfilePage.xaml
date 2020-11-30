@@ -7,6 +7,7 @@
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets ="clr-namespace:Memenim.Widgets"
+                   xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
@@ -53,7 +54,7 @@
                     CornerRadius="0"
                     Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
             <Image MinHeight="200" MinWidth="200"
-                   Source="{Binding Path=DataContext.CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                   gif:ImageBehavior.AnimatedSource="{Binding Path=DataContext.CurrentProfileData.photo, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                    Stretch="UniformToFill" StretchDirection="Both"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    IsHitTestVisible="{Binding Path=DataContext.EditAllowed, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
