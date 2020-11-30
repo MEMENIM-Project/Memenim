@@ -31,7 +31,7 @@
                 <Border Name="ImageBorder" CornerRadius="0" SnapsToDevicePixels="True"
                         Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 <Image MinHeight="50" MinWidth="50"
-                       Source="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
+                       gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        MouseUp="Avatar_MouseUp"/>
