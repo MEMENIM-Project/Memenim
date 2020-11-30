@@ -18,19 +18,6 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(CurrentPostData));
             }
         }
-        private string _writeCommentText = string.Empty;
-        public string WriteCommentText
-        {
-            get
-            {
-                return _writeCommentText;
-            }
-            set
-            {
-                _writeCommentText = value;
-                OnPropertyChanged(nameof(WriteCommentText));
-            }
-        }
         private double _scrollOffset;
         public double ScrollOffset
         {

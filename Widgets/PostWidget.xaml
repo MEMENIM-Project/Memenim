@@ -27,6 +27,8 @@
                 <ContextMenu x:Name="postMenu" Visibility="Visible">
                     <MenuItem Header="Copy Post Id" Click="CopyPostId_Click"/>
                     <MenuItem Header="Copy Post Text" Click="CopyPostText_Click"/>
+                    <MenuItem Header="Edit Post Text" Name="btnEdit"
+                              Visibility="Collapsed" Click="Edit_Click"/>
                     <MenuItem Header="Delete Post" Name="btnDelete"
                               Visibility="Collapsed" Click="Delete_Click"/>
                 </ContextMenu>
@@ -47,10 +49,12 @@
                        TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center"
                        TextAlignment="Left" Margin="15 5 15 5"/>
             <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                  MaxWidth="500" MinHeight="300"
+                  x:Name="PostImageGrid"
+                  MinWidth="300" MinHeight="300"
+                  MaxHeight="500"
                   Margin="15 5 15 5"
-                  VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Image MaxWidth="400" MinHeight="300"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Image x:Name="PostImage" MinWidth="300" MinHeight="300"
                        Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
                        Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"

@@ -6,7 +6,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -140,7 +139,7 @@ namespace Memenim
 
         private static ArgsKeyedWrapper UnwrapArgs(string[] args)
         {
-            var argsEntries = new List<(string Key, object Value)>();
+            var argsEntries = new List<(string Key, object Value)>(args.Length);
 
             foreach (var arg in args)
             {
@@ -167,8 +166,9 @@ namespace Memenim
             string currentAppVersion = FileVersionInfo
                 .GetVersionInfo(Environment.ExecAppAssemblyFilePath)
                 .ProductVersion;
-            string hashFileNameWithoutExtension = $"{Environment.ExecProcessFileNameWithoutExtension}." +
+            string hashFileNameWithoutExtension = $"{Environment.ExecAppAssemblyFileNameWithoutExtension.Replace('.', '_')}." +
                                                   $"v{currentAppVersion.Replace('.', '_')}." +
+                                                  $"{Environment.RuntimeIdentifier.Replace('.', '_')}." +
                                                   $"{(!Environment.IsStandalone ? "!" : string.Empty)}{nameof(Environment.IsStandalone)}." +
                                                   $"{(!Environment.IsSingleFile ? "!" : string.Empty)}{nameof(Environment.IsSingleFile)}";
             string hashFileDirectoryName =
@@ -177,8 +177,9 @@ namespace Memenim
             if (!Directory.Exists(hashFileDirectoryName))
                 Directory.CreateDirectory(hashFileDirectoryName);
 
-            using (var file = new StreamWriter(Path.Combine(hashFileDirectoryName, $"{hashName}.{hashFileNameWithoutExtension}.{hashType}"),
-                false, Encoding.UTF8))
+            using (var file = new StreamWriter(
+                Path.Combine(hashFileDirectoryName, $"{hashName}.{hashFileNameWithoutExtension}.{hashType}"),
+                false, RIS.Cryptography.Utils.SecureUTF8))
             {
                 file.WriteLine(hash);
             }

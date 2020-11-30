@@ -13,7 +13,7 @@ namespace Memenim.Converters
             if (value is string stringValue)
                 result = stringValue;
 
-            return string.IsNullOrEmpty(result)
+            return result == null
                 ? Binding.DoNothing
                 : result;
         }
@@ -25,7 +25,7 @@ namespace Memenim.Converters
             if (value is string stringValue)
                 result = stringValue;
 
-            return string.IsNullOrEmpty(result)
+            return result == null
                 ? Binding.DoNothing
                 : result;
         }

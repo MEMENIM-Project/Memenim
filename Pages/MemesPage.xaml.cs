@@ -192,7 +192,7 @@ namespace Memenim.Pages
                     id = Convert.ToInt32(txtPostsPostId.Value),
                     text = txtPostText.Text,
                     adult = result.data.adult,
-                    author_watch = result.data.author_watch,
+                    author_watch = result.data.author_watch.ToString(),
                     category = result.data.category,
                     filter = result.data.filter,
                     hidden = result.data.hidden,

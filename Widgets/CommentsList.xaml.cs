@@ -15,6 +15,10 @@ namespace Memenim.Widgets
 {
     public partial class CommentsList : UserControl
     {
+        public static readonly RoutedEvent OnCommentsUpdated =
+            EventManager.RegisterRoutedEvent(nameof(CommentsUpdate), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
+        public static readonly RoutedEvent OnCommentReplied =
+            EventManager.RegisterRoutedEvent(nameof(CommentReply), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
         public static readonly RoutedEvent OnCommentDeleted =
             EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
         public static readonly DependencyProperty PostIdProperty =
@@ -22,8 +26,30 @@ namespace Memenim.Widgets
                 new PropertyMetadata(-1, PostIdChangedCallback));
         public static readonly DependencyProperty CommentsCountProperty =
             DependencyProperty.Register(nameof(CommentsCount), typeof(StatisticSchema), typeof(CommentsList),
-                new PropertyMetadata(new StatisticSchema()));
+                new PropertyMetadata(new StatisticSchema(), CommentsCountChangedCallback));
 
+        public event EventHandler<RoutedEventArgs> CommentsUpdate
+        {
+            add
+            {
+                AddHandler(OnCommentsUpdated, value);
+            }
+            remove
+            {
+                RemoveHandler(OnCommentsUpdated, value);
+            }
+        }
+        public event EventHandler<RoutedEventArgs> CommentReply
+        {
+            add
+            {
+                AddHandler(OnCommentReplied, value);
+            }
+            remove
+            {
+                RemoveHandler(OnCommentReplied, value);
+            }
+        }
         public event EventHandler<RoutedEventArgs> CommentDelete
         {
             add
@@ -126,6 +152,8 @@ namespace Memenim.Widgets
 
             await AddMoreComments(result.data)
                 .ConfigureAwait(true);
+
+            RaiseEvent(new RoutedEventArgs(OnCommentsUpdated));
         }
 
         public Task AddMoreComments(List<CommentSchema> comments)
@@ -140,6 +168,7 @@ namespace Memenim.Widgets
                         {
                             CurrentCommentData = comment
                         };
+                        commentWidget.CommentReply += Comment_CommentReply;
                         commentWidget.CommentDelete += Comment_CommentDelete;
 
                         lstComments.Children.Insert(0, commentWidget);
@@ -314,6 +343,8 @@ namespace Memenim.Widgets
                     page?.svPost?.ScrollToEnd();
             });
 
+            RaiseEvent(new RoutedEventArgs(OnCommentsUpdated));
+
             _autoUpdateTimer.Start();
         }
 
@@ -331,6 +362,7 @@ namespace Memenim.Widgets
                         {
                             CurrentCommentData = comment
                         };
+                        commentWidget.CommentReply += Comment_CommentReply;
                         commentWidget.CommentDelete += Comment_CommentDelete;
 
                         lstComments.Children.Add(commentWidget);
@@ -364,7 +396,8 @@ namespace Memenim.Widgets
         }
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
-        private static async void PostIdChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static async void PostIdChangedCallback(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
         {
             CommentsList commentsList = d as CommentsList;
 
@@ -380,6 +413,18 @@ namespace Memenim.Widgets
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
 
+        private static void CommentsCountChangedCallback(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            CommentsList commentsList = d as CommentsList;
+
+            if (commentsList == null)
+                return;
+
+            if (commentsList.lstComments.Children.Count >= ((StatisticSchema)e.NewValue).count)
+                commentsList.btnLoadMore.Visibility = Visibility.Collapsed;
+        }
+
         private async void AutoUpdateTimerCallback(object sender, ElapsedEventArgs e)
         {
             await LoadNewComments()
@@ -394,6 +439,16 @@ namespace Memenim.Widgets
                 .ConfigureAwait(true);
 
             btnLoadMore.IsEnabled = true;
+        }
+
+        private void Comment_CommentReply(object sender, RoutedEventArgs e)
+        {
+            UserComment comment = sender as UserComment;
+
+            if (comment == null)
+                return;
+
+            RaiseEvent(new RoutedEventArgs(OnCommentReplied, sender));
         }
 
         private void Comment_CommentDelete(object sender, RoutedEventArgs e)
