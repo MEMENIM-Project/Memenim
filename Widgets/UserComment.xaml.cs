@@ -14,12 +14,25 @@ namespace Memenim.Widgets
 {
     public partial class UserComment : UserControl
     {
+        public static readonly RoutedEvent OnCommentReplied =
+            EventManager.RegisterRoutedEvent(nameof(CommentReply), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserComment));
         public static readonly RoutedEvent OnCommentDeleted =
             EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserComment));
         public static readonly DependencyProperty CurrentCommentDataProperty =
             DependencyProperty.Register(nameof(CurrentCommentData), typeof(CommentSchema), typeof(UserComment),
                 new PropertyMetadata(new CommentSchema { user = new CommentUserSchema {id = -1} }));
 
+        public event EventHandler<RoutedEventArgs> CommentReply
+        {
+            add
+            {
+                AddHandler(OnCommentReplied, value);
+            }
+            remove
+            {
+                RemoveHandler(OnCommentReplied, value);
+            }
+        }
         public event EventHandler<RoutedEventArgs> CommentDelete
         {
             add
@@ -60,7 +73,7 @@ namespace Memenim.Widgets
 
             if (CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUserId)
             {
-                brdActions.Visibility = Visibility.Visible;
+                btnEdit.Visibility = Visibility.Visible;
                 btnDelete.Visibility = Visibility.Visible;
             }
         }
@@ -68,6 +81,50 @@ namespace Memenim.Widgets
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateComment();
+        }
+
+        private void Reply_Click(object sender, RoutedEventArgs e)
+        {
+            btnReply.IsEnabled = false;
+
+            RaiseEvent(new RoutedEventArgs(OnCommentReplied));
+
+            btnReply.IsEnabled = true;
+        }
+
+        private async void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            btnEdit.IsEnabled = false;
+
+            string oldValue = CurrentCommentData.text;
+            string value = await DialogManager.ShowMultilineTextDialog("Edit comment",
+                    "Enter comment text", oldValue)
+                .ConfigureAwait(true);
+
+            if (value == null)
+            {
+                btnEdit.IsEnabled = true;
+                return;
+            }
+
+            var request = await PostApi.EditComment(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    CurrentCommentData.id,
+                    value)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                btnEdit.IsEnabled = true;
+                return;
+            }
+
+            CurrentCommentData.text = value;
+
+            btnEdit.IsEnabled = true;
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
@@ -113,12 +170,16 @@ namespace Memenim.Widgets
 
             if (CurrentCommentData.likes.my == 0)
             {
-                result = await PostApi.AddLikeComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
+                result = await PostApi.AddLikeComment(
+                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
             else
             {
-                result = await PostApi.RemoveLikeComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
+                result = await PostApi.RemoveLikeComment(
+                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
 
@@ -149,12 +210,16 @@ namespace Memenim.Widgets
 
             if (CurrentCommentData.dislikes.my == 0)
             {
-                result = await PostApi.AddDislikeComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
+                result = await PostApi.AddDislikeComment(
+                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
             else
             {
-                result = await PostApi.RemoveDislikeComment(SettingsManager.PersistentSettings.CurrentUserToken, CurrentCommentData.id)
+                result = await PostApi.RemoveDislikeComment(
+                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
 

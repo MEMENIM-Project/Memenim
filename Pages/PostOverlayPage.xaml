@@ -10,20 +10,33 @@
                    mc:Ignorable="d"
                    d:DesignHeight="450" d:DesignWidth="800">
 
-    <Grid>
-        <ScrollViewer x:Name="svPost" VerticalScrollBarVisibility="Auto"
+    <Grid x:Name="PostGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20*"/>
+            <RowDefinition MinHeight="50" MaxHeight="300"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" x:Name="svPost"
+                      VerticalScrollBarVisibility="Auto"
                       ScrollChanged="SvPost_ScrollChanged">
             <StackPanel>
-                <widgets:PostWidget CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
+                <widgets:PostWidget ImageSizeLimit="True"
+                                    CurrentPostData="{Binding Path=DataContext.CurrentPostData, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
                 <widgets:CommentsList x:Name="wdgCommentsList"
                                       PostId="{Binding Path=DataContext.CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentsCount="{Binding Path=DataContext.CurrentPostData.comments, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                                      CommentsUpdate="CommentsList_CommentsUpdate"
+                                      CommentReply="CommentsList_CommentReply"
                                       CommentDelete="CommentsList_CommentDelete"/>
-                <widgets:WriteComment x:Name="wdgWriteComment"
-                                      CommentText="{Binding Path=DataContext.WriteCommentText, Mode=TwoWay, Converter={StaticResource WriteCommentTextConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
-                                      PostId="{Binding Path=DataContext.CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
-                                      CommentAdd="WriteComment_CommentAdd"/>
             </StackPanel>
         </ScrollViewer>
+        <StackPanel Grid.Row="1" MinHeight="50" MaxHeight="300"
+              Width="{Binding Path=ViewportWidth, ElementName=svPost}"
+              HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <widgets:WriteComment x:Name="wdgWriteComment" MinHeight="50" MaxHeight="300"
+                                  PostId="{Binding Path=DataContext.CurrentPostData.id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                                  SizeChanged="WriteComment_SizeChanged"
+                                  CommentAdd="WriteComment_CommentAdd"/>
+        </StackPanel>
     </Grid>
 </local:PageContent>

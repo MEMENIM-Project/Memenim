@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using Memenim.Converters;
 using Memenim.Core.Api;
@@ -254,6 +255,45 @@ namespace Memenim.Pages
             { 
                 ViewModel.CurrentProfileData.photo = string.Empty;
             });
+        }
+
+        private async void EditName_Click(object sender, RoutedEventArgs e)
+        {
+            UserProfilePage element = this;
+
+            BindingExpression binding = element?.txtName.GetBindingExpression(TextBlock.TextProperty);
+
+            if (binding == null)
+                return;
+
+            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
+            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+
+            if (sourceClass == null || sourceProperty == null)
+                return;
+
+            string oldValue = (string)sourceProperty.GetValue(sourceClass);
+            string value = await DialogManager.ShowSinglelineTextDialog("Edit profile",
+                    "Enter Name", oldValue)
+                .ConfigureAwait(true);
+
+            if (value == null)
+                return;
+
+            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
+            sourceProperty.SetValue(sourceClass, value);
+
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                    ViewModel.CurrentProfileData)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                sourceProperty.SetValue(sourceClass, oldValue);
+            }
         }
 
         private async void EditSinglelineText_Click(object sender, RoutedEventArgs e)

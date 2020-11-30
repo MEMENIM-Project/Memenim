@@ -31,9 +31,16 @@
                         Content="{StaticResource ProxyElement}"/>
 
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <TextBlock Style="{DynamicResource Header1}" Margin="20 0 20 0"
-                       Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
-                       HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="txtName"
+                           Style="{DynamicResource Header1}" Margin="20 0 20 0"
+                           Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
+                           HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <widgets:IconButton DockPanel.Dock="Right" IconKind="Edit"
+                                    Width="40" HorizontalAlignment="Right"
+                                    Visibility="{Binding Path=IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                    IconButtonClick="EditName_Click"/>
+            </StackPanel>
             <widgets:IconToggleButton x:Name="btnEditMode" IconKind="EditBox" Width="40" HorizontalAlignment="Right"
                                       Visibility="{Binding Path=DataContext.EditAllowed, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                       IsChecked="{Binding Path=IsEditMode, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
