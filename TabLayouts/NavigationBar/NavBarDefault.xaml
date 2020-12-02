@@ -22,7 +22,7 @@
         <local:NavRedirectButtonNode PageName="PlaceholderPage" IconKind="Magnify"/>
         <local:NavRedirectButtonNode PageName="FeedPage" IconKind="Newspaper"/>
         <local:NavRedirectButtonNode PageName="PlaceholderPage" IconKind="Chat"/>
-        <local:NavRedirectButtonNode PageName="MemesPage" IconKind="SmileyHappy"/>
+        <!--<local:NavRedirectButtonNode PageName="MemesPage" IconKind="SmileyHappy"/>-->
     </x:Array>
     <x:Array x:Key="BottomNavButtons" Type="local:NavRedirectButtonNode">
         <local:NavRedirectButtonNode PageName="UserProfilePage" IconKind="PeopleProfile"/>

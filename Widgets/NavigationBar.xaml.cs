@@ -123,6 +123,17 @@ namespace Memenim.Widgets
                     {
                         NavigationController.Instance.GoBack();
                     }
+                    else if (button.PageName == "SettingsFlyout")
+                    {
+                        if (!MainWindow.Instance.IsOpenSettings())
+                        {
+                            MainWindow.Instance.ShowSettings();
+                        }
+                        else
+                        {
+                            MainWindow.Instance.HideSettings();
+                        }
+                    }
                     else if (button.PageName == "UserProfilePage")
                     {
                         if (NavigationController.Instance.PageContent.Content is UserProfilePage page
@@ -140,14 +151,10 @@ namespace Memenim.Widgets
                             }
                         });
                     }
-                    else if (button.PageName == "SettingsFlyout")
+                    else
                     {
-                        MainWindow.Instance.ShowSettings();
+                        NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.PageName}"));
                     }
-                else
-                {
-                    NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.PageName}"));
-                }
                 }
             }
             catch (Exception ex)

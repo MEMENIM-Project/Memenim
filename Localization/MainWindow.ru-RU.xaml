@@ -4,6 +4,8 @@
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
     <system:String x:Key="ResourceDictionaryName">loc-ru-RU</system:String>
+    <system:String x:Key="ResourceLocaleName">Русский</system:String>
+    <system:String x:Key="ResourceCultureName">ru-RU</system:String>
 
     <system:String x:Key="Login">Логин</system:String>
     <system:String x:Key="Password">Пароль</system:String>
@@ -38,12 +40,17 @@
     <system:String x:Key="URLSelect">Вставить URL</system:String>
     <system:String x:Key="UploadSelect">Загрузить свою картинку</system:String>
 
-    <system:String x:Key="SignOut">Выйти из аккаунта</system:String>
+    <system:String x:Key="SettingsTitle">Настройки</system:String>
     <system:String x:Key="LanguageTitle">Язык</system:String>
-    <system:String x:Key="NewPassword">Новый пароль</system:String>
     <system:String x:Key="ChangePassword">Сменить пароль</system:String>
+    <system:String x:Key="OldPassword">Старый пароль</system:String>
+    <system:String x:Key="NewPassword">Новый пароль</system:String>
+    <system:String x:Key="SignOut">Выйти из аккаунта</system:String>
+    <system:String x:Key="Version">Версия</system:String>
 
     <system:String x:Key="ProfileStatSexUnknown">Неизвестно</system:String>
     <system:String x:Key="ProfileStatSexMale">Мужской</system:String>
     <system:String x:Key="ProfileStatSexFemale">Женский</system:String>
+
+    <system:String x:Key="EnterTitle">Введите</system:String>
 </ResourceDictionary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Environment = RIS.Environment;
 
 namespace Memenim.Native.Window
 {
@@ -57,6 +58,68 @@ namespace Memenim.Native.Window
         public void SetPlacement(IntPtr windowHandle)
         {
             WindowNative.SetWindowPlacement(windowHandle, ref this);
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct CopyData : IDisposable
+    {
+        public int DwData { get; set; }
+        public int LpDataSize { get; set; }
+        public IntPtr LpData { get; set; }
+
+        public string AsAnsiString
+        {
+            get
+            {
+                return Marshal.PtrToStringAnsi(LpData, LpDataSize);
+            }
+        }
+        public string AsUnicodeString
+        {
+            get
+            {
+                return Marshal.PtrToStringUni(LpData);
+            }
+        }
+
+        public static CopyData CreateForString(int dwData, string value, bool unicode = true)
+        {
+            var result = new CopyData();
+
+            result.DwData = dwData;
+            result.LpData = unicode ? Marshal.StringToCoTaskMemUni(value) : Marshal.StringToCoTaskMemAnsi(value);
+            result.LpDataSize = unicode ? (value.Length + 1) * sizeof(char) : (value.Length + 1) * Marshal.SystemMaxDBCSCharSize;
+
+            return result;
+        }
+
+        public static bool SendString(IntPtr hwnd, uint msg, int dwData, string value, bool unicode = true)
+        {
+            var data = CreateForString(dwData, value, unicode);
+            var dataSize = Environment.GetSize<CopyData>();
+            var dataPtr = Marshal.AllocCoTaskMem((int)dataSize);
+
+            Marshal.StructureToPtr(data, dataPtr, false);
+
+            bool messageReceived =
+                WindowNative.SendMessage(hwnd, msg, IntPtr.Zero, dataPtr).ToInt32() != 0;
+
+            data.Dispose();
+            Marshal.FreeCoTaskMem(dataPtr);
+
+            return messageReceived;
+        }
+
+        public void Dispose()
+        {
+            if (LpData != IntPtr.Zero)
+            {
+                Marshal.FreeCoTaskMem(LpData);
+
+                LpData = IntPtr.Zero;
+                LpDataSize = 0;
+            }
         }
     }
 }

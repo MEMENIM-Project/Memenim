@@ -22,6 +22,23 @@ namespace Memenim.Dialogs
             return MainWindow.Instance.ShowInputAsync(title, message, settings);
         }
 
+        public static async Task<string> ShowPasswordDialog(string title, string message,
+            bool canGeneratePassword = false, string defaultValue = null,
+            MetroDialogSettings settings = null)
+        {
+            PasswordDialog dialog = new PasswordDialog(title,
+                message, canGeneratePassword, defaultValue);
+
+            await MainWindow.Instance
+                .ShowMetroDialogAsync(dialog, settings)
+                .ConfigureAwait(true);
+
+            await dialog.WaitUntilUnloadedAsync()
+                .ConfigureAwait(true);
+
+            return dialog.InputValue;
+        }
+
         public static async Task<string> ShowSinglelineTextDialog(string title, string message,
             string inputValue = "", string defaultValue = null,
             MetroDialogSettings settings = null)

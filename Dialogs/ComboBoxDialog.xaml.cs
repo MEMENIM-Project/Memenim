@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace Memenim.Dialogs
@@ -89,10 +90,24 @@ namespace Memenim.Dialogs
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e)
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             SelectedValue = DefaultValue;
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
+        }
+
+        private void Dialog_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                if (btnOk.IsEnabled)
+                    Ok_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key == Key.Escape || e.Key == Key.Up)
+            {
+                if (btnCancel.IsEnabled)
+                    Cancel_Click(this, new RoutedEventArgs());
+            }
         }
     }
 }

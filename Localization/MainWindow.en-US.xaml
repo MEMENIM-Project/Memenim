@@ -4,6 +4,8 @@
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
     <system:String x:Key="ResourceDictionaryName">loc-en-US</system:String>
+    <system:String x:Key="ResourceLocaleName">English</system:String>
+    <system:String x:Key="ResourceCultureName">en-US</system:String>
 
     <system:String x:Key="Login">Login</system:String>
     <system:String x:Key="Password">Password</system:String>
@@ -37,13 +39,18 @@
     <system:String x:Key="TenorSelect">Select from Tenor</system:String>
     <system:String x:Key="URLSelect">Paste an raw URL</system:String>
     <system:String x:Key="UploadSelect">Upload your picture</system:String>
-    
-    <system:String x:Key="SignOut">Sign Out</system:String>
+
+    <system:String x:Key="SettingsTitle">Settings</system:String>
     <system:String x:Key="LanguageTitle">Language</system:String>
-    <system:String x:Key="NewPassword">New password</system:String>
     <system:String x:Key="ChangePassword">Change password</system:String>
+    <system:String x:Key="OldPassword">Old password</system:String>
+    <system:String x:Key="NewPassword">New password</system:String>
+    <system:String x:Key="SignOut">Sign Out</system:String>
+    <system:String x:Key="Version">Version</system:String>
 
     <system:String x:Key="ProfileStatSexUnknown">Unknown</system:String>
     <system:String x:Key="ProfileStatSexMale">Male</system:String>
     <system:String x:Key="ProfileStatSexFemale">Female</system:String>
+
+    <system:String x:Key="EnterTitle">Enter</system:String>
 </ResourceDictionary>

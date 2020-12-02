@@ -105,10 +105,12 @@ namespace Memenim.Pages
             {
                 await DialogManager.ShowDialog("An exception happened", ex.Message)
                     .ConfigureAwait(true);
+
+                txtPassword.Clear();
             }
             finally
             {
-                btnRegister.IsEnabled = true;
+                btnRegister.IsEnabled = !NeedBlockRegister();
                 btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
@@ -163,7 +165,7 @@ namespace Memenim.Pages
             }
             finally
             {
-                btnRegister.IsEnabled = true;
+                btnRegister.IsEnabled = !NeedBlockRegister();
                 btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;

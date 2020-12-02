@@ -1,16 +1,80 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Dialogs;
 using Memenim.Settings;
+using Environment = RIS.Environment;
 
 namespace Memenim.Localization
 {
     public static class LocalizationManager
     {
+        private static void LoadLocales()
+        {
+            LoadLocales(MainWindow.Instance);
+        }
+        private static void LoadLocales(FrameworkElement element)
+        {
+            string directory = Environment.ExecAppDirectoryName;
+
+            if (string.IsNullOrEmpty(directory) || directory == "Unknown")
+                return;
+
+            directory = Path.Combine(directory, "Localization");
+
+            if (!Directory.Exists(directory))
+                return;
+
+            var localesProperty = element.GetType().GetProperty("Locales",
+                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (localesProperty == null)
+                return;
+
+            Dictionary<string, string> locales = new Dictionary<string, string>();
+
+            foreach (var localeFile in Directory.EnumerateFiles(
+                directory, $"{GetElementName(element)}.*.xaml"))
+            {
+                ResourceDictionary languageDictionary = new ResourceDictionary
+                {
+                    Source = new Uri(localeFile)
+                };
+
+                if (!languageDictionary.Contains("ResourceDictionaryName")
+                    || languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
+                {
+                    continue;
+                }
+
+                if (!languageDictionary.Contains("ResourceLocaleName")
+                    || !languageDictionary.Contains("ResourceCultureName"))
+                {
+                    continue;
+                }
+
+                string localeName = languageDictionary["ResourceLocaleName"].ToString();
+                string cultureName = languageDictionary["ResourceCultureName"].ToString();
+
+                if (string.IsNullOrWhiteSpace(localeName)
+                    || string.IsNullOrWhiteSpace(localeName))
+                {
+                    continue;
+                }
+
+                locales.Add(cultureName!, localeName);
+            }
+
+            localesProperty.SetValue(element,
+                new ReadOnlyDictionary<string, string>(locales));
+        }
+
         private static string GetAppName()
         {
             return GetAppName(MainWindow.Instance);
@@ -46,9 +110,9 @@ namespace Memenim.Localization
         private static string GetLocXamlFilePath(FrameworkElement element, string сultureName)
         {
             string locXamlFile = $"{GetElementName(element)}.{сultureName}.xaml";
-            string directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string directory = Environment.ExecAppDirectoryName;
 
-            return string.IsNullOrEmpty(directory)
+            return string.IsNullOrEmpty(directory) || directory == "Unknown"
                 ? Path.Combine("Localization", locXamlFile)
                 : Path.Combine(directory, "Localization", locXamlFile);
         }
@@ -108,6 +172,15 @@ namespace Memenim.Localization
             element.Resources.MergedDictionaries[dictionaryIndex] = languageDictionary;
         }
 
+        public static void ReloadLocales()
+        {
+            ReloadLocales(MainWindow.Instance);
+        }
+        public static void ReloadLocales(FrameworkElement element)
+        {
+            LoadLocales(element);
+        }
+
         public static string GetCurrentCultureName()
         {
             return CultureInfo.CurrentCulture.Name;
@@ -128,7 +201,12 @@ namespace Memenim.Localization
         }
         public static async Task SwitchLanguage(FrameworkElement element, string сultureName)
         {
-            await SetLanguageResourceDictionary(element, GetLocXamlFilePath(element, сultureName))
+            string locXamlFilePath = GetLocXamlFilePath(element, сultureName);
+
+            if (!File.Exists(locXamlFilePath))
+                return;
+
+            await SetLanguageResourceDictionary(element, locXamlFilePath)
                 .ConfigureAwait(true);
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(сultureName);

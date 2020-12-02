@@ -4,6 +4,8 @@
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
     <system:String x:Key="ResourceDictionaryName">loc-ja-JP</system:String>
+    <system:String x:Key="ResourceLocaleName">日本語</system:String>
+    <system:String x:Key="ResourceCultureName">ja-JP</system:String>
 
     <system:String x:Key="Login">ユーザー名前</system:String>
     <system:String x:Key="Password">パスワード</system:String>

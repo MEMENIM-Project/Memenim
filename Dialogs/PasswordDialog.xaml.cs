@@ -2,19 +2,20 @@
 using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
+using RIS.Text.Generating;
 
 namespace Memenim.Dialogs
 {
-    public partial class SinglelineTextDialog : CustomDialog
+    public partial class PasswordDialog : CustomDialog
     {
         public static readonly DependencyProperty DialogTitleProperty =
-            DependencyProperty.Register(nameof(DialogTitle), typeof(string), typeof(SinglelineTextDialog),
+            DependencyProperty.Register(nameof(DialogTitle), typeof(string), typeof(PasswordDialog),
                 new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty DialogMessageProperty =
-            DependencyProperty.Register(nameof(DialogMessage), typeof(string), typeof(SinglelineTextDialog),
+            DependencyProperty.Register(nameof(DialogMessage), typeof(string), typeof(PasswordDialog),
                 new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty InputValueProperty =
-            DependencyProperty.Register(nameof(InputValue), typeof(string), typeof(SinglelineTextDialog),
+            DependencyProperty.Register(nameof(InputValue), typeof(string), typeof(PasswordDialog),
                 new PropertyMetadata(string.Empty));
 
         public string DialogTitle
@@ -51,17 +52,18 @@ namespace Memenim.Dialogs
             }
         }
         public string DefaultValue { get; }
+        public bool CanGeneratePassword { get; }
 
-        public SinglelineTextDialog(string title = "Enter", string message = "Enter",
-            string inputValue = "", string defaultValue = null)
+        public PasswordDialog(string title = "Enter", string message = "Enter",
+            bool canGeneratePassword = false, string defaultValue = null)
         {
             InitializeComponent();
             DataContext = this;
 
             DialogTitle = title;
             DialogMessage = message;
-            InputValue = inputValue;
             DefaultValue = defaultValue;
+            CanGeneratePassword = canGeneratePassword;
         }
 
         private void Ok_Click(object sender, RoutedEventArgs e)
@@ -73,6 +75,38 @@ namespace Memenim.Dialogs
         {
             InputValue = DefaultValue;
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
+        }
+
+        private void txtPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            InputValue = txtPassword.Password;
+        }
+
+        private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
+        {
+            btnOk.IsEnabled = false;
+            btnCancel.IsEnabled = false;
+            txtPassword.IsEnabled = false;
+
+            try
+            {
+                string password = StringGenerator.GenerateString(20);
+
+                txtPassword.Password = password;
+                InputValue = password;
+                Clipboard.SetText(password);
+            }
+            catch (Exception ex)
+            {
+                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnOk.IsEnabled = true;
+                btnCancel.IsEnabled = true;
+                txtPassword.IsEnabled = true;
+            }
         }
 
         private void Dialog_KeyUp(object sender, KeyEventArgs e)

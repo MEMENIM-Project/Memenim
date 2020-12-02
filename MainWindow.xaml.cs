@@ -1,30 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
-using Memenim.Settings;
 using MahApps.Metro.Controls;
+using Memenim.Core.Api;
+using Memenim.Dialogs;
+using Memenim.Localization;
 using Memenim.Native.Window;
 using Memenim.Navigation;
-using Math = RIS.Mathematics.Math;
 using Memenim.Pages;
-using System.Windows.Controls;
-using System.Collections.Generic;
-using Memenim.Localization;
+using Memenim.Settings;
+using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
     public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow
     {
-
-        public static Dictionary<string, string> Locales { get; } = new Dictionary<string, string>
-        {
-            {"en-US", "English" },
-            {"ru-RU", "Русский" },
-            {"ja-JP", "日本語" }
-        };
-
-        private static object InstanceSyncRoot = new object();
+        private static readonly object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;
         public static MainWindow Instance
         {
@@ -46,6 +43,8 @@ namespace Memenim
         private HwndSource _hwndSource;
         private WindowState _previousState;
 
+        public ReadOnlyDictionary<string, string> Locales { get; private set; }
+        public string AppVersion { get; private set; }
         public bool DuringRestoreToMaximized { get; private set; }
 
         private MainWindow()
@@ -67,9 +66,50 @@ namespace Memenim
             _previousState = WindowState;
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
 
-            slcLanguage.SelectedItem = new KeyValuePair<string, string>(
-                        SettingsManager.AppSettings.Language,
-                        Locales[SettingsManager.AppSettings.Language]);
+            AppVersion = $"v{SettingsManager.AppSettings.AppVersion}";
+
+            LocalizationManager.ReloadLocales();
+
+            if (Locales.Count == 0)
+                return;
+
+            if (Locales.TryGetValue(SettingsManager.AppSettings.Language, out var localeName))
+            {
+                slcLanguage.SelectedItem = new KeyValuePair<string, string>(
+                    SettingsManager.AppSettings.Language, localeName);
+            }
+            else if (Locales.TryGetValue("en-US", out localeName))
+            {
+                slcLanguage.SelectedItem = new KeyValuePair<string, string>(
+                    "en-US", localeName);
+
+                SettingsManager.AppSettings.Language = "en-US";
+                SettingsManager.AppSettings.Save();
+            }
+            else
+            {
+                var locale = Locales.First();
+
+                slcLanguage.SelectedItem = locale;
+
+                SettingsManager.AppSettings.Language = locale.Key;
+                SettingsManager.AppSettings.Save();
+            }
+        }
+
+        public bool IsOpenSettings()
+        {
+            return SettingsFlyout.IsOpen;
+        }
+
+        public void ShowSettings()
+        {
+            SettingsFlyout.IsOpen = true;
+        }
+
+        public void HideSettings()
+        {
+            SettingsFlyout.IsOpen = false;
         }
 
         public Task ShowLoadingGrid(bool status)
@@ -136,14 +176,51 @@ namespace Memenim
             }
         }
 
-        public void ShowSettings()
+        private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            settingsFlyout.IsOpen = true;
+            var selectedPair = (KeyValuePair<string, string>)slcLanguage.SelectedItem;
+
+            await LocalizationManager.SwitchLanguage(selectedPair.Key)
+                .ConfigureAwait(true);
         }
 
-        public void HideSettings()
+        private async void btnChangePassword_Click(object sender, RoutedEventArgs e)
         {
-            settingsFlyout.IsOpen = false;
+            string changePasswordLocalizeName = (string)Instance
+                .FindResource("ChangePassword");
+            string enterLocalizeName = (string)Instance
+                .FindResource("EnterTitle");
+            string oldPasswordLocalizeName = (string)Instance
+                .FindResource("OldPassword");
+            string newPasswordLocalizeName = (string)Instance
+                .FindResource("NewPassword");
+
+            string oldPassword = await DialogManager.ShowPasswordDialog(changePasswordLocalizeName,
+                    $"{enterLocalizeName} {oldPasswordLocalizeName.ToLower()}",
+                    false)
+                .ConfigureAwait(true);
+
+            if (oldPassword == null)
+                return;
+
+            string newPassword = await DialogManager.ShowPasswordDialog(changePasswordLocalizeName,
+                    $"{enterLocalizeName} {newPasswordLocalizeName.ToLower()}",
+                    true)
+                .ConfigureAwait(true);
+
+            if (newPassword == null)
+                return;
+
+            var request = await UserApi.ChangePassword(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    oldPassword, newPassword)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+            }
         }
 
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
@@ -156,12 +233,24 @@ namespace Memenim
             NavigationController.Instance.RequestPage<LoginPage>();
         }
 
-        private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Discord_Click(object sender, RoutedEventArgs e)
         {
-            var selectedPair = (KeyValuePair<string, string>)slcLanguage.SelectedItem;
+            //var startInfo = new ProcessStartInfo
+            //{
+            //    FileName = "cmd",
+            //    Arguments = "/C start https://discord.gg/yfSrUwCmZ8",
+            //    WindowStyle = ProcessWindowStyle.Hidden,
+            //    CreateNoWindow = true,
+            //    UseShellExecute = false
+            //};
 
-            await LocalizationManager.SwitchLanguage(selectedPair.Key)
-                .ConfigureAwait(true);
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "https://discord.gg/yfSrUwCmZ8",
+                UseShellExecute = true
+            };
+
+            Process.Start(startInfo);
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

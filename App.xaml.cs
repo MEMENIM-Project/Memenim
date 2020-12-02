@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Memenim.Core.Api;
+using Memenim.Core.Schema;
 using Memenim.Cryptography;
 using Memenim.Localization;
 using Memenim.Logs;
@@ -128,6 +130,10 @@ namespace Memenim
             {
                 switch (argEntry.Key)
                 {
+                    case "startupUri":
+                        string startupUri = (string)argEntry.Value;
+                        //startupUri parsing
+                        break;
                     case "createHashFiles":
                         CreateHashFiles = bool.Parse((string)argEntry.Value);
                         break;
@@ -135,30 +141,6 @@ namespace Memenim
                         break;
                 }
             }
-        }
-
-        private static ArgsKeyedWrapper UnwrapArgs(string[] args)
-        {
-            var argsEntries = new List<(string Key, object Value)>(args.Length);
-
-            foreach (var arg in args)
-            {
-                if (string.IsNullOrWhiteSpace(arg))
-                    continue;
-
-                string[] argEntryComponents = arg.Split(':');
-
-                if (argEntryComponents.Length > 1)
-                {
-                    argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), argEntryComponents[1].Trim(' ', '\'', '\"')));
-
-                    continue;
-                }
-
-                argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), string.Empty));
-            }
-
-            return new ArgsKeyedWrapper(argsEntries);
         }
 
         private static void CreateHashFile(string hash, string hashName, string hashType)
@@ -185,6 +167,30 @@ namespace Memenim
             }
         }
 
+        public static ArgsKeyedWrapper UnwrapArgs(string[] args)
+        {
+            var argsEntries = new List<(string Key, object Value)>(args.Length);
+
+            foreach (var arg in args)
+            {
+                if (string.IsNullOrWhiteSpace(arg))
+                    continue;
+
+                string[] argEntryComponents = arg.Split(':');
+
+                if (argEntryComponents.Length < 2)
+                {
+                    argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), string.Empty));
+
+                    continue;
+                }
+
+                argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), argEntryComponents[1].Trim(' ', '\'', '\"')));
+            }
+
+            return new ArgsKeyedWrapper(argsEntries);
+        }
+
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -200,7 +206,7 @@ namespace Memenim
             await LocalizationManager.SwitchLanguage(SettingsManager.AppSettings.Language)
                 .ConfigureAwait(true);
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 LogManager.Log.Info("Deleted older logs - " +
                                     $"{LogManager.DeleteLogs(Path.Combine(Environment.ExecProcessDirectoryName, "logs"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
@@ -227,27 +233,91 @@ namespace Memenim
                     string userId = SettingsManager.PersistentSettings.GetUserId(
                         SettingsManager.PersistentSettings.CurrentUserLogin);
 
-                    if (!string.IsNullOrEmpty(userToken) && !string.IsNullOrEmpty(userId))
-                    {
-                        SettingsManager.PersistentSettings.CurrentUserToken =
-                            PersistentUtils.WinUnprotect(userToken,
-                                $"UserToken-{SettingsManager.PersistentSettings.CurrentUserLogin}");
-                        SettingsManager.PersistentSettings.CurrentUserId =
-                            PersistentUtils.WinUnprotect(userId,
-                                $"UserId-{SettingsManager.PersistentSettings.CurrentUserLogin}").ToInt();
-
-                        Dispatcher.Invoke(() =>
-                        {
-                            NavigationController.Instance.RequestPage<FeedPage>();
-                        });
-                    }
-                    else
+                    if (string.IsNullOrEmpty(userToken) || string.IsNullOrEmpty(userId))
                     {
                         Dispatcher.Invoke(() =>
                         {
                             NavigationController.Instance.RequestPage<LoginPage>();
                         });
+
+                        return;
                     }
+
+                    SettingsManager.PersistentSettings.CurrentUserToken =
+                        PersistentUtils.WinUnprotect(userToken,
+                            $"UserToken-{SettingsManager.PersistentSettings.CurrentUserLogin}");
+                    SettingsManager.PersistentSettings.CurrentUserId =
+                        PersistentUtils.WinUnprotect(userId,
+                            $"UserId-{SettingsManager.PersistentSettings.CurrentUserLogin}").ToInt();
+
+                    var resultPosts = await PostApi.Get(
+                            SettingsManager.PersistentSettings.CurrentUserToken,
+                            PostType.Popular, 1)
+                        .ConfigureAwait(false);
+
+                    if (resultPosts.error
+                        && (resultPosts.code == 400 || resultPosts.code == 401))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            NavigationController.Instance.RequestPage<LoginPage>();
+                        });
+
+                        return;
+                    }
+
+                    //if (resultPosts.error || resultPosts.data.Count == 0)
+                    //{
+                    //    Dispatcher.Invoke(() =>
+                    //    {
+                    //        NavigationController.Instance.RequestPage<LoginPage>();
+                    //    });
+
+                    //    return;
+                    //}
+
+                    //var resultPost = resultPosts.data[0];
+
+                    //for (int i = 0; i < 2; ++i)
+                    //{
+                    //    ApiResponse<CountSchema> result;
+
+                    //    if (resultPost.likes.my == 0)
+                    //    {
+                    //        result = await PostApi.AddLike(
+                    //                SettingsManager.PersistentSettings.CurrentUserToken,
+                    //                resultPost.id)
+                    //            .ConfigureAwait(false);
+                    //    }
+                    //    else
+                    //    {
+                    //        result = await PostApi.RemoveLike(
+                    //                SettingsManager.PersistentSettings.CurrentUserToken,
+                    //                resultPost.id)
+                    //            .ConfigureAwait(false);
+                    //    }
+
+                    //    if (result.error
+                    //        && (result.code == 400 || result.code == 401))
+                    //    {
+                    //        Dispatcher.Invoke(() =>
+                    //        {
+                    //            NavigationController.Instance.RequestPage<LoginPage>();
+                    //        });
+
+                    //        return;
+                    //    }
+
+                    //    if (resultPost.likes.my == 0)
+                    //        ++resultPost.likes.my;
+                    //    else
+                    //        --resultPost.likes.my;
+                    //}
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        NavigationController.Instance.RequestPage<FeedPage>();
+                    });
                 }
                 catch (CryptographicException)
                 {
