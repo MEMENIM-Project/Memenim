@@ -41,6 +41,7 @@
                                     Width="40" HorizontalAlignment="Right"
                                     Visibility="{Binding Path=IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     IconButtonClick="EditName_Click"/>
+                <widgets:UserStatus StatusValue="{Binding Path=DataContext.CurrentProfileData.status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
             <widgets:IconToggleButton x:Name="btnEditMode" IconKind="EditBox" Width="40" HorizontalAlignment="Right"
                                       Visibility="{Binding Path=DataContext.EditAllowed, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
