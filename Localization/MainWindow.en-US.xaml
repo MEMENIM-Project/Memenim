@@ -48,9 +48,18 @@
     <system:String x:Key="SignOut">Sign Out</system:String>
     <system:String x:Key="Version">Version</system:String>
 
-    <system:String x:Key="ProfileStatSexUnknown">Unknown</system:String>
-    <system:String x:Key="ProfileStatSexMale">Male</system:String>
-    <system:String x:Key="ProfileStatSexFemale">Female</system:String>
+    <system:String x:Key="Enum-ProfileStatSexType-Unknown">Unknown</system:String>
+    <system:String x:Key="Enum-ProfileStatSexType-Male">Male</system:String>
+    <system:String x:Key="Enum-ProfileStatSexType-Female">Female</system:String>
+
+    <system:String x:Key="Enum-PostStatusType-Premoderating">Pre-moderating</system:String>
+    <system:String x:Key="Enum-PostStatusType-Published">Published</system:String>
+    <system:String x:Key="Enum-PostStatusType-Rejected">Rejected</system:String>
+
+    <system:String x:Key="Enum-UserStatusType-Active">Active</system:String>
+    <system:String x:Key="Enum-UserStatusType-Banned">Banned</system:String>
+    <system:String x:Key="Enum-UserStatusType-Moderator">Moderator</system:String>
+    <system:String x:Key="Enum-UserStatusType-Admin">Admin</system:String>
 
     <system:String x:Key="EnterTitle">Enter</system:String>
 </ResourceDictionary>

@@ -211,12 +211,20 @@ namespace Memenim.Pages
 
         private void WriteComment_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            PostGrid.RowDefinitions[0].Height = new GridLength(
-                PostGrid.ActualHeight - e.NewSize.Height);
-            PostGrid.RowDefinitions[1].Height = new GridLength(
-                Math.Min(Math.Max(e.NewSize.Height, PostGrid.RowDefinitions[1].MinHeight), PostGrid.RowDefinitions[1].MaxHeight));
+            double verticalOffset = svPost.VerticalOffset;
+            double extentHeight = svPost.ExtentHeight;
+            double writeCommentHeight =
+                Math.Min(Math.Max(e.NewSize.Height, PostGrid.RowDefinitions[1].MinHeight),
+                    ActualHeight * 0.3);
 
-            if (svPost.VerticalOffset >= svPost.ExtentHeight)
+            PostGrid.RowDefinitions[0].Height = new GridLength(
+                ActualHeight - writeCommentHeight);
+            PostGrid.RowDefinitions[1].Height = new GridLength(writeCommentHeight);
+
+            wdgWriteCommentPanel.MaxHeight = writeCommentHeight + 1;
+            wdgWriteComment.MaxHeight = writeCommentHeight + 1;
+
+            if (verticalOffset >= extentHeight)
                 svPost.ScrollToEnd();
 
             //svPost.ScrollToVerticalOffset(

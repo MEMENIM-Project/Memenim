@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Memenim.Extensions;
 
 namespace Memenim.Converters
 {
-    public sealed class ProfileStatSexConverter : IValueConverter
+    public sealed class ProfileStatSexTypeToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string result = null;
+            ProfileStatSexType result = ProfileStatSexType.Unknown;
 
             if (value is int intValue)
             {
                 if (intValue == 0)
                     return null;
 
-                result = ProfileStatSex.ParseValue((byte) intValue);
+                result = (ProfileStatSexType)((byte)intValue);
             }
 
-            return result != null
-                ? MainWindow.Instance.FindResource(ProfileStatSex.GetResourceKey(result))
-                : null;
+            return result.GetLocalizedName();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -28,7 +27,7 @@ namespace Memenim.Converters
             int result = 0;
 
             if (value is string stringValue)
-                result = ProfileStatSex.ParseName(stringValue);
+                result = (byte)ProfileStatSexType.Unknown.ParseLocalizedName<ProfileStatSexType>(stringValue);
 
             return result;
         }

@@ -23,6 +23,7 @@ namespace Memenim.Cryptography
             {
                 "logs",
                 "hash",
+                "downloads",
                 "AppSettings.config",
                 "PersistentSettings.store",
                 "MEMENIM.exe",

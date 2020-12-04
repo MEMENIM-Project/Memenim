@@ -37,7 +37,8 @@
             <local:PosterBanner Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="wdgPoster" Margin="5 5 5 0"
                                 UserId="{Binding Path=CurrentPostData.owner_id, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                 UserName="{Binding Path=CurrentPostData.owner_name, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                UserAvatarSource="{Binding Path=CurrentPostData.owner_photo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                                UserAvatarSource="{Binding Path=CurrentPostData.owner_photo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                PostStatusValue="{Binding Path=CurrentPostData.status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
             <local:StatButton Grid.Row="0" Grid.Column="2" x:Name="stViews" StatValueFontSize="8.5"
                               StatValueOnLeft="True" ButtonSize="20" IconKind="Eye" BorderSize="0"
                               IsEnabled="False" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed"

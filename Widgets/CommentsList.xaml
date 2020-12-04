@@ -21,8 +21,8 @@
                        Style="{DynamicResource Header2}" Margin="16 5 0 0"/>
             <Button Grid.Row="1" x:Name="btnLoadMore" Content="{DynamicResource ResourceKey=LoadComments}"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
-                    Margin="16 5 16 5" Click="btnLoadMore_Click"
-                    Visibility="Collapsed"/>
+                    Visibility="Collapsed" Margin="16 5 16 5"
+                    Click="btnLoadMore_Click"/>
             <Grid Grid.Row="2" Margin="16 5 16 5"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <WrapPanel Name="lstComments"

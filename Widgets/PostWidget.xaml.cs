@@ -3,11 +3,13 @@ using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Memenim.Utils;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Navigation;
 using Memenim.Settings;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
@@ -334,12 +336,17 @@ namespace Memenim.Widgets
             stDislikes.IsEnabled = true;
         }
 
-        private void PostImage_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void PostImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Navigation.NavigationController.Instance.RequestPage<ImagePreviewPage>(new ImagePreviewViewModel()
+            if (string.IsNullOrEmpty(CurrentPostData.attachments[0].photo.photo_medium))
+                return;
+
+            NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
             {
                 ImageSource = CurrentPostData.attachments[0].photo.photo_medium
             });
+
+            e.Handled = true;
         }
     }
 }

@@ -112,14 +112,18 @@
             <convertersLocal:ProfileStatStringToVisibilityConverter x:Key="ProfileStatStringToVisibilityConverter"/>
             <convertersLocal:ProfileStatIntToVisibilityConverter x:Key="ProfileStatIntToVisibilityConverter"/>
             <convertersLocal:ProfileStatCollectionToVisibilityConverter x:Key="ProfileStatCollectionToVisibilityConverter"/>
-            <convertersLocal:ProfileStatSexConverter x:Key="ProfileStatSexConverter"/>
+            <convertersLocal:ProfileStatSexTypeToStringConverter x:Key="ProfileStatSexTypeToStringConverter"/>
             <convertersLocal:ProfileStatVisibilityMultiConverter x:Key="ProfileStatVisibilityMultiConverter"/>
             <convertersLocal:UserNameConverter x:Key="UserNameConverter"/>
+            <convertersLocal:UserStatusTypeConverter x:Key="UserStatusTypeConverter"/>
+            <convertersLocal:UserStatusTypeToVisibilityConverter x:Key="UserStatusTypeToVisibilityConverter"/>
             <convertersLocal:UserAvatarImageSourceConverter x:Key="UserAvatarImageSourceConverter"/>
             <convertersLocal:UserBannerImageSourceConverter x:Key="UserBannerImageSourceConverter"/>
             <convertersLocal:PostImageSourceConverter x:Key="PostImageSourceConverter"/>
             <convertersLocal:PostImageSourceToVisibilityConverter x:Key="PostImageSourceToVisibilityConverter"/>
             <convertersLocal:PostImageSourceToRowSpanConverter x:Key="PostImageSourceToRowSpanConverter"/>
+            <convertersLocal:PostStatusTypeConverter x:Key="PostStatusTypeConverter"/>
+            <convertersLocal:PostStatusTypeToVisibilityConverter x:Key="PostStatusTypeToVisibilityConverter"/>
             <convertersLocal:PreviewImageSourceConverter x:Key="PreviewImageSourceConverter"/>
             <convertersLocal:WriteCommentTextConverter x:Key="WriteCommentTextConverter"/>
 

@@ -72,12 +72,12 @@ namespace Memenim.Navigation
             }
         }
 
-        private NavBarLayoutType GetNavBarLayoutType(PageContent page)
+        private NavBarLayoutType? GetNavBarLayoutType(PageContent page)
         {
             Type pageType = page.GetType();
 
             if (!_navBarPagesLayouts.ContainsKey(pageType))
-                return NavBarLayoutType.NavBarNone;
+                return null;
 
             return _navBarPagesLayouts[pageType];
         }
@@ -104,12 +104,12 @@ namespace Memenim.Navigation
 
         private async Task SwitchNavBarLayout(PageContent page)
         {
-            Type pageType = page.GetType();
+            var layoutType = GetNavBarLayoutType(page);
 
-            if (!_navBarPagesLayouts.ContainsKey(pageType))
+            if (!layoutType.HasValue)
                 return;
 
-            await SwitchNavBarLayout(_navBarPagesLayouts[pageType])
+            await SwitchNavBarLayout(layoutType.Value)
                 .ConfigureAwait(true);
         }
 
@@ -243,8 +243,13 @@ namespace Memenim.Navigation
 
             if (contentControl.Content != null)
             {
-                if (GetNavBarLayoutType((PageContent)contentControl.Content) == NavBarLayoutType.NavBarNone)
+                var layoutType = GetNavBarLayoutType((PageContent)contentControl.Content);
+
+                if (!layoutType.HasValue
+                    || layoutType.Value == NavBarLayoutType.NavBarNone)
+                {
                     return;
+                }
 
                 _navigationHistory.Push(new NavigationHistoryNode
                 {
@@ -362,14 +367,28 @@ namespace Memenim.Navigation
 
             if (OverlayContent.Content != null)
             {
-                _navigationHistory.Push(new NavigationHistoryNode
+                var layoutType = GetNavBarLayoutType((PageContent)OverlayContent.Content);
+
+                if (!layoutType.HasValue
+                    || layoutType.Value == NavBarLayoutType.NavBarNone
+                    || layoutType.Value == NavBarLayoutType.NavBarBackOnly)
                 {
-                    Content = OverlayContent.Content as PageContent,
-                    SubContent = PageContent.Content as PageContent,
-                    DataContext = (OverlayContent.Content as PageContent)?.DataContext as PageViewModel,
-                    SubDataContext = (PageContent.Content as PageContent)?.DataContext as PageViewModel,
-                    Type = PageContentType.Overlay
-                });
+                    GoBack();
+                    IsContentEventsActive(true);
+
+                    return;
+                }
+                else
+                {
+                    _navigationHistory.Push(new NavigationHistoryNode
+                    {
+                        Content = OverlayContent.Content as PageContent,
+                        SubContent = PageContent.Content as PageContent,
+                        DataContext = (OverlayContent.Content as PageContent)?.DataContext as PageViewModel,
+                        SubDataContext = (PageContent.Content as PageContent)?.DataContext as PageViewModel,
+                        Type = PageContentType.Overlay
+                    });
+                }
             }
 
             _currentPageContentType = PageContentType.Page;

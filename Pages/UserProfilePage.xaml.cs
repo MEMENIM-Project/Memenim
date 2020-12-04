@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading;
@@ -6,10 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Memenim.Converters;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Extensions;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
@@ -192,6 +195,19 @@ namespace Memenim.Pages
             }
         }
 
+        private void AvatarImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ViewModel.CurrentProfileData.photo))
+                return;
+
+            NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
+            {
+                ImageSource = ViewModel.CurrentProfileData.photo
+            });
+
+            e.Handled = true;
+        }
+
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
         {
             string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
@@ -272,9 +288,12 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string enterLocalizeName = (string)MainWindow.Instance
+                .FindResource("EnterTitle");
+
             string oldValue = (string)sourceProperty.GetValue(sourceClass);
             string value = await DialogManager.ShowSinglelineTextDialog("Edit profile",
-                    "Enter Name", oldValue)
+                    $"{enterLocalizeName} Name", oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
@@ -311,9 +330,12 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string enterLocalizeName = (string)MainWindow.Instance
+                .FindResource("EnterTitle");
+
             string oldValue = (string)sourceProperty.GetValue(sourceClass);
             string value = await DialogManager.ShowSinglelineTextDialog("Edit profile",
-                    $"Enter {element.StatTitle}", oldValue)
+                    $"{enterLocalizeName} {element.StatTitle}", oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
@@ -350,9 +372,12 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string enterLocalizeName = (string)MainWindow.Instance
+                .FindResource("EnterTitle");
+
             string oldValue = (string)sourceProperty.GetValue(sourceClass);
             string value = await DialogManager.ShowMultilineTextDialog("Edit profile",
-                    $"Enter {element.StatTitle}", oldValue)
+                    $"{enterLocalizeName} {element.StatTitle}", oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
@@ -394,16 +419,22 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string enterLocalizeName = (string)MainWindow.Instance
+                .FindResource("EnterTitle");
+
+            ReadOnlyCollection<string> localizedNames =
+                new ReadOnlyCollection<string>(ProfileStatSexType.Unknown.GetLocalizedNames());
+
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
             string valueName = await DialogManager.ShowComboBoxDialog("Edit profile",
-                    $"Enter {element.StatTitle}", ProfileStatSex.GetNames(true),
-                    ProfileStatSex.ParseValue((byte)oldValue, true))
+                    $"{enterLocalizeName} {element.StatTitle}", localizedNames,
+                    ((ProfileStatSexType)((byte)oldValue)).GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            int value = ProfileStatSex.ParseName(valueName, true);
+            int value = (byte)ProfileStatSexType.Unknown.ParseLocalizedName<ProfileStatSexType>(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
@@ -436,9 +467,12 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string enterLocalizeName = (string)MainWindow.Instance
+                .FindResource("EnterTitle");
+
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
             double? value = await DialogManager.ShowNumericDialog("Edit profile",
-                    $"Enter {element.StatTitle}", Convert.ToDouble(oldValue),
+                    $"{enterLocalizeName} {element.StatTitle}", Convert.ToDouble(oldValue),
                     0.0, 255.0, 1.0, "F0")
                 .ConfigureAwait(true);
 

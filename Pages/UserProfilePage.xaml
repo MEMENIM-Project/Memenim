@@ -41,7 +41,9 @@
                                     Width="40" HorizontalAlignment="Right"
                                     Visibility="{Binding Path=IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     IconButtonClick="EditName_Click"/>
-                <widgets:UserStatus StatusValue="{Binding Path=DataContext.CurrentProfileData.status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
+                <widgets:UserStatus Margin="20 0 0 0"
+                                    StatusValue="{Binding Path=DataContext.CurrentProfileData.status, Converter={StaticResource UserStatusTypeConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                    Visibility="{Binding Path=DataContext.CurrentProfileData.status, Converter={StaticResource UserStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
             <widgets:IconToggleButton x:Name="btnEditMode" IconKind="EditBox" Width="40" HorizontalAlignment="Right"
                                       Visibility="{Binding Path=DataContext.EditAllowed, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
@@ -52,7 +54,8 @@
               Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
               MaxHeight="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
               Margin="20 20 20 20"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              MouseLeftButtonUp="AvatarImage_MouseLeftButtonUp">
             <Grid.OpacityMask>
                 <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
             </Grid.OpacityMask>
@@ -237,7 +240,7 @@
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
                     <widgets:UserProfileStat Margin="10" StatTitle="Sex"
-                                             StatValue="{Binding Path=DataContext.CurrentProfileData.sex, Converter={StaticResource ProfileStatSexConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.sex, Converter={StaticResource ProfileStatSexTypeToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditComboBoxSex_Click">
                         <widgets:UserProfileStat.Visibility>

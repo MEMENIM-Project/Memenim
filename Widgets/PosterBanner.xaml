@@ -38,8 +38,12 @@
                            Visibility="{Binding Path=IsAnonymous, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=PostTime}" Style="{DynamicResource Paragraph}"/>
-                <local:PostStatus StatusValue="Published" Margin="10 0 0 0"/>
+                <TextBlock Text="{Binding Path=PostTime}"
+                           VerticalAlignment="Center"
+                           Style="{DynamicResource Paragraph}"/>
+                <local:PostStatus Margin="20 0 0 0"
+                                  StatusValue="{Binding Path=PostStatusValue, Converter={StaticResource PostStatusTypeConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PosterBanner}}"
+                                  Visibility="{Binding Path=PostStatusValue, Converter={StaticResource PostStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PosterBanner}}"/>
             </StackPanel>
             
         </StackPanel>

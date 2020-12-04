@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Memenim.Converters;
 using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -24,6 +25,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty PostTimeProperty =
             DependencyProperty.Register(nameof(PostTime), typeof(string), typeof(PosterBanner),
                 new PropertyMetadata(DateTime.MinValue.ToString(CultureInfo.CurrentCulture)));
+        public static readonly DependencyProperty PostStatusValueProperty =
+            DependencyProperty.Register(nameof(PostStatusValue), typeof(int), typeof(PosterBanner),
+                new PropertyMetadata(0));
         public static readonly DependencyProperty IsAnonymousProperty =
             DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PosterBanner),
                 new PropertyMetadata(false));
@@ -70,6 +74,17 @@ namespace Memenim.Widgets
             set
             {
                 SetValue(PostTimeProperty, value);
+            }
+        }
+        public int PostStatusValue
+        {
+            get
+            {
+                return (int)GetValue(PostStatusValueProperty);
+            }
+            set
+            {
+                SetValue(PostStatusValueProperty, value);
             }
         }
         public bool IsAnonymous

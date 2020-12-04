@@ -48,9 +48,18 @@
     <system:String x:Key="SignOut">Выйти из аккаунта</system:String>
     <system:String x:Key="Version">Версия</system:String>
 
-    <system:String x:Key="ProfileStatSexUnknown">Неизвестно</system:String>
-    <system:String x:Key="ProfileStatSexMale">Мужской</system:String>
-    <system:String x:Key="ProfileStatSexFemale">Женский</system:String>
+    <system:String x:Key="Enum-ProfileStatSexType-Unknown">Неизвестно</system:String>
+    <system:String x:Key="Enum-ProfileStatSexType-Male">Мужской</system:String>
+    <system:String x:Key="Enum-ProfileStatSexType-Female">Женский</system:String>
+
+    <system:String x:Key="Enum-PostStatusType-Premoderating">Премодерация</system:String>
+    <system:String x:Key="Enum-PostStatusType-Published">Опубликован</system:String>
+    <system:String x:Key="Enum-PostStatusType-Rejected">Отклонён</system:String>
+
+    <system:String x:Key="Enum-UserStatusType-Active">Активен</system:String>
+    <system:String x:Key="Enum-UserStatusType-Banned">Забанен</system:String>
+    <system:String x:Key="Enum-UserStatusType-Moderator">Модератор</system:String>
+    <system:String x:Key="Enum-UserStatusType-Admin">Администратор</system:String>
 
     <system:String x:Key="EnterTitle">Введите</system:String>
 </ResourceDictionary>
