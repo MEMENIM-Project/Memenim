@@ -8,6 +8,7 @@
     <x:Array x:Key="TriggeredOnPages" Type="system:String">
         <system:String>AnonymGallerySearchPage</system:String>
         <system:String>TenorSearchPage</system:String>
+        <system:String>ImageViewPage</system:String>
     </x:Array>
 
     <x:Array x:Key="TopNavButtons" Type="local:NavRedirectButtonNode">

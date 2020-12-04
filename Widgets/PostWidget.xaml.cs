@@ -9,6 +9,8 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Settings;
+using Memenim.Pages;
+using Memenim.Pages.ViewModel;
 
 namespace Memenim.Widgets
 {
@@ -330,6 +332,14 @@ namespace Memenim.Widgets
             CurrentPostData.dislikes.count = result.data.count;
 
             stDislikes.IsEnabled = true;
+        }
+
+        private void PostImage_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Navigation.NavigationController.Instance.RequestPage<ImagePreviewPage>(new ImagePreviewViewModel()
+            {
+                ImageSource = CurrentPostData.attachments[0].photo.photo_medium
+            });
         }
     }
 }

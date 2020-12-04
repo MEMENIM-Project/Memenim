@@ -3,30 +3,51 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:local="clr-namespace:Memenim.Widgets"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock>
-            <TextBlock.Style>
+        
+        <Border>
+            <Border.Style>
                 <Style>
-                    <Setter Property="TextBlock.Foreground" Value="White"/>
+                    <Setter Property="Border.CornerRadius" Value="12"/>
+                    <Setter Property="Border.Padding" Value="10 3 10 3"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=StatusValue}" Value="Premoderating">
-                            <Setter Property="TextBlock.Background" Value="#FFD69C00"/>
-                            <Setter Property="TextBlock.Text" Value="Pre-moderation"/>
+                            <Setter Property="Border.Background" Value="#FFD69C00"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=StatusValue}" Value="Published">
-                            <Setter Property="TextBlock.Background" Value="Green"/>
-                            <Setter Property="TextBlock.Text" Value="Published"/>
+                            <Setter Property="Border.Background" Value="Green"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=StatusValue}" Value="Rejected">
-                            <Setter Property="TextBlock.Background" Value="Red"/>
-                            <Setter Property="TextBlock.Text" Value="Rejected"/>
+                            <Setter Property="Border.Background" Value="Red"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </TextBlock.Style>
-        </TextBlock>   
+            </Border.Style>
+            <TextBlock>
+                <TextBlock.Style>
+                    <Style>
+                        <Setter Property="TextBlock.Foreground" Value="White"/>
+                        <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                        <Setter Property="TextBlock.FontSize" Value="12"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=StatusValue}" Value="Premoderating">
+                                <Setter Property="TextBlock.Text" Value="Pre-moderation"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=StatusValue}" Value="Published">
+                                <Setter Property="TextBlock.Text" Value="Published"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=StatusValue}" Value="Rejected">
+                                <Setter Property="TextBlock.Text" Value="Rejected"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+               
     </Grid>
 </UserControl>

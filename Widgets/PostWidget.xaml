@@ -58,7 +58,8 @@
                        Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
                        Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       MouseLeftButtonUp="PostImage_MouseLeftButtonUp"/>
             </Grid>
             <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
                 <local:StatButton x:Name="stReposts" ButtonSize="28" IconKind="Share"
