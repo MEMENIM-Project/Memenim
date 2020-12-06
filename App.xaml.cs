@@ -207,6 +207,9 @@ namespace Memenim
             await LocalizationManager.SwitchLanguage(SettingsManager.AppSettings.Language)
                 .ConfigureAwait(true);
 
+            await StorageManager.Initialize()
+                .ConfigureAwait(true);
+
             await Task.Run(async () =>
             {
                 LogManager.Log.Info("Deleted older logs - " +
@@ -314,9 +317,6 @@ namespace Memenim
                     //    else
                     //        --resultPost.likes.my;
                     //}
-
-                    await StorageManager.Initialize()
-                        .ConfigureAwait(true);
 
                     Dispatcher.Invoke(() =>
                     {
