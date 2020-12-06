@@ -109,6 +109,7 @@ namespace Memenim.Pages
                     txtLogin.Clear();
                     txtPassword.Clear();
                     txtNickname.Clear();
+                    _changeNicknameExplicit = false;
                 }
             }
             catch (Exception ex)
@@ -136,6 +137,7 @@ namespace Memenim.Pages
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
+            txtNickname.IsEnabled = false;
 
             try
             {
@@ -168,6 +170,8 @@ namespace Memenim.Pages
 
                 txtLogin.Clear();
                 txtPassword.Clear();
+                txtNickname.Clear();
+                _changeNicknameExplicit = false;
             }
             catch (Exception ex)
             {
@@ -183,6 +187,7 @@ namespace Memenim.Pages
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
+                txtNickname.IsEnabled = true;
             }
         }
 
