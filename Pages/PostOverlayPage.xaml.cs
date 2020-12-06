@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,6 +7,7 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Storage;
 using Memenim.Widgets;
 
 namespace Memenim.Pages
@@ -31,6 +33,18 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new PostOverlayViewModel();
+        }
+
+        public Task UpdatePost()
+        {
+            return UpdatePost(ViewModel.CurrentPostData.id);
+        }
+        public async Task UpdatePost(int id)
+        {
+            ViewModel.CurrentPostData.id = id;
+
+            ViewModel.CurrentPostData = await GetUpdatedPostData()
+                .ConfigureAwait(true);
         }
 
         public async Task<PostSchema> GetUpdatedPostData()
@@ -76,20 +90,21 @@ namespace Memenim.Pages
 
             base.OnEnter(sender, e);
 
+            await UpdatePost()
+                .ConfigureAwait(true);
+
             var result = await UserApi.GetProfileById(
                     SettingsManager.PersistentSettings.CurrentUserId)
                 .ConfigureAwait(true);
 
             if (result.data != null)
-                wdgWriteComment.UserAvatarSource = result.data.photo;
+                wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
 
             svPost.ScrollToVerticalOffset(0.0);
         }
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
-            wdgWriteComment.CommentText = string.Empty;
-
             if (!IsOnExitActive)
             {
                 e.Handled = true;
@@ -97,6 +112,48 @@ namespace Memenim.Pages
             }
 
             base.OnExit(sender, e);
+        }
+
+#pragma warning disable SS001 // Async methods should return a Task to make them awaitable
+        protected override async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            base.OnDataContextChanged(sender, e);
+
+            if (e.OldValue is PostOverlayViewModel oldViewModel)
+            {
+                await StorageManager.SetPostCommentDraft(
+                        SettingsManager.PersistentSettings.CurrentUserId,
+                        oldViewModel.CurrentPostData.id,
+                        wdgWriteComment.CommentText,
+                        wdgWriteComment.IsAnonymous)
+                    .ConfigureAwait(true);
+            }
+
+            wdgWriteComment.CommentText = string.Empty;
+            wdgWriteComment.IsAnonymous = false;
+
+            if (e.NewValue is PostOverlayViewModel newViewModel)
+            {
+                var draft = await StorageManager.GetPostCommentDraft(
+                        SettingsManager.PersistentSettings.CurrentUserId,
+                        newViewModel.CurrentPostData.id)
+                    .ConfigureAwait(true);
+
+                wdgWriteComment.CommentText = draft.CommentText;
+                wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+            }
+        }
+#pragma warning restore SS001 // Async methods should return a Task to make them awaitable
+
+        protected override async void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.ViewModelPropertyChanged(sender, e);
+
+            if (e.PropertyName.Length == 0)
+            {
+                await UpdatePost()
+                    .ConfigureAwait(true);
+            }
         }
 
         private void SvPost_ScrollChanged(object sender, ScrollChangedEventArgs e)

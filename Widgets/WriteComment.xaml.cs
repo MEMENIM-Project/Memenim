@@ -23,7 +23,7 @@ namespace Memenim.Widgets
                 new PropertyMetadata(-1));
         public static readonly DependencyProperty IsAnonymousProperty =
             DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(WriteComment),
-                new PropertyMetadata(false));
+                new PropertyMetadata(false, IsAnonymousChangedCallback));
 
         public event EventHandler<RoutedEventArgs> CommentAdd
         {
@@ -90,6 +90,35 @@ namespace Memenim.Widgets
             DataContext = this;
         }
 
+        public void SetRealUserAvatarSource(string source)
+        {
+            _realUserAvatarSource = source;
+
+            if (!IsAnonymous)
+                UserAvatarSource = source;
+        }
+
+        private static void IsAnonymousChangedCallback(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            WriteComment writeComment = d as WriteComment;
+
+            if (writeComment == null)
+                return;
+
+            writeComment.btnAnonymous.IsChecked = writeComment.IsAnonymous;
+
+            if (!writeComment.IsAnonymous)
+            {
+                writeComment.UserAvatarSource = writeComment._realUserAvatarSource;
+            }
+            else
+            {
+                writeComment._realUserAvatarSource = writeComment.UserAvatarSource;
+                writeComment.UserAvatarSource = null;
+            }
+        }
+
         private void txtContent_KeyUp(object sender, KeyEventArgs e)
         {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.Enter)
@@ -124,17 +153,7 @@ namespace Memenim.Widgets
 
         private void btnAnonymous_Click(object sender, RoutedEventArgs e)
         {
-            IsAnonymous = !IsAnonymous;
-
-            if (!IsAnonymous)
-            {
-                UserAvatarSource = _realUserAvatarSource;
-            }
-            else
-            {
-                _realUserAvatarSource = UserAvatarSource;
-                UserAvatarSource = null;
-            }
+            IsAnonymous = btnAnonymous.IsChecked;
         }
     }
 }

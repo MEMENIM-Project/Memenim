@@ -15,7 +15,8 @@ namespace Memenim.Downloads
         static DownloadManager()
         {
             Client = new HttpClient();
-            DownloadsPath = Path.Combine(Environment.ExecProcessDirectoryName, "downloads");
+            DownloadsPath = Path.Combine(Environment.ExecProcessDirectoryName,
+                "downloads");
 
             if (!Directory.Exists(DownloadsPath))
                 Directory.CreateDirectory(DownloadsPath);

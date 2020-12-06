@@ -18,6 +18,7 @@ using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
+using Memenim.Storage;
 using Memenim.Utils;
 using RIS;
 using RIS.Extensions;
@@ -314,6 +315,9 @@ namespace Memenim
                     //        --resultPost.likes.my;
                     //}
 
+                    await StorageManager.Initialize()
+                        .ConfigureAwait(true);
+
                     Dispatcher.Invoke(() =>
                     {
                         NavigationController.Instance.RequestPage<FeedPage>();
@@ -358,14 +362,14 @@ namespace Memenim
 
         private static void OnError(object sender, RErrorEventArgs e)
         {
-            LogManager.Log.Error($"Unknown - Message={e.Message},StackTrace=\n{e.Stacktrace ?? "Unknown"}");
+            LogManager.Log.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? (e.SourceException?.Message ?? "Unknown")},HResult={e.SourceException?.HResult ?? 0},StackTrace=\n{e.Stacktrace ?? (e.SourceException?.StackTrace ?? "Unknown")}");
         }
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = e.ExceptionObject as Exception;
 
-            LogManager.Log.Fatal($"{exception?.GetType().Name ?? "Unknown"} - Message={exception?.Message ?? "Unknown"},HResult={exception?.HResult ?? 0}");
+            LogManager.Log.Fatal($"{exception?.GetType().Name ?? "Unknown"} - Message={exception?.Message ?? "Unknown"},HResult={exception?.HResult ?? 0},StackTrace=\n{exception?.StackTrace ?? "Unknown"}");
         }
 
         private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
