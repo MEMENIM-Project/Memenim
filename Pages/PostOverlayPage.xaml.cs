@@ -141,6 +141,9 @@ namespace Memenim.Pages
 
                 wdgWriteComment.CommentText = draft.CommentText;
                 wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+
+                wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
+                wdgWriteComment.txtContent.ScrollToEnd();
             }
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
@@ -196,8 +199,9 @@ namespace Memenim.Pages
                                + $"{comment.CurrentCommentData.text}\n\n"
                                + ">>>\n\n";
 
+            int oldCaretIndex = wdgWriteComment.txtContent.CaretIndex;
             wdgWriteComment.CommentText = replyText + wdgWriteComment.CommentText;
-            wdgWriteComment.txtContent.CaretIndex = wdgWriteComment.txtContent.Text.Length;
+            wdgWriteComment.txtContent.CaretIndex = replyText.Length + oldCaretIndex;
             wdgWriteComment.txtContent.ScrollToEnd();
             wdgWriteComment.txtContent.Focus();
 
@@ -271,14 +275,13 @@ namespace Memenim.Pages
             double verticalOffset = svPost.VerticalOffset;
             double extentHeight = svPost.ExtentHeight;
             double writeCommentHeight =
-                Math.Min(Math.Max(e.NewSize.Height, PostGrid.RowDefinitions[1].MinHeight),
+                Math.Min(Math.Max(wdgWriteComment.ActualHeight, PostGrid.RowDefinitions[1].MinHeight),
                     ActualHeight * 0.3);
 
             PostGrid.RowDefinitions[0].Height = new GridLength(
                 ActualHeight - writeCommentHeight);
             PostGrid.RowDefinitions[1].Height = new GridLength(writeCommentHeight);
 
-            wdgWriteCommentPanel.MaxHeight = writeCommentHeight + 1;
             wdgWriteComment.MaxHeight = writeCommentHeight + 1;
 
             if (verticalOffset >= extentHeight)

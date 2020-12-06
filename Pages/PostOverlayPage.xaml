@@ -31,8 +31,7 @@
                                       CommentDelete="CommentsList_CommentDelete"/>
             </StackPanel>
         </ScrollViewer>
-        <StackPanel Grid.Row="1"
-                    x:Name="wdgWriteCommentPanel" MinHeight="50"
+        <StackPanel Grid.Row="1" MinHeight="50"
                     Width="{Binding Path=ViewportWidth, ElementName=svPost}"
                     HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <widgets:WriteComment x:Name="wdgWriteComment" MinHeight="50"
