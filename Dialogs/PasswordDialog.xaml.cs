@@ -68,11 +68,15 @@ namespace Memenim.Dialogs
 
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
+            btnOk.Focus();
+
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            btnCancel.Focus();
+
             InputValue = DefaultValue;
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
         }

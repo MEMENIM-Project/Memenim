@@ -101,10 +101,8 @@ namespace Memenim.Pages
 
                 ViewModel.CurrentProfileData = result.data;
 
-                wpStatBlock1.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
-                wpStatBlock2.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
-                wpStatBlock3.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
-                wpStatBlock4.GetBindingExpression(VisibilityProperty)?.UpdateTarget();
+                UpdateStatBlock(wpStatBlock1, wpStatBlock2,
+                    wpStatBlock3, wpStatBlock4);
             }
             finally
             {
@@ -119,6 +117,31 @@ namespace Memenim.Pages
 
                 _profileUpdateLock.Release();
             }
+        }
+
+        public void UpdateStatBlock(params StackPanel[] statBlocks)
+        {
+            foreach (var statBlock in statBlocks)
+            {
+                UpdateStatBlock(statBlock);
+            }
+        }
+        public void UpdateStatBlock(StackPanel statBlock)
+        {
+            var visibilityMultiBinding =
+                BindingOperations.GetMultiBindingExpression(statBlock,
+                    VisibilityProperty);
+
+            if (visibilityMultiBinding == null)
+                return;
+
+            foreach (var binding in
+                visibilityMultiBinding.BindingExpressions)
+            {
+                binding.UpdateTarget();
+            }
+
+            visibilityMultiBinding.UpdateTarget();
         }
 
         public Task ShowLoadingGrid(bool status)

@@ -9,89 +9,161 @@
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    mc:Ignorable="d" 
-                   Height="250" Width="250"
-                   MinHeight="250" MinWidth="250">
+                   Height="300" Width="300"
+                   MinHeight="300" MinWidth="300">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="12" Width="12*"/>
-            <ColumnDefinition MinWidth="101" Width="101*"/>
-            <ColumnDefinition MinWidth="12" Width="12*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition MinHeight="50" Height="50*" />
-            <RowDefinition MinHeight="100" Height="100*"/>
-            <RowDefinition MinHeight="75" Height="75*"/>
-        </Grid.RowDefinitions>
+    <Control.Resources>
+        <Style x:Key="WithoutBackgroundButton" TargetType="Button"
+               BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
+            <Setter Property="Background"
+                    Value="Transparent"/>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource MahApps.Brushes.Accent}"/>
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource MahApps.Brushes.Accent2}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource MahApps.Brushes.Accent4}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
 
-        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Name="lblErrorMessage" Foreground="Red"
-               VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 0 0 5"/>
-        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="12" Width="12*"/>
-                    <ColumnDefinition MinWidth="101" Width="101*"/>
-                    <ColumnDefinition MinWidth="12" Width="12*"/>
-                </Grid.ColumnDefinitions>
+                        <ContentPresenter x:Name="contentPresenter" Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Control.Resources>
 
-                <iconPacks:PackIconModern Grid.Column="0" Kind="User"
-                                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <TextBox Name="txtLogin" Grid.Column="0" Grid.ColumnSpan="3" MinWidth="200" MinHeight="25"
-                         controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
-                         controls:TextBoxHelper.SelectAllOnFocus="True" Margin="25 5 25 5"
-                         Style="{DynamicResource MahApps.Styles.TextBox}"
-                         VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                         TextChanged="txtLogin_TextChanged" KeyUp="txtLogin_KeyUp"/>
-            </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="12" Width="12*"/>
-                    <ColumnDefinition MinWidth="101" Width="101*"/>
-                    <ColumnDefinition MinWidth="12" Width="12*"/>
-                </Grid.ColumnDefinitions>
+    <Border Padding="25 0 25 0"
+            Background="#FF353639">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                <ColumnDefinition MinWidth="100" Width="100*"/>
+                <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="50" Height="50*"/>
+                <RowDefinition MinHeight="30" Height="30*"/>
+                <RowDefinition MinHeight="120" Height="120*"/>
+                <RowDefinition MinHeight="50" Height="50*"/>
+                <RowDefinition MinHeight="50" Height="50*"/>
+            </Grid.RowDefinitions>
 
-                <iconPacks:PackIconModern Grid.Column="0" Kind="Key"
-                                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <PasswordBox Grid.Column="0" Grid.ColumnSpan="3" Name="txtPassword" MinWidth="200" MinHeight="25"
-                             controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
-                             controls:TextBoxHelper.SelectAllOnFocus="True" Margin="25 0 25 2"
-                             Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
-                             VerticalAlignment="Top" HorizontalAlignment="Center"
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                       Text="M  E  M  E  N  I  M"
+                       FontSize="22" FontWeight="Thin"
+                       TextAlignment="Center"
+                       Foreground="#BFF1F1FF"
+                       Margin="0 5 0 0"
+                       HorizontalAlignment="Center" VerticalAlignment="Top"
+                       SnapsToDevicePixels="True">
+                <TextBlock.LayoutTransform>
+                    <ScaleTransform CenterX="0.5" CenterY="0.5"
+                                    ScaleX="1.05"/>
+                </TextBlock.LayoutTransform>
+            </TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                       Text="{DynamicResource ResourceKey=SignUpTitle}"
+                       MinHeight="10" FontSize="14.5"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       TextAlignment="Center" TextWrapping="Wrap"/>
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                        <ColumnDefinition MinWidth="100" Width="100*"/>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Grid.ColumnSpan="3"
+                             Name="txtLogin" MinWidth="200" MinHeight="25"
+                             controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
+                             controls:TextBoxHelper.SelectAllOnFocus="True"
+                             Margin="25 10 25 10"
+                             Style="{DynamicResource MahApps.Styles.TextBox}"
+                             VerticalAlignment="Bottom" HorizontalAlignment="Center"
                              VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                             PasswordChanged="txtPassword_PasswordChanged" KeyUp="txtPassword_KeyUp"/>
-                <Button Grid.Column="2" Width="20" Height="20"
-                        Margin="0 0 0 2" BorderThickness="0.5"
-                        Style="{StaticResource MahApps.Styles.Button.Circle}"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        Click="btnGeneratePassword_Click">
-                    <iconPacks:PackIconBootstrapIcons Grid.Column="2" Width="12" Height="12" Kind="Dice6Fill"
-                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                             TextChanged="txtLogin_TextChanged" KeyUp="txtLogin_KeyUp"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                        <ColumnDefinition MinWidth="100" Width="100*"/>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <PasswordBox Grid.Column="0" Grid.ColumnSpan="3"
+                                 Name="txtPassword" MinWidth="200" MinHeight="25"
+                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
+                                 controls:TextBoxHelper.SelectAllOnFocus="True"
+                                 Margin="25 0 25 10"
+                                 Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
+                                 VerticalAlignment="Top" HorizontalAlignment="Center"
+                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                 PasswordChanged="txtPassword_PasswordChanged" KeyUp="txtPassword_KeyUp"/>
+                    <Button Grid.Column="2" Width="20" Height="20"
+                            Margin="0 0 0 10" BorderThickness="1"
+                            Style="{StaticResource MahApps.Styles.Button.Circle}"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Click="btnGeneratePassword_Click">
+                        <iconPacks:PackIconBootstrapIcons Grid.Column="2" Width="12" Height="12" Kind="Dice6Fill"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                        <ColumnDefinition MinWidth="100" Width="100*"/>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Grid.ColumnSpan="3"
+                             Name="txtNickname" MinWidth="200" MinHeight="25"
+                             controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Nickname}"
+                             controls:TextBoxHelper.SelectAllOnFocus="True"
+                             Margin="25 0 25 10"
+                             Style="{DynamicResource MahApps.Styles.TextBox}"
+                             VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                             VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                             TextChanged="txtNickname_TextChanged" KeyUp="txtNickname_KeyUp"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+                        VerticalAlignment="Center">
+                <Button Name="btnRegister" MinHeight="20"
+                        FontSize="16" Margin="40 5 40 5"
+                        Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
+                        Click="btnRegister_Click">
+                    <TextBlock Text="{DynamicResource ResourceKey=SignUp}"
+                               MinHeight="10" FontSize="16"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
                 </Button>
-            </Grid>
-            <Button Name="btnGoToLogin" MinHeight="30" FontSize="10" Margin="40 2 40 2"
-                    Style="{StaticResource MahApps.Styles.Button.Square}" Click="btnGoToLogin_Click">
-                <TextBlock Text="{DynamicResource ResourceKey=GoToLogin}" MinHeight="10"
-                           FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"
-                           TextAlignment="Center" TextWrapping="Wrap"/>
-            </Button>
-        </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                    VerticalAlignment="Bottom">
-            <Button Name="btnRegister" MinHeight="20" FontSize="17"
-                    Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                    Margin="25 5 25 5" Click="btnRegister_Click">
-                <TextBlock Text="{DynamicResource ResourceKey=SignUp}" MinHeight="10"
-                           FontSize="17" VerticalAlignment="Center" HorizontalAlignment="Center"
-                           TextAlignment="Center" TextWrapping="Wrap"/>
-            </Button>
-            <Button Name="btnAutoRegister" MinHeight="20" FontSize="17" Visibility="Collapsed"
-                    Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                    Margin="25 0 25 5" Click="btnAutoRegister_Click">
-                <TextBlock Text="Auto register" MinHeight="10" FontSize="17"
+            </StackPanel>
+            <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                    Name="btnGoToLogin" MinHeight="30"
+                    FontSize="12" Margin="40 0 40 10"
+                    Style="{StaticResource WithoutBackgroundButton}"
+                    VerticalAlignment="Bottom"
+                    Click="btnGoToLogin_Click">
+                <TextBlock Text="{DynamicResource ResourceKey=GoToLogin}"
+                           MinHeight="15" FontSize="12"
                            VerticalAlignment="Center" HorizontalAlignment="Center"
                            TextAlignment="Center" TextWrapping="Wrap"/>
             </Button>
-        </StackPanel>
-    </Grid>
+        </Grid>
+    </Border>
 </local:PageContent>

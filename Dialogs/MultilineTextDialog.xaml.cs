@@ -66,23 +66,27 @@ namespace Memenim.Dialogs
 
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
+            btnOk.Focus();
+
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            btnCancel.Focus();
+
             InputValue = DefaultValue;
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
         }
 
         private void Dialog_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter || e.Key == Key.Down)
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.Enter)
             {
                 if (btnOk.IsEnabled)
                     Ok_Click(this, new RoutedEventArgs());
             }
-            else if (e.Key == Key.Escape || e.Key == Key.Up)
+            else if (e.Key == Key.Escape)
             {
                 if (btnCancel.IsEnabled)
                     Cancel_Click(this, new RoutedEventArgs());

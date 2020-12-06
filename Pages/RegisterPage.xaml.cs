@@ -14,6 +14,8 @@ namespace Memenim.Pages
 {
     public partial class RegisterPage : PageContent
     {
+        private bool _changeNicknameExplicit;
+
         public RegisterViewModel ViewModel
         {
             get
@@ -38,7 +40,7 @@ namespace Memenim.Pages
         private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
-            btnAutoRegister.IsEnabled = false;
+            //btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
@@ -57,8 +59,8 @@ namespace Memenim.Pages
             }
             finally
             {
-                btnRegister.IsEnabled = true;
-                btnAutoRegister.IsEnabled = true;
+                btnRegister.IsEnabled = !NeedBlockRegister();
+                //btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
@@ -68,21 +70,28 @@ namespace Memenim.Pages
         private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
-            btnAutoRegister.IsEnabled = false;
+            //btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
+            txtNickname.IsEnabled = false;
 
             try
             {
-                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password)
+                string nickname = txtNickname.Text;
+
+                if (string.IsNullOrWhiteSpace(nickname))
+                    nickname = null;
+
+                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password, nickname)
                     .ConfigureAwait(true);
 
                 if (result.error)
                 {
-                    lblErrorMessage.Content = result.message;
-
                     txtPassword.Clear();
+
+                    await DialogManager.ShowDialog("Register error", result.message)
+                        .ConfigureAwait(true);
                 }
                 else
                 {
@@ -99,29 +108,31 @@ namespace Memenim.Pages
 
                     txtLogin.Clear();
                     txtPassword.Clear();
+                    txtNickname.Clear();
                 }
             }
             catch (Exception ex)
             {
+                txtPassword.Clear();
+
                 await DialogManager.ShowDialog("An exception happened", ex.Message)
                     .ConfigureAwait(true);
-
-                txtPassword.Clear();
             }
             finally
             {
                 btnRegister.IsEnabled = !NeedBlockRegister();
-                btnAutoRegister.IsEnabled = true;
+                //btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
+                txtNickname.IsEnabled = true;
             }
         }
 
         private async void btnAutoRegister_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
-            btnAutoRegister.IsEnabled = false;
+            //btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
@@ -160,13 +171,15 @@ namespace Memenim.Pages
             }
             catch (Exception ex)
             {
+                txtPassword.Clear();
+
                 await DialogManager.ShowDialog("An exception happened", ex.Message)
                     .ConfigureAwait(true);
             }
             finally
             {
                 btnRegister.IsEnabled = !NeedBlockRegister();
-                btnAutoRegister.IsEnabled = true;
+                //btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
@@ -193,8 +206,7 @@ namespace Memenim.Pages
         {
             if (e.Key == Key.Enter || e.Key == Key.Down)
             {
-                if (btnRegister.IsEnabled)
-                    btnRegister_Click(this, new RoutedEventArgs());
+                txtNickname.Focus();
             }
             else if (e.Key == Key.Up)
             {
@@ -202,14 +214,39 @@ namespace Memenim.Pages
             }
         }
 
-        private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        private void txtNickname_KeyUp(object sender, KeyEventArgs e)
         {
-            btnRegister.IsEnabled = !NeedBlockRegister();
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                if (btnRegister.IsEnabled)
+                    btnRegister_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key == Key.Up)
+            {
+                txtPassword.Focus();
+            }
+            else
+            {
+                _changeNicknameExplicit = true;
+            }
         }
 
         private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
         {
             btnRegister.IsEnabled = !NeedBlockRegister();
+
+            if (!_changeNicknameExplicit)
+                txtNickname.Text = txtLogin.Text;
+        }
+
+        private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            btnRegister.IsEnabled = !NeedBlockRegister();
+        }
+
+        private void txtNickname_TextChanged(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

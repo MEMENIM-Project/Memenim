@@ -10,10 +10,13 @@
     <system:String x:Key="Login">Логин</system:String>
     <system:String x:Key="Password">Пароль</system:String>
     <system:String x:Key="RememberMe">Запомнить пользователя</system:String>
+    <system:String x:Key="Nickname">Псевдоним</system:String>
     <system:String x:Key="GoToRegister">Новый пользователь? Зарегистрируйтесь сейчас</system:String>
     <system:String x:Key="SignIn">Войти</system:String>
+    <system:String x:Key="SignInTitle">Вход</system:String>
     <system:String x:Key="GoToLogin">Уже зарегистрированы? Войдите сейчас</system:String>
     <system:String x:Key="SignUp">Зарегистрироваться</system:String>
+    <system:String x:Key="SignUpTitle">Регистрация</system:String>
 
     <system:String x:Key="ErrorTitle">Б Л Я Т Ь</system:String>
     <system:String x:Key="SuccessTitle">З А Б Ц А</system:String>

@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.10.3.0</AssemblyVersion>
-    <FileVersion>0.10.3.0</FileVersion>
+    <AssemblyVersion>0.10.4.0</AssemblyVersion>
+    <FileVersion>0.10.4.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.10.3</Version>
+    <Version>0.10.4</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>

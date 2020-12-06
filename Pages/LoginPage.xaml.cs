@@ -40,6 +40,7 @@ namespace Memenim.Pages
             btnGoToRegister.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
+            chkRememberMe.IsEnabled = false;
 
             try
             {
@@ -48,9 +49,10 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    lblErrorMessage.Content = result.message;
-
                     txtPassword.Clear();
+
+                    await DialogManager.ShowDialog("Login error", result.message)
+                        .ConfigureAwait(true);
                 }
                 else
                 {
@@ -74,14 +76,15 @@ namespace Memenim.Pages
 
                     txtLogin.Clear();
                     txtPassword.Clear();
+                    chkRememberMe.IsChecked = false;
                 }
             }
             catch (Exception ex)
             {
+                txtPassword.Clear();
+
                 await DialogManager.ShowDialog("An exception happened", ex.Message)
                     .ConfigureAwait(true);
-
-                txtPassword.Clear();
             }
             finally
             {
@@ -89,6 +92,7 @@ namespace Memenim.Pages
                 btnGoToRegister.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
+                chkRememberMe.IsEnabled = true;
             }
         }
 

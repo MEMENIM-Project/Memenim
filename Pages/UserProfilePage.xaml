@@ -93,8 +93,15 @@
         <ScrollViewer Grid.Row="1" Grid.Column="1"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <StackPanel x:Name="wpStatBlock1" Background="{StaticResource MahApps.Brushes.Gray10}"
-                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                <StackPanel x:Name="wpStatBlock1"
+                            Background="{StaticResource MahApps.Brushes.Gray10}">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
+                            <Binding Path="Children" Converter="{StaticResource ProfileStatCollectionToVisibilityConverter}" RelativeSource="{RelativeSource Mode=Self}"/>
+                            <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+
                     <widgets:UserProfileStat Margin="10" StatTitle="Thoughts"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
@@ -108,8 +115,15 @@
                     </widgets:UserProfileStat>
                     <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 </StackPanel>
-                <StackPanel x:Name="wpStatBlock2" Background="{StaticResource MahApps.Brushes.Gray10}"
-                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                <StackPanel x:Name="wpStatBlock2"
+                            Background="{StaticResource MahApps.Brushes.Gray10}">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
+                            <Binding Path="Children" Converter="{StaticResource ProfileStatCollectionToVisibilityConverter}" RelativeSource="{RelativeSource Mode=Self}"/>
+                            <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+
                     <widgets:UserProfileStat Margin="10" StatTitle="Purpose"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.target, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
@@ -145,8 +159,15 @@
                     </widgets:UserProfileStat>
                     <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 </StackPanel>
-                <StackPanel x:Name="wpStatBlock3" Background="{StaticResource MahApps.Brushes.Gray10}"
-                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                <StackPanel x:Name="wpStatBlock3"
+                            Background="{StaticResource MahApps.Brushes.Gray10}">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
+                            <Binding Path="Children" Converter="{StaticResource ProfileStatCollectionToVisibilityConverter}" RelativeSource="{RelativeSource Mode=Self}"/>
+                            <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+                    
                     <widgets:UserProfileStat Margin="10" StatTitle="Interests"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.interests, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
@@ -193,8 +214,15 @@
                     </widgets:UserProfileStat>
                     <Border Height="10" Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 </StackPanel>
-                <StackPanel x:Name="wpStatBlock4" Background="{StaticResource MahApps.Brushes.Gray10}"
-                            Visibility="{Binding Path=Children, Converter={StaticResource ProfileStatCollectionToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}">
+                <StackPanel x:Name="wpStatBlock4"
+                            Background="{StaticResource MahApps.Brushes.Gray10}">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
+                            <Binding Path="Children" Converter="{StaticResource ProfileStatCollectionToVisibilityConverter}" RelativeSource="{RelativeSource Mode=Self}"/>
+                            <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+
                     <widgets:UserProfileStat Margin="10" StatTitle="About me"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.about, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
