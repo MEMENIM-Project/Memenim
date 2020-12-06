@@ -37,6 +37,22 @@ namespace Memenim.Pages
             return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
         }
 
+        protected override void OnExit(object sender, RoutedEventArgs e)
+        {
+            txtLogin.Clear();
+            txtPassword.Clear();
+            txtNickname.Clear();
+            _changeNicknameExplicit = false;
+
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            base.OnExit(sender, e);
+        }
+
         private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
@@ -194,9 +210,6 @@ namespace Memenim.Pages
         private void btnGoToLogin_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<LoginPage>();
-
-            txtLogin.Clear();
-            txtPassword.Clear();
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)
