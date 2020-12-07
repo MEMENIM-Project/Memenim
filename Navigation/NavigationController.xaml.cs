@@ -115,7 +115,8 @@ namespace Memenim.Navigation
 
         private void SetPage(PageContent page, PageViewModel dataContext = null)
         {
-            if (ReferenceEquals(PageContent.Content, page)
+            if (!OverlayIsOpen()
+                && ReferenceEquals(PageContent.Content, page)
                 && (dataContext == null
                     || ReferenceEquals((PageContent.Content as PageContent)?.DataContext, dataContext)))
             {

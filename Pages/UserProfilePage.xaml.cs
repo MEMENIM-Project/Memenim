@@ -83,21 +83,44 @@ namespace Memenim.Pages
             {
                 btnEditMode.IsChecked = false;
 
-                if (id == -1)
+                if (id < 0)
+                {
+                    NavigationController.Instance.GoBack();
+
+                    string notFoundLocalized = (string)MainWindow.Instance
+                        .FindResource("UserNotFound");
+
+                    await DialogManager.ShowDialog("Error", notFoundLocalized)
+                        .ConfigureAwait(true);
+
                     return;
+                }
 
                 var result = await UserApi.GetProfileById(id)
                     .ConfigureAwait(true);
 
                 if (result.error)
                 {
+                    NavigationController.Instance.GoBack();
+
                     await DialogManager.ShowDialog("F U C K", result.message)
                         .ConfigureAwait(true);
+
                     return;
                 }
 
                 if (result.data == null)
+                {
+                    NavigationController.Instance.GoBack();
+
+                    string notFoundLocalized = (string)MainWindow.Instance
+                        .FindResource("UserNotFound");
+
+                    await DialogManager.ShowDialog("Error", notFoundLocalized)
+                        .ConfigureAwait(true);
+
                     return;
+                }
 
                 ViewModel.CurrentProfileData = result.data;
 
@@ -216,6 +239,16 @@ namespace Memenim.Pages
                 await UpdateProfile()
                     .ConfigureAwait(true);
             }
+        }
+
+        private void CopyUserLink_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText($"memenim://app/showuserid/{ViewModel.CurrentProfileData.id}");
+        }
+
+        private void CopyUserId_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(ViewModel.CurrentProfileData.id.ToString());
         }
 
         private void AvatarImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

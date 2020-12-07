@@ -164,6 +164,11 @@ namespace Memenim.Widgets
             RaiseEvent(new RoutedEventArgs(OnPostClicked));
         }
 
+        private void CopyPostLink_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
+        }
+
         private void CopyPostId_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(CurrentPostData.id.ToString());

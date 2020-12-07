@@ -176,6 +176,27 @@ namespace Memenim
             }
         }
 
+        private async void OpenLink_Click(object sender, RoutedEventArgs e)
+        {
+            string enterLocalizeName = (string)Instance
+                .FindResource("EnterTitle");
+
+            string link = await DialogManager.ShowSinglelineTextDialog(
+                    "Link opening", $"{enterLocalizeName} URI")
+                .ConfigureAwait(true);
+
+            if (string.IsNullOrWhiteSpace(link))
+                return;
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = link,
+                UseShellExecute = true
+            };
+
+            Process.Start(startInfo);
+        }
+
         private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedPair = (KeyValuePair<string, string>)slcLanguage.SelectedItem;

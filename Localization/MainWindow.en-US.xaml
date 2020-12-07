@@ -65,4 +65,7 @@
     <system:String x:Key="Enum-UserStatusType-Admin">Admin</system:String>
 
     <system:String x:Key="EnterTitle">Enter</system:String>
+
+    <system:String x:Key="UserNotFound">User not found</system:String>
+    <system:String x:Key="PostNotFound">Post not found</system:String>
 </ResourceDictionary>

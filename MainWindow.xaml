@@ -15,7 +15,7 @@
                       WindowTitleBrush="{StaticResource MahApps.Brushes.Menu.Background}"
                       GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                       dialogs:DialogParticipation.Register="{Binding}"
-                      Title="MEMENIM Desktop"
+                      Title=""
                       MinHeight="450" MinWidth="800"
                       Height="450" Width="800"
                       Closed="MainWindow_Closed">
@@ -27,6 +27,35 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
+    <controls:MetroWindow.LeftWindowCommands>
+        <controls:WindowCommands>
+            <controls:WindowCommandsItem>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="MEMENIM DESKTOP"
+                               FontSize="16" FontWeight="Thin"
+                               TextAlignment="Center"
+                               Margin="5 0 10 0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </controls:WindowCommandsItem>
+            <controls:WindowCommandsItem IsSeparatorVisible="False">
+                <StackPanel Orientation="Horizontal">
+                    <Button HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Click="OpenLink_Click">
+                        <iconPacks:PackIconModern Width="15" Height="15"
+                                                  Kind="Link"
+                                                  Margin="3 0 3 0"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+            </controls:WindowCommandsItem>
+        </controls:WindowCommands>
+    </controls:MetroWindow.LeftWindowCommands>
+
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="SettingsFlyout"
@@ -78,6 +107,7 @@
             </controls:Flyout>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
+
     <Grid x:Name="RootLayout">
         <Grid Grid.Row="0" Grid.Column="0" x:Name="loadingGrid"
               Visibility="Collapsed" ZIndex="2147483647"

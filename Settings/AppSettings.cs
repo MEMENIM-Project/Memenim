@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using RIS.Settings;
 using RIS.Settings.Ini;
@@ -32,7 +33,7 @@ namespace Memenim.Settings
         public string AppVersion { get; set; }
 
         public AppSettings()
-            : base(SettingsFileName)
+            : base(Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName))
         {
             SyncRoot = new object();
 

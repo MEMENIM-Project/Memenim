@@ -139,7 +139,8 @@ namespace Memenim.Widgets
         }
         public async Task LoadMoreComments(int count, int offset)
         {
-            var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUserToken,
+            var result = await PostApi.GetComments(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
                     PostId, count, offset)
                 .ConfigureAwait(true);
 
@@ -177,8 +178,10 @@ namespace Memenim.Widgets
 
                 Dispatcher.Invoke(() =>
                 {
-                    if (lstComments.Children.Count >= CommentsCount.count)
-                        btnLoadMore.Visibility = Visibility.Collapsed;
+                    btnLoadMore.Visibility =
+                        lstComments.Children.Count >= CommentsCount.count
+                            ? Visibility.Collapsed
+                            : Visibility.Visible;
 
                     Offset += comments.Count;
                 });
@@ -421,8 +424,10 @@ namespace Memenim.Widgets
             if (commentsList == null)
                 return;
 
-            if (commentsList.lstComments.Children.Count >= ((StatisticSchema)e.NewValue).count)
-                commentsList.btnLoadMore.Visibility = Visibility.Collapsed;
+            commentsList.btnLoadMore.Visibility =
+                commentsList.lstComments.Children.Count >= ((StatisticSchema)e.NewValue).count
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
         }
 
         private async void AutoUpdateTimerCallback(object sender, ElapsedEventArgs e)

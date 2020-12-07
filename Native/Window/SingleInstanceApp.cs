@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Memenim.Logs;
+using Memenim.Protocols;
 using ProtoBuf;
 using TinyIpc.Messaging;
 
@@ -39,7 +40,7 @@ namespace Memenim.Native.Window
             if (!message.HasValue)
                 return;
 
-            LogManager.DebugLog.Info($"Send message - name = {message.Value.Name}, " +
+            LogManager.DebugLog.Info($"Receive message - name = {message.Value.Name}, " +
                                      $"type = {message.Value.ContentType}, restoreWindow = {message.Value.RestoreWindow}");
 
             if (message.Value.ContentType == IpcBusContentType.StringUtf8)
@@ -56,7 +57,10 @@ namespace Memenim.Native.Window
                     {
                         case "startupUri":
                             string startupUri = (string)argEntry.Value;
-                            //startupUri parsing
+
+                            if (!string.IsNullOrEmpty(startupUri))
+                                ProtocolManager.ParseUri(startupUri);
+
                             break;
                         case "createHashFiles":
                         default:

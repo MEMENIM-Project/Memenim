@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using RIS.Settings.Ini;
+using Environment = RIS.Environment;
 
 namespace Memenim.Settings
 {
@@ -21,7 +23,7 @@ namespace Memenim.Settings
         {
             SyncRoot = new object();
 
-            SettingsFilePath = SettingsFileName;
+            SettingsFilePath = Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName);
             SettingsFile = new IniFile();
 
             CurrentUserLogin = string.Empty;

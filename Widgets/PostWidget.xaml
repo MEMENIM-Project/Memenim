@@ -25,6 +25,7 @@
             
             <Grid.ContextMenu>
                 <ContextMenu x:Name="postMenu" Visibility="Visible">
+                    <MenuItem Header="Copy Post Link" Click="CopyPostLink_Click"/>
                     <MenuItem Header="Copy Post Id" Click="CopyPostId_Click"/>
                     <MenuItem Header="Copy Post Text" Click="CopyPostText_Click"/>
                     <MenuItem Header="Edit Post Text" Name="btnEdit"

@@ -17,6 +17,7 @@ using Memenim.Logs;
 using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
+using Memenim.Protocols;
 using Memenim.Settings;
 using Memenim.Storage;
 using Memenim.Utils;
@@ -54,6 +55,7 @@ namespace Memenim
             }
         }
 
+        private static string AppStartupUri { get; set; }
         private static bool CreateHashFiles { get; set; }
 
         private static void SingleInstanceMain()
@@ -79,6 +81,9 @@ namespace Memenim
             LogManager.Log.Info($"Execution File Directory - {Environment.ExecProcessDirectoryName}");
             LogManager.Log.Info($"Is Standalone App - {Environment.IsStandalone}");
             LogManager.Log.Info($"Is Single File App - {Environment.IsSingleFile}");
+            LogManager.Log.Info($"Runtime Name - {Environment.RuntimeName}");
+            LogManager.Log.Info($"Runtime Version - {Environment.RuntimeVersion}");
+            LogManager.Log.Info($"Runtime Identifier - {Environment.RuntimeIdentifier}");
 
             string librariesHash = HashManager.GetLibrariesHash();
             string exeHash = HashManager.GetExeHash();
@@ -132,8 +137,7 @@ namespace Memenim
                 switch (argEntry.Key)
                 {
                     case "startupUri":
-                        string startupUri = (string)argEntry.Value;
-                        //startupUri parsing
+                        AppStartupUri = (string)argEntry.Value;
                         break;
                     case "createHashFiles":
                         CreateHashFiles = bool.Parse((string)argEntry.Value);
@@ -177,16 +181,20 @@ namespace Memenim
                 if (string.IsNullOrWhiteSpace(arg))
                     continue;
 
-                string[] argEntryComponents = arg.Split(':');
+                int separatorPosition = arg.IndexOf(':');
 
-                if (argEntryComponents.Length < 2)
+                if (separatorPosition == -1)
                 {
-                    argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), string.Empty));
+                    argsEntries.Add(
+                        (arg.Trim(' ', '\'', '\"'),
+                        string.Empty));
 
                     continue;
                 }
 
-                argsEntries.Add((argEntryComponents[0].Trim(' ', '\'', '\"'), argEntryComponents[1].Trim(' ', '\'', '\"')));
+                argsEntries.Add(
+                    (arg.Substring(0, separatorPosition).Trim(' ', '\'', '\"'),
+                    arg.Substring(separatorPosition + 1).Trim(' ', '\'', '\"')));
             }
 
             return new ArgsKeyedWrapper(argsEntries);
@@ -210,6 +218,8 @@ namespace Memenim
             await StorageManager.Initialize()
                 .ConfigureAwait(true);
 
+            ProtocolManager.RegisterAll();
+
             await Task.Run(async () =>
             {
                 LogManager.Log.Info("Deleted older logs - " +
@@ -224,6 +234,8 @@ namespace Memenim
 
                     if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUserLogin))
                     {
+                        SettingsManager.PersistentSettings.CurrentUserLogin = null;
+
                         Dispatcher.Invoke(() =>
                         {
                             NavigationController.Instance.RequestPage<LoginPage>();
@@ -239,6 +251,8 @@ namespace Memenim
 
                     if (string.IsNullOrEmpty(userToken) || string.IsNullOrEmpty(userId))
                     {
+                        SettingsManager.PersistentSettings.CurrentUserLogin = null;
+
                         Dispatcher.Invoke(() =>
                         {
                             NavigationController.Instance.RequestPage<LoginPage>();
@@ -262,6 +276,8 @@ namespace Memenim
                     if (resultPosts.error
                         && (resultPosts.code == 400 || resultPosts.code == 401))
                     {
+                        SettingsManager.PersistentSettings.CurrentUserLogin = null;
+
                         Dispatcher.Invoke(() =>
                         {
                             NavigationController.Instance.RequestPage<LoginPage>();
@@ -321,10 +337,15 @@ namespace Memenim
                     Dispatcher.Invoke(() =>
                     {
                         NavigationController.Instance.RequestPage<FeedPage>();
+
+                        if (!string.IsNullOrEmpty(AppStartupUri))
+                            ProtocolManager.ParseUri(AppStartupUri);
                     });
                 }
                 catch (CryptographicException)
                 {
+                    SettingsManager.PersistentSettings.CurrentUserLogin = null;
+
                     Dispatcher.Invoke(() =>
                     {
                         NavigationController.Instance.RequestPage<LoginPage>();

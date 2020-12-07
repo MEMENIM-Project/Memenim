@@ -9,7 +9,6 @@
         <system:String>FeedPage</system:String>
         <system:String>SubmitPostPage</system:String>
         <system:String>PlaceholderPage</system:String>
-        <system:String>SettingsPage</system:String>
         <system:String>UserProfilePage</system:String>
         <system:String>MemesPage</system:String>
         <system:String>PostOverlayPage</system:String>

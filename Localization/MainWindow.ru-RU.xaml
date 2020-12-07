@@ -65,4 +65,7 @@
     <system:String x:Key="Enum-UserStatusType-Admin">Администратор</system:String>
 
     <system:String x:Key="EnterTitle">Введите</system:String>
+
+    <system:String x:Key="UserNotFound">Пользователь не найден</system:String>
+    <system:String x:Key="PostNotFound">Пост не найден</system:String>
 </ResourceDictionary>

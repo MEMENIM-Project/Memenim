@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
+using Memenim.Dialogs;
+using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Storage;
@@ -41,10 +43,52 @@ namespace Memenim.Pages
         }
         public async Task UpdatePost(int id)
         {
+            if (id < 0)
+            {
+                NavigationController.Instance.GoBack();
+                NavigationController.Instance.GoBack();
+
+                string notFoundLocalized = (string)MainWindow.Instance
+                    .FindResource("PostNotFound");
+
+                await DialogManager.ShowDialog("Error", notFoundLocalized)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
             ViewModel.CurrentPostData.id = id;
 
-            ViewModel.CurrentPostData = await GetUpdatedPostData()
+            var result = await PostApi.GetById(
+                    ViewModel.CurrentPostData.id)
                 .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                NavigationController.Instance.GoBack();
+                NavigationController.Instance.GoBack();
+
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            if (result.data == null)
+            {
+                NavigationController.Instance.GoBack();
+                NavigationController.Instance.GoBack();
+
+                string notFoundLocalized = (string)MainWindow.Instance
+                    .FindResource("PostNotFound");
+
+                await DialogManager.ShowDialog("Error", notFoundLocalized)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            ViewModel.CurrentPostData = result.data;
         }
 
         public async Task<PostSchema> GetUpdatedPostData()

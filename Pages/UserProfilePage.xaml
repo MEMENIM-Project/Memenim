@@ -18,7 +18,7 @@
                           DataContext="{Binding}"/>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource MahApps.Brushes.Window.Background}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="240" Width="240*"/>
             <ColumnDefinition Width="575*"/>
@@ -27,6 +27,13 @@
             <RowDefinition MinHeight="40" Height="40"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+
+        <Grid.ContextMenu>
+            <ContextMenu x:Name="userMenu" Visibility="Visible">
+                <MenuItem Header="Copy User Link" Click="CopyUserLink_Click"/>
+                <MenuItem Header="Copy User Id" Click="CopyUserId_Click"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
 
         <ContentControl Grid.Row="0" Grid.Column="0" Visibility="Collapsed"
                         Content="{StaticResource ProxyElement}"/>
