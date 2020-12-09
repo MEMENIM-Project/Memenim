@@ -63,20 +63,32 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        MouseLeftButtonUp="PostImage_MouseLeftButtonUp"/>
             </Grid>
-            <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <local:StatButton x:Name="stReposts" ButtonSize="28" IconKind="Share"
-                                  BorderSize="0" IsEnabled="False" HorizontalAlignment="Left"
-                                  StatValue="{Binding Path=CurrentPostData.reposts, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+            <StackPanel Grid.Row="3" Grid.Column="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left">
+                <local:StatButton x:Name="stReposts"
+                                  ButtonSize="28" IconKind="Share"
+                                  StatValue="{Binding Path=CurrentPostData.reposts, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  ButtonClick="Repost_Click"/>
             </StackPanel>
-            <local:StatButton Grid.Row="3" Grid.Column="1" x:Name="stComments" ButtonSize="28" IconKind="Message"
-                              BorderSize="0" IsEnabled="False" HorizontalAlignment="Center"
-                              StatValue="{Binding Path=CurrentPostData.comments.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-            <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                <local:StatButton x:Name="stLikes" ButtonSize="28" IconKind="ThumbsUp" HorizontalAlignment="Right"
+            <StackPanel Grid.Row="3" Grid.Column="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <local:StatButton x:Name="stComments"
+                                  ButtonSize="28" IconKind="Message"
+                                  BorderSize="0" IsEnabled="False"
+                                  StatValue="{Binding Path=CurrentPostData.comments.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.Column="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <local:StatButton x:Name="stLikes"
+                                  ButtonSize="28" IconKind="ThumbsUp"
                                   StatValue="{Binding Path=CurrentPostData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                   BorderBackground="{Binding Path=CurrentPostData.likes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                   ButtonClick="Like_Click"/>
-                <local:StatButton x:Name="stDislikes" ButtonSize="28" IconKind="ThumbsDown" HorizontalAlignment="Right"
+                <local:StatButton x:Name="stDislikes"
+                                  ButtonSize="28" IconKind="ThumbsDown"
                                   StatValue="{Binding Path=CurrentPostData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                   BorderBackground="{Binding Path=CurrentPostData.dislikes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                   ButtonClick="Dislike_Click"/>

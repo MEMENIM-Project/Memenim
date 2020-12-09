@@ -328,13 +328,13 @@ namespace Memenim.Widgets
 
             PostOverlayPage page = null;
             double verticalOffset = 0.0;
-            double extentHeight = 1.0;
+            double scrollableHeight = 21.0;
 
             Dispatcher.Invoke(() =>
             {
                 page = this.TryFindParent<PostOverlayPage>();
-                verticalOffset = page?.svPost?.VerticalOffset ?? 0.0;
-                extentHeight = page?.svPost?.ScrollableHeight ?? 1.0;
+                verticalOffset = page?.svPost?.VerticalOffset ?? verticalOffset;
+                scrollableHeight = page?.svPost?.ScrollableHeight ?? scrollableHeight;
             });
 
             await AddNewComments(result.data)
@@ -342,7 +342,7 @@ namespace Memenim.Widgets
 
             Dispatcher.Invoke(() =>
             {
-                if (verticalOffset >= extentHeight)
+                if (verticalOffset >= scrollableHeight - 20)
                     page?.svPost?.ScrollToEnd();
             });
 

@@ -9,6 +9,7 @@
         <system:String>FeedPage</system:String>
         <system:String>SubmitPostPage</system:String>
         <system:String>PlaceholderPage</system:String>
+        <system:String>ChatPlaceholderPage</system:String>
         <system:String>UserProfilePage</system:String>
         <system:String>MemesPage</system:String>
         <system:String>PostOverlayPage</system:String>
@@ -20,7 +21,7 @@
     <x:Array x:Key="CentralNavButtons" Type="local:NavRedirectButtonNode">
         <local:NavRedirectButtonNode PageName="PlaceholderPage" IconKind="Magnify"/>
         <local:NavRedirectButtonNode PageName="FeedPage" IconKind="Newspaper"/>
-        <local:NavRedirectButtonNode PageName="PlaceholderPage" IconKind="Chat"/>
+        <local:NavRedirectButtonNode PageName="ChatPlaceholderPage" IconKind="Chat"/>
         <!--<local:NavRedirectButtonNode PageName="MemesPage" IconKind="SmileyHappy"/>-->
     </x:Array>
     <x:Array x:Key="BottomNavButtons" Type="local:NavRedirectButtonNode">

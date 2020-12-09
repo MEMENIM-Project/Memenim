@@ -43,7 +43,13 @@ namespace Memenim.Widgets
         {
             get
             {
-                return (string)GetValue(CommentTextProperty);
+                Focus();
+
+                string commentText = (string)GetValue(CommentTextProperty);
+
+                txtContent.Focus();
+
+                return commentText;
             }
             set
             {
@@ -124,7 +130,10 @@ namespace Memenim.Widgets
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.Enter)
             {
                 if (btnSend.IsEnabled)
+                {
+                    btnSend.Focus();
                     btnSend_Click(this, new RoutedEventArgs());
+                }
             }
         }
 
@@ -147,6 +156,8 @@ namespace Memenim.Widgets
             txtContent.Text = string.Empty;
 
             RaiseEvent(new RoutedEventArgs(OnCommentAdded));
+
+            txtContent.Focus();
 
             btnSend.IsEnabled = true;
         }

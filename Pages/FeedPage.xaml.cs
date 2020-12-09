@@ -427,9 +427,13 @@ namespace Memenim.Pages
 
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
+            if (!(sender is PostWidget post))
+                return;
+
             NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
             {
-                CurrentPostData = (sender as PostWidget)?.CurrentPostData
+                SourcePostWidget = post,
+                CurrentPostData = post.CurrentPostData
             });
         }
 

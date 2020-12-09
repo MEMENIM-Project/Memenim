@@ -16,6 +16,9 @@ namespace Memenim.Pages
 {
     public partial class PostOverlayPage : PageContent
     {
+        private double _writeCommentMinHeight;
+        private double _writeCommentMaxHeight;
+
         public PostOverlayViewModel ViewModel
         {
             get
@@ -35,6 +38,9 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new PostOverlayViewModel();
+
+            _writeCommentMinHeight = PostGrid.RowDefinitions[1].MinHeight;
+            _writeCommentMaxHeight = ActualHeight * 0.3;
         }
 
         public Task UpdatePost()
@@ -60,6 +66,7 @@ namespace Memenim.Pages
             ViewModel.CurrentPostData.id = id;
 
             var result = await PostApi.GetById(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
                     ViewModel.CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -89,6 +96,13 @@ namespace Memenim.Pages
             }
 
             ViewModel.CurrentPostData = result.data;
+
+            if (ViewModel.SourcePostWidget?.CurrentPostData.id == ViewModel.CurrentPostData.id)
+            {
+                ViewModel.SourcePostWidget?.SetValue(
+                    PostWidget.CurrentPostDataProperty,
+                    ViewModel.CurrentPostData);
+            }
         }
 
         public async Task<PostSchema> GetUpdatedPostData()
@@ -104,6 +118,7 @@ namespace Memenim.Pages
                 return postData;
 
             var result = await PostApi.GetById(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
                     postData.id)
                 .ConfigureAwait(true);
 
@@ -134,6 +149,8 @@ namespace Memenim.Pages
 
             base.OnEnter(sender, e);
 
+            svPost.ScrollToVerticalOffset(0.0);
+
             await UpdatePost()
                 .ConfigureAwait(true);
 
@@ -144,11 +161,28 @@ namespace Memenim.Pages
             if (result.data != null)
                 wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
 
-            svPost.ScrollToVerticalOffset(0.0);
+            var draft = await StorageManager.GetPostCommentDraft(
+                    SettingsManager.PersistentSettings.CurrentUserId,
+                    ViewModel.CurrentPostData.id)
+                .ConfigureAwait(true);
+
+            wdgWriteComment.CommentText = draft.CommentText;
+            wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+
+            wdgWriteComment.txtContent.ScrollToEnd();
+            wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
+            wdgWriteComment.txtContent.Focus();
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override async void OnExit(object sender, RoutedEventArgs e)
         {
+            await StorageManager.SetPostCommentDraft(
+                    SettingsManager.PersistentSettings.CurrentUserId,
+                    ViewModel.CurrentPostData.id,
+                    wdgWriteComment.CommentText,
+                    wdgWriteComment.IsAnonymous)
+                .ConfigureAwait(true);
+
             if (!IsOnExitActive)
             {
                 e.Handled = true;
@@ -161,10 +195,15 @@ namespace Memenim.Pages
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
         protected override async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            base.OnDataContextChanged(sender, e);
-
             if (e.OldValue is PostOverlayViewModel oldViewModel)
             {
+                if (oldViewModel.SourcePostWidget?.CurrentPostData.id == oldViewModel.CurrentPostData.id)
+                {
+                    oldViewModel.SourcePostWidget?.SetValue(
+                        PostWidget.CurrentPostDataProperty,
+                        oldViewModel.CurrentPostData);
+                }
+
                 await StorageManager.SetPostCommentDraft(
                         SettingsManager.PersistentSettings.CurrentUserId,
                         oldViewModel.CurrentPostData.id,
@@ -178,6 +217,13 @@ namespace Memenim.Pages
 
             if (e.NewValue is PostOverlayViewModel newViewModel)
             {
+                if (newViewModel.SourcePostWidget?.CurrentPostData.id == newViewModel.CurrentPostData.id)
+                {
+                    newViewModel.SourcePostWidget?.SetValue(
+                        PostWidget.CurrentPostDataProperty,
+                        newViewModel.CurrentPostData);
+                }
+
                 var draft = await StorageManager.GetPostCommentDraft(
                         SettingsManager.PersistentSettings.CurrentUserId,
                         newViewModel.CurrentPostData.id)
@@ -186,9 +232,12 @@ namespace Memenim.Pages
                 wdgWriteComment.CommentText = draft.CommentText;
                 wdgWriteComment.IsAnonymous = draft.IsAnonymous;
 
-                wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
                 wdgWriteComment.txtContent.ScrollToEnd();
+                wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
+                wdgWriteComment.txtContent.Focus();
             }
+
+            base.OnDataContextChanged(sender, e);
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
 
@@ -200,6 +249,15 @@ namespace Memenim.Pages
             {
                 await UpdatePost()
                     .ConfigureAwait(true);
+            }
+            else if (e.PropertyName == nameof(ViewModel.CurrentPostData))
+            {
+                if (ViewModel.SourcePostWidget?.CurrentPostData.id == ViewModel.CurrentPostData.id)
+                {
+                    ViewModel.SourcePostWidget?.SetValue(
+                        PostWidget.CurrentPostDataProperty,
+                        ViewModel.CurrentPostData);
+                }
             }
         }
 
@@ -237,7 +295,7 @@ namespace Memenim.Pages
                 return;
 
             double verticalOffset = svPost.VerticalOffset;
-            double extentHeight = svPost.ScrollableHeight;
+            double scrollableHeight = svPost.ScrollableHeight;
             string replyText = //$">>> {commentsList.PostId}@{comment.CurrentCommentData.id}@{comment.CurrentCommentData.user.id} {comment.CurrentCommentData.user.name}:\n\n"
                                $">>> {comment.CurrentCommentData.user.name}:\n\n"
                                + $"{comment.CurrentCommentData.text}\n\n"
@@ -249,8 +307,8 @@ namespace Memenim.Pages
             wdgWriteComment.txtContent.ScrollToEnd();
             wdgWriteComment.txtContent.Focus();
 
-            if (verticalOffset >= extentHeight)
-                svPost?.ScrollToEnd();
+            if (verticalOffset >= scrollableHeight - 20)
+                svPost.ScrollToEnd();
 
             if (comment.CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUserId)
                 return;
@@ -317,22 +375,48 @@ namespace Memenim.Pages
         private void WriteComment_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             double verticalOffset = svPost.VerticalOffset;
-            double extentHeight = svPost.ExtentHeight;
+            double scrollableHeight = svPost.ScrollableHeight;
             double writeCommentHeight =
-                Math.Min(Math.Max(wdgWriteComment.ActualHeight, PostGrid.RowDefinitions[1].MinHeight),
-                    ActualHeight * 0.3);
+                Math.Min(Math.Max(e.NewSize.Height, _writeCommentMinHeight),
+                    _writeCommentMaxHeight);
 
             PostGrid.RowDefinitions[0].Height = new GridLength(
                 ActualHeight - writeCommentHeight);
-            PostGrid.RowDefinitions[1].Height = new GridLength(writeCommentHeight);
+            PostGrid.RowDefinitions[1].Height = new GridLength(
+                writeCommentHeight);
 
-            wdgWriteComment.MaxHeight = writeCommentHeight + 1;
+            //wdgWriteComment.MaxHeight = writeCommentHeight + 1;
 
-            if (verticalOffset >= extentHeight)
+            if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();
 
             //svPost.ScrollToVerticalOffset(
             //    svPost.VerticalOffset + (e.NewSize.Height - e.PreviousSize.Height));
+        }
+
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //if (!e.HeightChanged)
+            //    return;
+
+            _writeCommentMaxHeight = e.NewSize.Height * 0.3;
+            wdgWriteComment.MaxHeight = _writeCommentMaxHeight;
+
+            double verticalOffset = svPost.VerticalOffset;
+            double scrollableHeight = svPost.ScrollableHeight;
+            double writeCommentHeight =
+                Math.Min(Math.Max(wdgWriteComment.ActualHeight, _writeCommentMinHeight),
+                    _writeCommentMaxHeight);
+
+            PostGrid.RowDefinitions[0].Height = new GridLength(
+                e.NewSize.Height - writeCommentHeight);
+            PostGrid.RowDefinitions[1].Height = new GridLength(
+                writeCommentHeight);
+
+            //wdgWriteComment.MaxHeight = writeCommentHeight + 1;
+
+            if (verticalOffset >= scrollableHeight - 20)
+                svPost.ScrollToEnd();
         }
     }
 }

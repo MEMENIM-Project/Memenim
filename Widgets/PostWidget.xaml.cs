@@ -164,9 +164,29 @@ namespace Memenim.Widgets
             RaiseEvent(new RoutedEventArgs(OnPostClicked));
         }
 
-        private void CopyPostLink_Click(object sender, RoutedEventArgs e)
+        private async void CopyPostLink_Click(object sender, RoutedEventArgs e)
         {
+            stReposts.IsEnabled = false;
+
             Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
+
+            var result = await PostApi.AddRepost(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    CurrentPostData.id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+
+                stReposts.IsEnabled = true;
+                return;
+            }
+
+            ++CurrentPostData.reposts;
+
+            stReposts.IsEnabled = true;
         }
 
         private void CopyPostId_Click(object sender, RoutedEventArgs e)
@@ -259,6 +279,31 @@ namespace Memenim.Widgets
             RaiseEvent(new RoutedEventArgs(OnPostDeleted));
 
             btnDelete.IsEnabled = true;
+        }
+
+        private async void Repost_Click(object sender, RoutedEventArgs e)
+        {
+            stReposts.IsEnabled = false;
+
+            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
+
+            var result = await PostApi.AddRepost(
+                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    CurrentPostData.id)
+                .ConfigureAwait(true);
+
+            if (result.error)
+            {
+                await DialogManager.ShowDialog("F U C K", result.message)
+                    .ConfigureAwait(true);
+
+                stReposts.IsEnabled = true;
+                return;
+            }
+
+            ++CurrentPostData.reposts;
+
+            stReposts.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)

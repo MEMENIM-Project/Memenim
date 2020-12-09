@@ -20,7 +20,12 @@
     
     <system:String x:Key="ErrorTitle">F U C K</system:String>
     <system:String x:Key="SuccessTitle">S U C C</system:String>
+
     <system:String x:Key="WIPTitle">Not implemented yet</system:String>
+
+    <system:String x:Key="CopyLogin">Copy login</system:String>
+    <system:String x:Key="CopyPassword">Copy password</system:String>
+    <system:String x:Key="GoToChatWebPage">Go to chat web page</system:String>
     
     <system:String x:Key="FeedTitle">Feed</system:String>
     <system:String x:Key="PreviewTitle">Preview</system:String>

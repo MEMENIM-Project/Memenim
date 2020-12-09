@@ -20,7 +20,12 @@
 
     <system:String x:Key="ErrorTitle">Б Л Я Т Ь</system:String>
     <system:String x:Key="SuccessTitle">З А Б Ц А</system:String>
+
     <system:String x:Key="WIPTitle">ТИХО</system:String>
+
+    <system:String x:Key="CopyLogin">Скопировать логин</system:String>
+    <system:String x:Key="CopyPassword">Скопировать пароль</system:String>
+    <system:String x:Key="GoToChatWebPage">Перейти на веб-страницу чата</system:String>
 
     <system:String x:Key="FeedTitle">Лента</system:String>
     <system:String x:Key="PreviewTitle">Предпросмотр</system:String>

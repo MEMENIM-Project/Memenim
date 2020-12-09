@@ -6,6 +6,7 @@ using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Widgets;
 using RIS.Reflection.Call;
 
 namespace Memenim.Protocols.Schemas
@@ -125,9 +126,69 @@ namespace Memenim.Protocols.Schemas
                 {
                     NavigationController.Instance.RequestPage<FeedPage>();
 
+                    PostWidget sourcePost = null;
+                    FeedPage page = (FeedPage)PageStorage.GetPage<FeedPage>();
+
+                    if (page != null)
+                    {
+                        var postType = ((PostTypeNode)page.lstPostTypes.SelectedItem).CategoryType;
+
+                        switch (postType)
+                        {
+                            case PostType.Popular:
+                                if (page.lstPosts.Children.Count == 0)
+                                    break;
+
+                                foreach (var element in page.lstPosts.Children)
+                                {
+                                    if (!(element is PostWidget post))
+                                        continue;
+
+                                    if (post.CurrentPostData.id != id)
+                                        continue;
+
+                                    sourcePost = post;
+                                    break;
+                                }
+
+                                break;
+                            case PostType.New:
+                            case PostType.My:
+                            case PostType.Favorite:
+                                if (page.lstPosts.Children.Count == 0)
+                                    break;
+
+                                if (page.lstPosts.Children.Count > 2
+                                    && (page.lstPosts.Children[0] is PostWidget startPost
+                                        && page.lstPosts.Children[^1] is PostWidget endPost)
+                                    && !(startPost.CurrentPostData.id >= id
+                                         && id >= endPost.CurrentPostData.id))
+                                {
+                                    break;
+                                }
+
+                                foreach (var element in page.lstPosts.Children)
+                                {
+                                    if (!(element is PostWidget post))
+                                        continue;
+
+                                    if (post.CurrentPostData.id != id)
+                                        continue;
+
+                                    sourcePost = post;
+                                    break;
+                                }
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
                     NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
                     {
-                        CurrentPostData = new PostSchema()
+                        SourcePostWidget = sourcePost,
+                        CurrentPostData = new PostSchema
                         {
                             id = id
                         }
