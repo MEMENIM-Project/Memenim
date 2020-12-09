@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
+             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="400">
@@ -36,11 +37,12 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        MouseUp="Avatar_MouseUp"/>
             </Grid>
-            <TextBlock Grid.Row="0" Grid.Column="1" Style="{DynamicResource Header2}"
+            <emoji:TextBlock Grid.Row="0" Grid.Column="1" Style="{DynamicResource Header2}"
                        Text="{Binding Path=CurrentCommentData.user.name, Converter={StaticResource UserNameConverter}}"
                        TextWrapping="Wrap" VerticalAlignment="Center" Margin="5"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Style="{DynamicResource Paragraph}"
+            <emoji:TextBlock Grid.Row="1" Grid.Column="1" Style="{DynamicResource Paragraph}"
                        Text="{Binding Path=CurrentCommentData.text}"
+                       FontSize="14"
                        TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Stretch"
                        TextAlignment="Left" Margin="5"/>
             <StackPanel Grid.Row="2" Grid.Column="1"
