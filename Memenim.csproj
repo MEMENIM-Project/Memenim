@@ -23,7 +23,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Emoji.Wpf" Version="0.1.5" />
+    <PackageReference Include="Emoji.Wpf" Version="0.1.5">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.3.4" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="4.8.0" />
     <PackageReference Include="Memenim.Core" Version="0.3.7" />
