@@ -7,6 +7,7 @@
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets ="clr-namespace:Memenim.Widgets"
+                   xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    mc:Ignorable="d" 
@@ -40,7 +41,7 @@
 
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
-                <TextBlock x:Name="txtName"
+                <emoji:TextBlock x:Name="txtName"
                            Style="{DynamicResource Header1}" Margin="20 0 20 0"
                            Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
                            HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
