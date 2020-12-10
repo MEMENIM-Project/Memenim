@@ -29,8 +29,7 @@
                gif:ImageBehavior.AnimatedSource="{Binding Path=DataContext.ImageSource, Converter={StaticResource PreviewImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ImagePreviewOverlayPage}}"
                Stretch="Uniform" StretchDirection="Both">
             <Image.ContextMenu>
-                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
-                             d:DataContext="{d:DesignInstance Image}">
+                <ContextMenu>
                     <MenuItem Header="Copy Url"
                               Click="CopyImageUrl_Click"/>
                     <MenuItem Header="Copy Image"
@@ -40,7 +39,7 @@
                 </ContextMenu>
             </Image.ContextMenu>
         </Image>
-            <Grid Grid.Row="0" Grid.Column="0"
+        <Grid Grid.Row="0" Grid.Column="0"
               Grid.RowSpan="3" Grid.ColumnSpan="3"
               x:Name="loadingGrid"
               Visibility="Collapsed" ZIndex="2147483647"

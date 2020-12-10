@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Memenim.Downloads;
 using Memenim.Pages.ViewModel;
-using WpfAnimatedGif;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
@@ -23,21 +22,6 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new ImagePreviewOverlayViewModel();
-        }
-
-        public async Task LoadImage()
-        {
-            await ShowLoadingGrid(true)
-                .ConfigureAwait(true);
-
-            ImageBehavior.SetAnimatedSource(img,
-                new BitmapImage(new Uri(ViewModel.ImageSource)));
-
-            await Task.Delay(TimeSpan.FromSeconds(1))
-                .ConfigureAwait(true);
-
-            await ShowLoadingGrid(false)
-                .ConfigureAwait(true);
         }
 
         public Task ShowLoadingGrid(bool status)
@@ -97,13 +81,16 @@ namespace Memenim.Pages
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
 
-            await LoadImage()
+            await Task.Delay(TimeSpan.FromSeconds(1))
+                .ConfigureAwait(true);
+
+            await ShowLoadingGrid(false)
                 .ConfigureAwait(true);
         }
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
-            ImageBehavior.SetAnimatedSource(img, null);
+            ViewModel.ImageSource = null;
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();
@@ -125,7 +112,7 @@ namespace Memenim.Pages
 
         private void CopyImage_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetImage(new BitmapImage(new Uri(ViewModel.ImageSource)));
+            Clipboard.SetImage((BitmapSource)img.Source);
         }
 
         private async void DownloadImage_Click(object sender, RoutedEventArgs e)
