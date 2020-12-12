@@ -12,6 +12,8 @@
     <Grid>
         <StackPanel VerticalAlignment="Center"
                     HorizontalAlignment="Center">
+            <TextBlock Style="{StaticResource Header1}" HorizontalAlignment="Center" Name="txtSmile" Margin="20" FontWeight="Bold" FontSize="34"/>
+            <TextBlock Text="{DynamicResource ChatPlaceholderDescription}" FontSize="18" Style="{StaticResource Paragraph}" TextWrapping="Wrap" MaxWidth="600"/>
             <StackPanel MaxWidth="300"
                         Orientation="Horizontal"
                         Margin="0 10 0 5"

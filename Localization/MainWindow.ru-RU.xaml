@@ -23,9 +23,12 @@
 
     <system:String x:Key="WIPTitle">ТИХО</system:String>
 
+    <system:String x:Key="ChatPlaceholderDescription" xml:space="preserve">Интеграция чатов всё ещё в состоянии глубокого проектирования, но мы знает как тебе хочется срать сообщениями в личку, так что решение данной проблемы прямо перед тобой.
+Эта страница предзначена для получения данных от системы чатов, а так же перехода на веб-версию чата. 
+Развлекайся.</system:String>
     <system:String x:Key="CopyLogin">Скопировать логин</system:String>
     <system:String x:Key="CopyPassword">Скопировать пароль</system:String>
-    <system:String x:Key="GoToChatWebPage">Перейти на веб-страницу чата</system:String>
+    <system:String x:Key="GoToChatWebPage">Перейти в чат</system:String>
 
     <system:String x:Key="FeedTitle">Лента</system:String>
     <system:String x:Key="PreviewTitle">Предпросмотр</system:String>
@@ -73,4 +76,5 @@
 
     <system:String x:Key="UserNotFound">Пользователь не найден</system:String>
     <system:String x:Key="PostNotFound">Пост не найден</system:String>
+
 </ResourceDictionary>

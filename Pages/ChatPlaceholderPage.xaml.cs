@@ -10,6 +10,16 @@ namespace Memenim.Pages
 {
     public partial class ChatPlaceholderPage : PageContent
     {
+        private static readonly Random Random = new Random();
+        private static readonly string[] Smiles =
+        {
+            "(ﾟдﾟ；)",
+            "(ó﹏ò｡)",
+            "(´ω｀*)",
+            "(┛ಠДಠ)┛彡┻━┻",
+            "(* _ω_)…"
+        };
+
         public ChatPlaceholderViewModel ViewModel
         {
             get
@@ -33,6 +43,7 @@ namespace Memenim.Pages
             }
 
             base.OnEnter(sender, e);
+            txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];
         }
 
         private void CopyLogin_Click(object sender, RoutedEventArgs e)
