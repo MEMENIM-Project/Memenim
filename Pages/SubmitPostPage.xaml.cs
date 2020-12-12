@@ -69,9 +69,11 @@ namespace Memenim.Pages
                 ViewModel.CurrentPostData.owner_name = result.data.name;
                 ViewModel.CurrentPostData.owner_photo = result.data.photo;
             }
+
+            InitPost();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void Submit_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -84,6 +86,8 @@ namespace Memenim.Pages
                 {
                     await DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait")
                         .ConfigureAwait(true);
+
+                    InitPost();
                 }
             }
             catch (Exception ex)
@@ -122,6 +126,12 @@ namespace Memenim.Pages
         private void ClearPhoto_Click(object sender, RoutedEventArgs e)
         {
             ClearImage();
+        }
+
+        private void InitPost()
+        {
+            ViewModel.CurrentPostData.text = string.Empty;
+            ViewModel.CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
         }
     }
 }

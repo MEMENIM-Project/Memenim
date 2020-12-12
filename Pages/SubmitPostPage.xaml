@@ -51,7 +51,7 @@
                         <CheckBox Content="{DynamicResource ResourceKey=PostAnonymous}" Margin="0 5"
                                   IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"/>
                         <Button Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"
-                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="Button_Click"/> 
+                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="Submit_Click"/> 
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
