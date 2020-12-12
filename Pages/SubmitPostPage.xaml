@@ -22,19 +22,26 @@
         <controls:MetroAnimatedTabControl Grid.Row="1" Margin="15 5"
                                           controls:TabControlHelper.Underlined="TabItems">
             <TabItem Header="{DynamicResource ResourceKey=EditTitle}">
-                <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer VerticalScrollBarVisibility="Visible"
+                              HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBox MinHeight="200" AcceptsReturn="True" TextWrapping="Wrap" Margin="0 5"
+                        <TextBox MinHeight="200" AcceptsReturn="True"
+                                 TextWrapping="Wrap" Margin="0 5"
                                  Text="{Binding Path=CurrentPostData.text, Mode=TwoWay}"
                                  controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}"/>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
-                                <TextBlock Style="{DynamicResource Header2}" Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
-                                <RadioButton Name="rbImageRaw" GroupName="ImageSource" Content="{DynamicResource ResourceKey=URLSelect}" IsChecked="True" Margin="0 5"/>
-                                <RadioButton Name="rbImageTenor" GroupName="ImageSource" Content="{DynamicResource ResourceKey=TenorSelect}" Margin="0 5"/>
-                                <RadioButton Name="rbImageGallery" GroupName="ImageSource" Content="{DynamicResource ResourceKey=GallerySelect}" Margin="0 5"/>
+                                <TextBlock Style="{DynamicResource Header2}"
+                                           Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
+                                <RadioButton Name="rbImageRaw" GroupName="ImageSource"
+                                             Content="{DynamicResource ResourceKey=URLSelect}" IsChecked="True" Margin="0 5"/>
+                                <RadioButton Name="rbImageTenor" GroupName="ImageSource"
+                                             Content="{DynamicResource ResourceKey=TenorSelect}" Margin="0 5"/>
+                                <RadioButton Name="rbImageGallery" GroupName="ImageSource"
+                                             Content="{DynamicResource ResourceKey=GallerySelect}" Margin="0 5"/>
                             </StackPanel>
-                            <Image Height="100" Width="100" Margin="10" Stretch="Uniform"
+                            <Image Height="100" Width="100"
+                                   Margin="10" Stretch="Uniform"
                                    Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"/>
                         </StackPanel>
                         <Button Content="{DynamicResource ResourceKey=SelectPhoto}"
@@ -50,8 +57,10 @@
                                   IsChecked="{Binding Path=CurrentPostData.adult, Mode=TwoWay}">18+</CheckBox>
                         <CheckBox Content="{DynamicResource ResourceKey=PostAnonymous}" Margin="0 5"
                                   IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"/>
-                        <Button Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"
-                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Click="Submit_Click"/> 
+                        <Button x:Name="btnSubmit"
+                                Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"
+                                Style="{StaticResource MahApps.Styles.Button.Square.Accent}"
+                                Click="Submit_Click"/> 
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

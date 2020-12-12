@@ -28,7 +28,7 @@ So, there is a temporary solution for it. You can get your credentials for chat 
 Have fun.</system:String>
     <system:String x:Key="CopyLogin">Copy login</system:String>
     <system:String x:Key="CopyPassword">Copy password</system:String>
-    <system:String x:Key="GoToChatWebPage">Open chat web page</system:String>
+    <system:String x:Key="GoToChatWebPage">Open chat</system:String>
     
     <system:String x:Key="FeedTitle">Feed</system:String>
     <system:String x:Key="PreviewTitle">Preview</system:String>

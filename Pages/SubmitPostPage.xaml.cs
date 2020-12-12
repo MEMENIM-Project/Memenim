@@ -45,6 +45,11 @@ namespace Memenim.Pages
             ViewModel.CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
         }
 
+        public void ClearText()
+        {
+            ViewModel.CurrentPostData.text = string.Empty;
+        }
+
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
             if (!IsOnEnterActive)
@@ -69,17 +74,33 @@ namespace Memenim.Pages
                 ViewModel.CurrentPostData.owner_name = result.data.name;
                 ViewModel.CurrentPostData.owner_photo = result.data.photo;
             }
+        }
 
-            InitPost();
+        protected override void OnExit(object sender, RoutedEventArgs e)
+        {
+            ClearText();
+            ClearImage();
+
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            base.OnExit(sender, e);
         }
 
         private async void Submit_Click(object sender, RoutedEventArgs e)
         {
+            btnSubmit.IsEnabled = false;
+
             try
             {
                 ViewModel.CurrentPostData.author_watch++;
 
-                var result = await PostApi.Add(SettingsManager.PersistentSettings.CurrentUserToken, ViewModel.CurrentPostData)
+                var result = await PostApi.Add(
+                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        ViewModel.CurrentPostData)
                     .ConfigureAwait(true);
 
                 if (!result.error)
@@ -87,13 +108,18 @@ namespace Memenim.Pages
                     await DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait")
                         .ConfigureAwait(true);
 
-                    InitPost();
+                    ClearText();
+                    ClearImage();
                 }
             }
             catch (Exception ex)
             {
                 await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message)
                     .ConfigureAwait(true);
+            }
+            finally
+            {
+                btnSubmit.IsEnabled = true;
             }
         }
 
@@ -126,12 +152,6 @@ namespace Memenim.Pages
         private void ClearPhoto_Click(object sender, RoutedEventArgs e)
         {
             ClearImage();
-        }
-
-        private void InitPost()
-        {
-            ViewModel.CurrentPostData.text = string.Empty;
-            ViewModel.CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
         }
     }
 }

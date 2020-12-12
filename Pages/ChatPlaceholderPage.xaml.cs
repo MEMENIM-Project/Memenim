@@ -43,6 +43,7 @@ namespace Memenim.Pages
             }
 
             base.OnEnter(sender, e);
+
             txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];
         }
 

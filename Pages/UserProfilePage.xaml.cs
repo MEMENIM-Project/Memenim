@@ -333,7 +333,7 @@ namespace Memenim.Pages
         {
             UserProfilePage element = this;
 
-            BindingExpression binding = element?.txtName.GetBindingExpression(TextBlock.TextProperty);
+            BindingExpression binding = element.txtName.GetBindingExpression(Emoji.Wpf.TextBlock.TextProperty);
 
             if (binding == null)
                 return;

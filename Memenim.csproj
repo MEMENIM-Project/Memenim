@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.11.3.0</AssemblyVersion>
-    <FileVersion>0.11.3.0</FileVersion>
+    <AssemblyVersion>0.11.5.0</AssemblyVersion>
+    <FileVersion>0.11.5.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.11.3</Version>
+    <Version>0.11.5</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -86,7 +86,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Localization\MainWindow.ja-JP.xaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
     <Content Include="Localization\MainWindow.ru-RU.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
