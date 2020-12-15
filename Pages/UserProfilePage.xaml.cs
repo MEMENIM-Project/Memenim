@@ -13,6 +13,7 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Extensions;
+using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
@@ -56,6 +57,13 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new UserProfileViewModel();
+
+            LocalizationManager.LanguageChanged += OnLanguageChanged;
+        }
+
+        ~UserProfilePage()
+        {
+            LocalizationManager.LanguageChanged -= OnLanguageChanged;
         }
 
         public Task UpdateProfile()
@@ -241,6 +249,16 @@ namespace Memenim.Pages
             }
         }
 
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            ProfileStatPurpose
+                .GetBindingExpression(UserProfileStat.StatValueProperty)?
+                .UpdateTarget();
+            ProfileStatSex
+                .GetBindingExpression(UserProfileStat.StatValueProperty)?
+                .UpdateTarget();
+        }
+
         private void CopyUserLink_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText($"memenim://app/showuserid/{ViewModel.CurrentProfileData.id}");
@@ -344,12 +362,16 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string editProfileLocalizeName = (string)MainWindow.Instance
+                .FindResource("EditProfileTitle");
             string enterLocalizeName = (string)MainWindow.Instance
                 .FindResource("EnterTitle");
+            string statTitleLocalizeName = (string)MainWindow.Instance
+                .FindResource("Nickname");
 
             string oldValue = (string)sourceProperty.GetValue(sourceClass);
-            string value = await DialogManager.ShowSinglelineTextDialog("Edit profile",
-                    $"{enterLocalizeName} Name", oldValue)
+            string value = await DialogManager.ShowSinglelineTextDialog(editProfileLocalizeName,
+                    $"{enterLocalizeName} '{statTitleLocalizeName}'", oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
@@ -386,12 +408,14 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string editProfileLocalizeName = (string)MainWindow.Instance
+                .FindResource("EditProfileTitle");
             string enterLocalizeName = (string)MainWindow.Instance
                 .FindResource("EnterTitle");
 
             string oldValue = (string)sourceProperty.GetValue(sourceClass);
-            string value = await DialogManager.ShowSinglelineTextDialog("Edit profile",
-                    $"{enterLocalizeName} {element.StatTitle}", oldValue)
+            string value = await DialogManager.ShowSinglelineTextDialog(editProfileLocalizeName,
+                    $"{enterLocalizeName} '{element.StatTitle}'", oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
@@ -428,12 +452,14 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string editProfileLocalizeName = (string)MainWindow.Instance
+                .FindResource("EditProfileTitle");
             string enterLocalizeName = (string)MainWindow.Instance
                 .FindResource("EnterTitle");
 
             string oldValue = (string)sourceProperty.GetValue(sourceClass);
-            string value = await DialogManager.ShowMultilineTextDialog("Edit profile",
-                    $"{enterLocalizeName} {element.StatTitle}", oldValue)
+            string value = await DialogManager.ShowMultilineTextDialog(editProfileLocalizeName,
+                    $"{enterLocalizeName} '{element.StatTitle}'", oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
@@ -455,9 +481,54 @@ namespace Memenim.Pages
             }
         }
 
-        private void EditComboBoxPurpose_Click(object sender, RoutedEventArgs e)
+        private async void EditComboBoxPurpose_Click(object sender, RoutedEventArgs e)
         {
+            UserProfileStat element = sender as UserProfileStat;
 
+            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+
+            if (binding == null)
+                return;
+
+            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
+            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+
+            if (sourceClass == null || sourceProperty == null)
+                return;
+
+            string editProfileLocalizeName = (string)MainWindow.Instance
+                .FindResource("EditProfileTitle");
+            string enterLocalizeName = (string)MainWindow.Instance
+                .FindResource("EnterTitle");
+
+            ReadOnlyCollection<string> localizedNames =
+                new ReadOnlyCollection<string>(ProfileStatPurposeType.Unknown.GetLocalizedNames());
+
+            int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
+            string valueName = await DialogManager.ShowComboBoxDialog(editProfileLocalizeName,
+                    $"{enterLocalizeName} '{element.StatTitle}'", localizedNames,
+                    ((ProfileStatPurposeType)((byte)oldValue)).GetLocalizedName())
+                .ConfigureAwait(true);
+
+            if (valueName == null)
+                return;
+
+            int value = (byte)ProfileStatPurposeType.Unknown.ParseLocalizedName<ProfileStatPurposeType>(valueName);
+
+            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
+            sourceProperty.SetValue(sourceClass, value);
+
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+                    ViewModel.CurrentProfileData)
+                .ConfigureAwait(true);
+
+            if (request.error)
+            {
+                await DialogManager.ShowDialog("F U C K", request.message)
+                    .ConfigureAwait(true);
+
+                sourceProperty.SetValue(sourceClass, oldValue);
+            }
         }
 
         private async void EditComboBoxSex_Click(object sender, RoutedEventArgs e)
@@ -475,6 +546,8 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string editProfileLocalizeName = (string)MainWindow.Instance
+                .FindResource("EditProfileTitle");
             string enterLocalizeName = (string)MainWindow.Instance
                 .FindResource("EnterTitle");
 
@@ -482,8 +555,8 @@ namespace Memenim.Pages
                 new ReadOnlyCollection<string>(ProfileStatSexType.Unknown.GetLocalizedNames());
 
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
-            string valueName = await DialogManager.ShowComboBoxDialog("Edit profile",
-                    $"{enterLocalizeName} {element.StatTitle}", localizedNames,
+            string valueName = await DialogManager.ShowComboBoxDialog(editProfileLocalizeName,
+                    $"{enterLocalizeName} '{element.StatTitle}'", localizedNames,
                     ((ProfileStatSexType)((byte)oldValue)).GetLocalizedName())
                 .ConfigureAwait(true);
 
@@ -523,12 +596,14 @@ namespace Memenim.Pages
             if (sourceClass == null || sourceProperty == null)
                 return;
 
+            string editProfileLocalizeName = (string)MainWindow.Instance
+                .FindResource("EditProfileTitle");
             string enterLocalizeName = (string)MainWindow.Instance
                 .FindResource("EnterTitle");
 
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
-            double? value = await DialogManager.ShowNumericDialog("Edit profile",
-                    $"{enterLocalizeName} {element.StatTitle}", Convert.ToDouble(oldValue),
+            double? value = await DialogManager.ShowNumericDialog(editProfileLocalizeName,
+                    $"{enterLocalizeName} '{element.StatTitle}'", Convert.ToDouble(oldValue),
                     0.0, 255.0, 1.0, "F0")
                 .ConfigureAwait(true);
 

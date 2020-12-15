@@ -17,6 +17,24 @@ namespace Memenim.Converters
         Admin = 10
     }
 
+    public enum ProfileStatPurposeType : byte
+    {
+        Unknown = 0,
+        FindFriends = 1,
+        FindPenPals = 2,
+        FindConversation = 3,
+        FindLikeMinded = 4,
+        FindSoulMate = 5,
+        FindYourself = 6,
+        FindPurpose = 7,
+        HelpingOther = 8,
+        FindUnderstanding = 9,
+        ShareInteresting = 10,
+        BeHonest = 11,
+        ChangeWorld = 12,
+        Other = 13
+    }
+
     public enum ProfileStatSexType : byte
     {
         Unknown = 0,

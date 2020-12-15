@@ -15,6 +15,8 @@ namespace Memenim.Localization
 {
     public static class LocalizationManager
     {
+        public static event EventHandler<EventArgs> LanguageChanged;
+
         private static void LoadLocales()
         {
             LoadLocales(MainWindow.Instance);
@@ -215,6 +217,8 @@ namespace Memenim.Localization
             SettingsManager.AppSettings.Language = сultureName;
 
             SettingsManager.AppSettings.Save();
+
+            LanguageChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }
