@@ -11,6 +11,7 @@ using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Localization;
+using Memenim.Misc;
 using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -55,6 +56,7 @@ namespace Memenim
             _instance = this;
 
             RootLayout.Children.Add(NavigationController.Instance);
+            RootLayout.Children.Add(SpecialEventLayer.Instance);
 
             Width = SettingsManager.AppSettings.WindowWidth;
             Height = SettingsManager.AppSettings.WindowHeight;
@@ -67,6 +69,7 @@ namespace Memenim
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
 
             AppVersion = $"v{SettingsManager.AppSettings.AppVersion}";
+            bgmVolume.Value = SettingsManager.AppSettings.BgmVolume;
 
             LocalizationManager.ReloadLocales();
 
@@ -283,6 +286,12 @@ namespace Memenim
             SettingsManager.AppSettings.WindowState = (int)WindowState;
 
             SettingsManager.AppSettings.Save();
+        }
+
+        private void bgmVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SettingsManager.AppSettings.BgmVolume = (float)e.NewValue;
+            SpecialEventLayer.Instance.SetVolume(e.NewValue);
         }
     }
 }

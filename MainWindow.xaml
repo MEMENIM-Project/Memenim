@@ -64,6 +64,16 @@
                              Position="Right" Theme="Adapt">
                 <Grid Margin="10">
                     <StackPanel VerticalAlignment="Top">
+                        <controls:ToggleSwitch
+                            Content="Enabled"
+                            x:Name="SpecialEventToggle"
+                            />
+                        <Slider
+                            Style="{StaticResource MahApps.Styles.Slider.Flat}"
+                            Name="bgmVolume"
+                            ValueChanged="bgmVolume_ValueChanged"
+                            Minimum="0" Maximum="1" SmallChange=".1"
+                            Orientation="Horizontal"/>
                         <controls:SplitButton Name="slcLanguage"
                                               ItemsSource="{Binding Path=Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
                                               DisplayMemberPath="Value" Margin="0 5"

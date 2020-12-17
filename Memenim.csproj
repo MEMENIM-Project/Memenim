@@ -77,7 +77,17 @@
 
   <ItemGroup>
     <None Remove="Resources\ic_launcher.ico" />
+    <None Remove="Resources\Music\christmasinnightopia.mp3" />
+    <None Remove="Resources\Music\Gigawing_Xmas.mp3" />
+    <None Remove="Resources\Music\song1.mp3" />
+    <None Remove="Resources\Music\song2.mp3" />
+    <None Remove="Resources\Music\song3.mp3" />
+    <None Remove="Resources\Music\song4.mp3" />
+    <None Remove="Resources\Music\test.mp3" />
+    <None Remove="Resources\Music\test2.mp3" />
     <None Remove="Resources\nlog.config" />
+    <None Remove="Resources\padoru.mp3" />
+    <None Remove="Resources\padoru_nero.png" />
     <None Remove="Resources\placeholder_avatar.jpg" />
   </ItemGroup>
 
@@ -91,11 +101,33 @@
     <Content Include="Localization\MainWindow.ru-RU.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Music\christmasinnightopia.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\Gigawing_Xmas.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\song1.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\song2.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\song3.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\song4.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\padoru.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\ic_launcher.ico" />
     <EmbeddedResource Include="Resources\nlog.config" />
+    <Resource Include="Resources\padoru_nero.png" />
     <Resource Include="Resources\placeholder_avatar.jpg" />
   </ItemGroup>
 

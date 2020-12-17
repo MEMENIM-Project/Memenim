@@ -32,6 +32,9 @@ namespace Memenim.Settings
         [SettingCategory("Version")]
         public string AppVersion { get; set; }
 
+        [SettingCategory("Misc")]
+        public float BgmVolume { get; set; }
+
         public AppSettings()
             : base(Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName))
         {
@@ -45,6 +48,7 @@ namespace Memenim.Settings
             WindowHeight = MainWindow.Instance.Height;
             LogRetentionDaysPeriod = 7;
             AppVersion = "0.0.0";
+            BgmVolume = 0.5f;
 
             Load();
         }
