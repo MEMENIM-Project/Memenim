@@ -64,16 +64,23 @@
                              Position="Right" Theme="Adapt">
                 <Grid Margin="10">
                     <StackPanel VerticalAlignment="Top">
-                        <controls:ToggleSwitch
-                            Content="Enabled"
-                            x:Name="SpecialEventToggle"
-                            />
-                        <Slider
-                            Style="{StaticResource MahApps.Styles.Slider.Flat}"
-                            Name="bgmVolume"
-                            ValueChanged="bgmVolume_ValueChanged"
-                            Minimum="0" Maximum="1" SmallChange=".1"
-                            Orientation="Horizontal"/>
+                        <StackPanel x:Name="SpecialEventPanel" Visibility="Visible">
+                            <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource SpecialEventTitle}" HorizontalAlignment="Left"/>
+                            <controls:ToggleSwitch
+                                Content="Enabled"
+                                x:Name="SpecialEventToggle" Margin="5"/>
+                            <TextBlock Style="{StaticResource Header2}" Text="{DynamicResource BgmVolumeTitle}" Margin="5"/>
+                            <Slider
+                                Style="{StaticResource MahApps.Styles.Slider.Win10}"
+                                controls:SliderHelper.EnableMouseWheel="MouseHover"
+                                Name="bgmVolume"
+                                ValueChanged="bgmVolume_ValueChanged"
+                                Margin="5"
+                                AutoToolTipPlacement="TopLeft"
+                                Minimum="0" Maximum="100" SmallChange="5" LargeChange="10"
+                                Orientation="Horizontal"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource LanguageTitle}" Margin="5 20 5 10" HorizontalAlignment="Left"/>
                         <controls:SplitButton Name="slcLanguage"
                                               ItemsSource="{Binding Path=Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
                                               DisplayMemberPath="Value" Margin="0 5"
@@ -82,9 +89,10 @@
                                 <iconPacks:PackIconModern Margin="5" Kind="Globe"/>
                             </controls:SplitButton.Icon>
                         </controls:SplitButton>
+                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource AccountSettingsTitle}" Margin="5 20 5 10" HorizontalAlignment="Left"/>
                         <Button Content="{DynamicResource ResourceKey=ChangePassword}"
                                 Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                Margin="0 5" Click="btnChangePassword_Click"/>
+                                Margin="0 5" Click="btnChangePassword_Click" />
                         <Button Content="{DynamicResource ResourceKey=SignOut}"
                                 Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                                 Background="#FF9F0000"

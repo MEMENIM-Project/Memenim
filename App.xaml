@@ -23,6 +23,11 @@
                    TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="22" />
             </Style>
+            <Style TargetType="TextBlock" x:Key="AccentHeader">
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="FontWeight" Value="DemiBold"/>
+                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Accent}"/>
+            </Style>
             <Style TargetType="TextBlock" x:Key="Header1">
                 <Setter Property="FontSize" Value="22" />
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>

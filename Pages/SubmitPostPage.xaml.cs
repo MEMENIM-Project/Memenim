@@ -78,8 +78,8 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
-            ClearText();
-            ClearImage();
+            //ClearText();
+            //ClearImage();
 
             if (!IsOnExitActive)
             {
