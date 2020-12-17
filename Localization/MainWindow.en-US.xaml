@@ -59,6 +59,36 @@ Have fun.</system:String>
     <system:String x:Key="SignOut">Sign Out</system:String>
     <system:String x:Key="Version">Version</system:String>
 
+    <system:String x:Key="ProfileStatTitle-Thoughts">Thoughts</system:String>
+    <system:String x:Key="ProfileStatTitle-Purpose">Purpose</system:String>
+    <system:String x:Key="ProfileStatTitle-MyDream">My dream</system:String>
+    <system:String x:Key="ProfileStatTitle-MyValues">My values</system:String>
+    <system:String x:Key="ProfileStatTitle-Interests">Interests</system:String>
+    <system:String x:Key="ProfileStatTitle-FavoriteMusic">Favorite music</system:String>
+    <system:String x:Key="ProfileStatTitle-FavoriteBooks">Favorite books</system:String>
+    <system:String x:Key="ProfileStatTitle-FavoriteMovies">Favorite movies</system:String>
+    <system:String x:Key="ProfileStatTitle-AboutMe">About me</system:String>
+    <system:String x:Key="ProfileStatTitle-EmotionalPortrait">Emotional portrait</system:String>
+    <system:String x:Key="ProfileStatTitle-AttitudeToOthers">Attitude to others</system:String>
+    <system:String x:Key="ProfileStatTitle-Age">Age</system:String>
+    <system:String x:Key="ProfileStatTitle-Sex">Sex</system:String>
+    <system:String x:Key="ProfileStatTitle-City">City</system:String>
+
+    <system:String x:Key="Enum-ProfileStatPurposeType-Unknown">Unknown</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindFriends">Find a friend, friends</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindPenPals">Find pen pals</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindConversation">Find a conversation partner</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindLikeMinded">Find like-minded people</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindSoulMate">Find a soul mate</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindYourself">Find yourself</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindPurpose">Find a purpose in life</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-HelpingOther">Helping other people</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindUnderstanding">Find understanding, support, and advice</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-ShareInteresting">Share interesting thoughts and news</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-BeHonest">Be honest with yourself</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-ChangeWorld">Change the world</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-Other">Other</system:String>
+
     <system:String x:Key="Enum-ProfileStatSexType-Unknown">Unknown</system:String>
     <system:String x:Key="Enum-ProfileStatSexType-Male">Male</system:String>
     <system:String x:Key="Enum-ProfileStatSexType-Female">Female</system:String>
@@ -71,6 +101,8 @@ Have fun.</system:String>
     <system:String x:Key="Enum-UserStatusType-Banned">Banned</system:String>
     <system:String x:Key="Enum-UserStatusType-Moderator">Moderator</system:String>
     <system:String x:Key="Enum-UserStatusType-Admin">Admin</system:String>
+
+    <system:String x:Key="EditProfileTitle">Profile editing</system:String>
 
     <system:String x:Key="EnterTitle">Enter</system:String>
 

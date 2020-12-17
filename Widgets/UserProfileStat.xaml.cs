@@ -8,6 +8,9 @@ namespace Memenim.Widgets
     {
         public static readonly RoutedEvent OnEditClicked =
             EventManager.RegisterRoutedEvent(nameof(EditClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserProfileStat));
+        public static readonly DependencyProperty StatTitleProperty =
+            DependencyProperty.Register(nameof(StatTitle), typeof(string), typeof(UserProfileStat),
+                new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty StatValueProperty =
             DependencyProperty.Register(nameof(StatValue), typeof(string), typeof(UserProfileStat),
                 new PropertyMetadata(string.Empty));
@@ -27,7 +30,17 @@ namespace Memenim.Widgets
             }
         }
 
-        public string StatTitle { get; set; }
+        public string StatTitle
+        {
+            get
+            {
+                return (string)GetValue(StatTitleProperty);
+            }
+            set
+            {
+                SetValue(StatTitleProperty, value);
+            }
+        }
         public string StatValue
         {
             get

@@ -59,6 +59,36 @@
     <system:String x:Key="SignOut">Выйти из аккаунта</system:String>
     <system:String x:Key="Version">Версия</system:String>
 
+    <system:String x:Key="ProfileStatTitle-Thoughts">Мысли</system:String>
+    <system:String x:Key="ProfileStatTitle-Purpose">Цель</system:String>
+    <system:String x:Key="ProfileStatTitle-MyDream">Мои мечты</system:String>
+    <system:String x:Key="ProfileStatTitle-MyValues">Ценности</system:String>
+    <system:String x:Key="ProfileStatTitle-Interests">Интересы</system:String>
+    <system:String x:Key="ProfileStatTitle-FavoriteMusic">Любимая музыка</system:String>
+    <system:String x:Key="ProfileStatTitle-FavoriteBooks">Любимые книги</system:String>
+    <system:String x:Key="ProfileStatTitle-FavoriteMovies">Любимые фильмы</system:String>
+    <system:String x:Key="ProfileStatTitle-AboutMe">О себе</system:String>
+    <system:String x:Key="ProfileStatTitle-EmotionalPortrait">Эмоциональный портрет</system:String>
+    <system:String x:Key="ProfileStatTitle-AttitudeToOthers">Отношение к другим</system:String>
+    <system:String x:Key="ProfileStatTitle-Age">Возраст</system:String>
+    <system:String x:Key="ProfileStatTitle-Sex">Пол</system:String>
+    <system:String x:Key="ProfileStatTitle-City">Город</system:String>
+
+    <system:String x:Key="Enum-ProfileStatPurposeType-Unknown">Неизвестно</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindFriends">Найти друга, друзей</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindPenPals">Найти друга, друзей по переписке</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindConversation">Найти собеседника по переписке</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindLikeMinded">Найти единомышленников</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindSoulMate">Найти вторую половинку</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindYourself">Найти себя</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindPurpose">Найти цель в жизни</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-HelpingOther">Помощь другим людям</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-FindUnderstanding">Найти понимание, поддержку, советы</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-ShareInteresting">Делиться интересными мыслями и новостями</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-BeHonest">Быть честным с собой</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-ChangeWorld">Изменить мир</system:String>
+    <system:String x:Key="Enum-ProfileStatPurposeType-Other">Другое</system:String>
+
     <system:String x:Key="Enum-ProfileStatSexType-Unknown">Неизвестно</system:String>
     <system:String x:Key="Enum-ProfileStatSexType-Male">Мужской</system:String>
     <system:String x:Key="Enum-ProfileStatSexType-Female">Женский</system:String>
@@ -71,6 +101,8 @@
     <system:String x:Key="Enum-UserStatusType-Banned">Забанен</system:String>
     <system:String x:Key="Enum-UserStatusType-Moderator">Модератор</system:String>
     <system:String x:Key="Enum-UserStatusType-Admin">Администратор</system:String>
+
+    <system:String x:Key="EditProfileTitle">Редактирование профиля</system:String>
 
     <system:String x:Key="EnterTitle">Введите</system:String>
 

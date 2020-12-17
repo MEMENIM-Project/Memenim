@@ -42,14 +42,15 @@
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
                 <emoji:TextBlock x:Name="txtName"
-                           Style="{DynamicResource Header1}" Margin="20 0 20 0"
+                           Style="{DynamicResource Header1}" Margin="20 0 10 0"
                            Text="{Binding Path=CurrentProfileData.name, Converter={StaticResource UserNameConverter}}"
                            HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                 <widgets:IconButton DockPanel.Dock="Right" IconKind="Edit"
-                                    Width="40" HorizontalAlignment="Right"
+                                    Width="40" Margin="-5 0 5 0"
+                                    HorizontalAlignment="Right"
                                     Visibility="{Binding Path=IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     IconButtonClick="EditName_Click"/>
-                <widgets:UserStatus Margin="20 0 0 0"
+                <widgets:UserStatus Margin="0 0 10 0"
                                     StatusValue="{Binding Path=DataContext.CurrentProfileData.status, Converter={StaticResource UserStatusTypeConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     Visibility="{Binding Path=DataContext.CurrentProfileData.status, Converter={StaticResource UserStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
@@ -110,7 +111,7 @@
                         </MultiBinding>
                     </StackPanel.Visibility>
 
-                    <widgets:UserProfileStat Margin="10" StatTitle="Thoughts"
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-Thoughts}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.think, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -132,8 +133,9 @@
                         </MultiBinding>
                     </StackPanel.Visibility>
 
-                    <widgets:UserProfileStat Margin="10" StatTitle="Purpose"
-                                             StatValue="{Binding Path=DataContext.CurrentProfileData.target, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                    <widgets:UserProfileStat x:Name="ProfileStatPurpose"
+                                             Margin="10" StatTitle="{DynamicResource ProfileStatTitle-Purpose}"
+                                             StatValue="{Binding Path=DataContext.CurrentProfileData.target, Converter={StaticResource ProfileStatPurposeTypeToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditComboBoxPurpose_Click">
                         <widgets:UserProfileStat.Visibility>
@@ -143,7 +145,7 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="My dream"
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-MyDream}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.dream, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -154,7 +156,7 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="My values"
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-MyValues}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.hvalues, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -175,8 +177,8 @@
                             <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
                         </MultiBinding>
                     </StackPanel.Visibility>
-                    
-                    <widgets:UserProfileStat Margin="10" StatTitle="Interests"
+
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-Interests}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.interests, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -187,7 +189,7 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Favorite music"
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-FavoriteMusic}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.fmusic, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -198,7 +200,7 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Favorite books"
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-FavoriteBooks}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.fbooks, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -209,7 +211,7 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Favorite movies"
+                    <widgets:UserProfileStat Margin="10" StatTitle="{DynamicResource ProfileStatTitle-FavoriteMovies}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.ffilms, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -231,7 +233,8 @@
                         </MultiBinding>
                     </StackPanel.Visibility>
 
-                    <widgets:UserProfileStat Margin="10" StatTitle="About me"
+                    <widgets:UserProfileStat Margin="10"
+                                             StatTitle="{DynamicResource ProfileStatTitle-AboutMe}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.about, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -242,7 +245,8 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Emotional portrait"
+                    <widgets:UserProfileStat Margin="10"
+                                             StatTitle="{DynamicResource ProfileStatTitle-EmotionalPortrait}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.tempo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -253,7 +257,8 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Attitude to others"
+                    <widgets:UserProfileStat Margin="10"
+                                             StatTitle="{DynamicResource ProfileStatTitle-AttitudeToOthers}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.attitude, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditMultilineText_Click">
@@ -264,7 +269,8 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Age"
+                    <widgets:UserProfileStat Margin="10"
+                                             StatTitle="{DynamicResource ProfileStatTitle-Age}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.age, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditNumericAge_Click">
@@ -275,7 +281,9 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="Sex"
+                    <widgets:UserProfileStat x:Name="ProfileStatSex"
+                                             Margin="10"
+                                             StatTitle="{DynamicResource ProfileStatTitle-Sex}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.sex, Converter={StaticResource ProfileStatSexTypeToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditComboBoxSex_Click">
@@ -286,7 +294,8 @@
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
                     </widgets:UserProfileStat>
-                    <widgets:UserProfileStat Margin="10" StatTitle="City"
+                    <widgets:UserProfileStat Margin="10"
+                                             StatTitle="{DynamicResource ProfileStatTitle-City}"
                                              StatValue="{Binding Path=DataContext.CurrentProfileData.city, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditAllowed="{Binding Path=IsEditMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                              EditClick="EditSinglelineText_Click">
