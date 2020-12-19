@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -84,7 +85,6 @@ namespace Memenim
             _instance = this;
 
             RootLayout.Children.Add(NavigationController.Instance);
-            RootLayout.Children.Add(SpecialEventLayer.Instance);
 
             Width = SettingsManager.AppSettings.WindowWidth;
             Height = SettingsManager.AppSettings.WindowHeight;
@@ -96,9 +96,9 @@ namespace Memenim
             _previousState = WindowState;
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
 
-            SpecialEventEnabled = SettingsManager.AppSettings.SpecialEventEnabled;
-            BgmVolume = SettingsManager.AppSettings.BgmVolume;
             AppVersion = $"v{SettingsManager.AppSettings.AppVersion}";
+
+            LoadSpecialEvent();
 
             LocalizationManager.ReloadLocales();
 
@@ -127,6 +127,32 @@ namespace Memenim
                 SettingsManager.AppSettings.Language = locale.Key;
                 SettingsManager.AppSettings.Save();
             }
+        }
+
+        private void LoadSpecialEvent()
+        {
+            var appStartupTime = DateTime.ParseExact(
+                NLog.GlobalDiagnosticsContext.Get("AppStartupTime"),
+                "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture);
+            var eventStartTime = DateTime.ParseExact("0001.12.20 00-00-00",
+                    "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture)
+                .AddYears(appStartupTime.Year - 1);
+            var eventEndTime = DateTime.ParseExact("0002.01.10 23-59-59",
+                    "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture)
+                .AddYears(appStartupTime.Year - 1);
+
+            if (!(eventStartTime <= appStartupTime
+                  && appStartupTime <= eventEndTime))
+            {
+                return;
+            }
+
+            RootLayout.Children.Add(SpecialEventLayer.Instance);
+
+            SpecialEventPanel.Visibility = Visibility.Visible;
+
+            SpecialEventEnabled = SettingsManager.AppSettings.SpecialEventEnabled;
+            BgmVolume = SettingsManager.AppSettings.BgmVolume;
         }
 
         public bool IsOpenSettings()
