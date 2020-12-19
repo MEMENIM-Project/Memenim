@@ -151,7 +151,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void ClearPhoto_Click(object sender, RoutedEventArgs e)
+        private void RemovePhoto_Click(object sender, RoutedEventArgs e)
         {
             ClearImage();
         }

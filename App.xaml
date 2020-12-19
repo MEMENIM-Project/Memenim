@@ -36,6 +36,10 @@
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
+            <Style TargetType="TextBlock" x:Key="Header3">
+                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
             <Style TargetType="TextBlock" x:Key="Paragraph">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
             </Style>
@@ -133,6 +137,7 @@
             <convertersLocal:PostStatusTypeToVisibilityConverter x:Key="PostStatusTypeToVisibilityConverter"/>
             <convertersLocal:PreviewImageSourceConverter x:Key="PreviewImageSourceConverter"/>
             <convertersLocal:WriteCommentTextConverter x:Key="WriteCommentTextConverter"/>
+            <convertersLocal:BgmVolumeConverter x:Key="BgmVolumeConverter"/>
 
             <convertersRis:SimpleArithmeticConverter x:Key="SimpleArithmeticConverter"/>
             <convertersRis:ScriptEvaluatorConverter x:Key="ScriptEvaluatorConverter"/>

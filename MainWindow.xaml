@@ -60,81 +60,104 @@
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="SettingsFlyout"
                              Header="{DynamicResource ResourceKey=SettingsTitle}"
-                             MinWidth="300" IsOpen="False"
-                             Position="Right" Theme="Adapt">
-                <Grid Margin="10">
-                    <StackPanel VerticalAlignment="Top">
-                        <StackPanel Visibility="Visible">
-                            <TextBlock Text="{DynamicResource SpecialEventTitle}"
-                                       Style="{StaticResource AccentHeader}"
-                                       HorizontalAlignment="Left"
-                                       Margin="5 0 5 10"/>
-                            <controls:ToggleSwitch x:Name="tglSpecialEvent"
-                                                   Content="Enabled"
-                                                   IsOn="{Binding Path=SpecialEventEnabled, Mode=TwoWay}"
-                                                   Margin="5"/>
-                            <TextBlock Text="{DynamicResource BgmVolumeTitle}"
-                                       Style="{StaticResource Header2}"
-                                       Margin="5"/>
-                            <Slider Value="{Binding Path=BgmVolume, Mode=TwoWay}"
-                                    Minimum="0" Maximum="1"
-                                    SmallChange="0.05" LargeChange="0.1"
-                                    Orientation="Horizontal"
-                                    controls:SliderHelper.EnableMouseWheel="MouseHover"
-                                    AutoToolTipPlacement="TopLeft"
-                                    Style="{StaticResource MahApps.Styles.Slider.Win10}"
-                                    Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
-                                    Margin="5"/>
+                             MinWidth="300" MaxWidth="300"
+                             IsOpen="False" Position="Right"
+                             Theme="Adapt">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20*"/>
+                        <RowDefinition MinHeight="82" Height="82"/>
+                    </Grid.RowDefinitions>
+
+                    <ScrollViewer Grid.Row="0"
+                                  x:Name="svSettings"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalAlignment="Top">
+                        <StackPanel Margin="10">
+                            <StackPanel VerticalAlignment="Top">
+                                <StackPanel Visibility="Visible">
+                                    <TextBlock Text="{DynamicResource SpecialEventSettingsTitle}"
+                                               Style="{StaticResource AccentHeader}"
+                                               HorizontalAlignment="Left"
+                                               Margin="5 0 5 10"/>
+                                    <controls:ToggleSwitch x:Name="tglSpecialEvent"
+                                                           Content="{DynamicResource EnableTitle}"
+                                                           IsOn="{Binding Path=SpecialEventEnabled, Mode=TwoWay}"
+                                                           Margin="5"/>
+                                    <TextBlock Text="{DynamicResource BgmVolumeTitle}"
+                                               Style="{StaticResource Header3}"
+                                               Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
+                                               Margin="5"/>
+                                    <Slider Value="{Binding Path=BgmVolume, Converter={StaticResource BgmVolumeConverter}, Mode=TwoWay}"
+                                            Minimum="0" Maximum="100"
+                                            SmallChange="5" LargeChange="10"
+                                            Orientation="Horizontal"
+                                            controls:SliderHelper.EnableMouseWheel="MouseHover"
+                                            AutoToolTipPlacement="TopLeft"
+                                            Style="{StaticResource MahApps.Styles.Slider.Win10}"
+                                            Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
+                                            Margin="5"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LanguageSettingsTitle}"
+                                               Style="{StaticResource AccentHeader}"
+                                               HorizontalAlignment="Left"
+                                               Margin="5 20 5 10"/>
+                                    <controls:SplitButton Name="slcLanguage"
+                                                          ItemsSource="{Binding Path=Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
+                                                          DisplayMemberPath="Value"
+                                                          SelectionChanged="slcLanguage_SelectionChanged"
+                                                          Margin="5">
+                                        <controls:SplitButton.Icon>
+                                            <iconPacks:PackIconModern Kind="Globe"
+                                                                      Margin="5"/>
+                                        </controls:SplitButton.Icon>
+                                    </controls:SplitButton>
+                                </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource AccountSettingsTitle}"
+                                               Style="{StaticResource AccentHeader}"
+                                               HorizontalAlignment="Left"
+                                               Margin="5 20 5 10"/>
+                                    <Button Content="{DynamicResource ResourceKey=ChangePassword}"
+                                            Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
+                                            Margin="5" Click="btnChangePassword_Click"/>
+                                    <Button Content="{DynamicResource ResourceKey=SignOut}"
+                                            Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
+                                            Background="#FF9F0000"
+                                            Margin="5" Click="btnSignOut_Click"/>
+                                </StackPanel>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource LanguageTitle}"
-                                       Style="{StaticResource AccentHeader}"
-                                       HorizontalAlignment="Left"
-                                       Margin="5 20 5 10"/>
-                            <controls:SplitButton Name="slcLanguage"
-                                                  ItemsSource="{Binding Path=Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
-                                                  DisplayMemberPath="Value" Margin="0 5"
-                                                  SelectionChanged="slcLanguage_SelectionChanged">
-                                <controls:SplitButton.Icon>
-                                    <iconPacks:PackIconModern Margin="5" Kind="Globe"/>
-                                </controls:SplitButton.Icon>
-                            </controls:SplitButton>
-                        </StackPanel>
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource AccountSettingsTitle}"
-                                       Style="{StaticResource AccentHeader}"
-                                       HorizontalAlignment="Left"
-                                       Margin="5 20 5 10"/>
-                            <Button Content="{DynamicResource ResourceKey=ChangePassword}"
-                                    Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                    Margin="5" Click="btnChangePassword_Click"/>
-                            <Button Content="{DynamicResource ResourceKey=SignOut}"
-                                    Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                    Background="#FF9F0000"
-                                    Margin="5" Click="btnSignOut_Click"/>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel VerticalAlignment="Bottom">
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="0 5">
-                            <Button Width="35" Height="35"
-                                    
-                                    Background="Transparent"
-                                    Foreground="Transparent"
-                                    BorderThickness="0"
-                                    Click="Discord_Click">
-                                <iconPacks:PackIconFontAwesome Kind="DiscordBrands"
-                                                               Width="20" Height="20"
-                                                               Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{DynamicResource ResourceKey=Version}" FontSize="13.5"
-                                       Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                            <TextBlock Text=":  " FontSize="13.5"
-                                       Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                            <TextBlock Text="{Binding Path=AppVersion}" FontSize="13.5"
-                                       Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                    </ScrollViewer>
+                    <StackPanel Grid.Row="1"
+                                MinWidth="82"
+                                Width="{Binding Path=ViewportWidth, ElementName=svSettings}"
+                                Margin="10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom">
+                        <StackPanel VerticalAlignment="Bottom">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0 5">
+                                <Button Width="35" Height="35"
+                                        Background="Transparent"
+                                        Foreground="Transparent"
+                                        BorderThickness="0"
+                                        Click="Discord_Click">
+                                    <iconPacks:PackIconFontAwesome Kind="DiscordBrands"
+                                                                   Width="20" Height="20"
+                                                                   Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource ResourceKey=Version}" FontSize="13.5"
+                                           Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                                <TextBlock Text=":  " FontSize="13.5"
+                                           Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                                <TextBlock Text="{Binding Path=AppVersion}" FontSize="13.5"
+                                           Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Grid>

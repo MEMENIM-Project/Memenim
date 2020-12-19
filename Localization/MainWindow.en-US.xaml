@@ -45,21 +45,20 @@ Have fun.</system:String>
     <system:String x:Key="LoadComments">Load more comments</system:String>
     <system:String x:Key="EnterComment">Enter comment content</system:String>
 
-    <system:String x:Key="PostContentTitle">Post Content</system:String>
-    <system:String x:Key="AdditionalOptionsTitle">Additional Options</system:String>
+    <system:String x:Key="PostContentTitle">Post content</system:String>
+    <system:String x:Key="AdditionalOptionsTitle">Additional options</system:String>
     <system:String x:Key="ImageSourceTitle">Select an image</system:String>
     <system:String x:Key="GallerySelect">Select from Anonym Gallery</system:String>
     <system:String x:Key="TenorSelect">Select from Tenor</system:String>
     <system:String x:Key="URLSelect">Paste an raw URL</system:String>
     <system:String x:Key="UploadSelect">Upload your picture</system:String>
-    <system:String x:Key="RemovePhoto">Remove Photo</system:String>
+    <system:String x:Key="RemovePhoto">Remove photo</system:String>
 
     <system:String x:Key="SettingsTitle">Settings</system:String>
-    <system:String x:Key="SpecialEventTitle">Special Event Title</system:String>
-    <system:String x:Key="EnabledTitle">Enabled</system:String>
-    <system:String x:Key="BgmVolumeTitle">BGM Volume</system:String>
-    <system:String x:Key="LanguageTitle">Language</system:String>
-    <system:String x:Key="AccountSettingsTitle">Account Settings</system:String>
+    <system:String x:Key="SpecialEventSettingsTitle">Special event</system:String>
+    <system:String x:Key="LanguageSettingsTitle">Language</system:String>
+    <system:String x:Key="AccountSettingsTitle">Account</system:String>
+    <system:String x:Key="BgmVolumeTitle">BGM volume</system:String>
     <system:String x:Key="ChangePassword">Change password</system:String>
     <system:String x:Key="OldPassword">Old password</system:String>
     <system:String x:Key="NewPassword">New password</system:String>
@@ -112,6 +111,7 @@ Have fun.</system:String>
     <system:String x:Key="EditProfileTitle">Profile editing</system:String>
 
     <system:String x:Key="EnterTitle">Enter</system:String>
+    <system:String x:Key="EnableTitle">Enable</system:String>
 
     <system:String x:Key="UserNotFound">User not found</system:String>
     <system:String x:Key="PostNotFound">Post not found</system:String>

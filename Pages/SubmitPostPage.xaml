@@ -17,28 +17,41 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="{DynamicResource ResourceKey=SubmitPostTitle}"
-                   Style="{DynamicResource Header1}" Margin="15 5"/>
-        <controls:MetroAnimatedTabControl Grid.Row="1" Margin="15 5"
-                                          controls:TabControlHelper.Underlined="TabItems">
+        <TextBlock Grid.Row="0"
+                   Text="{DynamicResource ResourceKey=SubmitPostTitle}"
+                   Style="{DynamicResource Header1}"
+                   Margin="15 5"/>
+        <controls:MetroAnimatedTabControl Grid.Row="1"
+                                          controls:TabControlHelper.Underlined="TabItems"
+                                          Margin="15 5">
             <TabItem Header="{DynamicResource ResourceKey=EditTitle}">
-                <ScrollViewer VerticalScrollBarVisibility="Visible"
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource ResourceKey=PostContentTitle}" Margin="0 5"/>
+                        <TextBlock Text="{DynamicResource ResourceKey=PostContentTitle}"
+                                   Style="{StaticResource AccentHeader}"
+                                   HorizontalAlignment="Left"
+                                   Margin="5 10 5 10"/>
                         <TextBox MinHeight="200" AcceptsReturn="True"
                                  TextWrapping="Wrap" Margin="0 5"
                                  Text="{Binding Path=CurrentPostData.text, Mode=TwoWay}"
                                  controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}"/>
-                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
+                        <TextBlock Text="{DynamicResource ResourceKey=ImageSourceTitle}"
+                                   Style="{StaticResource AccentHeader}"
+                                   HorizontalAlignment="Left"
+                                   Margin="5 20 5 10"/>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
                                 <RadioButton Name="rbImageRaw" GroupName="ImageSource"
-                                             Content="{DynamicResource ResourceKey=URLSelect}" IsChecked="True" Margin="0 5"/>
+                                             Content="{DynamicResource ResourceKey=URLSelect}"
+                                             IsChecked="True"
+                                             Margin="0 5"/>
                                 <RadioButton Name="rbImageTenor" GroupName="ImageSource"
-                                             Content="{DynamicResource ResourceKey=TenorSelect}" Margin="0 5"/>
+                                             Content="{DynamicResource ResourceKey=TenorSelect}"
+                                             Margin="0 5"/>
                                 <RadioButton Name="rbImageGallery" GroupName="ImageSource"
-                                             Content="{DynamicResource ResourceKey=GallerySelect}" Margin="0 5"/>
+                                             Content="{DynamicResource ResourceKey=GallerySelect}"
+                                             Margin="0 5"/>
                             </StackPanel>
                             <Image Height="100" Width="100"
                                    Margin="10" Stretch="Uniform"
@@ -49,19 +62,25 @@
                                 Margin="0 5" Click="SelectPhoto_Click"/>
                         <Button Content="{DynamicResource ResourceKey=RemovePhoto}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
-                                Margin="0 5" Click="ClearPhoto_Click"/>
-                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource ResourceKey=AdditionalOptionsTitle}" Margin="0 5"/>
-                        <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}">Show post</CheckBox>-->
-                        <CheckBox Content="{DynamicResource ResourceKey=OpenComments}" Margin="0 5"
-                                  IsChecked="{Binding Path=CurrentPostData.open_comments, Mode=TwoWay}"/>
-                        <CheckBox Margin="0 5"
-                                  IsChecked="{Binding Path=CurrentPostData.adult, Mode=TwoWay}">18+</CheckBox>
-                        <CheckBox Content="{DynamicResource ResourceKey=PostAnonymous}" Margin="0 5"
-                                  IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"/>
+                                Margin="0 5" Click="RemovePhoto_Click"/>
+                        <TextBlock Style="{StaticResource AccentHeader}"
+                                   Text="{DynamicResource ResourceKey=AdditionalOptionsTitle}"
+                                   HorizontalAlignment="Left"
+                                   Margin="5 20 5 10"/>
+                        <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}"
+                                  Margin="0 5">Show post</CheckBox>-->
+                        <CheckBox Content="{DynamicResource ResourceKey=OpenComments}"
+                                  IsChecked="{Binding Path=CurrentPostData.open_comments, Mode=TwoWay}"
+                                  Margin="0 5"/>
+                        <CheckBox IsChecked="{Binding Path=CurrentPostData.adult, Mode=TwoWay}"
+                                  Margin="0 5">18+</CheckBox>
+                        <CheckBox Content="{DynamicResource ResourceKey=PostAnonymous}"
+                                  IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"
+                                  Margin="0 5"/>
                         <Button x:Name="btnSubmit"
-                                Content="{DynamicResource ResourceKey=SubmitPostButton}" Margin="0 5"
+                                Content="{DynamicResource ResourceKey=SubmitPostButton}"
                                 Style="{StaticResource MahApps.Styles.Button.Square.Accent}"
-                                Click="Submit_Click"/> 
+                                Margin="0 5" Click="Submit_Click"/> 
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
