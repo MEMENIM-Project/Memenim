@@ -45,14 +45,21 @@
     <system:String x:Key="LoadComments">НУЖНО БОЛЬШЕ КОММЕНТАРИЕВ!11!</system:String>
     <system:String x:Key="EnterComment">Введите содержимое комментария</system:String>
 
-    <system:String x:Key="ImageSourceTitle">Источник картинки</system:String>
+    <system:String x:Key="PostContentTitle">Содержимое поста</system:String>
+    <system:String x:Key="AdditionalOptionsTitle">Дополнительные опции</system:String>
+    <system:String x:Key="ImageSourceTitle">Выбери картинку</system:String>
     <system:String x:Key="GallerySelect">Выбрать из галлереи</system:String>
     <system:String x:Key="TenorSelect">Выбрать в Tenor</system:String>
     <system:String x:Key="URLSelect">Вставить URL</system:String>
     <system:String x:Key="UploadSelect">Загрузить свою картинку</system:String>
-
+    <system:String x:Key="RemovePhoto">Убрать картинку</system:String>
+    
     <system:String x:Key="SettingsTitle">Настройки</system:String>
+    <system:String x:Key="SpecialEventTitle">Спец ивент</system:String>
+    <system:String x:Key="EnabledTitle">Включить</system:String>
+    <system:String x:Key="BgmVolumeTitle">Громкость фоновой музыки</system:String>
     <system:String x:Key="LanguageTitle">Язык</system:String>
+    <system:String x:Key="AccountSettingsTitle">Настройки аккаунта</system:String>
     <system:String x:Key="ChangePassword">Сменить пароль</system:String>
     <system:String x:Key="OldPassword">Старый пароль</system:String>
     <system:String x:Key="NewPassword">Новый пароль</system:String>

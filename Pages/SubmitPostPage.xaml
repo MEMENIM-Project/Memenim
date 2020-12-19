@@ -25,14 +25,14 @@
                 <ScrollViewer VerticalScrollBarVisibility="Visible"
                               HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
+                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource ResourceKey=PostContentTitle}" Margin="0 5"/>
                         <TextBox MinHeight="200" AcceptsReturn="True"
                                  TextWrapping="Wrap" Margin="0 5"
                                  Text="{Binding Path=CurrentPostData.text, Mode=TwoWay}"
                                  controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}"/>
+                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
-                                <TextBlock Style="{DynamicResource Header2}"
-                                           Text="{DynamicResource ResourceKey=ImageSourceTitle}" Margin="0 5"/>
                                 <RadioButton Name="rbImageRaw" GroupName="ImageSource"
                                              Content="{DynamicResource ResourceKey=URLSelect}" IsChecked="True" Margin="0 5"/>
                                 <RadioButton Name="rbImageTenor" GroupName="ImageSource"
@@ -47,9 +47,10 @@
                         <Button Content="{DynamicResource ResourceKey=SelectPhoto}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
                                 Margin="0 5" Click="SelectPhoto_Click"/>
-                        <Button Content="Clear photo"
+                        <Button Content="{DynamicResource ResourceKey=RemovePhoto}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
                                 Margin="0 5" Click="ClearPhoto_Click"/>
+                        <TextBlock Style="{StaticResource AccentHeader}" Text="{DynamicResource ResourceKey=AdditionalOptionsTitle}" Margin="0 5"/>
                         <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}">Show post</CheckBox>-->
                         <CheckBox Content="{DynamicResource ResourceKey=OpenComments}" Margin="0 5"
                                   IsChecked="{Binding Path=CurrentPostData.open_comments, Mode=TwoWay}"/>

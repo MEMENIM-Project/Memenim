@@ -9,6 +9,7 @@
                    xmlns:controlsRis="clr-namespace:RIS.Graphics.WPF.Controls;assembly=RIS.Graphics"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    mc:Ignorable="d" 
                    d:DesignHeight="720" d:DesignWidth="1280">
     
@@ -57,10 +58,15 @@
                                   DisplayMemberPath="CategoryName" Margin="5 15 5 12"
                                   HorizontalAlignment="Center" DockPanel.Dock="Left"
                                   SelectionChanged="lstPostTypes_SelectionChanged"/>
-            <Button Content="{DynamicResource WriteNewPost}"
+            <Button 
                     Style="{StaticResource MahApps.Styles.Button.Square}"
                     HorizontalAlignment="Right" Margin="5 10 0 10"
-                    DockPanel.Dock="Right" Click="CreatePost_Click"/>
+                    DockPanel.Dock="Right" Click="CreatePost_Click" BorderThickness="0">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconModern Kind="NewspaperCreate" VerticalAlignment="Center" Height="20" Width="20" Margin="5" />
+                    <TextBlock Text="{DynamicResource WriteNewPost}" VerticalAlignment="Center" Margin="5"/>
+                </StackPanel>
+            </Button>
         </DockPanel>
         <Grid Grid.Row="1" Margin="16 5 16 5"
               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
