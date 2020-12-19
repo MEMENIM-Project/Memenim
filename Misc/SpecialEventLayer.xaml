@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Memenim.Misc.SpecialEventLayer"
+             d:DataContext="{d:DesignInstance local:SpecialEventLayer}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,11 +7,24 @@
              xmlns:local="clr-namespace:Memenim.Misc"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Loaded="Grid_Loaded">
-        <MediaElement Name="MusicPlayer" LoadedBehavior="Manual" MediaEnded="MusicPlayer_MediaEnded"/>
-        <MediaElement Name="PadoruPlayer" LoadedBehavior="Manual" MediaEnded="PadoruPlayer_MediaEnded"/>
-        <Canvas>
-            <Image x:Name="nero" Visibility="Collapsed" Stretch="Uniform" Source="pack://application:,,,/Resources/padoru_nero.png" Canvas.Bottom="0" Canvas.Left="50" />
+
+    <Grid Loaded="Grid_Loaded"
+          SizeChanged="Grid_SizeChanged">
+        <MediaElement Name="MusicPlayer"
+                      LoadedBehavior="Manual"
+                      Visibility="Collapsed"
+                      MediaEnded="MusicPlayer_MediaEnded"/>
+        <MediaElement Name="PadoruPlayer"
+                      LoadedBehavior="Manual"
+                      Visibility="Collapsed"
+                      MediaEnded="PadoruPlayer_MediaEnded"/>
+        <Canvas IsHitTestVisible="False">
+            <Image x:Name="PadoruImage"
+                   Canvas.Bottom="0" Canvas.Left="50"
+                   Source="pack://application:,,,/Resources/padoru_nero.png"
+                   Stretch="Uniform"
+                   Visibility="Collapsed"
+                   IsHitTestVisible="False"/>
         </Canvas>
     </Grid>
 </UserControl>

@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.11.6.0</AssemblyVersion>
-    <FileVersion>0.11.6.0</FileVersion>
+    <AssemblyVersion>0.11.7.0</AssemblyVersion>
+    <FileVersion>0.11.7.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.11.6</Version>
+    <Version>0.11.7</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -77,18 +77,19 @@
 
   <ItemGroup>
     <None Remove="Resources\ic_launcher.ico" />
-    <None Remove="Resources\Music\christmasinnightopia.mp3" />
-    <None Remove="Resources\Music\Gigawing_Xmas.mp3" />
-    <None Remove="Resources\Music\song1.mp3" />
-    <None Remove="Resources\Music\song2.mp3" />
-    <None Remove="Resources\Music\song3.mp3" />
-    <None Remove="Resources\Music\song4.mp3" />
-    <None Remove="Resources\Music\test.mp3" />
-    <None Remove="Resources\Music\test2.mp3" />
     <None Remove="Resources\nlog.config" />
-    <None Remove="Resources\padoru.mp3" />
-    <None Remove="Resources\padoru_nero.png" />
     <None Remove="Resources\placeholder_avatar.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\padoru_nero.png" />
+    <None Remove="Resources\Music\SpecialEvent\christmasinnightopia.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\Gigawing_Xmas.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\padoru.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\song1.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\song2.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\song3.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\song4.mp3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -101,34 +102,37 @@
     <Content Include="Localization\MainWindow.ru-RU.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\christmasinnightopia.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Music\Gigawing_Xmas.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Music\song1.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Music\song2.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Music\song3.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Music\song4.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\padoru.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\ic_launcher.ico" />
     <EmbeddedResource Include="Resources\nlog.config" />
-    <Resource Include="Resources\padoru_nero.png" />
     <Resource Include="Resources\placeholder_avatar.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\padoru_nero.png" />
+    <Content Include="Resources\Music\SpecialEvent\christmasinnightopia.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\Gigawing_Xmas.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\padoru.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\song1.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\song2.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\song3.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\song4.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

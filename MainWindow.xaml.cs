@@ -44,6 +44,34 @@ namespace Memenim
         private HwndSource _hwndSource;
         private WindowState _previousState;
 
+        private bool _specialEventEnabled;
+        public bool SpecialEventEnabled
+        {
+            get
+            {
+                return _specialEventEnabled;
+            }
+            set
+            {
+                SpecialEventLayer.Instance.Activate(value);
+
+                _specialEventEnabled = value;
+            }
+        }
+        private double _bgmVolume;
+        public double BgmVolume
+        {
+            get
+            {
+                return _bgmVolume;
+            }
+            set
+            {
+                SpecialEventLayer.Instance.SetVolume(value);
+
+                _bgmVolume = value;
+            }
+        }
         public ReadOnlyDictionary<string, string> Locales { get; private set; }
         public string AppVersion { get; private set; }
         public bool DuringRestoreToMaximized { get; private set; }
@@ -68,8 +96,9 @@ namespace Memenim
             _previousState = WindowState;
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
 
+            SpecialEventEnabled = SettingsManager.AppSettings.SpecialEventEnabled;
+            BgmVolume = SettingsManager.AppSettings.BgmVolume;
             AppVersion = $"v{SettingsManager.AppSettings.AppVersion}";
-            bgmVolume.Value = SettingsManager.AppSettings.BgmVolume;
 
             LocalizationManager.ReloadLocales();
 
@@ -286,12 +315,6 @@ namespace Memenim
             SettingsManager.AppSettings.WindowState = (int)WindowState;
 
             SettingsManager.AppSettings.Save();
-        }
-
-        private void bgmVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SettingsManager.AppSettings.BgmVolume = (float)e.NewValue;
-            SpecialEventLayer.Instance.SetVolume(e.NewValue);
         }
     }
 }

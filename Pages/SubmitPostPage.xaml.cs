@@ -78,9 +78,6 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
-            ClearText();
-            ClearImage();
-
             if (!IsOnExitActive)
             {
                 e.Handled = true;
@@ -103,7 +100,12 @@ namespace Memenim.Pages
                         ViewModel.CurrentPostData)
                     .ConfigureAwait(true);
 
-                if (!result.error)
+                if (result.error)
+                {
+                    await DialogManager.ShowDialog("F U C K", result.message)
+                        .ConfigureAwait(true);
+                }
+                else
                 {
                     await DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait")
                         .ConfigureAwait(true);

@@ -1,28 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Memenim.Logs;
 using Memenim.Settings;
+using RIS.Randomizing;
+using Environment = RIS.Environment;
 
 namespace Memenim.Misc
 {
-    /// <summary>
-    /// Interaction logic for ChristmasLayer.xaml
-    /// </summary>
     public partial class SpecialEventLayer : UserControl
     {
         private static readonly object InstanceSyncRoot = new object();
@@ -44,125 +32,258 @@ namespace Memenim.Misc
             }
         }
 
-        private string[] _songs =
-        {
-            @"\Resources\Music\christmasinnightopia.mp3",
-            @"\Resources\Music\song2.mp3",
-            @"\Resources\Music\song1.mp3",
-            @"\Resources\Music\song3.mp3",
-            @"\Resources\Music\song4.mp3",
-            @"\Resources\Music\Gigawing_Xmas.mp3",
-        };
+        private const double FadeAnimationSeconds = 3;
 
-        private string _CurrentSong = "";
+        private static readonly Random Random = new Random();
 
-        private Timer _PadoruTimer = new Timer();
-
-
-        DoubleAnimation leftAnim;
-        DoubleAnimation fadeIn;
-        DoubleAnimation fadeOut;
-
-        private string _ExecutablePath = Directory.GetCurrentDirectory();
-
-        const int FADE_SECONDS = 3;
+        private readonly string[] _songs;
+        private string _currentSong;
+        private DoubleAnimation _moveRightAnimation;
+        private DoubleAnimation _fadeInAnimation;
+        private DoubleAnimation _fadeOutAnimation;
+        private readonly Timer _padoruTimer;
 
         public SpecialEventLayer()
         {
             InitializeComponent();
             DataContext = this;
-            PadoruPlayer.Source = new Uri(_ExecutablePath + @"\Resources\Padoru.mp3");
-            _PadoruTimer.Elapsed += _PadoruTimer_Tick;
-            Random rnd = new Random(DateTime.Now.Millisecond);
-            int seconds = 180 + rnd.Next(180, 600);
-            LogManager.Log.Info(string.Format("Next padoru in {0} seconds", seconds));
-            _PadoruTimer.Interval = seconds * 1000;
-            
-            _PadoruTimer.Start();
 
-            leftAnim = new DoubleAnimation();
-            leftAnim.From = 0;
-            leftAnim.To = 1920;
-            leftAnim.Duration = new Duration(TimeSpan.FromSeconds(10));
+            _songs = new[]
+            {
+                GetSongPath("christmasinnightopia.mp3"),
+                GetSongPath("song2.mp3"),
+                GetSongPath("song1.mp3"),
+                GetSongPath("song3.mp3"),
+                GetSongPath("song4.mp3"),
+                GetSongPath("Gigawing_Xmas.mp3")
+            };
+            _currentSong = string.Empty;
 
-            fadeIn = new DoubleAnimation()
+            _moveRightAnimation = new DoubleAnimation
+            {
+                From = -250,
+                To = ActualWidth + 250,
+                Duration = new Duration(TimeSpan.FromSeconds(10))
+            };
+            _fadeInAnimation = new DoubleAnimation
             {
                 From = 0,
                 To = SettingsManager.AppSettings.BgmVolume,
-                Duration = TimeSpan.FromSeconds(FADE_SECONDS)
+                Duration = TimeSpan.FromSeconds(FadeAnimationSeconds),
+                FillBehavior = FillBehavior.Stop
             };
-            fadeOut = new DoubleAnimation()
+            _fadeOutAnimation = new DoubleAnimation
             {
                 From = SettingsManager.AppSettings.BgmVolume,
                 To = 0,
-                Duration = TimeSpan.FromSeconds(FADE_SECONDS)
+                Duration = TimeSpan.FromSeconds(FadeAnimationSeconds),
+                FillBehavior = FillBehavior.Stop
             };
+
+            _padoruTimer = new Timer();
+            _padoruTimer.Elapsed += PadoruTimer_Tick;
+
+            SetRandomNextPadoruInterval();
+
+            MusicPlayer.Source = new Uri(GetRandomSong());
+            PadoruPlayer.Source = new Uri(GetSongPath("Padoru.mp3"));
+
+            _padoruTimer.Start();
+
+            Activate(SettingsManager.AppSettings.SpecialEventEnabled);
+            SetVolume(SettingsManager.AppSettings.BgmVolume);
         }
 
-        private void _PadoruTimer_Tick(object sender, EventArgs e)
+        private string GetSongPath(string name)
         {
-            Dispatcher.Invoke(TriggerPadoru);
+            return Path.Combine(Environment.ExecAppDirectoryName,
+                "Resources", "Music", "SpecialEvent", name);
         }
 
-        private void MusicPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        private string GetRandomSong()
         {
-            MusicPlayer.Source = new Uri(_ExecutablePath + GetRandomSong());
-            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, fadeIn);
-        }
+            int songIndex = Random.Next(0, _songs.Length - 1);
+            string song = _songs[songIndex];
 
-        string GetRandomSong()
-        {
-            string song = _CurrentSong;
-            Random rnd = new Random(DateTime.Now.Millisecond);
-            song = _songs[rnd.Next(0, _songs.Length - 1)];
-            _CurrentSong = song;
+            if (song != _currentSong)
+            {
+                _currentSong = song;
+                return song;
+            }
+
+            if (songIndex == 0)
+            {
+                ++songIndex;
+            }
+            else if (songIndex == _songs.Length - 1)
+            {
+                --songIndex;
+            }
+            else
+            {
+                if (Random.NextBoolean(0.5))
+                    ++songIndex;
+                else
+                    --songIndex;
+            }
+
+            song = _songs[songIndex];
+
+            _currentSong = song;
             return song;
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        private void SetRandomNextPadoruInterval()
         {
-            MusicPlayer.Source = new Uri(_ExecutablePath + GetRandomSong());
-            MusicPlayer.Play();
-            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, fadeIn);
+            int seconds = 180 + Random.Next(180, 600);
+
+            LogManager.Log.Info($"Next padoru in {seconds} seconds");
+
+            _padoruTimer.Interval = seconds * 1000;
         }
 
-        private void TriggerPadoru()
+        private void PlayRandomSong()
         {
+            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
+            MusicPlayer.Stop();
+
+            MusicPlayer.Source = new Uri(GetRandomSong());
+
+            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
+            MusicPlayer.Play();
+        }
+
+        private void PlayPadoru()
+        {
+            if (!PadoruPlayer.IsEnabled)
+                return;
+
+            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
             MusicPlayer.Pause();
-            nero.Visibility = Visibility.Visible;
-            nero.BeginAnimation(Canvas.LeftProperty, leftAnim);
+
+            PadoruPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
             PadoruPlayer.Play();
-            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, fadeIn);
+
+            PadoruImage.Visibility = Visibility.Visible;
+
+            PadoruImage.BeginAnimation(Canvas.LeftProperty, _moveRightAnimation);
         }
 
-        private void PadoruPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        private void StopPadoru()
         {
+            if (!PadoruPlayer.IsEnabled)
+                return;
+
+            PadoruPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
             PadoruPlayer.Stop();
-            Random rnd = new Random(DateTime.Now.Millisecond);
-            int seconds = 180 + rnd.Next(180, 600);
-            LogManager.Log.Info(string.Format("Next padoru in {0} seconds", seconds));
-            _PadoruTimer.Interval = seconds * 1000;
-            nero.Visibility = Visibility.Collapsed;
+
+            PadoruImage.Visibility = Visibility.Collapsed;
+
+            SetRandomNextPadoruInterval();
+
+            if (!MusicPlayer.IsEnabled)
+                return;
+
+            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
             MusicPlayer.Play();
-            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, fadeIn);
+        }
+
+        public void Activate(bool state)
+        {
+            if (state)
+            {
+                MusicPlayer.IsEnabled = true;
+                PadoruPlayer.IsEnabled = true;
+
+                MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
+                MusicPlayer.Play();
+
+                _padoruTimer.Start();
+
+                LogManager.Log.Info("Special event - On");
+            }
+            else
+            {
+                MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
+                MusicPlayer.Pause();
+
+                _padoruTimer.Stop();
+                PadoruImage.Visibility = Visibility.Collapsed;
+
+                PadoruPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
+                PadoruPlayer.Stop();
+
+                MusicPlayer.IsEnabled = false;
+                PadoruPlayer.IsEnabled = false;
+
+                LogManager.Log.Info("Special event - Off");
+            }
+
+            SettingsManager.AppSettings.SpecialEventEnabled = state;
+            SettingsManager.AppSettings.Save();
         }
 
         public void SetVolume(double value)
         {
+            if (value < 0.0)
+                value = 0.0;
+            if (value > 1.0)
+                value = 1.0;
+
+            _fadeInAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = value,
+                Duration = TimeSpan.FromSeconds(FadeAnimationSeconds),
+                FillBehavior = FillBehavior.Stop
+            };
+            _fadeOutAnimation = new DoubleAnimation
+            {
+                From = value,
+                To = 0,
+                Duration = TimeSpan.FromSeconds(FadeAnimationSeconds),
+                FillBehavior = FillBehavior.Stop
+            };
+
             MusicPlayer.Volume = value;
+            PadoruPlayer.Volume = value;
+
+            SettingsManager.AppSettings.BgmVolume = value;
+            SettingsManager.AppSettings.Save();
         }
 
-        public void Enable()
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            MusicPlayer.IsEnabled = true;
-            PadoruPlayer.IsEnabled = true;
-
+            if (SettingsManager.AppSettings.SpecialEventEnabled)
+                PlayRandomSong();
         }
 
-        public void Disable()
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            MusicPlayer.IsEnabled = false;
-            PadoruPlayer.IsEnabled = false;
+            _moveRightAnimation = new DoubleAnimation
+            {
+                From = -250,
+                To = e.NewSize.Width + 250,
+                Duration = new Duration(TimeSpan.FromSeconds(10))
+            };
+        }
+
+        private void PadoruTimer_Tick(object sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                PlayPadoru();
+            });
+        }
+
+        private void MusicPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            PlayRandomSong();
+        }
+
+        private void PadoruPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+           StopPadoru();
         }
     }
 }
