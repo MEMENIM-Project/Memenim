@@ -83,6 +83,16 @@ namespace Memenim.Widgets
             UpdateComment();
         }
 
+        private void CopyCommentId_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(CurrentCommentData.id.ToString());
+        }
+
+        private void CopyCommentText_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(CurrentCommentData.text);
+        }
+
         private void Reply_Click(object sender, RoutedEventArgs e)
         {
             btnReply.IsEnabled = false;
