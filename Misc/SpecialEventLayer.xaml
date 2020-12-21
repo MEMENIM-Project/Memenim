@@ -20,7 +20,7 @@
                       MediaEnded="PadoruPlayer_MediaEnded"/>
         <Canvas IsHitTestVisible="False">
             <Image x:Name="PadoruImage"
-                   Canvas.Bottom="0" Canvas.Left="50"
+                   Canvas.Bottom="-25" Canvas.Left="50"
                    Source="pack://application:,,,/Resources/padoru_nero.png"
                    Stretch="Uniform"
                    Visibility="Collapsed"
