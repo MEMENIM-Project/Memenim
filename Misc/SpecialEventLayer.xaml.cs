@@ -55,6 +55,7 @@ namespace Memenim.Misc
                 GetSongPath("song1.mp3"),
                 GetSongPath("song3.mp3"),
                 GetSongPath("song4.mp3"),
+                GetSongPath("song5.mp3"),
                 GetSongPath("Gigawing_Xmas.mp3")
             };
             _currentSong = string.Empty;
