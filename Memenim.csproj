@@ -77,7 +77,6 @@
 
   <ItemGroup>
     <None Remove="Resources\ic_launcher.ico" />
-    <None Remove="Resources\Music\SpecialEvent\song5.mp3" />
     <None Remove="Resources\nlog.config" />
     <None Remove="Resources\placeholder_avatar.jpg" />
   </ItemGroup>
@@ -91,6 +90,8 @@
     <None Remove="Resources\Music\SpecialEvent\song2.mp3" />
     <None Remove="Resources\Music\SpecialEvent\song3.mp3" />
     <None Remove="Resources\Music\SpecialEvent\song4.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\song5.mp3" />
+    <None Remove="Resources\Music\SpecialEvent\song6.mp3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -104,6 +105,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Music\SpecialEvent\song5.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\SpecialEvent\song6.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
