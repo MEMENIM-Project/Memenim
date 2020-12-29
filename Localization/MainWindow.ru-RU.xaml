@@ -19,7 +19,7 @@
     <system:String x:Key="SignUpTitle">Регистрация</system:String>
 
     <system:String x:Key="ErrorTitle">Б Л Я Т Ь</system:String>
-    <system:String x:Key="SuccessTitle">З А Б Ц А</system:String>
+    <system:String x:Key="SuccessTitle">З А Е Б Ц А</system:String>
 
     <system:String x:Key="WIPTitle">ТИХО</system:String>
 
@@ -48,7 +48,7 @@
     <system:String x:Key="PostContentTitle">Содержимое поста</system:String>
     <system:String x:Key="AdditionalOptionsTitle">Дополнительные опции</system:String>
     <system:String x:Key="ImageSourceTitle">Выберите изображение</system:String>
-    <system:String x:Key="GallerySelect">Выбрать из галлереи</system:String>
+    <system:String x:Key="GallerySelect">Выбрать из галереи</system:String>
     <system:String x:Key="TenorSelect">Выбрать в Tenor</system:String>
     <system:String x:Key="URLSelect">Вставить URL</system:String>
     <system:String x:Key="UploadSelect">Загрузить свою картинку</system:String>
