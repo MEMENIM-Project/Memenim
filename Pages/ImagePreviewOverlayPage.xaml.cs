@@ -70,6 +70,10 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;

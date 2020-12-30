@@ -12,6 +12,7 @@ using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Widgets;
+using WpfAnimatedGif;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
@@ -65,10 +66,24 @@ namespace Memenim.Pages
 
             svPosts.IsEnabled = false;
 
+            foreach (var post in lstPosts.Children)
+            {
+                PostWidget postWidget = post as PostWidget;
+
+                if (postWidget == null)
+                    continue;
+
+                ImageBehavior.SetAnimatedSource(postWidget.PostImage, null);
+            }
+
             lstPosts.Children.Clear();
             svPosts.ScrollToHorizontalOffset(0);
 
             ViewModel.Offset = 0;
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             await LoadMorePosts(type)
                 .ConfigureAwait(true);
@@ -365,6 +380,10 @@ namespace Memenim.Pages
 
         protected override void OnEnter(object sender, RoutedEventArgs e)
         {
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -388,6 +407,10 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             if (!IsOnExitActive)
             {
                 e.Handled = true;

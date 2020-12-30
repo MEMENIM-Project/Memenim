@@ -105,7 +105,7 @@ namespace Memenim.Widgets
             DataContext = this;
         }
 
-        private void OnPoster_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (UserId == -1)
                 return;

@@ -19,6 +19,7 @@ using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
 using Memenim.Widgets;
+using WpfAnimatedGif;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
@@ -226,6 +227,10 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -236,6 +241,29 @@ namespace Memenim.Pages
 
             await UpdateProfile()
                 .ConfigureAwait(true);
+        }
+
+        protected override void OnExit(object sender, RoutedEventArgs e)
+        {
+            //ImageBehavior.SetAnimatedSource(img, null);
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            base.OnExit(sender, e);
+
+            ImageBehavior.SetAnimatedSource(img, null);
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
 
         protected override async void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -267,19 +295,6 @@ namespace Memenim.Pages
         private void CopyUserId_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(ViewModel.CurrentProfileData.id.ToString());
-        }
-
-        private void AvatarImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (string.IsNullOrEmpty(ViewModel.CurrentProfileData.photo))
-                return;
-
-            NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
-            {
-                ImageSource = ViewModel.CurrentProfileData.photo
-            });
-
-            e.Handled = true;
         }
 
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
@@ -624,6 +639,19 @@ namespace Memenim.Pages
 
                 sourceProperty.SetValue(sourceClass, oldValue);
             }
+        }
+
+        private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ViewModel.CurrentProfileData.photo))
+                return;
+
+            NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
+            {
+                ImageSource = ViewModel.CurrentProfileData.photo
+            });
+
+            e.Handled = true;
         }
     }
 }

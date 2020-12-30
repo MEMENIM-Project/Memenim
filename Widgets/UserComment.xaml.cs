@@ -252,7 +252,7 @@ namespace Memenim.Widgets
             stDislikes.IsEnabled = true;
         }
 
-        private void Avatar_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (CurrentCommentData.user.id == -1)
                 return;

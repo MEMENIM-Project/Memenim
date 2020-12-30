@@ -10,6 +10,7 @@ using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Pages;
 using Memenim.Settings;
+using WpfAnimatedGif;
 
 namespace Memenim.Widgets
 {
@@ -103,10 +104,24 @@ namespace Memenim.Widgets
 
         public Task UpdateComments(bool resetScroll = true)
         {
+            foreach (var comment in lstComments.Children)
+            {
+                UserComment userComment = comment as UserComment;
+
+                if (userComment == null)
+                    continue;
+
+                ImageBehavior.SetAnimatedSource(userComment.img, null);
+            }
+
             lstComments.Children.Clear();
 
             Offset = 0;
-            btnLoadMore.Visibility = Visibility.Visible;
+            btnLoadMore.Visibility = Visibility.Collapsed;
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             if (resetScroll)
             {
@@ -381,6 +396,10 @@ namespace Memenim.Widgets
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             if (_postIdChangedUpdate)
             {
                 _autoUpdateTimer.Start();
@@ -396,6 +415,22 @@ namespace Memenim.Widgets
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
             _autoUpdateTimer.Stop();
+
+            foreach (var comment in lstComments.Children)
+            {
+                UserComment userComment = comment as UserComment;
+
+                if (userComment == null)
+                    continue;
+
+                ImageBehavior.SetAnimatedSource(userComment.img, null);
+            }
+
+            lstComments.Children.Clear();
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable

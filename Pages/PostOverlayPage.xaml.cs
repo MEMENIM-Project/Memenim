@@ -141,6 +141,10 @@ namespace Memenim.Pages
                 wdgWriteComment.Visibility = Visibility.Visible;
             }
 
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -172,6 +176,9 @@ namespace Memenim.Pages
             wdgWriteComment.txtContent.ScrollToEnd();
             wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
             wdgWriteComment.txtContent.Focus();
+
+            if (svPost.VerticalOffset >= svPost.ScrollableHeight - 20)
+                svPost.ScrollToVerticalOffset(0.0);
         }
 
         protected override async void OnExit(object sender, RoutedEventArgs e)
@@ -182,6 +189,13 @@ namespace Memenim.Pages
                     wdgWriteComment.CommentText,
                     wdgWriteComment.IsAnonymous)
                 .ConfigureAwait(true);
+
+            wdgCommentsList.lstComments.Children.Clear();
+
+            wdgCommentsList.UpdateLayout();
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             if (!IsOnExitActive)
             {

@@ -30,8 +30,10 @@
             </Grid.ContextMenu>
 
             <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
-                  Width="50" Height="50" Margin="0 0 15 0"
-                  VerticalAlignment="Top">
+                  Width="50" Height="50"
+                  Margin="0 0 15 0"
+                  VerticalAlignment="Top"
+                  MouseLeftButtonUp="Avatar_MouseLeftButtonUp">
                 <Grid.OpacityMask>
                     <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
                 </Grid.OpacityMask>
@@ -39,10 +41,10 @@
                 <Border Name="ImageBorder" CornerRadius="0" SnapsToDevicePixels="True"
                         Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 <Image MinHeight="50" MinWidth="50"
+                       x:Name="img"
                        gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                       MouseUp="Avatar_MouseUp"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <emoji:TextBlock Text="{Binding Path=CurrentCommentData.user.name, Converter={StaticResource UserNameConverter}}"
