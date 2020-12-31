@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using MahApps.Metro.Controls;
 using Memenim.Converters;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
@@ -160,6 +161,8 @@ namespace Memenim.Pages
         }
         public void UpdateStatBlock(StackPanel statBlock)
         {
+            UpdateLayout();
+
             var visibilityMultiBinding =
                 BindingOperations.GetMultiBindingExpression(statBlock,
                     VisibilityProperty);
@@ -174,6 +177,8 @@ namespace Memenim.Pages
             }
 
             visibilityMultiBinding.UpdateTarget();
+
+            UpdateLayout();
         }
 
         public Task ShowLoadingGrid(bool status)
@@ -295,6 +300,12 @@ namespace Memenim.Pages
         private void CopyUserId_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(ViewModel.CurrentProfileData.id.ToString());
+        }
+
+        private void btnEditMode_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateStatBlock(wpStatBlock1, wpStatBlock2,
+                wpStatBlock3, wpStatBlock4);
         }
 
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
@@ -450,6 +461,13 @@ namespace Memenim.Pages
 
                 sourceProperty.SetValue(sourceClass, oldValue);
             }
+
+            var statBlock = element.TryFindParent<StackPanel>();
+
+            if (statBlock == null)
+                return;
+
+            UpdateStatBlock(statBlock);
         }
 
         private async void EditMultilineText_Click(object sender, RoutedEventArgs e)
@@ -494,6 +512,13 @@ namespace Memenim.Pages
 
                 sourceProperty.SetValue(sourceClass, oldValue);
             }
+
+            var statBlock = element.TryFindParent<StackPanel>();
+
+            if (statBlock == null)
+                return;
+
+            UpdateStatBlock(statBlock);
         }
 
         private async void EditComboBoxPurpose_Click(object sender, RoutedEventArgs e)
@@ -544,6 +569,13 @@ namespace Memenim.Pages
 
                 sourceProperty.SetValue(sourceClass, oldValue);
             }
+
+            var statBlock = element.TryFindParent<StackPanel>();
+
+            if (statBlock == null)
+                return;
+
+            UpdateStatBlock(statBlock);
         }
 
         private async void EditComboBoxSex_Click(object sender, RoutedEventArgs e)
@@ -594,6 +626,13 @@ namespace Memenim.Pages
 
                 sourceProperty.SetValue(sourceClass, oldValue);
             }
+
+            var statBlock = element.TryFindParent<StackPanel>();
+
+            if (statBlock == null)
+                return;
+
+            UpdateStatBlock(statBlock);
         }
 
         private async void EditNumericAge_Click(object sender, RoutedEventArgs e)
@@ -639,6 +678,13 @@ namespace Memenim.Pages
 
                 sourceProperty.SetValue(sourceClass, oldValue);
             }
+
+            var statBlock = element.TryFindParent<StackPanel>();
+
+            if (statBlock == null)
+                return;
+
+            UpdateStatBlock(statBlock);
         }
 
         private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
