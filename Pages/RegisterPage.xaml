@@ -114,12 +114,11 @@
                                  VerticalAlignment="Top" HorizontalAlignment="Center"
                                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                                  PasswordChanged="txtPassword_PasswordChanged" KeyUp="txtPassword_KeyUp"/>
-                    <Button Grid.Column="2" Width="20" Height="20"
-                            Margin="0 0 0 10" BorderThickness="1"
-                            Style="{StaticResource MahApps.Styles.Button.Circle}"
+                    <Button Grid.Column="2" Width="21" Height="21"
+                            Margin="2 0 2 10" BorderThickness="0"
                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                             Click="btnGeneratePassword_Click">
-                        <iconPacks:PackIconBootstrapIcons Grid.Column="2" Width="12" Height="12" Kind="Dice6Fill"
+                        <iconPacks:PackIconBootstrapIcons Width="11" Height="11" Kind="Dice6Fill"
                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                 </Grid>

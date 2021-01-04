@@ -448,6 +448,12 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
         }
 
+        private async void btnRefreshPosts_Click(object sender, RoutedEventArgs e)
+        {
+            await UpdatePosts()
+                .ConfigureAwait(true);
+        }
+
         private void OnPost_Click(object sender, RoutedEventArgs e)
         {
             if (!(sender is PostWidget post))
