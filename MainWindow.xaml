@@ -110,8 +110,8 @@
                                     <controls:SplitButton Name="slcLanguage"
                                                           ItemsSource="{Binding Path=Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
                                                           DisplayMemberPath="Value"
-                                                          SelectionChanged="slcLanguage_SelectionChanged"
-                                                          Margin="5">
+                                                          Margin="5"
+                                                          SelectionChanged="slcLanguage_SelectionChanged">
                                         <controls:SplitButton.Icon>
                                             <iconPacks:PackIconModern Kind="Globe"
                                                                       Margin="5"/>

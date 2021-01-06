@@ -137,12 +137,12 @@ namespace Memenim
             var eventStartTime = DateTime.ParseExact("0001.12.20 00-00-00",
                     "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture)
                 .AddYears(appStartupTime.Year - 1);
-            var eventEndTime = DateTime.ParseExact("0002.01.10 23-59-59",
+            var eventEndTime = DateTime.ParseExact("0001.01.10 23-59-59",
                     "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture)
                 .AddYears(appStartupTime.Year - 1);
 
             if (!(eventStartTime <= appStartupTime
-                  && appStartupTime <= eventEndTime))
+                  || appStartupTime <= eventEndTime))
             {
                 return;
             }

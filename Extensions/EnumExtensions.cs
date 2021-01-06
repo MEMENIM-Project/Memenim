@@ -27,12 +27,12 @@ namespace Memenim.Extensions
 
         public static string[] GetLocalizedNames(this Enum targetEnum)
         {
-            string[] names = Enum.GetNames(targetEnum.GetType());
-            string[] localizedNames = new string[names.Length];
+            var names = Enum.GetNames(targetEnum.GetType());
+            var localizedNames = new string[names.Length];
 
             for (var i = 0; i < names.Length; ++i)
             {
-                ref string name = ref names[i];
+                ref var name = ref names[i];
 
                 string localizedName =
                     MainWindow.Instance.FindResource(GetResourceKey(targetEnum, name)).ToString();
@@ -48,15 +48,15 @@ namespace Memenim.Extensions
         public static T ParseLocalizedName<T>(this Enum targetEnum, string localizedName)
             where T: struct
         {
-            string[] names = Enum.GetNames(targetEnum.GetType());
-            string[] localizedNames = targetEnum.GetLocalizedNames();
+            var names = Enum.GetNames(targetEnum.GetType());
+            var localizedNames = targetEnum.GetLocalizedNames();
 
             for (int i = 0; i < localizedNames.Length; ++i)
             {
                 if (localizedNames[i] != localizedName)
                     continue;
 
-                string name = names[i];
+                ref var name = ref names[i];
 
                 T value = Enum.Parse<T>(name);
 

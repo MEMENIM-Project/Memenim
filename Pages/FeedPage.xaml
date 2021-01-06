@@ -15,13 +15,6 @@
                    d:DesignHeight="720" d:DesignWidth="1280">
     
     <local:PageContent.Resources>
-        <x:Array x:Key="PostTypes" Type="local:PostTypeNode">
-            <local:PostTypeNode CategoryName="Popular" CategoryType="Popular"/>
-            <local:PostTypeNode CategoryName="New" CategoryType="New"/>
-            <local:PostTypeNode CategoryName="My" CategoryType="My"/>
-            <local:PostTypeNode CategoryName="Favorite" CategoryType="Favorite"/>
-        </x:Array>
-
         <Storyboard x:Key="LoadingMoreEnterAnimation">
             <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
                                 Storyboard.TargetProperty="Margin"
@@ -54,12 +47,12 @@
             <Label Content="{DynamicResource FeedTitle}"
                    Style="{DynamicResource DescriptionHeader}"
                    DockPanel.Dock="Left" VerticalContentAlignment="Center"/>
-            <controls:SplitButton Name="lstPostTypes"
-                                  ItemsSource="{Binding Source={StaticResource PostTypes}}"
-                                  DisplayMemberPath="CategoryName"
+            <controls:SplitButton Name="slcPostTypes"
+                                  ItemsSource="{Binding Path=PostTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
+                                  DisplayMemberPath="Value"
                                   DockPanel.Dock="Left" HorizontalAlignment="Center"
                                   Margin="5 14 2 14"
-                                  SelectionChanged="lstPostTypes_SelectionChanged"/>
+                                  SelectionChanged="slcPostTypes_SelectionChanged"/>
             <widgets:IconButton Width="30" Height="30"
                                 IconKind="Refresh"
                                 DockPanel.Dock="Left"

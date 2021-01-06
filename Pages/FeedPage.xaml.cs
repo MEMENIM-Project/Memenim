@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -8,6 +9,8 @@ using System.Windows.Media.Animation;
 using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
+using Memenim.Extensions;
+using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
@@ -25,6 +28,8 @@ namespace Memenim.Pages
 
         public readonly Storyboard LoadingMoreEnterAnimation;
         public readonly Storyboard LoadingMoreExitAnimation;
+
+        public ReadOnlyDictionary<PostType, string> PostTypes { get; private set; }
 
         public FeedViewModel ViewModel
         {
@@ -46,18 +51,55 @@ namespace Memenim.Pages
             _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimerCallback;
             _autoUpdateCountTimer.Stop();
 
-            lstPostTypes.SelectedIndex = 0;
+            ReloadPostTypes();
+
+            slcPostTypes.SelectedIndex = 1;
+
+            LocalizationManager.LanguageChanged += OnLanguageChanged;
+        }
+
+        ~FeedPage()
+        {
+            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+        }
+
+        private void ReloadPostTypes()
+        {
+            var names = Enum.GetNames(typeof(PostType));
+            var localizedNames = PostType.New.GetLocalizedNames();
+            var postTypes = new Dictionary<PostType, string>(names.Length);
+
+            for (var i = 0; i < names.Length; ++i)
+            {
+                postTypes.Add(
+                        Enum.Parse<PostType>(names[i], true),
+                        localizedNames[i]);
+            }
+
+            slcPostTypes.SelectionChanged -= slcPostTypes_SelectionChanged;
+
+            var selectedIndex = slcPostTypes.SelectedIndex;
+
+            PostTypes = new ReadOnlyDictionary<PostType, string>(postTypes);
+
+            slcPostTypes
+                .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
+                .UpdateTarget();
+
+            slcPostTypes.SelectedIndex = selectedIndex;
+
+            slcPostTypes.SelectionChanged += slcPostTypes_SelectionChanged;
         }
 
         public Task UpdatePosts()
         {
-            return UpdatePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType);
+            return UpdatePosts(((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key);
         }
         public async Task UpdatePosts(PostType type)
         {
             _autoUpdateCountTimer.Stop();
 
-            lstPostTypes.IsEnabled = false;
+            slcPostTypes.IsEnabled = false;
 
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
@@ -103,14 +145,14 @@ namespace Memenim.Pages
             await ShowLoadingGrid(false)
                 .ConfigureAwait(true);
 
-            lstPostTypes.IsEnabled = true;
+            slcPostTypes.IsEnabled = true;
 
             _autoUpdateCountTimer.Start();
         }
 
         public Task LoadMorePosts()
         {
-            return LoadMorePosts(((PostTypeNode)lstPostTypes.SelectedItem).CategoryType);
+            return LoadMorePosts(((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key);
         }
         public async Task LoadMorePosts(PostType type)
         {
@@ -183,7 +225,7 @@ namespace Memenim.Pages
 
             Dispatcher.Invoke(() =>
             {
-                postType = ((PostTypeNode)lstPostTypes.SelectedItem).CategoryType;
+                postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
             });
 
             return GetNewPostsCount(postType, OffsetPerTime, offset);
@@ -420,6 +462,11 @@ namespace Memenim.Pages
             _autoUpdateCountTimer.Stop();
         }
 
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            ReloadPostTypes();
+        }
+
         private async void AutoUpdateCountTimerCallback(object sender, ElapsedEventArgs e)
         {
             _autoUpdateCountTimer.Stop();
@@ -436,7 +483,7 @@ namespace Memenim.Pages
             _autoUpdateCountTimer.Start();
         }
 
-        private async void lstPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void slcPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await UpdatePosts()
                 .ConfigureAwait(true);

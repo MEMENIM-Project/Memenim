@@ -67,6 +67,17 @@
                                    Text="{DynamicResource ResourceKey=AdditionalOptionsTitle}"
                                    HorizontalAlignment="Left"
                                    Margin="5 20 5 10"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource ResourceKey=PostCategoryTitle}"
+                                       Margin="0 5 5 5"/>
+                            <TextBlock Text=": "
+                                       Margin="0 5 5 5"/>
+                            <controls:SplitButton Name="slcPostCategories"
+                                                  ItemsSource="{Binding Path=PostCategories, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"
+                                                  DisplayMemberPath="Value"
+                                                  Margin="0 5"
+                                                  SelectionChanged="slcPostCategories_SelectionChanged"/>
+                        </StackPanel>
                         <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}"
                                   Margin="0 5">Show post</CheckBox>-->
                         <CheckBox Content="{DynamicResource ResourceKey=OpenComments}"

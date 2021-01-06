@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Extensions;
+using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
@@ -11,6 +17,8 @@ namespace Memenim.Pages
 {
     public partial class SubmitPostPage : PageContent
     {
+        public ReadOnlyDictionary<int, string> PostCategories { get; private set; }
+
         public SubmitPostViewModel ViewModel
         {
             get
@@ -23,6 +31,45 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new SubmitPostViewModel();
+
+            ReloadPostCategories();
+
+            slcPostCategories.SelectedIndex = 0;
+
+            LocalizationManager.LanguageChanged += OnLanguageChanged;
+        }
+
+        ~SubmitPostPage()
+        {
+            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+        }
+
+        private void ReloadPostCategories()
+        {
+            var categories = PostApi.PostCategories.Values.ToArray();
+            var localizedNames = PostCategorySchemaExtensions.GetLocalizedNames();
+            var postCategories = new Dictionary<int, string>(categories.Length);
+
+            for (var i = 0; i < categories.Length; ++i)
+            {
+                postCategories.Add(
+                    categories[i].id,
+                    localizedNames[i]);
+            }
+
+            slcPostCategories.SelectionChanged -= slcPostCategories_SelectionChanged;
+
+            var selectedIndex = slcPostCategories.SelectedIndex;
+
+            PostCategories = new ReadOnlyDictionary<int, string>(postCategories);
+
+            slcPostCategories
+                .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
+                .UpdateTarget();
+
+            slcPostCategories.SelectedIndex = selectedIndex;
+
+            slcPostCategories.SelectionChanged += slcPostCategories_SelectionChanged;
         }
 
         private Task SelectPhoto(string url)
@@ -87,6 +134,47 @@ namespace Memenim.Pages
             base.OnExit(sender, e);
         }
 
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            ReloadPostCategories();
+        }
+
+        private void slcPostCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.CurrentPostData.category = ((KeyValuePair<int, string>)slcPostCategories.SelectedItem).Key;
+        }
+
+        private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
+        {
+            if (rbImageRaw.IsChecked == true)
+            {
+                string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
+                    .ConfigureAwait(true);
+
+                await SelectPhoto(url)
+                    .ConfigureAwait(true);
+            }
+            else if (rbImageTenor.IsChecked == true)
+            {
+                NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
+                {
+                    OnPicSelect = SelectPhoto
+                });
+            }
+            else if (rbImageGallery.IsChecked == true)
+            {
+                NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
+                {
+                    OnPicSelect = SelectPhoto
+                });
+            }
+        }
+
+        private void RemovePhoto_Click(object sender, RoutedEventArgs e)
+        {
+            ClearImage();
+        }
+
         private async void Submit_Click(object sender, RoutedEventArgs e)
         {
             btnSubmit.IsEnabled = false;
@@ -123,37 +211,6 @@ namespace Memenim.Pages
             {
                 btnSubmit.IsEnabled = true;
             }
-        }
-
-        private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
-        {
-            if (rbImageRaw.IsChecked == true)
-            {
-                string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
-                    .ConfigureAwait(true);
-
-                await SelectPhoto(url)
-                    .ConfigureAwait(true);
-            }
-            else if (rbImageTenor.IsChecked == true)
-            {
-                NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
-                {
-                    OnPicSelect = SelectPhoto
-                });
-            }
-            else if (rbImageGallery.IsChecked == true)
-            {
-                NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
-                {
-                    OnPicSelect = SelectPhoto
-                });
-            }
-        }
-
-        private void RemovePhoto_Click(object sender, RoutedEventArgs e)
-        {
-            ClearImage();
         }
     }
 }

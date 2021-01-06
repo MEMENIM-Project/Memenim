@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Memenim.Core.Schema;
 using Memenim.Logs;
@@ -131,7 +132,7 @@ namespace Memenim.Protocols.Schemas
 
                     if (page != null)
                     {
-                        var postType = ((PostTypeNode)page.lstPostTypes.SelectedItem).CategoryType;
+                        var postType = ((KeyValuePair<PostType, string>)page.slcPostTypes.SelectedItem).Key;
 
                         switch (postType)
                         {
