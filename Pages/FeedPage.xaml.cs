@@ -56,11 +56,13 @@ namespace Memenim.Pages
             slcPostTypes.SelectedIndex = 1;
 
             LocalizationManager.LanguageChanged += OnLanguageChanged;
+            SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~FeedPage()
         {
             LocalizationManager.LanguageChanged -= OnLanguageChanged;
+            SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
         private void ReloadPostTypes()
@@ -100,6 +102,7 @@ namespace Memenim.Pages
             _autoUpdateCountTimer.Stop();
 
             slcPostTypes.IsEnabled = false;
+            btnRefresh.IsEnabled = false;
 
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
@@ -145,6 +148,7 @@ namespace Memenim.Pages
             await ShowLoadingGrid(false)
                 .ConfigureAwait(true);
 
+            btnRefresh.IsEnabled = true;
             slcPostTypes.IsEnabled = true;
 
             _autoUpdateCountTimer.Start();
@@ -465,6 +469,68 @@ namespace Memenim.Pages
         private void OnLanguageChanged(object sender, EventArgs e)
         {
             ReloadPostTypes();
+        }
+
+        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        {
+            if (e.NewUser.Id == -1)
+                return;
+
+            _autoUpdateCountTimer.Stop();
+
+            slcPostTypes.IsEnabled = false;
+            btnRefresh.IsEnabled = false;
+
+            await ShowLoadingGrid(true)
+                .ConfigureAwait(true);
+
+            svPosts.IsEnabled = false;
+
+            var postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+
+            switch (postType)
+            {
+                case PostType.Popular:
+                case PostType.New:
+                    if (lstPosts.Children.Count == 0)
+                        break;
+
+                    var tasks = new List<Task>();
+
+                    foreach (var post in lstPosts.Children)
+                    {
+                        if (!(post is PostWidget postWidget))
+                            continue;
+
+                        tasks.Add(postWidget.UpdatePost());
+                    }
+
+                    await Task.WhenAll(tasks)
+                        .ConfigureAwait(true);
+
+                    break;
+                case PostType.My:
+                case PostType.Favorite:
+                    if (lstPosts.Children.Count == 0)
+                        break;
+
+                    await UpdatePosts()
+                        .ConfigureAwait(true);
+
+                    break;
+                default:
+                    break;
+            }
+
+            svPosts.IsEnabled = true;
+
+            await ShowLoadingGrid(false)
+                .ConfigureAwait(true);
+
+            btnRefresh.IsEnabled = true;
+            slcPostTypes.IsEnabled = true;
+
+            _autoUpdateCountTimer.Start();
         }
 
         private async void AutoUpdateCountTimerCallback(object sender, ElapsedEventArgs e)

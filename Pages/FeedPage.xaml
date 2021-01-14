@@ -53,7 +53,8 @@
                                   DockPanel.Dock="Left" HorizontalAlignment="Center"
                                   Margin="5 14 2 14"
                                   SelectionChanged="slcPostTypes_SelectionChanged"/>
-            <widgets:IconButton Width="30" Height="30"
+            <widgets:IconButton x:Name="btnRefresh"
+                                Width="30" Height="30"
                                 IconKind="Refresh"
                                 DockPanel.Dock="Left"
                                 Margin="0 0 2 0"
@@ -73,7 +74,7 @@
                 </StackPanel>
             </Button>
         </DockPanel>
-        <Grid Grid.Row="1" Margin="16 5 16 5"
+        <Grid Grid.Row="1" Margin="0 5 0 5"
               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <controlsRis:ExtendedScrollViewer x:Name="svPosts" SpeedRatio="1.7"
                                               VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"

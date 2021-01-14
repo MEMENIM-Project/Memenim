@@ -37,11 +37,13 @@ namespace Memenim.Pages
             slcPostCategories.SelectedIndex = 0;
 
             LocalizationManager.LanguageChanged += OnLanguageChanged;
+            SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~SubmitPostPage()
         {
             LocalizationManager.LanguageChanged -= OnLanguageChanged;
+            SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
         private void ReloadPostCategories()
@@ -112,7 +114,8 @@ namespace Memenim.Pages
                 if (ViewModel.CurrentPostData.owner_id == -1)
                     return;
 
-                var result = await UserApi.GetProfileById(ViewModel.CurrentPostData.owner_id.Value)
+                var result = await UserApi.GetProfileById(
+                        ViewModel.CurrentPostData.owner_id.Value)
                     .ConfigureAwait(true);
 
                 if (result.data == null)
@@ -137,6 +140,30 @@ namespace Memenim.Pages
         private void OnLanguageChanged(object sender, EventArgs e)
         {
             ReloadPostCategories();
+        }
+
+        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        {
+            if (e.NewUser.Id == -1)
+                return;
+
+            if (ViewModel.CurrentPostData == null)
+                return;
+
+            ViewModel.CurrentPostData.owner_id = e.NewUser.Id;
+
+            if (ViewModel.CurrentPostData.owner_id == -1)
+                return;
+
+            var result = await UserApi.GetProfileById(
+                    ViewModel.CurrentPostData.owner_id.Value)
+                .ConfigureAwait(true);
+
+            if (result.data == null)
+                return;
+
+            ViewModel.CurrentPostData.owner_name = result.data.name;
+            ViewModel.CurrentPostData.owner_photo = result.data.photo;
         }
 
         private void slcPostCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
