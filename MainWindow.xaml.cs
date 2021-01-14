@@ -291,7 +291,7 @@ namespace Memenim
                 return;
 
             var request = await UserApi.ChangePassword(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     oldPassword, newPassword)
                 .ConfigureAwait(true);
 
@@ -305,7 +305,7 @@ namespace Memenim
         private void btnSignOut_Click(object sender, RoutedEventArgs e)
         {
             SettingsManager.PersistentSettings.RemoveUser(
-                SettingsManager.PersistentSettings.CurrentUserLogin);
+                SettingsManager.PersistentSettings.CurrentUser.Login);
 
             HideSettings();
 

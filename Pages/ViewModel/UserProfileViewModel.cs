@@ -36,7 +36,7 @@ namespace Memenim.Pages.ViewModel
         {
             get
             {
-                return CurrentProfileData.id == SettingsManager.PersistentSettings.CurrentUserId;
+                return CurrentProfileData.id == SettingsManager.PersistentSettings.CurrentUser.Id;
             }
         }
 

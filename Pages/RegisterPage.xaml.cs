@@ -7,7 +7,6 @@ using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
-using Memenim.Utils;
 using RIS.Text.Generating;
 
 namespace Memenim.Pages
@@ -86,7 +85,6 @@ namespace Memenim.Pages
         private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
-            //btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
@@ -104,102 +102,41 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    txtPassword.Clear();
-
                     await DialogManager.ShowDialog("Register error", result.message)
                         .ConfigureAwait(true);
                 }
                 else
                 {
-                    SettingsManager.PersistentSettings.SetUser(txtLogin.Text,
-                        PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
-                        PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
-                    SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
-
-                    SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                    SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
-                    SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
+                    if (!SettingsManager.PersistentSettings.SetUser(
+                        txtLogin.Text,
+                        result.data.token,
+                        result.data.id))
+                    {
+                        return;
+                    }
+                    if (!SettingsManager.PersistentSettings.SetCurrentUser(
+                        txtLogin.Text))
+                    {
+                        return;
+                    }
 
                     NavigationController.Instance.RequestPage<FeedPage>();
 
                     txtLogin.Clear();
-                    txtPassword.Clear();
                     txtNickname.Clear();
                     _changeNicknameExplicit = false;
                 }
             }
             catch (Exception ex)
             {
-                txtPassword.Clear();
-
                 await DialogManager.ShowDialog("An exception happened", ex.Message)
                     .ConfigureAwait(true);
             }
             finally
             {
-                btnRegister.IsEnabled = !NeedBlockRegister();
-                //btnAutoRegister.IsEnabled = true;
-                btnGoToLogin.IsEnabled = true;
-                txtLogin.IsEnabled = true;
-                txtPassword.IsEnabled = true;
-                txtNickname.IsEnabled = true;
-            }
-        }
-
-        private async void btnAutoRegister_Click(object sender, RoutedEventArgs e)
-        {
-            btnRegister.IsEnabled = false;
-            //btnAutoRegister.IsEnabled = false;
-            btnGoToLogin.IsEnabled = false;
-            txtLogin.IsEnabled = false;
-            txtPassword.IsEnabled = false;
-            txtNickname.IsEnabled = false;
-
-            try
-            {
-                const string name = "bot";
-                ulong counter = 0;
-
-                var result = await UserApi.Register(name + counter.ToString("D10"), "botpass")
-                    .ConfigureAwait(true);
-
-                while (result.error)
-                {
-                    ++counter;
-                    result = await UserApi.Register(name + counter.ToString("D10"), "botpass")
-                        .ConfigureAwait(true);
-                }
-
-                await DialogManager.ShowDialog("S U C C", "Registered user with login: " + name + counter.ToString("D10"))
-                    .ConfigureAwait(true);
-
-                SettingsManager.PersistentSettings.SetUser(txtLogin.Text,
-                    PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
-                    PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
-                SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
-
-                SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
-                SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
-
-                NavigationController.Instance.RequestPage<FeedPage>();
-
-                txtLogin.Clear();
-                txtPassword.Clear();
-                txtNickname.Clear();
-                _changeNicknameExplicit = false;
-            }
-            catch (Exception ex)
-            {
                 txtPassword.Clear();
 
-                await DialogManager.ShowDialog("An exception happened", ex.Message)
-                    .ConfigureAwait(true);
-            }
-            finally
-            {
                 btnRegister.IsEnabled = !NeedBlockRegister();
-                //btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;

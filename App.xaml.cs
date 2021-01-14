@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -20,9 +19,7 @@ using Memenim.Pages;
 using Memenim.Protocols;
 using Memenim.Settings;
 using Memenim.Storage;
-using Memenim.Utils;
 using RIS;
-using RIS.Extensions;
 using RIS.Wrappers;
 using Environment = RIS.Environment;
 
@@ -229,54 +226,28 @@ namespace Memenim
 
                 try
                 {
-                    SettingsManager.PersistentSettings.CurrentUserLogin =
-                        SettingsManager.PersistentSettings.GetCurrentUserLogin();
-
-                    if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUserLogin))
+                    if (!SettingsManager.PersistentSettings.SetCurrentUser(
+                        SettingsManager.PersistentSettings.GetCurrentUserLogin()))
                     {
-                        SettingsManager.PersistentSettings.CurrentUserLogin = null;
+                        SettingsManager.PersistentSettings.RemoveUser(
+                            SettingsManager.PersistentSettings.CurrentUser.Login);
 
                         Dispatcher.Invoke(() =>
                         {
                             NavigationController.Instance.RequestPage<LoginPage>();
                         });
-
-                        return;
                     }
-
-                    string userToken = SettingsManager.PersistentSettings.GetUserToken(
-                        SettingsManager.PersistentSettings.CurrentUserLogin);
-                    string userId = SettingsManager.PersistentSettings.GetUserId(
-                        SettingsManager.PersistentSettings.CurrentUserLogin);
-
-                    if (string.IsNullOrEmpty(userToken) || string.IsNullOrEmpty(userId))
-                    {
-                        SettingsManager.PersistentSettings.CurrentUserLogin = null;
-
-                        Dispatcher.Invoke(() =>
-                        {
-                            NavigationController.Instance.RequestPage<LoginPage>();
-                        });
-
-                        return;
-                    }
-
-                    SettingsManager.PersistentSettings.CurrentUserToken =
-                        PersistentUtils.WinUnprotect(userToken,
-                            $"UserToken-{SettingsManager.PersistentSettings.CurrentUserLogin}");
-                    SettingsManager.PersistentSettings.CurrentUserId =
-                        PersistentUtils.WinUnprotect(userId,
-                            $"UserId-{SettingsManager.PersistentSettings.CurrentUserLogin}").ToInt();
 
                     var resultPosts = await PostApi.Get(
-                            SettingsManager.PersistentSettings.CurrentUserToken,
+                            SettingsManager.PersistentSettings.CurrentUser.Token,
                             PostType.Popular, 1)
                         .ConfigureAwait(false);
 
                     if (resultPosts.error
                         && (resultPosts.code == 400 || resultPosts.code == 401))
                     {
-                        SettingsManager.PersistentSettings.CurrentUserLogin = null;
+                        SettingsManager.PersistentSettings.RemoveUser(
+                            SettingsManager.PersistentSettings.CurrentUser.Login);
 
                         Dispatcher.Invoke(() =>
                         {
@@ -305,14 +276,14 @@ namespace Memenim
                     //    if (resultPost.likes.my == 0)
                     //    {
                     //        result = await PostApi.AddLike(
-                    //                SettingsManager.PersistentSettings.CurrentUserToken,
+                    //                SettingsManager.PersistentSettings.CurrentUser.Token,
                     //                resultPost.id)
                     //            .ConfigureAwait(false);
                     //    }
                     //    else
                     //    {
                     //        result = await PostApi.RemoveLike(
-                    //                SettingsManager.PersistentSettings.CurrentUserToken,
+                    //                SettingsManager.PersistentSettings.CurrentUser.Token,
                     //                resultPost.id)
                     //            .ConfigureAwait(false);
                     //    }
@@ -342,10 +313,8 @@ namespace Memenim
                             ProtocolManager.ParseUri(AppStartupUri);
                     });
                 }
-                catch (CryptographicException)
+                catch (Exception)
                 {
-                    SettingsManager.PersistentSettings.CurrentUserLogin = null;
-
                     Dispatcher.Invoke(() =>
                     {
                         NavigationController.Instance.RequestPage<LoginPage>();

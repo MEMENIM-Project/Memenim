@@ -17,7 +17,7 @@ namespace Memenim.Utils
                     return;
 
                 var result = await UserApi.GetProfileById(
-                        SettingsManager.PersistentSettings.CurrentUserId)
+                        SettingsManager.PersistentSettings.CurrentUser.Id)
                     .ConfigureAwait(true);
 
                 if (result.error)
@@ -38,7 +38,7 @@ namespace Memenim.Utils
                 result.data.photo = url;
 
                 var request = await UserApi.EditProfile(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         result.data)
                     .ConfigureAwait(true);
 
@@ -70,7 +70,7 @@ namespace Memenim.Utils
                     return;
 
                 var result = await UserApi.GetProfileById(
-                        SettingsManager.PersistentSettings.CurrentUserId)
+                        SettingsManager.PersistentSettings.CurrentUser.Id)
                     .ConfigureAwait(true);
 
                 if (result.error)
@@ -91,7 +91,7 @@ namespace Memenim.Utils
                 result.data.banner = url;
 
                 var request = await UserApi.EditProfile(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         result.data)
                     .ConfigureAwait(true);
 

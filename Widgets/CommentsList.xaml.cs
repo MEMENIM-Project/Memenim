@@ -155,7 +155,7 @@ namespace Memenim.Widgets
         public async Task LoadMoreComments(int count, int offset)
         {
             var result = await PostApi.GetComments(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     PostId, count, offset)
                 .ConfigureAwait(true);
 
@@ -255,7 +255,7 @@ namespace Memenim.Widgets
 
                 while (!headOldIsFound)
                 {
-                    var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUserToken,
+                    var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUser.Token,
                             postId, countPerTime, offset)
                         .ConfigureAwait(false);
 
@@ -325,7 +325,7 @@ namespace Memenim.Widgets
             if (postId == -1)
                 return;
 
-            var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUserToken,
+            var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUser.Token,
                     postId, count, offset)
                 .ConfigureAwait(true);
 

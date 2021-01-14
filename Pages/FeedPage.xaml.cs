@@ -180,7 +180,7 @@ namespace Memenim.Pages
         {
             ShowLoadingMoreGrid(true);
 
-            var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
+            var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUser.Token,
                     type, count, offset)
                 .ConfigureAwait(true);
 
@@ -269,7 +269,7 @@ namespace Memenim.Pages
 
                 while (!headOldIsFound)
                 {
-                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
+                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUser.Token,
                             type, countPerTime, offset)
                         .ConfigureAwait(false);
 
@@ -338,7 +338,7 @@ namespace Memenim.Pages
 
                 while (true)
                 {
-                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUserToken,
+                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUser.Token,
                             type, countPerTime, offset)
                         .ConfigureAwait(false);
 

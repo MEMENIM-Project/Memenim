@@ -71,7 +71,7 @@ namespace Memenim.Widgets
                 return;
             }
 
-            if (CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUserId)
+            if (CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUser.Id)
             {
                 btnEdit.Visibility = Visibility.Visible;
                 btnDelete.Visibility = Visibility.Visible;
@@ -118,7 +118,7 @@ namespace Memenim.Widgets
             }
 
             var request = await PostApi.EditComment(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     CurrentCommentData.id,
                     value)
                 .ConfigureAwait(true);
@@ -152,7 +152,7 @@ namespace Memenim.Widgets
             }
 
             var result = await PostApi.RemoveComment(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     CurrentCommentData.id)
                 .ConfigureAwait(true);
 
@@ -181,14 +181,14 @@ namespace Memenim.Widgets
             if (CurrentCommentData.likes.my == 0)
             {
                 result = await PostApi.AddLikeComment(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveLikeComment(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
@@ -221,14 +221,14 @@ namespace Memenim.Widgets
             if (CurrentCommentData.dislikes.my == 0)
             {
                 result = await PostApi.AddDislikeComment(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentCommentData.id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveDislikeComment(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentCommentData.id)
                     .ConfigureAwait(true);
             }

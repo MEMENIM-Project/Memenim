@@ -406,7 +406,7 @@ namespace Memenim.Pages
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
 
-            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
@@ -450,7 +450,7 @@ namespace Memenim.Pages
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
 
-            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
@@ -501,7 +501,7 @@ namespace Memenim.Pages
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
 
-            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
@@ -558,7 +558,7 @@ namespace Memenim.Pages
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
 
-            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
@@ -615,7 +615,7 @@ namespace Memenim.Pages
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
 
-            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
@@ -667,7 +667,7 @@ namespace Memenim.Pages
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, Convert.ToInt32(value));
 
-            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken,
+            var request = await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 

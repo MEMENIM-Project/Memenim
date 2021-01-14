@@ -66,7 +66,7 @@ namespace Memenim.Pages
             ViewModel.CurrentPostData.id = id;
 
             var result = await PostApi.GetById(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     ViewModel.CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -118,7 +118,7 @@ namespace Memenim.Pages
                 return postData;
 
             var result = await PostApi.GetById(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     postData.id)
                 .ConfigureAwait(true);
 
@@ -159,14 +159,14 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
 
             var result = await UserApi.GetProfileById(
-                    SettingsManager.PersistentSettings.CurrentUserId)
+                    SettingsManager.PersistentSettings.CurrentUser.Id)
                 .ConfigureAwait(true);
 
             if (result.data != null)
                 wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
 
             var draft = await StorageManager.GetPostCommentDraft(
-                    SettingsManager.PersistentSettings.CurrentUserId,
+                    SettingsManager.PersistentSettings.CurrentUser.Id,
                     ViewModel.CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -184,7 +184,7 @@ namespace Memenim.Pages
         protected override async void OnExit(object sender, RoutedEventArgs e)
         {
             await StorageManager.SetPostCommentDraft(
-                    SettingsManager.PersistentSettings.CurrentUserId,
+                    SettingsManager.PersistentSettings.CurrentUser.Id,
                     ViewModel.CurrentPostData.id,
                     wdgWriteComment.CommentText,
                     wdgWriteComment.IsAnonymous)
@@ -219,7 +219,7 @@ namespace Memenim.Pages
                 }
 
                 await StorageManager.SetPostCommentDraft(
-                        SettingsManager.PersistentSettings.CurrentUserId,
+                        SettingsManager.PersistentSettings.CurrentUser.Id,
                         oldViewModel.CurrentPostData.id,
                         wdgWriteComment.CommentText,
                         wdgWriteComment.IsAnonymous)
@@ -239,7 +239,7 @@ namespace Memenim.Pages
                 }
 
                 var draft = await StorageManager.GetPostCommentDraft(
-                        SettingsManager.PersistentSettings.CurrentUserId,
+                        SettingsManager.PersistentSettings.CurrentUser.Id,
                         newViewModel.CurrentPostData.id)
                     .ConfigureAwait(true);
 
@@ -324,7 +324,7 @@ namespace Memenim.Pages
             if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();
 
-            if (comment.CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUserId)
+            if (comment.CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUser.Id)
                 return;
 
             for (int i = 0; i < 2; ++i)
@@ -332,14 +332,14 @@ namespace Memenim.Pages
                 if (comment.CurrentCommentData.likes.my == 0)
                 {
                     await PostApi.AddLikeComment(
-                            SettingsManager.PersistentSettings.CurrentUserToken,
+                            SettingsManager.PersistentSettings.CurrentUser.Token,
                             comment.CurrentCommentData.id)
                         .ConfigureAwait(true);
                 }
                 else
                 {
                     await PostApi.RemoveLikeComment(
-                            SettingsManager.PersistentSettings.CurrentUserToken,
+                            SettingsManager.PersistentSettings.CurrentUser.Token,
                             comment.CurrentCommentData.id)
                         .ConfigureAwait(true);
                 }

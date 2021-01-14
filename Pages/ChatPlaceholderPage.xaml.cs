@@ -51,7 +51,7 @@ namespace Memenim.Pages
         {
             btnCopyLogin.IsEnabled = false;
 
-            Clipboard.SetText(SettingsManager.PersistentSettings.CurrentUserLogin);
+            Clipboard.SetText(SettingsManager.PersistentSettings.CurrentUser.Login);
 
             btnCopyLogin.IsEnabled = true;
         }
@@ -61,7 +61,7 @@ namespace Memenim.Pages
             btnCopyPassword.IsEnabled = false;
 
             var result = await UserApi.GetRocketPassword(
-                    SettingsManager.PersistentSettings.CurrentUserToken)
+                    SettingsManager.PersistentSettings.CurrentUser.Token)
                 .ConfigureAwait(true);
 
             if (result.error)

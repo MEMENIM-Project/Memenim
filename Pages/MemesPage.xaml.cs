@@ -42,7 +42,7 @@ namespace Memenim.Pages
                 if (victimData.data == null)
                     throw new Exception();
 
-                await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUserToken, victimData.data)
+                await UserApi.EditProfile(SettingsManager.PersistentSettings.CurrentUser.Token, victimData.data)
                     .ConfigureAwait(true);
 
                 await DialogManager.ShowDialog("Success", "Profile copied")
@@ -70,7 +70,7 @@ namespace Memenim.Pages
             {
                 for (int i = 0; i < txtCommentsCount.Value; ++i)
                 {
-                    await PostApi.AddComment(SettingsManager.PersistentSettings.CurrentUserToken,
+                    await PostApi.AddComment(SettingsManager.PersistentSettings.CurrentUser.Token,
                             int.Parse(txtCommentsPostId?.Value?.ToString() ?? string.Empty),
                             _spamCommentsList[Random.Next(0, _spamCommentsList.Length - 1)],
                             chkAnonymousComments.IsChecked)
@@ -169,7 +169,7 @@ namespace Memenim.Pages
 
             try
             {
-                var result = await PostApi.GetById(SettingsManager.PersistentSettings.CurrentUserToken,
+                var result = await PostApi.GetById(SettingsManager.PersistentSettings.CurrentUser.Token,
                         Convert.ToInt32(txtPostsPostId.Value))
                     .ConfigureAwait(true);
 
@@ -200,7 +200,7 @@ namespace Memenim.Pages
                     type = result.data.type
                 };
 
-                var resultEdit = await PostApi.Edit(SettingsManager.PersistentSettings.CurrentUserToken,
+                var resultEdit = await PostApi.Edit(SettingsManager.PersistentSettings.CurrentUser.Token,
                         postRequest)
                     .ConfigureAwait(true);
 

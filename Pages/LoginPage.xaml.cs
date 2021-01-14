@@ -7,7 +7,6 @@ using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
-using Memenim.Utils;
 
 namespace Memenim.Pages
 {
@@ -64,8 +63,6 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    txtPassword.Clear();
-
                     await DialogManager.ShowDialog("Login error", result.message)
                         .ConfigureAwait(true);
                 }
@@ -73,36 +70,40 @@ namespace Memenim.Pages
                 {
                     if (chkRememberMe.IsChecked == true)
                     {
-                        SettingsManager.PersistentSettings.SetUser(txtLogin.Text,
-                            PersistentUtils.WinProtect(result.data.token, $"UserToken-{txtLogin.Text}"),
-                            PersistentUtils.WinProtect(result.data.id.ToString(), $"UserId-{txtLogin.Text}"));
-                        SettingsManager.PersistentSettings.SetCurrentUserLogin(txtLogin.Text);
+                        if (!SettingsManager.PersistentSettings.SetUser(
+                            txtLogin.Text,
+                            result.data.token,
+                            result.data.id))
+                        {
+                            return;
+                        }
+                        if (!SettingsManager.PersistentSettings.SetCurrentUser(
+                            txtLogin.Text))
+                        {
+                            return;
+                        }
                     }
                     else
                     {
-                        SettingsManager.PersistentSettings.RemoveUser(txtLogin.Text);
+                        SettingsManager.PersistentSettings.RemoveUser(
+                            txtLogin.Text);
                     }
-
-                    SettingsManager.PersistentSettings.CurrentUserLogin = txtLogin.Text;
-                    SettingsManager.PersistentSettings.CurrentUserToken = result.data.token;
-                    SettingsManager.PersistentSettings.CurrentUserId = result.data.id;
 
                     NavigationController.Instance.RequestPage<FeedPage>();
 
                     txtLogin.Clear();
-                    txtPassword.Clear();
                     chkRememberMe.IsChecked = false;
                 }
             }
             catch (Exception ex)
             {
-                txtPassword.Clear();
-
                 await DialogManager.ShowDialog("An exception happened", ex.Message)
                     .ConfigureAwait(true);
             }
             finally
             {
+                txtPassword.Clear();
+
                 btnLogin.IsEnabled = !NeedBlockLogin();
                 btnGoToRegister.IsEnabled = true;
                 txtLogin.IsEnabled = true;

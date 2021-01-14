@@ -81,7 +81,7 @@ namespace Memenim.Protocols.Schemas
         {
             try
             {
-                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUserLogin))
+                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUser.Login))
                     return false;
 
                 if (!int.TryParse(args, out var id))
@@ -114,7 +114,7 @@ namespace Memenim.Protocols.Schemas
         {
             try
             {
-                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUserLogin))
+                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUser.Login))
                     return false;
 
                 if (!int.TryParse(args, out var id))

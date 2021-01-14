@@ -1,7 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Memenim.Navigation;
+using Memenim.Pages;
+using Memenim.Settings.Entities;
+using Memenim.Utils;
+using RIS.Extensions;
 using RIS.Settings.Ini;
 using Environment = RIS.Environment;
 
@@ -11,13 +19,14 @@ namespace Memenim.Settings
     {
         private const string SettingsFileName = "PersistentSettings.store";
 
+        public event EventHandler<UserChangedEventArgs> CurrentUserChanged;
+
         public object SyncRoot { get; }
         public string SettingsFilePath { get; }
         public IniFile SettingsFile { get; }
 
-        public string CurrentUserLogin { get; set; }
-        public string CurrentUserToken { get; set; }
-        public int CurrentUserId { get; set; }
+        public ReadOnlyDictionary<string, User> AvailableUsers { get; private set; }
+        public User CurrentUser { get; private set; }
 
         public PersistentSettings()
         {
@@ -26,11 +35,22 @@ namespace Memenim.Settings
             SettingsFilePath = Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName);
             SettingsFile = new IniFile();
 
-            CurrentUserLogin = string.Empty;
-            CurrentUserToken = string.Empty;
-            CurrentUserId = -1;
+            CurrentUser = new User(
+                null,
+                null,
+                -1);
 
             Load();
+
+            UpdateAvailableUsers();
+
+            if (!SetCurrentUser(GetCurrentUserLogin()))
+            {
+                MainWindow.Instance.Dispatcher.Invoke(() =>
+                {
+                    NavigationController.Instance.RequestPage<LoginPage>();
+                });
+            }
         }
 
         public void Load()
@@ -54,9 +74,16 @@ namespace Memenim.Settings
 
         public IniSection GetSection(string sectionName)
         {
-            lock (SyncRoot)
+            try
             {
-                return SettingsFile.GetSection(sectionName);
+                lock (SyncRoot)
+                {
+                    return SettingsFile.GetSection(sectionName);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
@@ -115,15 +142,64 @@ namespace Memenim.Settings
 
 
 
-        public IEnumerable<string> GetAvailableUserLogins()
+        public void UpdateAvailableUsers()
         {
-            foreach (var sectionName in SettingsFile.GetSections())
-            {
-                if (sectionName == SettingsFile.DefaultSectionName)
-                    continue;
+            var defaultSectionName = SettingsFile.DefaultSectionName;
+            var userLogins = SettingsFile.GetSections()
+                .Where(userLogin =>
+                    userLogin != defaultSectionName)
+                .ToArray();
+            var users = new Dictionary<string, User>(userLogins.Length);
 
-                yield return sectionName;
+            foreach (var sectionName in userLogins)
+            {
+                users.Add(
+                    sectionName,
+                    new User(
+                        sectionName,
+                        GetUserToken(sectionName),
+                        GetUserId(sectionName)));
             }
+
+            AvailableUsers = new ReadOnlyDictionary<string, User>(users);
+        }
+
+        public bool IsExistUser(string login)
+        {
+            return AvailableUsers.ContainsKey(login);
+        }
+
+        public bool SetCurrentUser(string login)
+        {
+            if (!IsExistUser(login))
+                return false;
+
+            if (!GetUser(login, out var currentUser))
+                return false;
+
+            SetCurrentUserLogin(login);
+
+            var oldUser = CurrentUser;
+            CurrentUser = currentUser;
+
+            CurrentUserChanged?.Invoke(this,
+                new UserChangedEventArgs(oldUser, CurrentUser));
+
+            return true;
+        }
+
+        public void ResetCurrentUser()
+        {
+            ResetCurrentUserLogin();
+
+            var oldUser = CurrentUser;
+            CurrentUser = new User(
+                null,
+                null,
+                -1);
+
+            CurrentUserChanged?.Invoke(this,
+                new UserChangedEventArgs(oldUser, CurrentUser));
         }
 
 
@@ -148,37 +224,86 @@ namespace Memenim.Settings
             SetDefault("CurrentUserLogin", login);
         }
 
-
-
-        public IniSection GetUser(string login)
+        public void ResetCurrentUserLogin()
         {
-            return GetSection(login);
+            SetDefault("CurrentUserLogin", string.Empty);
+        }
+
+
+
+        public bool GetUser(string login, out User user)
+        {
+            user = new User(
+                null,
+                null,
+                -1);
+
+            var userSection = GetSection(login);
+
+            if (userSection == null)
+                return false;
+
+            try
+            {
+                user = new User(
+                    login,
+                    GetUserToken(login),
+                    GetUserId(login));
+
+            }
+            catch (CryptographicException)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public string GetUserToken(string login)
         {
-            return Get(login, "UserToken");
+            return PersistentUtils.WinUnprotect(
+                Get(login, "UserToken"),
+                $"UserToken-{login}");
         }
 
-        public string GetUserId(string login)
+        public int GetUserId(string login)
         {
-            return Get(login, "UserId");
+            var userId = PersistentUtils.WinUnprotect(
+                Get(login, "UserId"),
+                $"UserId-{login}");
+
+            return !string.IsNullOrEmpty(userId)
+                ? userId.ToInt()
+                : -1;
         }
 
-        public void SetUser(string login, string token, string id)
+        public bool SetUser(string login, string token, int id)
         {
-            SetUserToken(login, token);
-            SetUserId(login, id);
+            try
+            {
+                SetUserToken(login, token);
+                SetUserId(login, id);
+            }
+            catch (CryptographicException)
+            {
+                return false;
+            }
+
+            UpdateAvailableUsers();
+
+            return true;
         }
 
         public void SetUserToken(string login, string token)
         {
-            Set(login, "UserToken", token);
+            Set(login, "UserToken",
+                PersistentUtils.WinProtect(token, $"UserToken-{login}"));
         }
 
-        public void SetUserId(string login, string id)
+        public void SetUserId(string login, int id)
         {
-            Set(login, "UserId", id);
+            Set(login, "UserId",
+                PersistentUtils.WinProtect(id.ToString(), $"UserId-{login}"));
         }
 
         public void RemoveUser(string login)
@@ -186,7 +311,9 @@ namespace Memenim.Settings
             RemoveSection(login);
 
             if (GetCurrentUserLogin() == login)
-                SetCurrentUserLogin(string.Empty);
+                ResetCurrentUser();
+
+            UpdateAvailableUsers();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Memenim.Pages.ViewModel
     {
         private PostSchema _currentPostData = new PostSchema
         {
-            owner_id = SettingsManager.PersistentSettings.CurrentUserId
+            owner_id = SettingsManager.PersistentSettings.CurrentUser.Id
         };
         public PostSchema CurrentPostData
         {

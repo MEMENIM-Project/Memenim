@@ -79,7 +79,7 @@ namespace Memenim.Widgets
         public async Task UpdatePost()
         {
             var result = await PostApi.GetById(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -129,11 +129,11 @@ namespace Memenim.Widgets
             wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 2;
 
             btnEdit.Visibility =
-                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUserId
+                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
                     ? Visibility.Collapsed
                     : Visibility.Visible;
             btnDelete.Visibility =
-                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUserId
+                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
                     ? Visibility.Collapsed
                     : Visibility.Visible;
 
@@ -171,7 +171,7 @@ namespace Memenim.Widgets
             Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
 
             var result = await PostApi.AddRepost(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -228,7 +228,7 @@ namespace Memenim.Widgets
             };
 
             var request = await PostApi.Edit(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     postEditData)
                 .ConfigureAwait(true);
 
@@ -261,7 +261,7 @@ namespace Memenim.Widgets
             }
 
             var result = await PostApi.Remove(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -288,7 +288,7 @@ namespace Memenim.Widgets
             Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
 
             var result = await PostApi.AddRepost(
-                    SettingsManager.PersistentSettings.CurrentUserToken,
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     CurrentPostData.id)
                 .ConfigureAwait(true);
 
@@ -315,14 +315,14 @@ namespace Memenim.Widgets
             if (CurrentPostData.likes.my == 0)
             {
                 result = await PostApi.AddLike(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentPostData.id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveLike(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentPostData.id)
                     .ConfigureAwait(true);
             }
@@ -355,14 +355,14 @@ namespace Memenim.Widgets
             if (CurrentPostData.dislikes.my == 0)
             {
                 result = await PostApi.AddDislike(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentPostData.id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveDislike(
-                        SettingsManager.PersistentSettings.CurrentUserToken,
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
                         CurrentPostData.id)
                     .ConfigureAwait(true);
             }
