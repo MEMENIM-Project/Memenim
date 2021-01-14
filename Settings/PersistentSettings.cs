@@ -42,6 +42,9 @@ namespace Memenim.Settings
 
             Load();
 
+            if (GetCurrentUserLogin() == null)
+                ResetCurrentUserLogin();
+
             UpdateAvailableUsers();
 
             if (!SetCurrentUser(GetCurrentUserLogin()))
@@ -176,6 +179,9 @@ namespace Memenim.Settings
 
         public bool IsExistUser(string login)
         {
+            if (string.IsNullOrEmpty(login))
+                return false;
+
             return AvailableUsers.ContainsKey(login);
         }
 
