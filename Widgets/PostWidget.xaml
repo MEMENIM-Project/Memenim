@@ -36,28 +36,42 @@
                 </ContextMenu>
             </Grid.ContextMenu>
 
-            <local:PosterBanner Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="wdgPoster" Margin="5 5 5 0"
-                                UserId="{Binding Path=CurrentPostData.owner_id, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                UserName="{Binding Path=CurrentPostData.owner_name, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                UserAvatarSource="{Binding Path=CurrentPostData.owner_photo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                PostStatusValue="{Binding Path=CurrentPostData.status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-            <local:StatButton Grid.Row="0" Grid.Column="2" x:Name="stViews" StatValueFontSize="8.5"
-                              StatValueOnLeft="True" ButtonSize="20" IconKind="Eye" BorderSize="0"
-                              IsEnabled="False" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed"
-                              StatValue="{Binding Path=CurrentPostData.postviews.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-            <emoji:TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                       Grid.RowSpan="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToRowSpanConverter}}"
-                       Text="{Binding Path=CurrentPostData.text}"
-                       Style="{DynamicResource Paragraph}"
-                       TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center"
-                       TextAlignment="Left" Margin="15 5 15 5"/>
-            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+            <DockPanel Grid.Row="0" Grid.Column="0"
+                       Grid.ColumnSpan="3">
+                <local:PosterBanner DockPanel.Dock="Left"
+                                    x:Name="wdgPoster"
+                                    Margin="5 5 5 0"
+                                    UserId="{Binding Path=CurrentPostData.owner_id, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                    UserName="{Binding Path=CurrentPostData.owner_name, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                    UserAvatarSource="{Binding Path=CurrentPostData.owner_photo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                    PostStatusValue="{Binding Path=CurrentPostData.status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                <local:StatButton DockPanel.Dock="Right"
+                                  x:Name="stViews" StatValueFontSize="11.5"
+                                  StatValueOnLeft="False" ButtonSize="25"
+                                  IconKind="Eye" BorderSize="0"
+                                  IsEnabled="False" Visibility="Visible"
+                                  HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  StatValue="{Binding Path=CurrentPostData.postviews.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+            </DockPanel>
+            <emoji:TextBlock Grid.Row="1" Grid.Column="0"
+                             Grid.ColumnSpan="3"
+                             Grid.RowSpan="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToRowSpanConverter}}"
+                             x:Name="txtContent"
+                             Text="{Binding Path=CurrentPostData.text}"
+                             FontSize="16.0"
+                             Style="{DynamicResource Paragraph}"
+                             TextWrapping="Wrap"
+                             VerticalAlignment="Top" HorizontalAlignment="Center"
+                             TextAlignment="Left" Margin="15 5 15 5"/>
+            <Grid Grid.Row="2" Grid.Column="0"
+                  Grid.ColumnSpan="3"
                   x:Name="PostImageGrid"
                   MinWidth="300" MinHeight="300"
                   MaxHeight="500"
                   Margin="15 5 15 5"
                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Image x:Name="PostImage" MinWidth="300" MinHeight="300"
+                <Image x:Name="PostImage"
+                       MinWidth="300" MinHeight="300"
                        Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
                        Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"

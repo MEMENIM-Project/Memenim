@@ -207,7 +207,8 @@ namespace Memenim.Pages
                     {
                         PostWidget widget = new PostWidget
                         {
-                            CurrentPostData = post
+                            CurrentPostData = post,
+                            TextSizeLimit = true
                         };
                         widget.PostClick += OnPost_Click;
                         widget.PostDelete += OnPost_Deleted;

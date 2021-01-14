@@ -69,6 +69,7 @@ namespace Memenim.Widgets
         }
         public bool PreviewMode { get; set; }
         public bool ImageSizeLimit { get; set; }
+        public bool TextSizeLimit { get; set; }
 
         public PostWidget()
         {
@@ -122,6 +123,14 @@ namespace Memenim.Widgets
                 PostImage.Stretch = Stretch.Uniform;
                 PostImage.HorizontalAlignment = HorizontalAlignment.Stretch;
                 PostImage.VerticalAlignment = VerticalAlignment.Stretch;
+            }
+
+            if (TextSizeLimit)
+            {
+                txtContent.FontSize = 13.0;
+
+                stViews.StatValueFontSize = 9;
+                stViews.ButtonSize = 20;
             }
 
             wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L)
