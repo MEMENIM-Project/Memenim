@@ -46,6 +46,8 @@ namespace Memenim.Settings
 
             if (!SetCurrentUser(GetCurrentUserLogin()))
             {
+                RemoveUser(GetCurrentUserLogin());
+
                 MainWindow.Instance.Dispatcher.Invoke(() =>
                 {
                     NavigationController.Instance.RequestPage<LoginPage>();
@@ -153,12 +155,20 @@ namespace Memenim.Settings
 
             foreach (var sectionName in userLogins)
             {
-                users.Add(
-                    sectionName,
-                    new User(
+                try
+                {
+                    users.Add(
                         sectionName,
-                        GetUserToken(sectionName),
-                        GetUserId(sectionName)));
+                        new User(
+                            sectionName,
+                            GetUserToken(sectionName),
+                            GetUserId(sectionName)));
+
+                }
+                catch (CryptographicException)
+                {
+                    RemoveUser(sectionName);
+                }
             }
 
             AvailableUsers = new ReadOnlyDictionary<string, User>(users);

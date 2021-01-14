@@ -230,12 +230,14 @@ namespace Memenim
                         SettingsManager.PersistentSettings.GetCurrentUserLogin()))
                     {
                         SettingsManager.PersistentSettings.RemoveUser(
-                            SettingsManager.PersistentSettings.CurrentUser.Login);
+                            SettingsManager.PersistentSettings.GetCurrentUserLogin());
 
                         Dispatcher.Invoke(() =>
                         {
                             NavigationController.Instance.RequestPage<LoginPage>();
                         });
+
+                        return;
                     }
 
                     var resultPosts = await PostApi.Get(
