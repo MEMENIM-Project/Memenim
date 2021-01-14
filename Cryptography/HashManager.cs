@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
 using RIS.Cryptography.Hash;
+using RIS.Cryptography.Hash.Methods;
 using Environment = RIS.Environment;
 
 namespace Memenim.Cryptography
 {
     public static class HashManager
     {
-        private static HashMethods.SHA512iCSP SHA512Provider { get; }
+        private static SHA512iCSP SHA512Provider { get; }
 
         public static HashService Service { get; }
 
         static HashManager()
         {
-            SHA512Provider = new HashMethods.SHA512iCSP();
+            SHA512Provider = new SHA512iCSP();
             Service = new HashService(SHA512Provider);
         }
 
