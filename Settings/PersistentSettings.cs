@@ -204,6 +204,19 @@ namespace Memenim.Settings
             return true;
         }
 
+        public bool SetCurrentUser(User user)
+        {
+            SetCurrentUserLogin(user.Login);
+
+            var oldUser = CurrentUser;
+            CurrentUser = user;
+
+            CurrentUserChanged?.Invoke(this,
+                new UserChangedEventArgs(oldUser, CurrentUser));
+
+            return true;
+        }
+
         public void ResetCurrentUser()
         {
             ResetCurrentUserLogin();

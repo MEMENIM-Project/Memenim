@@ -7,6 +7,7 @@ using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Settings.Entities;
 
 namespace Memenim.Pages
 {
@@ -87,6 +88,15 @@ namespace Memenim.Pages
                     {
                         SettingsManager.PersistentSettings.RemoveUser(
                             txtLogin.Text);
+
+                        if (!SettingsManager.PersistentSettings.SetCurrentUser(
+                            new User(
+                                txtLogin.Text,
+                                result.data.token,
+                                result.data.id)))
+                        {
+                            return;
+                        }
                     }
 
                     NavigationController.Instance.RequestPage<FeedPage>();
