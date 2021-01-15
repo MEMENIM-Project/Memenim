@@ -114,6 +114,7 @@ namespace Memenim.Pages
                     {
                         return;
                     }
+
                     if (!SettingsManager.PersistentSettings.SetCurrentUser(
                         txtLogin.Text))
                     {

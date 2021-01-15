@@ -38,7 +38,8 @@ namespace Memenim.Settings
             CurrentUser = new User(
                 null,
                 null,
-                -1);
+                -1,
+                UserStoreType.Unknown);
 
             Load();
 
@@ -165,7 +166,8 @@ namespace Memenim.Settings
                         new User(
                             sectionName,
                             GetUserToken(sectionName),
-                            GetUserId(sectionName)));
+                            GetUserId(sectionName),
+                            UserStoreType.Permanent));
 
                 }
                 catch (CryptographicException)
@@ -181,6 +183,12 @@ namespace Memenim.Settings
         {
             if (string.IsNullOrEmpty(login))
                 return false;
+
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                return true;
+            }
 
             return AvailableUsers.ContainsKey(login);
         }
@@ -204,12 +212,16 @@ namespace Memenim.Settings
             return true;
         }
 
-        public bool SetCurrentUser(User user)
+        public bool SetCurrentUserTemporary(string login, string token, int id)
         {
-            SetCurrentUserLogin(user.Login);
+            ResetCurrentUserLogin();
 
             var oldUser = CurrentUser;
-            CurrentUser = user;
+            CurrentUser = new User(
+                login,
+                token,
+                id,
+                UserStoreType.Temporary);
 
             CurrentUserChanged?.Invoke(this,
                 new UserChangedEventArgs(oldUser, CurrentUser));
@@ -225,7 +237,8 @@ namespace Memenim.Settings
             CurrentUser = new User(
                 null,
                 null,
-                -1);
+                -1,
+                UserStoreType.Unknown);
 
             CurrentUserChanged?.Invoke(this,
                 new UserChangedEventArgs(oldUser, CurrentUser));
@@ -240,6 +253,9 @@ namespace Memenim.Settings
 
         public string GetCurrentUserLogin()
         {
+            if (CurrentUser.StoreType == UserStoreType.Temporary)
+                return CurrentUser.Login;
+
             return GetDefault("CurrentUserLogin");
         }
 
@@ -250,11 +266,20 @@ namespace Memenim.Settings
 
         public void SetCurrentUserLogin(string login)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                return;
+            }
+
             SetDefault("CurrentUserLogin", login);
         }
 
         public void ResetCurrentUserLogin()
         {
+            if (CurrentUser.StoreType == UserStoreType.Temporary)
+                return;
+
             SetDefault("CurrentUserLogin", string.Empty);
         }
 
@@ -262,10 +287,19 @@ namespace Memenim.Settings
 
         public bool GetUser(string login, out User user)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                user = CurrentUser;
+
+                return true;
+            }
+
             user = new User(
                 null,
                 null,
-                -1);
+                -1,
+                UserStoreType.Unknown);
 
             var userSection = GetSection(login);
 
@@ -277,7 +311,8 @@ namespace Memenim.Settings
                 user = new User(
                     login,
                     GetUserToken(login),
-                    GetUserId(login));
+                    GetUserId(login),
+                    UserStoreType.Permanent);
 
             }
             catch (CryptographicException)
@@ -290,6 +325,12 @@ namespace Memenim.Settings
 
         public string GetUserToken(string login)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                return CurrentUser.Token;
+            }
+
             return PersistentUtils.WinUnprotect(
                 Get(login, "UserToken"),
                 $"UserToken-{login}");
@@ -297,6 +338,12 @@ namespace Memenim.Settings
 
         public int GetUserId(string login)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                return CurrentUser.Id;
+            }
+
             var userId = PersistentUtils.WinUnprotect(
                 Get(login, "UserId"),
                 $"UserId-{login}");
@@ -308,6 +355,18 @@ namespace Memenim.Settings
 
         public bool SetUser(string login, string token, int id)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                CurrentUser = new User(
+                    CurrentUser.Login,
+                    token,
+                    id,
+                    CurrentUser.StoreType);
+
+                return true;
+            }
+
             try
             {
                 SetUserToken(login, token);
@@ -325,18 +384,50 @@ namespace Memenim.Settings
 
         public void SetUserToken(string login, string token)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                CurrentUser = new User(
+                    CurrentUser.Login,
+                    token,
+                    CurrentUser.Id,
+                    CurrentUser.StoreType);
+
+                return;
+            }
+
             Set(login, "UserToken",
                 PersistentUtils.WinProtect(token, $"UserToken-{login}"));
         }
 
         public void SetUserId(string login, int id)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                CurrentUser = new User(
+                    CurrentUser.Login,
+                    CurrentUser.Token,
+                    id,
+                    CurrentUser.StoreType);
+
+                return;
+            }
+
             Set(login, "UserId",
                 PersistentUtils.WinProtect(id.ToString(), $"UserId-{login}"));
         }
 
         public void RemoveUser(string login)
         {
+            if (CurrentUser.Login == login
+                && CurrentUser.StoreType == UserStoreType.Temporary)
+            {
+                ResetCurrentUser();
+
+                return;
+            }
+
             RemoveSection(login);
 
             if (GetCurrentUserLogin() == login)
