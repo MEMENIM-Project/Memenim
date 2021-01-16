@@ -6,6 +6,7 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
+                   xmlns:widgets="clr-namespace:Memenim.Widgets"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    mc:Ignorable="d"
@@ -136,15 +137,30 @@
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
                         VerticalAlignment="Center">
-                <Button Name="btnLogin" MinHeight="20"
-                        FontSize="16" Margin="40 5 40 5"
-                        Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                        Click="btnLogin_Click">
-                    <TextBlock Text="{DynamicResource ResourceKey=SignIn}"
-                               MinHeight="10" FontSize="16"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"
-                               TextAlignment="Center" TextWrapping="Wrap"/>
-                </Button>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                        <ColumnDefinition MinWidth="100" Width="100*"/>
+                        <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Grid.ColumnSpan="3"
+                            Name="btnLogin" MinHeight="20"
+                            FontSize="16" Margin="40 5 40 5"
+                            Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
+                            Click="btnLogin_Click">
+                        <TextBlock Text="{DynamicResource ResourceKey=SignIn}"
+                                   MinHeight="10" FontSize="16"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   TextAlignment="Center" TextWrapping="Wrap"/>
+                    </Button>
+                    <widgets:IconToggleButton Grid.Column="2"
+                                              x:Name="btnOpenStoredAccounts"
+                                              Width="25" Height="25"
+                                              IconKind="PeopleProfile"
+                                              Margin="-5 0 -5 0"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
             </StackPanel>
             <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                     Name="btnGoToRegister" MinHeight="30"
@@ -157,6 +173,35 @@
                            TextAlignment="Center" TextWrapping="Wrap"
                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </Button>
+            <Grid Grid.Row="2" Grid.Column="1"
+                  Grid.RowSpan="2"
+                  Background="#FF353639"
+                  Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=btnOpenStoredAccounts}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="15" Height="Auto"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="{DynamicResource ResourceKey=StoredAccountsTitle}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               Margin="0 0 0 5"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Top"/>
+                    <ScrollViewer Grid.Row="1"
+                                  x:Name="svStoredAccounts"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <WrapPanel x:Name="lstStoredAccounts"
+                                   ItemHeight="60"
+                                   ItemWidth="{Binding Path=ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
+                                   Orientation="Vertical"
+                                   HorizontalAlignment="Stretch"/>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
         </Grid>
     </Border>
 </local:PageContent>

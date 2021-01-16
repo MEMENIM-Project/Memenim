@@ -16,6 +16,28 @@ namespace Memenim.Dialogs
             return MainWindow.Instance.ShowMessageAsync(title, message, style, settings);
         }
 
+        public static Task<MessageDialogResult> ShowConfirmationDialog(string additionalMessage = null,
+            MetroDialogSettings settings = null)
+        {
+            string confirmationTitleLocalizeName = (string)MainWindow.Instance
+                .FindResource("ConfirmationTitle");
+            string confirmationMessageLocalizeName = (string)MainWindow.Instance
+                .FindResource("ConfirmationMessage");
+
+            var message = confirmationMessageLocalizeName;
+
+            if (!string.IsNullOrEmpty(additionalMessage))
+                message += " " + additionalMessage;
+
+            LogManager.Log.Info($"{confirmationTitleLocalizeName} - {message}");
+
+            return MainWindow.Instance.ShowMessageAsync(
+                confirmationTitleLocalizeName,
+                message,
+                MessageDialogStyle.AffirmativeAndNegative,
+                settings);
+        }
+
         public static Task<string> ShowInputDialog(string title, string message,
             MetroDialogSettings settings = null)
         {

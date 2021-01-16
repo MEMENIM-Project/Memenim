@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Memenim.Navigation;
-using Memenim.Pages;
 using Memenim.Settings.Entities;
 using Memenim.Utils;
 using RIS.Extensions;
@@ -19,6 +17,7 @@ namespace Memenim.Settings
     {
         private const string SettingsFileName = "PersistentSettings.store";
 
+        public event EventHandler<AvailableUsersChangedEventArgs> AvailableUsersChanged;
         public event EventHandler<UserChangedEventArgs> CurrentUserChanged;
 
         public object SyncRoot { get; }
@@ -51,11 +50,6 @@ namespace Memenim.Settings
             if (!SetCurrentUser(GetCurrentUserLogin()))
             {
                 RemoveUser(GetCurrentUserLogin());
-
-                MainWindow.Instance.Dispatcher.Invoke(() =>
-                {
-                    NavigationController.Instance.RequestPage<LoginPage>();
-                });
             }
         }
 
@@ -176,7 +170,11 @@ namespace Memenim.Settings
                 }
             }
 
+            var oldAvailableUsers = AvailableUsers;
             AvailableUsers = new ReadOnlyDictionary<string, User>(users);
+
+            AvailableUsersChanged?.Invoke(this,
+                new AvailableUsersChangedEventArgs(oldAvailableUsers, AvailableUsers));
         }
 
         public bool IsExistUser(string login)
@@ -191,6 +189,11 @@ namespace Memenim.Settings
             }
 
             return AvailableUsers.ContainsKey(login);
+        }
+
+        public bool CurrentUserIsTemporary()
+        {
+            return CurrentUser.StoreType == UserStoreType.Temporary;
         }
 
         public bool SetCurrentUser(string login)

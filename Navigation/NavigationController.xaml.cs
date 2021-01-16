@@ -88,8 +88,6 @@ namespace Memenim.Navigation
             {
                 RootLayout.DisplayMode = SplitViewDisplayMode.Inline;
 
-                ClearHistory();
-
                 await NavBar.SwitchLayout(type)
                     .ConfigureAwait(true);
             }
@@ -343,6 +341,11 @@ namespace Memenim.Navigation
         public void GoBack()
         {
             LoadContentFromHistory();
+        }
+
+        public bool HistoryIsEmpty()
+        {
+            return _navigationHistory.Count == 0;
         }
 
         public void ClearHistory()

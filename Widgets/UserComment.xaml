@@ -76,16 +76,19 @@
                                   Margin="3 0 3 0" Visibility="Collapsed"
                                   IconButtonClick="Edit_Click"/>
                 <local:IconButton x:Name="btnDelete" IconKind="Delete"
+                                  IconForeground="#FF9F0000"
                                   Margin="3 0 3 0" Visibility="Collapsed"
                                   IconButtonClick="Delete_Click"/>
                 <Border Width="1"
                         Background="{DynamicResource MahApps.Brushes.Window.FlyoutOverlay}"
                         Margin="3 8 3 8"/>
-                <local:StatButton x:Name="stLikes" ButtonSize="22" IconKind="ThumbsUp"
+                <local:StatButton x:Name="stLikes"
+                                  ButtonSize="22" IconKind="ThumbsUp"
                                   StatValue="{Binding Path=CurrentCommentData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
                                   BorderBackground="{Binding Path=CurrentCommentData.likes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
                                   ButtonClick="Like_Click"/>
-                <local:StatButton x:Name="stDislikes" ButtonSize="22" IconKind="ThumbsDown"
+                <local:StatButton x:Name="stDislikes"
+                                  ButtonSize="22" IconKind="ThumbsDown"
                                   StatValue="{Binding Path=CurrentCommentData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
                                   BorderBackground="{Binding Path=CurrentCommentData.dislikes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
                                   ButtonClick="Dislike_Click"/>

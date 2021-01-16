@@ -27,6 +27,8 @@ namespace Memenim
 {
     public partial class App : Application
     {
+        private const string UniqueName = "App+MEMENIM+{54FB655C-3F5F-4EE7-823B-10409FD10C7D}";
+
         private static readonly object InstanceSyncRoot = new object();
         private static volatile SingleInstanceApp _instance;
         internal static SingleInstanceApp Instance
@@ -39,11 +41,7 @@ namespace Memenim
                     {
                         if (_instance == null)
                         {
-                            Type appType = typeof(App);
-
-                            _instance =
-                                new SingleInstanceApp(appType.Assembly.FullName + appType.FullName
-                                                      + "{54FB655C-3F5F-4EE7-823B-10409FD10C7D}");
+                            _instance = new SingleInstanceApp(UniqueName);
                         }
                     }
                 }
@@ -74,6 +72,7 @@ namespace Memenim
 
             Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
 
+            LogManager.Log.Info($"Unique Name - {UniqueName}");
             LogManager.Log.Info($"Libraries Directory - {Environment.ExecAppDirectoryName}");
             LogManager.Log.Info($"Execution File Directory - {Environment.ExecProcessDirectoryName}");
             LogManager.Log.Info($"Is Standalone App - {Environment.IsStandalone}");

@@ -14,6 +14,7 @@
     <system:String x:Key="GoToRegister">New user? Sign Up now</system:String>
     <system:String x:Key="SignIn">Login</system:String>
     <system:String x:Key="SignInTitle">Sign In</system:String>
+    <system:String x:Key="StoredAccountsTitle">Stored accounts</system:String>
     <system:String x:Key="GoToLogin">Already registered? Sign In now</system:String>
     <system:String x:Key="SignUp">Register</system:String>
     <system:String x:Key="SignUpTitle">Sign Up</system:String>
@@ -63,7 +64,8 @@ Have fun.</system:String>
     <system:String x:Key="ChangePassword">Change password</system:String>
     <system:String x:Key="OldPassword">Old password</system:String>
     <system:String x:Key="NewPassword">New password</system:String>
-    <system:String x:Key="SignOut">Sign Out</system:String>
+    <system:String x:Key="SignInToAnotherAccount">Sign In to another account</system:String>
+    <system:String x:Key="SignOut">Sign Out account</system:String>
     <system:String x:Key="Version">Version</system:String>
 
     <system:String x:Key="ProfileStatTitle-Thoughts">Thoughts</system:String>
@@ -195,5 +197,8 @@ Have fun.</system:String>
 
     <system:String x:Key="UserNotFound">User not found</system:String>
     <system:String x:Key="PostNotFound">Post not found</system:String>
+
+    <system:String x:Key="ConfirmationTitle">Confirmation</system:String>
+    <system:String x:Key="ConfirmationMessage">Are you sure?</system:String>
     
 </ResourceDictionary>

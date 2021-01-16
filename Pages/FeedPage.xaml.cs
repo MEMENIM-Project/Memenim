@@ -496,7 +496,7 @@ namespace Memenim.Pages
                     if (lstPosts.Children.Count == 0)
                         break;
 
-                    var tasks = new List<Task>();
+                    var tasks = new List<Task>(lstPosts.Children.Count);
 
                     foreach (var post in lstPosts.Children)
                     {

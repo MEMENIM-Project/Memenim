@@ -89,8 +89,8 @@ namespace Memenim.Widgets
             {
                 IconButton button = new IconButton
                 {
-                    PageName = node.PageName,
                     IconKind = node.IconKind,
+                    Information = node.PageName,
                     Height = 40
                 };
                 button.IconButtonClick += OnNavButtonClick;
@@ -119,11 +119,11 @@ namespace Memenim.Widgets
             {
                 if (sender is IconButton button)
                 {
-                    if (button.PageName == "Back")
+                    if (button.Information == "Back")
                     {
                         NavigationController.Instance.GoBack();
                     }
-                    else if (button.PageName == "SettingsFlyout")
+                    else if (button.Information == "SettingsFlyout")
                     {
                         if (!MainWindow.Instance.IsOpenSettings())
                         {
@@ -134,7 +134,7 @@ namespace Memenim.Widgets
                             MainWindow.Instance.HideSettings();
                         }
                     }
-                    else if (button.PageName == "UserProfilePage")
+                    else if (button.Information == "UserProfilePage")
                     {
                         if (NavigationController.Instance.PageContent.Content is UserProfilePage page
                             && page.DataContext is UserProfileViewModel viewModel
@@ -153,7 +153,7 @@ namespace Memenim.Widgets
                     }
                     else
                     {
-                        NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.PageName}"));
+                        NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.Information}"));
                     }
                 }
             }

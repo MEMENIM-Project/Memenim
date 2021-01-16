@@ -302,8 +302,36 @@ namespace Memenim
             }
         }
 
-        private void btnSignOut_Click(object sender, RoutedEventArgs e)
+        private async void btnSignInToAnotherAccount_Click(object sender, RoutedEventArgs e)
         {
+            if (SettingsManager.PersistentSettings.CurrentUserIsTemporary())
+            {
+                var confirmResult = await DialogManager.ShowConfirmationDialog()
+                    .ConfigureAwait(true);
+
+                if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                {
+                    return;
+                }
+            }
+
+            SettingsManager.PersistentSettings.ResetCurrentUser();
+
+            HideSettings();
+
+            NavigationController.Instance.RequestPage<LoginPage>();
+        }
+
+        private async void btnSignOut_Click(object sender, RoutedEventArgs e)
+        {
+            var confirmResult = await DialogManager.ShowConfirmationDialog()
+                .ConfigureAwait(true);
+
+            if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+            {
+                return;
+            }
+
             SettingsManager.PersistentSettings.RemoveUser(
                 SettingsManager.PersistentSettings.CurrentUser.Login);
 

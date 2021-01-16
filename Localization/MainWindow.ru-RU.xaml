@@ -14,6 +14,7 @@
     <system:String x:Key="GoToRegister">Новый пользователь? Зарегистрируйтесь сейчас</system:String>
     <system:String x:Key="SignIn">Войти</system:String>
     <system:String x:Key="SignInTitle">Вход</system:String>
+    <system:String x:Key="StoredAccountsTitle">Сохранённые аккаунты</system:String>
     <system:String x:Key="GoToLogin">Уже зарегистрированы? Войдите сейчас</system:String>
     <system:String x:Key="SignUp">Зарегистрироваться</system:String>
     <system:String x:Key="SignUpTitle">Регистрация</system:String>
@@ -63,6 +64,7 @@
     <system:String x:Key="ChangePassword">Сменить пароль</system:String>
     <system:String x:Key="OldPassword">Старый пароль</system:String>
     <system:String x:Key="NewPassword">Новый пароль</system:String>
+    <system:String x:Key="SignInToAnotherAccount">Войти в другой аккаунт</system:String>
     <system:String x:Key="SignOut">Выйти из аккаунта</system:String>
     <system:String x:Key="Version">Версия</system:String>
 
@@ -195,5 +197,8 @@
 
     <system:String x:Key="UserNotFound">Пользователь не найден</system:String>
     <system:String x:Key="PostNotFound">Пост не найден</system:String>
+
+    <system:String x:Key="ConfirmationTitle">Подтверждение</system:String>
+    <system:String x:Key="ConfirmationMessage">Вы уверены?</system:String>
 
 </ResourceDictionary>

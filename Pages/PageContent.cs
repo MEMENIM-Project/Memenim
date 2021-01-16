@@ -8,17 +8,36 @@ namespace Memenim.Pages
 {
     public abstract class PageContent : UserControl
     {
+        public bool IsCreated { get; private set; }
         public bool IsOnEnterActive { get; set; }
         public bool IsOnExitActive { get; set; }
 
         protected PageContent()
         {
+            Initialized += OnCreated;
+            Initialized += OnInitialized;
             Loaded += OnEnter;
             Unloaded += OnExit;
             DataContextChanged += OnDataContextChanged;
 
+            IsCreated = false;
             IsOnEnterActive = true;
             IsOnExitActive = true;
+        }
+
+        protected virtual void OnCreated(object sender, EventArgs e)
+        {
+            if (IsCreated)
+                return;
+
+            Initialized -= OnCreated;
+
+            IsCreated = true;
+        }
+
+        protected virtual void OnInitialized(object sender, EventArgs e)
+        {
+
         }
 
         protected virtual void OnEnter(object sender, RoutedEventArgs e)

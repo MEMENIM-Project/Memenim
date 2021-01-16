@@ -31,6 +31,12 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty BorderBackgroundProperty =
             DependencyProperty.Register(nameof(BorderBackground), typeof(Brush), typeof(StatButton),
                 new PropertyMetadata(Brushes.Transparent));
+        public static readonly DependencyProperty IconForegroundProperty =
+            DependencyProperty.Register(nameof(IconForeground), typeof(Brush), typeof(StatButton),
+                new PropertyMetadata(Brushes.Transparent));
+        public static readonly DependencyProperty IconKindProperty =
+            DependencyProperty.Register(nameof(IconKind), typeof(PackIconModernKind), typeof(StatButton),
+                new PropertyMetadata(PackIconModernKind.Xbox));
 
         public event EventHandler<RoutedEventArgs> ButtonClick
         {
@@ -121,7 +127,28 @@ namespace Memenim.Widgets
                 SetValue(BorderBackgroundProperty, value);
             }
         }
-        public PackIconModernKind IconKind { get; set; } = PackIconModernKind.Xbox;
+        public Brush IconForeground
+        {
+            get
+            {
+                return (Brush)GetValue(IconForegroundProperty);
+            }
+            set
+            {
+                SetValue(IconForegroundProperty, value);
+            }
+        }
+        public PackIconModernKind IconKind
+        {
+            get
+            {
+                return (PackIconModernKind)GetValue(IconKindProperty);
+            }
+            set
+            {
+                SetValue(IconKindProperty, value);
+            }
+        }
 
         public StatButton()
         {
@@ -129,6 +156,7 @@ namespace Memenim.Widgets
             DataContext = this;
 
             SetResourceReference(BorderBackgroundProperty, "MahApps.Brushes.Gray3");
+            SetResourceReference(IconForegroundProperty, "MahApps.Brushes.Accent");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -259,8 +259,7 @@ namespace Memenim.Widgets
         {
             btnDelete.IsEnabled = false;
 
-            var confirmResult = await DialogManager.ShowDialog("Confirmation", "Are you sure?",
-                    MahApps.Metro.Controls.Dialogs.MessageDialogStyle.AffirmativeAndNegative)
+            var confirmResult = await DialogManager.ShowConfirmationDialog()
                 .ConfigureAwait(true);
 
             if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)

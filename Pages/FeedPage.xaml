@@ -84,7 +84,7 @@
                     <WrapPanel Name="lstPosts" ItemWidth="400"
                                ItemHeight="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
                                Orientation="Horizontal" VerticalAlignment="Stretch"/>
-                </controlsRis:ExtendedScrollViewer>
+            </controlsRis:ExtendedScrollViewer>
         </Grid>
         <Grid Grid.Row="1" x:Name="loadingMoreGrid"
               Height="80" Width="80" Margin="0 0 -85 0"

@@ -8,6 +8,25 @@ namespace Memenim.Utils
 {
     public static class ProfileUtils
     {
+        public static event EventHandler<UserPhotoChangedEventArgs> AvatarChanged;
+        public static event EventHandler<UserPhotoChangedEventArgs> BannerChanged;
+        public static event EventHandler<UserNameChangedEventArgs> NameChanged;
+
+        public static void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
+        {
+            AvatarChanged?.Invoke(sender, e);
+        }
+
+        public static void OnBannerChanged(object sender, UserPhotoChangedEventArgs e)
+        {
+            BannerChanged?.Invoke(sender, e);
+        }
+
+        public static void OnNameChanged(object sender, UserNameChangedEventArgs e)
+        {
+            NameChanged?.Invoke(sender, e);
+        }
+
         public static async Task ChangeAvatar(string url,
             bool checkEmptyUrl = true)
         {
@@ -35,6 +54,7 @@ namespace Memenim.Utils
                     return;
                 }
 
+                var oldPhoto = result.data.photo;
                 result.data.photo = url;
 
                 var request = await UserApi.EditProfile(
@@ -46,8 +66,11 @@ namespace Memenim.Utils
                 {
                     await DialogManager.ShowDialog("F U C K", request.message)
                         .ConfigureAwait(true);
+                    return;
                 }
 
+                OnAvatarChanged(null,
+                    new UserPhotoChangedEventArgs(oldPhoto, result.data.photo, result.data.id));
             }
             catch (Exception ex)
             {
@@ -88,6 +111,7 @@ namespace Memenim.Utils
                     return;
                 }
 
+                var oldPhoto = result.data.banner;
                 result.data.banner = url;
 
                 var request = await UserApi.EditProfile(
@@ -99,7 +123,11 @@ namespace Memenim.Utils
                 {
                     await DialogManager.ShowDialog("F U C K", request.message)
                         .ConfigureAwait(true);
+                    return;
                 }
+
+                OnBannerChanged(null,
+                    new UserPhotoChangedEventArgs(oldPhoto, result.data.banner, result.data.id));
             }
             catch (Exception ex)
             {

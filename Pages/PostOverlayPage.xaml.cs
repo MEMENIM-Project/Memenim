@@ -10,6 +10,7 @@ using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Storage;
+using Memenim.Utils;
 using Memenim.Widgets;
 
 namespace Memenim.Pages
@@ -41,6 +42,15 @@ namespace Memenim.Pages
 
             _writeCommentMinHeight = PostGrid.RowDefinitions[1].MinHeight;
             _writeCommentMaxHeight = ActualHeight * 0.3;
+
+            SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
+            ProfileUtils.AvatarChanged += OnAvatarChanged;
+        }
+
+        ~PostOverlayPage()
+        {
+            SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
+            ProfileUtils.AvatarChanged -= OnAvatarChanged;
         }
 
         public Task UpdatePost()
@@ -273,6 +283,46 @@ namespace Memenim.Pages
                         ViewModel.CurrentPostData);
                 }
             }
+        }
+
+        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        {
+            await UpdatePost()
+                .ConfigureAwait(true);
+
+            var result = await UserApi.GetProfileById(
+                    SettingsManager.PersistentSettings.CurrentUser.Id)
+                .ConfigureAwait(true);
+
+            if (result.data != null)
+                wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
+
+            await StorageManager.SetPostCommentDraft(
+                    e.OldUser.Id,
+                    ViewModel.CurrentPostData.id,
+                    wdgWriteComment.CommentText,
+                    wdgWriteComment.IsAnonymous)
+                .ConfigureAwait(true);
+
+            var draft = await StorageManager.GetPostCommentDraft(
+                    e.NewUser.Id,
+                    ViewModel.CurrentPostData.id)
+                .ConfigureAwait(true);
+
+            if (!string.IsNullOrEmpty(draft.CommentText))
+            {
+                wdgWriteComment.CommentText = draft.CommentText;
+                wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+
+                wdgWriteComment.txtContent.ScrollToEnd();
+                wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
+                wdgWriteComment.txtContent.Focus();
+            }
+        }
+
+        private void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
+        {
+            wdgWriteComment.SetRealUserAvatarSource(e.NewPhoto);
         }
 
         private void SvPost_ScrollChanged(object sender, ScrollChangedEventArgs e)

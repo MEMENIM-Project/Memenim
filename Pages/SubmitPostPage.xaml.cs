@@ -12,6 +12,7 @@ using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Pages
 {
@@ -38,12 +39,16 @@ namespace Memenim.Pages
 
             LocalizationManager.LanguageChanged += OnLanguageChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
+            ProfileUtils.AvatarChanged += OnAvatarChanged;
+            ProfileUtils.NameChanged += OnNameChanged;
         }
 
         ~SubmitPostPage()
         {
             LocalizationManager.LanguageChanged -= OnLanguageChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
+            ProfileUtils.AvatarChanged -= OnAvatarChanged;
+            ProfileUtils.NameChanged -= OnNameChanged;
         }
 
         private void ReloadPostCategories()
@@ -164,6 +169,16 @@ namespace Memenim.Pages
 
             ViewModel.CurrentPostData.owner_name = result.data.name;
             ViewModel.CurrentPostData.owner_photo = result.data.photo;
+        }
+
+        private void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
+        {
+            ViewModel.CurrentPostData.owner_photo = e.NewPhoto;
+        }
+
+        private void OnNameChanged(object sender, UserNameChangedEventArgs e)
+        {
+            ViewModel.CurrentPostData.owner_name = e.NewName;
         }
 
         private void slcPostCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
