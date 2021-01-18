@@ -21,7 +21,7 @@ using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
-    public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow
+    public sealed partial class MainWindow : MetroWindow, ILocalizable, INativeRestorableWindow
     {
         private static readonly object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;
@@ -104,6 +104,9 @@ namespace Memenim
 
             if (Locales.Count == 0)
                 return;
+
+            LocalizationManager.SetDefaultLanguage()
+                .ConfigureAwait(true);
 
             if (Locales.TryGetValue(SettingsManager.AppSettings.Language, out var localeName))
             {

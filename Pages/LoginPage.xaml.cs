@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,12 +10,15 @@ using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 using Memenim.Widgets;
 
 namespace Memenim.Pages
 {
     public partial class LoginPage : PageContent
     {
+        private readonly Timer _autoUpdateStatusTimer;
+
         public LoginViewModel ViewModel
         {
             get
@@ -26,6 +31,10 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new LoginViewModel();
+
+            _autoUpdateStatusTimer = new Timer(TimeSpan.FromSeconds(15).TotalMilliseconds);
+            _autoUpdateStatusTimer.Elapsed += AutoUpdateStatusTimerCallback;
+            _autoUpdateStatusTimer.Stop();
 
             btnLogin.IsEnabled = false;
 
@@ -44,8 +53,12 @@ namespace Memenim.Pages
 
         public async Task ReloadStoredAccounts()
         {
-            lstStoredAccounts.Children.Clear();
-            svStoredAccounts.ScrollToVerticalOffset(0);
+            lstStoredAccounts.Items.Clear();
+
+            if (SettingsManager.PersistentSettings.AvailableUsers.Values.Count == 0)
+                return;
+
+            var tasks = new List<Task>(SettingsManager.PersistentSettings.AvailableUsers.Values.Count);
 
             foreach (var user in SettingsManager.PersistentSettings.AvailableUsers.Values)
             {
@@ -56,11 +69,36 @@ namespace Memenim.Pages
                 storedAccountWidget.AccountClick += StoredAccount_AccountClick;
                 storedAccountWidget.AccountDelete += StoredAccount_AccountDelete;
 
-                await storedAccountWidget.UpdateAccount()
-                    .ConfigureAwait(true);
+                tasks.Add(storedAccountWidget.UpdateAccount());
 
-                lstStoredAccounts.Children.Add(storedAccountWidget);
+                lstStoredAccounts.Items.Add(storedAccountWidget);
             }
+
+            lstStoredAccounts.GetChildOfType<ScrollViewer>()?.ScrollToVerticalOffset(0);
+
+            await Task.WhenAll(tasks)
+                .ConfigureAwait(true);
+        }
+
+        private async Task UpdateStatusAccounts()
+        {
+            if (lstStoredAccounts.Items.Count == 0)
+                return;
+
+            var tasks = new List<Task>(lstStoredAccounts.Items.Count);
+
+            foreach (var item in lstStoredAccounts.Items)
+            {
+                var storedAccountWidget = item as StoredAccount;
+
+                if (storedAccountWidget == null)
+                    continue;
+
+                tasks.Add(storedAccountWidget.UpdateStatus());
+            }
+
+            await Task.WhenAll(tasks)
+                .ConfigureAwait(true);
         }
 
         protected override async void OnCreated(object sender, EventArgs e)
@@ -71,7 +109,7 @@ namespace Memenim.Pages
             base.OnCreated(sender, e);
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+        protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
             if (!IsOnEnterActive)
             {
@@ -80,6 +118,11 @@ namespace Memenim.Pages
             }
 
             base.OnEnter(sender, e);
+
+            await UpdateStatusAccounts()
+                .ConfigureAwait(true);
+
+            _autoUpdateStatusTimer.Start();
         }
 
         protected override void OnExit(object sender, RoutedEventArgs e)
@@ -88,6 +131,8 @@ namespace Memenim.Pages
             txtPassword.Clear();
             chkRememberMe.IsChecked = false;
             btnOpenStoredAccounts.IsChecked = false;
+
+            _autoUpdateStatusTimer.Stop();
 
             if (!IsOnExitActive)
             {
@@ -102,6 +147,18 @@ namespace Memenim.Pages
         {
             await ReloadStoredAccounts()
                 .ConfigureAwait(true);
+        }
+
+        private async void AutoUpdateStatusTimerCallback(object sender, ElapsedEventArgs e)
+        {
+            _autoUpdateStatusTimer.Stop();
+
+            await Dispatcher.Invoke(() =>
+            {
+                return UpdateStatusAccounts();
+            }).ConfigureAwait(true);
+
+            _autoUpdateStatusTimer.Start();
         }
 
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
@@ -202,7 +259,10 @@ namespace Memenim.Pages
                     return;
                 }
 
-                NavigationController.Instance.GoBack();
+                if (NavigationController.Instance.HistoryIsEmpty())
+                    NavigationController.Instance.RequestPage<FeedPage>();
+                else
+                    NavigationController.Instance.GoBack();
 
                 btnOpenStoredAccounts.IsChecked = false;
             }
@@ -224,7 +284,7 @@ namespace Memenim.Pages
             if (storedAccount == null)
                 return;
 
-            lstStoredAccounts.Children.Remove(storedAccount);
+            lstStoredAccounts.Items.Remove(storedAccount);
 
             SettingsManager.PersistentSettings.RemoveUser(
                 storedAccount.Account.Login);

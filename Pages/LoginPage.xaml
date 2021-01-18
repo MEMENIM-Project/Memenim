@@ -190,16 +190,31 @@
                                Margin="0 0 0 5"
                                HorizontalAlignment="Stretch"
                                VerticalAlignment="Top"/>
-                    <ScrollViewer Grid.Row="1"
-                                  x:Name="svStoredAccounts"
-                                  VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
-                        <WrapPanel x:Name="lstStoredAccounts"
-                                   ItemHeight="60"
-                                   ItemWidth="{Binding Path=ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
-                                   Orientation="Vertical"
-                                   HorizontalAlignment="Stretch"/>
-                    </ScrollViewer>
+                    <ListBox Grid.Row="1"
+                             x:Name="lstStoredAccounts"
+                             SelectionMode="Single"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VirtualizingPanel.ScrollUnit="Pixel"
+                             Background="#FF353639"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="Stretch">
+                        <ListBox.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                        </ListBox.Resources>
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Focusable" Value="false"/>
+                                <Setter Property="Background" Value="#FF353639"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </Grid>
             </Grid>
         </Grid>

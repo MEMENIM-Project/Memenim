@@ -21,14 +21,6 @@
                       Height="450" Width="800"
                       Closed="MainWindow_Closed">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Localization/MainWindow.en-US.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <controls:MetroWindow.LeftWindowCommands>
         <controls:WindowCommands>
             <controls:WindowCommandsItem>

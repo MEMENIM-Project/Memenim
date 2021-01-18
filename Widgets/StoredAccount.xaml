@@ -49,17 +49,37 @@
                 <StackPanel Grid.Row="0" Grid.Column="0"
                             Orientation="Vertical">
                     <emoji:TextBlock Text="{Binding Path=UserName}"
-                                     Style="{DynamicResource Paragraph}"
-                                     FontSize="10"
+                                     FontSize="9.5"
+                                     FontWeight="SemiBold"
                                      TextWrapping="Wrap"
                                      VerticalAlignment="Top"
-                                     Margin="5 0 5 3"/>
+                                     Margin="2 0 2 2">
+                        <TextBlock.Style>
+                            <Style BasedOn="{StaticResource Paragraph}"
+                                   TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=UserStatus}" Value="Active">
+                                        <Setter Property="TextBlock.Foreground" Value="White"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=UserStatus}" Value="Banned">
+                                        <Setter Property="TextBlock.Foreground" Value="Red"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=UserStatus}" Value="Moderator">
+                                        <Setter Property="TextBlock.Foreground" Value="Violet"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=UserStatus}" Value="Admin">
+                                        <Setter Property="TextBlock.Foreground" Value="DarkViolet"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </emoji:TextBlock>
                     <TextBlock Text="{Binding Path=Account.Login}"
                                Style="{DynamicResource Paragraph}"
-                               FontSize="9.0"
+                               FontSize="9"
                                TextWrapping="Wrap"
                                VerticalAlignment="Top"
-                               Margin="5 0 5 0"/>
+                               Margin="2 0 2 0"/>
                 </StackPanel>
                 <local:IconButton Grid.Row="0" Grid.Column="1"
                                   Width="16"

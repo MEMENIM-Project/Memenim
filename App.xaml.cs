@@ -11,7 +11,7 @@ using System.Windows.Threading;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Cryptography;
-using Memenim.Localization;
+using Memenim.Dialogs;
 using Memenim.Logs;
 using Memenim.Native.Window;
 using Memenim.Navigation;
@@ -52,6 +52,21 @@ namespace Memenim
 
         private static string AppStartupUri { get; set; }
         private static bool CreateHashFiles { get; set; }
+
+        [STAThread]
+        private static void Main(string[] args)
+        {
+#pragma warning disable SS002 // DateTime.Now was referenced
+            NLog.GlobalDiagnosticsContext.Set("AppStartupTime", DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture));
+#pragma warning restore SS002 // DateTime.Now was referenced
+
+            ParseArgs(args);
+
+            Instance.Run(() =>
+            {
+                SingleInstanceMain();
+            });
+        }
 
         private static void SingleInstanceMain()
         {
@@ -107,21 +122,6 @@ namespace Memenim
 
             app.InitializeComponent();
             app.Run(Memenim.MainWindow.Instance);
-        }
-
-        [STAThread]
-        private static void Main(string[] args)
-        {
-#pragma warning disable SS002 // DateTime.Now was referenced
-            NLog.GlobalDiagnosticsContext.Set("AppStartupTime", DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture));
-#pragma warning restore SS002 // DateTime.Now was referenced
-
-            ParseArgs(args);
-
-            Instance.Run(() =>
-            {
-                SingleInstanceMain();
-            });
         }
 
         private static void ParseArgs(string[] args)
@@ -208,8 +208,15 @@ namespace Memenim
 
             base.OnStartup(e);
 
-            await LocalizationManager.SwitchLanguage(SettingsManager.AppSettings.Language)
-                .ConfigureAwait(true);
+            if (Memenim.MainWindow.Instance.Locales.Count == 0)
+            {
+                await DialogManager.ShowDialog("F U C K", "No localizations found.")
+                    .ConfigureAwait(true);
+
+                Current.Shutdown(0x1);
+
+                return;
+            }
 
             await StorageManager.Initialize()
                 .ConfigureAwait(true);

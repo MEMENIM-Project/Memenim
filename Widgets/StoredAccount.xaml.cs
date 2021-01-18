@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Converters;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Settings.Entities;
@@ -11,7 +12,7 @@ namespace Memenim.Widgets
     public partial class StoredAccount : UserControl
     {
         public static readonly RoutedEvent OnAccountClicked =
-            EventManager.RegisterRoutedEvent(nameof(AccountClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
+            EventManager.RegisterRoutedEvent(nameof(AccountClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
         public static readonly RoutedEvent OnAccountDeleted =
             EventManager.RegisterRoutedEvent(nameof(AccountDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
         public static readonly DependencyProperty AccountProperty =
@@ -23,6 +24,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty UserAvatarSourceProperty =
             DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(StoredAccount),
                 new PropertyMetadata((string)null));
+        public static readonly DependencyProperty UserStatusProperty =
+            DependencyProperty.Register(nameof(UserStatus), typeof(UserStatusType), typeof(StoredAccount),
+                new PropertyMetadata(UserStatusType.Active));
 
         public event EventHandler<RoutedEventArgs> AccountClick
         {
@@ -80,6 +84,17 @@ namespace Memenim.Widgets
                 SetValue(UserAvatarSourceProperty, value);
             }
         }
+        public UserStatusType UserStatus
+        {
+            get
+            {
+                return (UserStatusType)GetValue(UserStatusProperty);
+            }
+            set
+            {
+                SetValue(UserStatusProperty, value);
+            }
+        }
 
         public StoredAccount()
         {
@@ -100,6 +115,21 @@ namespace Memenim.Widgets
 
             UserName = result.data.name;
             UserAvatarSource = result.data.photo;
+            UserStatus = (UserStatusType)((byte)result.data.status);
+        }
+
+        public async Task UpdateStatus()
+        {
+            if (Account.Id == -1)
+                return;
+
+            var result = await UserApi.GetProfileById(Account.Id)
+                .ConfigureAwait(true);
+
+            if (result.error || result.data == null)
+                return;
+
+            UserStatus = (UserStatusType)((byte)result.data.status);
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
