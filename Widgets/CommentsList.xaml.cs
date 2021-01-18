@@ -475,8 +475,25 @@ namespace Memenim.Widgets
         {
             btnLoadMore.IsEnabled = false;
 
+            PostOverlayPage page = null;
+            double scrollableHeight = 0.0;
+
+            Dispatcher.Invoke(() =>
+            {
+                page = this.TryFindParent<PostOverlayPage>();
+                scrollableHeight = page?.svPost?.ScrollableHeight ?? scrollableHeight;
+            });
+
             await LoadMoreComments()
                 .ConfigureAwait(true);
+
+            UpdateLayout();
+
+            if (page?.svPost?.VerticalOffset > page?.wdgPost?.ActualHeight / 100 * 55)
+            {
+                page?.svPost?.ScrollToVerticalOffset(
+                    page.svPost.VerticalOffset + (page.svPost.ScrollableHeight - scrollableHeight));
+            }
 
             btnLoadMore.IsEnabled = true;
         }

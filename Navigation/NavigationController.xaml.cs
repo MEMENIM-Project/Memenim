@@ -121,6 +121,10 @@ namespace Memenim.Navigation
                 return;
             }
 
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
             IsContentEventsActive(false);
 
             SaveContentToHistory();
@@ -147,6 +151,10 @@ namespace Memenim.Navigation
             ClearOverlay();
 
             IsContentEventsActive(true);
+
+            //UpdateLayout();
+            //GC.WaitForPendingFinalizers();
+            //GC.Collect();
         }
 
         private void SetOverlay(PageContent page, PageViewModel dataContext = null)
@@ -157,6 +165,10 @@ namespace Memenim.Navigation
             {
                 return;
             }
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             IsContentEventsActive(false);
 
@@ -183,6 +195,10 @@ namespace Memenim.Navigation
             ShowOverlay();
 
             IsContentEventsActive(true);
+
+            //UpdateLayout();
+            //GC.WaitForPendingFinalizers();
+            //GC.Collect();
         }
 
         private void LoadContentFromHistory()
