@@ -232,12 +232,12 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    await DialogManager.ShowDialog("F U C K", result.message)
+                    await DialogManager.ShowErrorDialog(result.message)
                         .ConfigureAwait(true);
                 }
                 else
                 {
-                    await DialogManager.ShowDialog("S U C C", "Post submitted. Get a tea and wait")
+                    await DialogManager.ShowSuccessDialog("Post submitted. Get a tea and wait")
                         .ConfigureAwait(true);
 
                     ClearText();

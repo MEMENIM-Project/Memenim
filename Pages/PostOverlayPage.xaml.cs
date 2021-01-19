@@ -85,7 +85,7 @@ namespace Memenim.Pages
                 NavigationController.Instance.GoBack();
                 NavigationController.Instance.GoBack();
 
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 return;

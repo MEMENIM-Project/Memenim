@@ -210,7 +210,7 @@ namespace Memenim
 
             if (Memenim.MainWindow.Instance.Locales.Count == 0)
             {
-                await DialogManager.ShowDialog("F U C K", "No localizations found.")
+                await DialogManager.ShowErrorDialog("No localizations found.")
                     .ConfigureAwait(true);
 
                 Current.Shutdown(0x1);

@@ -19,9 +19,6 @@
     <system:String x:Key="SignUp">Зарегистрироваться</system:String>
     <system:String x:Key="SignUpTitle">Регистрация</system:String>
 
-    <system:String x:Key="ErrorTitle">Б Л Я Т Ь</system:String>
-    <system:String x:Key="SuccessTitle">З А Е Б Ц А</system:String>
-
     <system:String x:Key="WIPTitle">ТИХО</system:String>
 
     <system:String x:Key="ChatPlaceholderDescription" xml:space="preserve">Интеграция чатов всё ещё в состоянии глубокого проектирования, но мы то знаем, как тебе хочется срать сообщениями в личку, так что решение данной проблемы прямо перед тобой.
@@ -194,6 +191,8 @@
 
     <system:String x:Key="EnterTitle">Введите</system:String>
     <system:String x:Key="EnableTitle">Включить</system:String>
+    <system:String x:Key="ErrorTitle">Ошибка</system:String>
+    <system:String x:Key="SuccessTitle">Успех</system:String>
 
     <system:String x:Key="UserNotFound">Пользователь не найден</system:String>
     <system:String x:Key="PostNotFound">Пост не найден</system:String>

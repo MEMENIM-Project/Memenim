@@ -300,7 +300,7 @@ namespace Memenim
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
             }
         }

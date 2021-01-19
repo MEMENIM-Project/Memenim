@@ -115,7 +115,7 @@ namespace Memenim.Pages
                 {
                     NavigationController.Instance.GoBack();
 
-                    await DialogManager.ShowDialog("F U C K", result.message)
+                    await DialogManager.ShowErrorDialog(result.message)
                         .ConfigureAwait(true);
 
                     return;
@@ -421,7 +421,7 @@ namespace Memenim.Pages
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -471,7 +471,7 @@ namespace Memenim.Pages
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -523,7 +523,7 @@ namespace Memenim.Pages
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -581,7 +581,7 @@ namespace Memenim.Pages
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -639,7 +639,7 @@ namespace Memenim.Pages
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -692,7 +692,7 @@ namespace Memenim.Pages
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);

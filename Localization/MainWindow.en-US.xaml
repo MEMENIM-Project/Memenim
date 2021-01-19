@@ -18,9 +18,6 @@
     <system:String x:Key="GoToLogin">Already registered? Sign In now</system:String>
     <system:String x:Key="SignUp">Register</system:String>
     <system:String x:Key="SignUpTitle">Sign Up</system:String>
-    
-    <system:String x:Key="ErrorTitle">F U C K</system:String>
-    <system:String x:Key="SuccessTitle">S U C C</system:String>
 
     <system:String x:Key="WIPTitle">Not implemented yet</system:String>
 
@@ -194,6 +191,8 @@ Have fun.</system:String>
 
     <system:String x:Key="EnterTitle">Enter</system:String>
     <system:String x:Key="EnableTitle">Enable</system:String>
+    <system:String x:Key="ErrorTitle">Error</system:String>
+    <system:String x:Key="SuccessTitle">Success</system:String>
 
     <system:String x:Key="UserNotFound">User not found</system:String>
     <system:String x:Key="PostNotFound">Post not found</system:String>

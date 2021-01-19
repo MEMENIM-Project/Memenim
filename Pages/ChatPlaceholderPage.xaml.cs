@@ -66,7 +66,7 @@ namespace Memenim.Pages
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 btnCopyPassword.IsEnabled = true;

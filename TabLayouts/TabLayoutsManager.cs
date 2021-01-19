@@ -39,7 +39,7 @@ namespace Memenim.TabLayouts
         {
             if (!Uri.TryCreate(resourceFilePath, UriKind.RelativeOrAbsolute, out _))
             {
-                await DialogManager.ShowDialog("F U C K", "'" + resourceFilePath + "' not found.")
+                await DialogManager.ShowErrorDialog("'" + resourceFilePath + "' not found.")
                     .ConfigureAwait(true);
                 return null;
             }

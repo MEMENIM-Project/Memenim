@@ -175,14 +175,14 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    await DialogManager.ShowDialog("F U C K", result.message)
+                    await DialogManager.ShowErrorDialog(result.message)
                         .ConfigureAwait(true);
                     return;
                 }
 
                 if (result.data == null)
                 {
-                    await DialogManager.ShowDialog("F U C K", result.message)
+                    await DialogManager.ShowErrorDialog(result.message)
                         .ConfigureAwait(true);
                     return;
                 }
@@ -206,12 +206,12 @@ namespace Memenim.Pages
 
                 if (!resultEdit.error)
                 {
-                    await DialogManager.ShowDialog("S U C C", "Post editing done")
+                    await DialogManager.ShowSuccessDialog("Post editing done")
                         .ConfigureAwait(true);
                 }
                 else
                 {
-                    await DialogManager.ShowDialog("F U C K", resultEdit.message)
+                    await DialogManager.ShowErrorDialog(resultEdit.message)
                         .ConfigureAwait(true);
                 }
             }

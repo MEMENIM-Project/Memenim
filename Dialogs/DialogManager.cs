@@ -38,6 +38,36 @@ namespace Memenim.Dialogs
                 settings);
         }
 
+        public static Task<MessageDialogResult> ShowErrorDialog(string message,
+            MetroDialogSettings settings = null)
+        {
+            string errorTitleLocalizeName = (string)MainWindow.Instance
+                .FindResource("ErrorTitle");
+
+            LogManager.Log.Info($"{errorTitleLocalizeName} - {message}");
+
+            return MainWindow.Instance.ShowMessageAsync(
+                errorTitleLocalizeName,
+                message,
+                MessageDialogStyle.Affirmative,
+                settings);
+        }
+
+        public static Task<MessageDialogResult> ShowSuccessDialog(string message,
+            MetroDialogSettings settings = null)
+        {
+            string successTitleLocalizeName = (string)MainWindow.Instance
+                .FindResource("SuccessTitle");
+
+            LogManager.Log.Info($"{successTitleLocalizeName} - {message}");
+
+            return MainWindow.Instance.ShowMessageAsync(
+                successTitleLocalizeName,
+                message,
+                MessageDialogStyle.Affirmative,
+                settings);
+        }
+
         public static Task<string> ShowInputDialog(string title, string message,
             MetroDialogSettings settings = null)
         {

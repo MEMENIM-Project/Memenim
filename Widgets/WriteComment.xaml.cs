@@ -148,7 +148,7 @@ namespace Memenim.Widgets
 
             if (res.error)
             {
-                await DialogManager.ShowDialog("F U C K", res.message)
+                await DialogManager.ShowErrorDialog(res.message)
                     .ConfigureAwait(true);
 
                 btnSend.IsEnabled = true;

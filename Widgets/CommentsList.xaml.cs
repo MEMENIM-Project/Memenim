@@ -161,7 +161,7 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", "Cannot load comments")
+                await DialogManager.ShowErrorDialog("Cannot load comments")
                     .ConfigureAwait(true);
                 return;
             }
@@ -333,7 +333,7 @@ namespace Memenim.Widgets
             {
                 await Dispatcher.Invoke(async () =>
                 {
-                    await DialogManager.ShowDialog("F U C K", "Cannot load comments")
+                    await DialogManager.ShowErrorDialog("Cannot load comments")
                         .ConfigureAwait(true);
                 }).ConfigureAwait(true);
 

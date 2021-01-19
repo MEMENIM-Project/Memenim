@@ -133,7 +133,7 @@ namespace Memenim.Localization
         {
             if (!File.Exists(resourceFilePath))
             {
-                await DialogManager.ShowDialog("F U C K", "'" + resourceFilePath + "' not found.")
+                await DialogManager.ShowErrorDialog("'" + resourceFilePath + "' not found.")
                     .ConfigureAwait(true);
                 return;
             }
@@ -182,7 +182,7 @@ namespace Memenim.Localization
         {
             if (!File.Exists(resourceFilePath))
             {
-                await DialogManager.ShowDialog("F U C K", "'" + resourceFilePath + "' not found.")
+                await DialogManager.ShowErrorDialog("'" + resourceFilePath + "' not found.")
                     .ConfigureAwait(true);
                 return;
             }
@@ -254,7 +254,7 @@ namespace Memenim.Localization
         {
             if (element.Locales.Count == 0)
             {
-                await DialogManager.ShowDialog("F U C K", "No localizations found.")
+                await DialogManager.ShowErrorDialog("No localizations found.")
                     .ConfigureAwait(true);
                 return;
             }
@@ -270,7 +270,7 @@ namespace Memenim.Localization
 
             if (string.IsNullOrEmpty(locale))
             {
-                await DialogManager.ShowDialog("F U C K", "Couldn't get localization.")
+                await DialogManager.ShowErrorDialog("Couldn't get localization.")
                     .ConfigureAwait(true);
                 return;
             }

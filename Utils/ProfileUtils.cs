@@ -41,14 +41,14 @@ namespace Memenim.Utils
 
                 if (result.error)
                 {
-                    await DialogManager.ShowDialog("F U C K", result.message)
+                    await DialogManager.ShowErrorDialog(result.message)
                         .ConfigureAwait(true);
                     return;
                 }
 
                 if (result.data == null)
                 {
-                    await DialogManager.ShowDialog("F U C K",
+                    await DialogManager.ShowErrorDialog(
                             "error getting a profile. " + result.message)
                         .ConfigureAwait(true);
                     return;
@@ -64,7 +64,7 @@ namespace Memenim.Utils
 
                 if (request.error)
                 {
-                    await DialogManager.ShowDialog("F U C K", request.message)
+                    await DialogManager.ShowErrorDialog(request.message)
                         .ConfigureAwait(true);
                     return;
                 }
@@ -74,7 +74,7 @@ namespace Memenim.Utils
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("F U C K", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
         }
@@ -98,14 +98,14 @@ namespace Memenim.Utils
 
                 if (result.error)
                 {
-                    await DialogManager.ShowDialog("F U C K", result.message)
+                    await DialogManager.ShowErrorDialog(result.message)
                         .ConfigureAwait(true);
                     return;
                 }
 
                 if (result.data == null)
                 {
-                    await DialogManager.ShowDialog("F U C K",
+                    await DialogManager.ShowErrorDialog(
                             "error getting a profile. " + result.message)
                         .ConfigureAwait(true);
                     return;
@@ -121,7 +121,7 @@ namespace Memenim.Utils
 
                 if (request.error)
                 {
-                    await DialogManager.ShowDialog("F U C K", request.message)
+                    await DialogManager.ShowErrorDialog(request.message)
                         .ConfigureAwait(true);
                     return;
                 }
@@ -131,7 +131,7 @@ namespace Memenim.Utils
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("F U C K", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
         }

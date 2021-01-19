@@ -86,14 +86,14 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
                 return;
             }
 
             if (result.data == null)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
                 return;
             }
@@ -186,7 +186,7 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 stReposts.IsEnabled = true;
@@ -243,7 +243,7 @@ namespace Memenim.Widgets
 
             if (request.error)
             {
-                await DialogManager.ShowDialog("F U C K", request.message)
+                await DialogManager.ShowErrorDialog(request.message)
                     .ConfigureAwait(true);
 
                 btnEdit.IsEnabled = true;
@@ -275,7 +275,7 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 btnDelete.IsEnabled = true;
@@ -302,7 +302,7 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 stReposts.IsEnabled = true;
@@ -337,7 +337,7 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 stLikes.IsEnabled = true;
@@ -377,7 +377,7 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowDialog("F U C K", result.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 stDislikes.IsEnabled = true;
