@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="400"
@@ -34,6 +35,7 @@
             </Grid>
             <TextBox Grid.Column="1" x:Name="txtContent" Margin="10 5 10 5"
                      Text="{Binding Path=CommentText, Mode=TwoWay}"
+                     controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterCommentText}"
                      Style="{DynamicResource MahApps.Styles.TextBox}"
                      HorizontalScrollBarVisibility="Disabled"
                      VerticalScrollBarVisibility="Auto"

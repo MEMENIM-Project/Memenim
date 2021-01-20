@@ -42,7 +42,7 @@ Have fun.</system:String>
 
     <system:String x:Key="CommentsTitle">Comments</system:String>
     <system:String x:Key="LoadComments">Load more comments</system:String>
-    <system:String x:Key="EnterComment">Enter comment content</system:String>
+    <system:String x:Key="EnterCommentText">Enter comment content</system:String>
 
     <system:String x:Key="PostContentTitle">Post content</system:String>
     <system:String x:Key="AdditionalOptionsTitle">Additional options</system:String>

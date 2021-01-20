@@ -42,7 +42,7 @@
 
     <system:String x:Key="CommentsTitle">Комментарии</system:String>
     <system:String x:Key="LoadComments">НУЖНО БОЛЬШЕ КОММЕНТАРИЕВ!11!</system:String>
-    <system:String x:Key="EnterComment">Введите содержимое комментария</system:String>
+    <system:String x:Key="EnterCommentText">Введите содержимое комментария</system:String>
 
     <system:String x:Key="PostContentTitle">Содержимое поста</system:String>
     <system:String x:Key="AdditionalOptionsTitle">Дополнительные опции</system:String>
