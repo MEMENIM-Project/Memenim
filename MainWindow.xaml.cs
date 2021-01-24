@@ -166,15 +166,6 @@ namespace Memenim
             BgmVolume = SettingsManager.AppSettings.BgmVolume;
         }
 
-        public Task ShowConnectionFailedGrid(bool status)
-        {
-            connectionFailedPanel.Visibility = status
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
-            return ShowLoadingGrid(status);
-        }
-
         public void LinkOpenEnable(bool isEnabled)
         {
             if (NavigationController.Instance.RootLayout.DisplayMode == SplitViewDisplayMode.Inline
@@ -200,6 +191,15 @@ namespace Memenim
         public void HideSettings()
         {
             SettingsFlyout.IsOpen = false;
+        }
+
+        public Task ShowConnectionFailedGrid(bool status)
+        {
+            connectionFailedPanel.Visibility = status
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            return ShowLoadingGrid(status);
         }
 
         public Task ShowLoadingGrid(bool status)
