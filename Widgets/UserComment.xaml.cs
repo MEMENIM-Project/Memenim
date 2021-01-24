@@ -9,6 +9,7 @@ using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
@@ -106,9 +107,12 @@ namespace Memenim.Widgets
         {
             btnEdit.IsEnabled = false;
 
+            var title = LocalizationUtils.GetLocalized("EditingCommentTitle");
+            var message = LocalizationUtils.GetLocalized("EditingCommentMessage");
+
             string oldValue = CurrentCommentData.text;
-            string value = await DialogManager.ShowMultilineTextDialog("Edit comment",
-                    "Enter comment text", oldValue)
+            string value = await DialogManager.ShowMultilineTextDialog(
+                    title, message, oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)

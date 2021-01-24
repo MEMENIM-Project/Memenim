@@ -28,6 +28,9 @@ namespace Memenim.Dialogs
         public static readonly DependencyProperty StringFormatInputValueProperty =
             DependencyProperty.Register(nameof(StringFormatInputValue), typeof(string), typeof(NumericDialog),
                 new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty IsCancellableProperty =
+            DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(NumericDialog),
+                new PropertyMetadata(true));
 
         public string DialogTitle
         {
@@ -106,12 +109,24 @@ namespace Memenim.Dialogs
                 SetValue(StringFormatInputValueProperty, value);
             }
         }
+        public bool IsCancellable
+        {
+            get
+            {
+                return (bool)GetValue(IsCancellableProperty);
+            }
+            set
+            {
+                SetValue(IsCancellableProperty, value);
+            }
+        }
         public double? DefaultValue { get; }
 
         public NumericDialog(string title = "Enter", string message = "Enter",
             double? inputValue = 0.0, double? minimumInputValue = 0.0,
             double? maximumInputValue = 100.0,  double? intervalInputValue = 1.0,
-            string stringFormatInputValue = "F0", double? defaultValue = null)
+            string stringFormatInputValue = "F0", double? defaultValue = null,
+            bool isCancellable = true)
         {
             InitializeComponent();
             DataContext = this;
@@ -124,6 +139,7 @@ namespace Memenim.Dialogs
             IntervalInputValue = intervalInputValue;
             StringFormatInputValue = stringFormatInputValue;
             DefaultValue = defaultValue;
+            IsCancellable = isCancellable;
         }
 
         private void Ok_Click(object sender, RoutedEventArgs e)

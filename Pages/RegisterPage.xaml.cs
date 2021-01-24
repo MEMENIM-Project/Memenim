@@ -7,6 +7,7 @@ using Memenim.Dialogs;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 using RIS.Text.Generating;
 
 namespace Memenim.Pages
@@ -55,7 +56,6 @@ namespace Memenim.Pages
         private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
         {
             btnRegister.IsEnabled = false;
-            //btnAutoRegister.IsEnabled = false;
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
@@ -69,13 +69,12 @@ namespace Memenim.Pages
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
             finally
             {
                 btnRegister.IsEnabled = !NeedBlockRegister();
-                //btnAutoRegister.IsEnabled = true;
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
@@ -102,35 +101,37 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    await DialogManager.ShowDialog("Register error", result.message)
+                    var title = LocalizationUtils.GetLocalized("RegisterErrorTitle");
+
+                    await DialogManager.ShowMessageDialog(title, result.message)
                         .ConfigureAwait(true);
+
+                    return;
                 }
-                else
+
+                if (!SettingsManager.PersistentSettings.SetUser(
+                    txtLogin.Text,
+                    result.data.token,
+                    result.data.id))
                 {
-                    if (!SettingsManager.PersistentSettings.SetUser(
-                        txtLogin.Text,
-                        result.data.token,
-                        result.data.id))
-                    {
-                        return;
-                    }
-
-                    if (!SettingsManager.PersistentSettings.SetCurrentUser(
-                        txtLogin.Text))
-                    {
-                        return;
-                    }
-
-                    NavigationController.Instance.RequestPage<FeedPage>();
-
-                    txtLogin.Clear();
-                    txtNickname.Clear();
-                    _changeNicknameExplicit = false;
+                    return;
                 }
+
+                if (!SettingsManager.PersistentSettings.SetCurrentUser(
+                    txtLogin.Text))
+                {
+                    return;
+                }
+
+                NavigationController.Instance.RequestPage<FeedPage>();
+
+                txtLogin.Clear();
+                txtNickname.Clear();
+                _changeNicknameExplicit = false;
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
             finally

@@ -69,14 +69,14 @@
                   MinWidth="300" MinHeight="300"
                   MaxHeight="500"
                   Margin="15 5 15 5"
-                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  MouseLeftButtonUp="PostImage_MouseLeftButtonUp">
                 <Image x:Name="PostImage"
                        MinWidth="300" MinHeight="300"
                        Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
                        Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                       MouseLeftButtonUp="PostImage_MouseLeftButtonUp"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <StackPanel Grid.Row="3" Grid.Column="0"
                         Orientation="Horizontal"

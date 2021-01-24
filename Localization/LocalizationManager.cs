@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Dialogs;
 using Memenim.Settings;
+using Memenim.Utils;
 using Environment = RIS.Environment;
 
 namespace Memenim.Localization
@@ -133,7 +134,12 @@ namespace Memenim.Localization
         {
             if (!File.Exists(resourceFilePath))
             {
-                await DialogManager.ShowErrorDialog("'" + resourceFilePath + "' not found.")
+                var fileTitle = LocalizationUtils.TryGetLocalized("FileTitle")
+                                ?? "File";
+                var notFoundTitle = LocalizationUtils.TryGetLocalized("NotFoundTitle1")
+                                    ?? "Not found";
+
+                await DialogManager.ShowErrorDialog($"{fileTitle} '{resourceFilePath}' {notFoundTitle.ToLower()}")
                     .ConfigureAwait(true);
                 return;
             }
@@ -182,7 +188,12 @@ namespace Memenim.Localization
         {
             if (!File.Exists(resourceFilePath))
             {
-                await DialogManager.ShowErrorDialog("'" + resourceFilePath + "' not found.")
+                var fileTitle = LocalizationUtils.TryGetLocalized("FileTitle")
+                                      ?? "File";
+                var notFoundTitle = LocalizationUtils.TryGetLocalized("NotFoundTitle1")
+                                       ?? "Not found";
+
+                await DialogManager.ShowErrorDialog($"{fileTitle} '{resourceFilePath}' {notFoundTitle.ToLower()}")
                     .ConfigureAwait(true);
                 return;
             }
@@ -254,7 +265,10 @@ namespace Memenim.Localization
         {
             if (element.Locales.Count == 0)
             {
-                await DialogManager.ShowErrorDialog("No localizations found.")
+                var message = LocalizationUtils.TryGetLocalized("NoLocalizationsFoundMessage")
+                              ?? "No localizations found";
+
+                await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
                 return;
             }
@@ -270,7 +284,10 @@ namespace Memenim.Localization
 
             if (string.IsNullOrEmpty(locale))
             {
-                await DialogManager.ShowErrorDialog("Couldn't get localization.")
+                var message = LocalizationUtils.TryGetLocalized("CouldNotGetLocalizationMessage")
+                              ?? "Couldn't get localization";
+
+                await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
                 return;
             }

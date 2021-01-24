@@ -79,7 +79,7 @@ namespace Memenim.Pages
             slcPostCategories.SelectionChanged += slcPostCategories_SelectionChanged;
         }
 
-        private Task SelectPhoto(string url)
+        private Task SelectImage(string url)
         {
             LoadImage(url);
 
@@ -186,33 +186,37 @@ namespace Memenim.Pages
             ViewModel.CurrentPostData.category = ((KeyValuePair<int, string>)slcPostCategories.SelectedItem).Key;
         }
 
-        private async void SelectPhoto_Click(object sender, RoutedEventArgs e)
+        private async void SelectImage_Click(object sender, RoutedEventArgs e)
         {
             if (rbImageRaw.IsChecked == true)
             {
-                string url = await DialogManager.ShowInputDialog("ENTER", "Enter pic URL")
+                string title = LocalizationUtils.GetLocalized("InsertingImageTitle");
+                string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+
+                string url = await DialogManager.ShowSinglelineTextDialog(
+                        title, $"{enterName} URL")
                     .ConfigureAwait(true);
 
-                await SelectPhoto(url)
+                await SelectImage(url)
                     .ConfigureAwait(true);
             }
             else if (rbImageTenor.IsChecked == true)
             {
                 NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
                 {
-                    OnPicSelect = SelectPhoto
+                    OnPicSelect = SelectImage
                 });
             }
             else if (rbImageGallery.IsChecked == true)
             {
                 NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
                 {
-                    OnPicSelect = SelectPhoto
+                    OnPicSelect = SelectImage
                 });
             }
         }
 
-        private void RemovePhoto_Click(object sender, RoutedEventArgs e)
+        private void RemoveImage_Click(object sender, RoutedEventArgs e)
         {
             ClearImage();
         }
@@ -237,7 +241,9 @@ namespace Memenim.Pages
                 }
                 else
                 {
-                    await DialogManager.ShowSuccessDialog("Post submitted. Get a tea and wait")
+                    var message = LocalizationUtils.GetLocalized("PostSubmittedMessage");
+
+                    await DialogManager.ShowSuccessDialog(message)
                         .ConfigureAwait(true);
 
                     ClearText();
@@ -246,7 +252,7 @@ namespace Memenim.Pages
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("Some rtarded shit happened", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
             finally

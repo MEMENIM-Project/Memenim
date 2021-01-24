@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Dialogs;
+using Memenim.Utils;
 
 namespace Memenim.TabLayouts
 {
@@ -39,7 +40,10 @@ namespace Memenim.TabLayouts
         {
             if (!Uri.TryCreate(resourceFilePath, UriKind.RelativeOrAbsolute, out _))
             {
-                await DialogManager.ShowErrorDialog("'" + resourceFilePath + "' not found.")
+                var fileTitle = LocalizationUtils.GetLocalized("FileTitle");
+                var notFoundTitle = LocalizationUtils.GetLocalized("NotFoundTitle1");
+
+                await DialogManager.ShowErrorDialog($"{fileTitle} '{resourceFilePath}' {notFoundTitle.ToLower()}")
                     .ConfigureAwait(true);
                 return null;
             }

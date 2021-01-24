@@ -176,53 +176,56 @@ namespace Memenim.Pages
 
                 if (result.error)
                 {
-                    await DialogManager.ShowDialog("Login error", result.message)
+                    var title = LocalizationUtils.GetLocalized("LoginErrorTitle");
+
+                    await DialogManager.ShowMessageDialog(title, result.message)
                         .ConfigureAwait(true);
+
+                    return;
+                }
+
+                if (chkRememberMe.IsChecked == true)
+                {
+                    if (!SettingsManager.PersistentSettings.SetUser(
+                        txtLogin.Text,
+                        result.data.token,
+                        result.data.id))
+                    {
+                        return;
+                    }
+
+                    if (!SettingsManager.PersistentSettings.SetCurrentUser(
+                        txtLogin.Text))
+                    {
+                        return;
+                    }
                 }
                 else
                 {
-                    if (chkRememberMe.IsChecked == true)
+                    SettingsManager.PersistentSettings.RemoveUser(
+                        txtLogin.Text);
+
+                    if (!SettingsManager.PersistentSettings.SetCurrentUserTemporary(
+                        txtLogin.Text,
+                        result.data.token,
+                        result.data.id))
                     {
-                        if (!SettingsManager.PersistentSettings.SetUser(
-                            txtLogin.Text,
-                            result.data.token,
-                            result.data.id))
-                        {
-                            return;
-                        }
-
-                        if (!SettingsManager.PersistentSettings.SetCurrentUser(
-                            txtLogin.Text))
-                        {
-                            return;
-                        }
+                        return;
                     }
-                    else
-                    {
-                        SettingsManager.PersistentSettings.RemoveUser(
-                            txtLogin.Text);
-
-                        if (!SettingsManager.PersistentSettings.SetCurrentUserTemporary(
-                            txtLogin.Text,
-                            result.data.token,
-                            result.data.id))
-                        {
-                            return;
-                        }
-                    }
-
-                    if (NavigationController.Instance.HistoryIsEmpty())
-                        NavigationController.Instance.RequestPage<FeedPage>();
-                    else
-                        NavigationController.Instance.GoBack();
-
-                    txtLogin.Clear();
-                    chkRememberMe.IsChecked = false;
                 }
+
+                if (NavigationController.Instance.HistoryIsEmpty())
+                    NavigationController.Instance.RequestPage<FeedPage>();
+                else
+                    NavigationController.Instance.GoBack();
+
+                txtLogin.Clear();
+                chkRememberMe.IsChecked = false;
+
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
             finally
@@ -268,7 +271,7 @@ namespace Memenim.Pages
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("An exception happened", ex.Message)
+                await DialogManager.ShowErrorDialog(ex.Message)
                     .ConfigureAwait(true);
             }
             finally

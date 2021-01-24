@@ -11,6 +11,7 @@ using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.TabLayouts;
 using Memenim.TabLayouts.NavigationBar;
+using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
@@ -159,7 +160,9 @@ namespace Memenim.Widgets
             }
             catch (Exception ex)
             {
-                await DialogManager.ShowDialog("Navigation error", ex.Message)
+                var title = LocalizationUtils.GetLocalized("NavigationErrorTitle");
+
+                await DialogManager.ShowMessageDialog(title, ex.Message)
                     .ConfigureAwait(true);
             }
 

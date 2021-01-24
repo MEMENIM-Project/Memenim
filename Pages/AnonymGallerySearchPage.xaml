@@ -16,7 +16,8 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Content="Select a Photo"
+        <Label Grid.Row="0"
+               Content="{DynamicResource ImageSelection}"
                Style="{DynamicResource DescriptionHeader}"
                Margin="10 0 0 0"/>
         <ScrollViewer Grid.Row="1">

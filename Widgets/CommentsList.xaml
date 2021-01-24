@@ -17,13 +17,19 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="{DynamicResource ResourceKey=CommentsTitle}"
-                       Style="{DynamicResource Header2}" Margin="16 5 0 0"/>
-            <Button Grid.Row="1" x:Name="btnLoadMore" Content="{DynamicResource ResourceKey=LoadComments}"
+            <TextBlock Grid.Row="0"
+                       Text="{DynamicResource ResourceKey=CommentsTitle}"
+                       Style="{DynamicResource Header2}"
+                       Margin="16 5 16 5"/>
+            <Button Grid.Row="1"
+                    x:Name="btnLoadMore"
+                    Content="{DynamicResource ResourceKey=LoadComments}"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
-                    Visibility="Collapsed" Margin="16 5 16 5"
+                    Visibility="Collapsed"
+                    Margin="16 5 16 5"
                     Click="btnLoadMore_Click"/>
-            <Grid Grid.Row="2" Margin="16 5 16 5"
+            <Grid Grid.Row="2"
+                  Margin="16 5 16 5"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <WrapPanel Name="lstComments"
                            ItemWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"

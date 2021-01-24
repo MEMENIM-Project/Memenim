@@ -57,12 +57,12 @@
                                    Margin="10" Stretch="Uniform"
                                    Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"/>
                         </StackPanel>
-                        <Button Content="{DynamicResource ResourceKey=SelectPhoto}"
+                        <Button Content="{DynamicResource ResourceKey=SelectImage}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
-                                Margin="0 5" Click="SelectPhoto_Click"/>
-                        <Button Content="{DynamicResource ResourceKey=RemovePhoto}"
+                                Margin="0 5" Click="SelectImage_Click"/>
+                        <Button Content="{DynamicResource ResourceKey=RemoveImage}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
-                                Margin="0 5" Click="RemovePhoto_Click"/>
+                                Margin="0 5" Click="RemoveImage_Click"/>
                         <TextBlock Style="{StaticResource AccentHeader}"
                                    Text="{DynamicResource ResourceKey=AdditionalOptionsTitle}"
                                    HorizontalAlignment="Left"
@@ -89,7 +89,7 @@
                                   IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"
                                   Margin="0 5"/>
                         <Button x:Name="btnSubmit"
-                                Content="{DynamicResource ResourceKey=SubmitPostButton}"
+                                Content="{DynamicResource ResourceKey=SubmitPost}"
                                 Style="{StaticResource MahApps.Styles.Button.Square.Accent}"
                                 Margin="0 5" Click="Submit_Click"/> 
                     </StackPanel>

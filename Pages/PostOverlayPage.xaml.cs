@@ -64,10 +64,9 @@ namespace Memenim.Pages
                 NavigationController.Instance.GoBack();
                 NavigationController.Instance.GoBack();
 
-                string notFoundLocalized = (string)MainWindow.Instance
-                    .FindResource("PostNotFound");
+                string message = LocalizationUtils.GetLocalized("PostNotFound");
 
-                await DialogManager.ShowDialog("Error", notFoundLocalized)
+                await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
 
                 return;
@@ -96,10 +95,9 @@ namespace Memenim.Pages
                 NavigationController.Instance.GoBack();
                 NavigationController.Instance.GoBack();
 
-                string notFoundLocalized = (string)MainWindow.Instance
-                    .FindResource("PostNotFound");
+                string message = LocalizationUtils.GetLocalized("PostNotFound");
 
-                await DialogManager.ShowDialog("Error", notFoundLocalized)
+                await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
 
                 return;

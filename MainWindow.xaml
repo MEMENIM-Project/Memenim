@@ -35,7 +35,8 @@
             </controls:WindowCommandsItem>
             <controls:WindowCommandsItem IsSeparatorVisible="False">
                 <StackPanel Orientation="Horizontal">
-                    <Button HorizontalAlignment="Center"
+                    <Button x:Name="btnLinkOpen"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Click="OpenLink_Click">
                         <iconPacks:PackIconModern Width="15" Height="15"
@@ -179,6 +180,21 @@
         <Grid Grid.Row="0" Grid.Column="0" x:Name="loadingGrid"
               Visibility="Collapsed" ZIndex="2147483647"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <StackPanel x:Name="connectionFailedPanel"
+                        Orientation="Vertical"
+                        Visibility="Collapsed"
+                        VerticalAlignment="Top">
+                <controls:MetroProgressBar MinHeight="2" Height="2"
+                                           Style="{DynamicResource MahApps.Styles.ProgressBar}"
+                                           IsIndeterminate="True"
+                                           BorderThickness="0"/>
+                <TextBlock MinHeight="20"
+                           Text="{DynamicResource AttemptingRestoreConnection}"
+                           FontSize="15"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Margin="10 5 10 5"/>
+            </StackPanel>
             <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
                                                 SpeedRatio="2" IsActive="False" Visibility="Visible"/>
         </Grid>

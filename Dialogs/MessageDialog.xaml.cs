@@ -2,24 +2,23 @@
 using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
-using RIS.Text.Generating;
 
 namespace Memenim.Dialogs
 {
-    public partial class PasswordDialog : CustomDialog
+    public partial class MessageDialog : CustomDialog
     {
         public static readonly DependencyProperty DialogTitleProperty =
-            DependencyProperty.Register(nameof(DialogTitle), typeof(string), typeof(PasswordDialog),
+            DependencyProperty.Register(nameof(DialogTitle), typeof(string), typeof(MessageDialog),
                 new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty DialogMessageProperty =
-            DependencyProperty.Register(nameof(DialogMessage), typeof(string), typeof(PasswordDialog),
+            DependencyProperty.Register(nameof(DialogMessage), typeof(string), typeof(MessageDialog),
                 new PropertyMetadata(string.Empty));
-        public static readonly DependencyProperty InputValueProperty =
-            DependencyProperty.Register(nameof(InputValue), typeof(string), typeof(PasswordDialog),
-                new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty DialogResultProperty =
+            DependencyProperty.Register(nameof(DialogResult), typeof(MessageDialogResult), typeof(MessageDialog),
+                new PropertyMetadata(MessageDialogResult.Affirmative));
         public static readonly DependencyProperty IsCancellableProperty =
-            DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(PasswordDialog),
-                new PropertyMetadata(true));
+            DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(MessageDialog),
+                new PropertyMetadata(false));
 
         public string DialogTitle
         {
@@ -43,15 +42,15 @@ namespace Memenim.Dialogs
                 SetValue(DialogMessageProperty, value);
             }
         }
-        public string InputValue
+        public MessageDialogResult DialogResult
         {
             get
             {
-                return (string)GetValue(InputValueProperty);
+                return (MessageDialogResult)GetValue(DialogResultProperty);
             }
             set
             {
-                SetValue(InputValueProperty, value);
+                SetValue(DialogResultProperty, value);
             }
         }
         public bool IsCancellable
@@ -65,20 +64,15 @@ namespace Memenim.Dialogs
                 SetValue(IsCancellableProperty, value);
             }
         }
-        public string DefaultValue { get; }
-        public bool CanGeneratePassword { get; }
 
-        public PasswordDialog(string title = "Enter", string message = "Enter",
-            bool canGeneratePassword = false, string defaultValue = null,
-            bool isCancellable = true)
+        public MessageDialog(string title = "Message", string message = "Message",
+            bool isCancellable = false)
         {
             InitializeComponent();
             DataContext = this;
 
             DialogTitle = title;
             DialogMessage = message;
-            DefaultValue = defaultValue;
-            CanGeneratePassword = canGeneratePassword;
             IsCancellable = isCancellable;
         }
 
@@ -86,6 +80,7 @@ namespace Memenim.Dialogs
         {
             btnOk.Focus();
 
+            DialogResult = MessageDialogResult.Affirmative;
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
         }
 
@@ -93,40 +88,8 @@ namespace Memenim.Dialogs
         {
             btnCancel.Focus();
 
-            InputValue = DefaultValue;
+            DialogResult = MessageDialogResult.Negative;
             MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
-        }
-
-        private void txtPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            InputValue = txtPassword.Password;
-        }
-
-        private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
-        {
-            btnOk.IsEnabled = false;
-            btnCancel.IsEnabled = false;
-            txtPassword.IsEnabled = false;
-
-            try
-            {
-                string password = StringGenerator.GenerateString(20);
-
-                txtPassword.Password = password;
-                InputValue = password;
-                Clipboard.SetText(password);
-            }
-            catch (Exception ex)
-            {
-                await DialogManager.ShowErrorDialog(ex.Message)
-                    .ConfigureAwait(true);
-            }
-            finally
-            {
-                btnOk.IsEnabled = true;
-                btnCancel.IsEnabled = true;
-                txtPassword.IsEnabled = true;
-            }
         }
 
         private void Dialog_KeyUp(object sender, KeyEventArgs e)

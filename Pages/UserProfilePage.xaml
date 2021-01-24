@@ -65,16 +65,17 @@
               MaxHeight="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
               Margin="20 20 20 20"
               VerticalAlignment="Top"
-              IsHitTestVisible="{Binding Path=DataContext.EditAllowed, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
               DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
               d:DataContext="{d:DesignInstance local:UserProfilePage}"
-              MouseLeftButtonUp="Avatar_MouseLeftButtonUp">
+              MouseLeftButtonUp="Avatar_MouseLeftButtonUp"
+              MouseRightButtonUp="Avatar_MouseRightButtonUp">
             <Grid.OpacityMask>
                 <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
             </Grid.OpacityMask>
 
             <Grid.ContextMenu>
-                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
+                <ContextMenu IsHitTestVisible="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), RelativeSource={RelativeSource Mode=Self}}"
+                             DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
                              d:DataContext="{d:DesignInstance Image}">
                     <MenuItem Header="Select image from URL"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"

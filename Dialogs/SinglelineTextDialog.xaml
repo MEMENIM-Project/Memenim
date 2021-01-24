@@ -34,12 +34,15 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button x:Name="btnOk"
-                    Content="Ok" Margin="10 0 0 0"
+                    Content="{DynamicResource OkTitle}"
                     Style="{DynamicResource MahApps.Styles.Button.Dialogs.Accent}"
+                    Margin="0 0 10 0"
                     Click="Ok_Click"/>
             <Button x:Name="btnCancel"
-                    Content="Cancel" Margin="10 0 0 0"
+                    Content="{DynamicResource CancelTitle}"
                     Style="{DynamicResource MahApps.Styles.Button.Dialogs}"
+                    Visibility="{Binding Path=IsCancellable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Margin="0 0 10 0"
                     Click="Cancel_Click"/>
         </StackPanel>
     </Grid>

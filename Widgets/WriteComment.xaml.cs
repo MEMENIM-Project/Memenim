@@ -141,14 +141,14 @@ namespace Memenim.Widgets
         {
             btnSend.IsEnabled = false;
 
-            var res = await PostApi.AddComment(
+            var result = await PostApi.AddComment(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
                     PostId, txtContent.Text, IsAnonymous)
                 .ConfigureAwait(true);
 
-            if (res.error)
+            if (result.error)
             {
-                await DialogManager.ShowErrorDialog(res.message)
+                await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
 
                 btnSend.IsEnabled = true;

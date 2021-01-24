@@ -16,6 +16,9 @@ namespace Memenim.Dialogs
         public static readonly DependencyProperty InputValueProperty =
             DependencyProperty.Register(nameof(InputValue), typeof(string), typeof(MultilineTextDialog),
                 new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty IsCancellableProperty =
+            DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(MultilineTextDialog),
+                new PropertyMetadata(true));
 
         public string DialogTitle
         {
@@ -50,10 +53,21 @@ namespace Memenim.Dialogs
                 SetValue(InputValueProperty, value);
             }
         }
+        public bool IsCancellable
+        {
+            get
+            {
+                return (bool)GetValue(IsCancellableProperty);
+            }
+            set
+            {
+                SetValue(IsCancellableProperty, value);
+            }
+        }
         public string DefaultValue { get; }
 
         public MultilineTextDialog(string title = "Enter", string message = "Enter",
-            string inputValue = "", string defaultValue = null)
+            string inputValue = "", string defaultValue = null, bool isCancellable = true)
         {
             InitializeComponent();
             DataContext = this;
@@ -62,6 +76,7 @@ namespace Memenim.Dialogs
             DialogMessage = message;
             InputValue = inputValue;
             DefaultValue = defaultValue;
+            IsCancellable = isCancellable;
         }
 
         private void Ok_Click(object sender, RoutedEventArgs e)

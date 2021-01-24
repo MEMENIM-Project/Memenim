@@ -2,6 +2,7 @@
 using System.Linq;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
+using Memenim.Utils;
 
 namespace Memenim.Extensions
 {
@@ -21,7 +22,7 @@ namespace Memenim.Extensions
             string name =
                 targetSchema.text;
             string localizedName =
-                MainWindow.Instance.FindResource(GetResourceKey(targetSchema)).ToString();
+                LocalizationUtils.GetLocalized(GetResourceKey(targetSchema));
 
             return !string.IsNullOrEmpty(localizedName)
                 ? localizedName
@@ -44,7 +45,7 @@ namespace Memenim.Extensions
                 string name = category.text;
 
                 string localizedName =
-                    MainWindow.Instance.FindResource(GetResourceKey(category)).ToString();
+                    LocalizationUtils.GetLocalized(GetResourceKey(category));
 
                 localizedNames[i] = !string.IsNullOrEmpty(localizedName)
                     ? localizedName

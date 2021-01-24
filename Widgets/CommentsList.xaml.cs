@@ -10,6 +10,7 @@ using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Pages;
 using Memenim.Settings;
+using Memenim.Utils;
 using WpfAnimatedGif;
 
 namespace Memenim.Widgets
@@ -161,7 +162,9 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await DialogManager.ShowErrorDialog("Cannot load comments")
+                var message = LocalizationUtils.GetLocalized("CouldNotLoadCommentsMessage");
+
+                await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
                 return;
             }
@@ -331,10 +334,11 @@ namespace Memenim.Widgets
 
             if (result.error)
             {
-                await Dispatcher.Invoke(async () =>
+                await Dispatcher.Invoke(() =>
                 {
-                    await DialogManager.ShowErrorDialog("Cannot load comments")
-                        .ConfigureAwait(true);
+                    var message = LocalizationUtils.GetLocalized("CouldNotLoadCommentsMessage");
+
+                    return DialogManager.ShowErrorDialog(message);
                 }).ConfigureAwait(true);
 
                 _autoUpdateTimer.Start();

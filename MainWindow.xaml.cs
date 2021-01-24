@@ -17,6 +17,7 @@ using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
+using Memenim.Utils;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim
@@ -130,6 +131,13 @@ namespace Memenim
                 SettingsManager.AppSettings.Language = locale.Key;
                 SettingsManager.AppSettings.Save();
             }
+
+            ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
+        }
+
+        ~MainWindow()
+        {
+            ApiRequestEngine.ConnectionStateChanged -= OnConnectionStateChanged;
         }
 
         private void LoadSpecialEvent()
@@ -158,6 +166,27 @@ namespace Memenim
             BgmVolume = SettingsManager.AppSettings.BgmVolume;
         }
 
+        public Task ShowConnectionFailedGrid(bool status)
+        {
+            connectionFailedPanel.Visibility = status
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            return ShowLoadingGrid(status);
+        }
+
+        public void LinkOpenEnable(bool isEnabled)
+        {
+            if (NavigationController.Instance.RootLayout.DisplayMode == SplitViewDisplayMode.Inline
+                || loadingGrid.Visibility == Visibility.Visible)
+            {
+                btnLinkOpen.IsEnabled = false;
+                return;
+            }
+
+            btnLinkOpen.IsEnabled = isEnabled;
+        }
+
         public bool IsOpenSettings()
         {
             return SettingsFlyout.IsOpen;
@@ -177,6 +206,7 @@ namespace Memenim
         {
             if (status)
             {
+                LinkOpenEnable(false);
                 loadingIndicator.IsActive = true;
                 loadingGrid.Opacity = 1.0;
                 loadingGrid.IsHitTestVisible = true;
@@ -213,6 +243,7 @@ namespace Memenim
                 Dispatcher.Invoke(() =>
                 {
                     loadingGrid.Visibility = Visibility.Collapsed;
+                    LinkOpenEnable(true);
                 });
             });
         }
@@ -237,13 +268,29 @@ namespace Memenim
             }
         }
 
+        private async void OnConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
+        {
+            await Dispatcher.Invoke(() =>
+            {
+                return e.NewState switch
+                {
+                    ConnectionState.Connected => ShowConnectionFailedGrid(false),
+                    ConnectionState.Disconnected => ShowConnectionFailedGrid(true),
+                    _ => Task.CompletedTask,
+                };
+            }).ConfigureAwait(true);
+        }
+
         private async void OpenLink_Click(object sender, RoutedEventArgs e)
         {
-            string enterLocalizeName = (string)Instance
-                .FindResource("EnterTitle");
+            if (!btnLinkOpen.IsEnabled)
+                return;
+
+            string title = LocalizationUtils.GetLocalized("LinkOpeningTitle");
+            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
 
             string link = await DialogManager.ShowSinglelineTextDialog(
-                    "Link opening", $"{enterLocalizeName} URI")
+                    title, $"{enterName} URL")
                 .ConfigureAwait(true);
 
             if (string.IsNullOrWhiteSpace(link))
@@ -268,25 +315,21 @@ namespace Memenim
 
         private async void btnChangePassword_Click(object sender, RoutedEventArgs e)
         {
-            string changePasswordLocalizeName = (string)Instance
-                .FindResource("ChangePassword");
-            string enterLocalizeName = (string)Instance
-                .FindResource("EnterTitle");
-            string oldPasswordLocalizeName = (string)Instance
-                .FindResource("OldPassword");
-            string newPasswordLocalizeName = (string)Instance
-                .FindResource("NewPassword");
+            string title = LocalizationUtils.GetLocalized("ChangingPasswordTitle");
+            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            string oldPasswordName = LocalizationUtils.GetLocalized("OldPassword");
+            string newPasswordName = LocalizationUtils.GetLocalized("NewPassword");
 
-            string oldPassword = await DialogManager.ShowPasswordDialog(changePasswordLocalizeName,
-                    $"{enterLocalizeName} {oldPasswordLocalizeName.ToLower()}",
+            string oldPassword = await DialogManager.ShowPasswordDialog(title,
+                    $"{enterName} {oldPasswordName.ToLower()}",
                     false)
                 .ConfigureAwait(true);
 
             if (oldPassword == null)
                 return;
 
-            string newPassword = await DialogManager.ShowPasswordDialog(changePasswordLocalizeName,
-                    $"{enterLocalizeName} {newPasswordLocalizeName.ToLower()}",
+            string newPassword = await DialogManager.ShowPasswordDialog(title,
+                    $"{enterName} {newPasswordName.ToLower()}",
                     true)
                 .ConfigureAwait(true);
 

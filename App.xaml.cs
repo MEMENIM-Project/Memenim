@@ -19,6 +19,7 @@ using Memenim.Pages;
 using Memenim.Protocols;
 using Memenim.Settings;
 using Memenim.Storage;
+using Memenim.Utils;
 using RIS;
 using RIS.Wrappers;
 using Environment = RIS.Environment;
@@ -210,7 +211,10 @@ namespace Memenim
 
             if (Memenim.MainWindow.Instance.Locales.Count == 0)
             {
-                await DialogManager.ShowErrorDialog("No localizations found.")
+                var message = LocalizationUtils.TryGetLocalized("NoLocalizationsFoundMessage")
+                              ?? "No localizations found";
+
+                await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
 
                 Current.Shutdown(0x1);

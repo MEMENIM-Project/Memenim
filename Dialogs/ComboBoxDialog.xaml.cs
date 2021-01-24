@@ -21,6 +21,9 @@ namespace Memenim.Dialogs
         public static readonly DependencyProperty SelectedValueProperty =
             DependencyProperty.Register(nameof(SelectedValue), typeof(string), typeof(ComboBoxDialog),
                 new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty IsCancellableProperty =
+            DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(ComboBoxDialog),
+                new PropertyMetadata(true));
 
         public string DialogTitle
         {
@@ -66,11 +69,22 @@ namespace Memenim.Dialogs
                 SetValue(SelectedValueProperty, value);
             }
         }
+        public bool IsCancellable
+        {
+            get
+            {
+                return (bool)GetValue(IsCancellableProperty);
+            }
+            set
+            {
+                SetValue(IsCancellableProperty, value);
+            }
+        }
         public string DefaultValue { get; }
 
         public ComboBoxDialog(string title = "Enter", string message = "Enter",
             ReadOnlyCollection<string> values = null, string selectedValue = null,
-            string defaultValue = null)
+            string defaultValue = null, bool isCancellable = true)
         {
             InitializeComponent();
             DataContext = this;
@@ -79,6 +93,7 @@ namespace Memenim.Dialogs
             DialogMessage = message;
             Values = values;
             DefaultValue = defaultValue;
+            IsCancellable = isCancellable;
 
             if (selectedValue != null)
                 lstValues.SelectedItem = selectedValue;

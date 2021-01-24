@@ -212,9 +212,12 @@ namespace Memenim.Widgets
         {
             btnEdit.IsEnabled = false;
 
+            var title = LocalizationUtils.GetLocalized("EditingPostTitle");
+            var message = LocalizationUtils.GetLocalized("EditingPostMessage");
+
             string oldValue = CurrentPostData.text;
-            string value = await DialogManager.ShowMultilineTextDialog("Edit post",
-                    "Enter post text", oldValue)
+            string value = await DialogManager.ShowMultilineTextDialog(
+                    title, message, oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)

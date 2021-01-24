@@ -1,4 +1,5 @@
 ﻿using System;
+using Memenim.Utils;
 
 namespace Memenim.Extensions
 {
@@ -18,7 +19,7 @@ namespace Memenim.Extensions
             string name =
                 Enum.GetName(targetEnum.GetType(), targetEnum);
             string localizedName =
-                MainWindow.Instance.FindResource(GetResourceKey(targetEnum)).ToString();
+                LocalizationUtils.GetLocalized(GetResourceKey(targetEnum));
 
             return !string.IsNullOrEmpty(localizedName)
                 ? localizedName
@@ -35,7 +36,7 @@ namespace Memenim.Extensions
                 ref var name = ref names[i];
 
                 string localizedName =
-                    MainWindow.Instance.FindResource(GetResourceKey(targetEnum, name)).ToString();
+                    LocalizationUtils.GetLocalized(GetResourceKey(targetEnum, name));
 
                 localizedNames[i] = !string.IsNullOrEmpty(localizedName)
                     ? localizedName

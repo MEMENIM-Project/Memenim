@@ -48,8 +48,10 @@ namespace Memenim.Utils
 
                 if (result.data == null)
                 {
+                    var message = LocalizationUtils.GetLocalized("GettingProfileErrorMessage");
+
                     await DialogManager.ShowErrorDialog(
-                            "error getting a profile. " + result.message)
+                            $"{message}: " + result.message)
                         .ConfigureAwait(true);
                     return;
                 }
@@ -105,8 +107,10 @@ namespace Memenim.Utils
 
                 if (result.data == null)
                 {
+                    var message = LocalizationUtils.GetLocalized("GettingProfileErrorMessage");
+
                     await DialogManager.ShowErrorDialog(
-                            "error getting a profile. " + result.message)
+                            $"{message}: " + result.message)
                         .ConfigureAwait(true);
                     return;
                 }
