@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
+using Memenim.Utils;
 using RIS.Text.Generating;
 
 namespace Memenim.Dialogs
@@ -80,6 +81,11 @@ namespace Memenim.Dialogs
             DefaultValue = defaultValue;
             CanGeneratePassword = canGeneratePassword;
             IsCancellable = isCancellable;
+
+            if (string.IsNullOrEmpty(LocalizationUtils.TryGetLocalized("OkTitle")))
+                btnOk.Content = "Ok";
+            if (string.IsNullOrEmpty(LocalizationUtils.TryGetLocalized("CancelTitle")))
+                btnCancel.Content = "Cancel";
         }
 
         private void Ok_Click(object sender, RoutedEventArgs e)
