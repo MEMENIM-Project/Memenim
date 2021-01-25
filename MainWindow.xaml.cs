@@ -45,6 +45,8 @@ namespace Memenim
 
         private HwndSource _hwndSource;
         private WindowState _previousState;
+        private volatile bool _loadingGridStatus;
+        private Task _loadingGridTask;
 
         private bool _specialEventEnabled;
         public bool SpecialEventEnabled
@@ -132,6 +134,9 @@ namespace Memenim
                 SettingsManager.AppSettings.Save();
             }
 
+            _loadingGridStatus = false;
+            _loadingGridTask = Task.CompletedTask;
+
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
         }
 
@@ -202,8 +207,16 @@ namespace Memenim
             return ShowLoadingGrid(status);
         }
 
-        public Task ShowLoadingGrid(bool status)
+        public async Task ShowLoadingGrid(bool status)
         {
+            await _loadingGridTask
+                .ConfigureAwait(true);
+
+            if (_loadingGridStatus == status)
+                return;
+
+            _loadingGridStatus = status;
+
             if (status)
             {
                 LinkOpenEnable(false);
@@ -212,12 +225,13 @@ namespace Memenim
                 loadingGrid.IsHitTestVisible = true;
                 loadingGrid.Visibility = Visibility.Visible;
 
-                return Task.CompletedTask;
+                _loadingGridTask = Task.CompletedTask;
+                return;
             }
 
             loadingIndicator.IsActive = false;
 
-            return Task.Run(async () =>
+            _loadingGridTask = Task.Run(async () =>
             {
                 for (double i = 1.0; i > 0.0; i -= 0.025)
                 {
@@ -274,8 +288,8 @@ namespace Memenim
             {
                 return e.NewState switch
                 {
-                    ConnectionState.Connected => ShowConnectionFailedGrid(false),
-                    ConnectionState.Disconnected => ShowConnectionFailedGrid(true),
+                    ConnectionStateType.Connected => ShowConnectionFailedGrid(false),
+                    ConnectionStateType.Disconnected => ShowConnectionFailedGrid(true),
                     _ => Task.CompletedTask,
                 };
             }).ConfigureAwait(true);
