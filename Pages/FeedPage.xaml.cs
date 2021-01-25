@@ -53,7 +53,18 @@ namespace Memenim.Pages
 
             ReloadPostTypes();
 
-            slcPostTypes.SelectedIndex = 1;
+            if (Enum.TryParse<PostType>(
+                Enum.GetName(typeof(PostType), SettingsManager.AppSettings.PostsType),
+                true, out var postType))
+            {
+                slcPostTypes.SelectedItem =
+                    new KeyValuePair<PostType, string>(postType, PostTypes[postType]);
+            }
+            else
+            {
+                slcPostTypes.SelectedItem =
+                    new KeyValuePair<PostType, string>(PostType.Popular, PostTypes[PostType.Popular]);
+            }
 
             LocalizationManager.LanguageChanged += OnLanguageChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
@@ -80,7 +91,14 @@ namespace Memenim.Pages
 
             slcPostTypes.SelectionChanged -= slcPostTypes_SelectionChanged;
 
-            var selectedIndex = slcPostTypes.SelectedIndex;
+            KeyValuePair<PostType, string> selectedItem =
+                new KeyValuePair<PostType, string>();
+
+            if (slcPostTypes.SelectedItem != null)
+            {
+                selectedItem =
+                    (KeyValuePair<PostType, string>) slcPostTypes.SelectedItem;
+            }
 
             PostTypes = new ReadOnlyDictionary<PostType, string>(postTypes);
 
@@ -88,7 +106,11 @@ namespace Memenim.Pages
                 .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
                 .UpdateTarget();
 
-            slcPostTypes.SelectedIndex = selectedIndex;
+            if (selectedItem.Value != null)
+            {
+                slcPostTypes.SelectedItem =
+                    new KeyValuePair<PostType, string>(selectedItem.Key, postTypes[selectedItem.Key]);
+            }
 
             slcPostTypes.SelectionChanged += slcPostTypes_SelectionChanged;
         }
@@ -191,6 +213,9 @@ namespace Memenim.Pages
             if (result == null)
                 return;
 
+            if (result.data == null)
+                result.data = new List<PostSchema>();
+
             await AddMorePosts(result.data)
                 .ConfigureAwait(true);
 
@@ -199,11 +224,11 @@ namespace Memenim.Pages
 
         public Task AddMorePosts(List<PostSchema> posts)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 foreach (var post in posts)
                 {
-                    Dispatcher.Invoke(() =>
+                    await Dispatcher.InvokeAsync(() =>
                     {
                         PostWidget widget = new PostWidget
                         {
@@ -214,7 +239,7 @@ namespace Memenim.Pages
                         widget.PostDelete += OnPost_Deleted;
 
                         lstPosts.Children.Add(widget);
-                    });
+                    }).Task.ConfigureAwait(false);
                 }
 
                 Dispatcher.Invoke(() =>
@@ -281,12 +306,14 @@ namespace Memenim.Pages
                     if (result?.error != false)
                         continue;
 
+                    if (result.data == null)
+                        result.data = new List<PostSchema>();
+
                     if (result.data.Count == 0)
                     {
-                        await Dispatcher.Invoke(async () =>
+                        await Dispatcher.Invoke(() =>
                         {
-                            await UpdatePosts()
-                                .ConfigureAwait(true);
+                            return UpdatePosts();
                         }).ConfigureAwait(true);
 
                         return 0;
@@ -311,10 +338,9 @@ namespace Memenim.Pages
 
                     if (countNew >= 500)
                     {
-                        await Dispatcher.Invoke(async () =>
+                        await Dispatcher.Invoke(() =>
                         {
-                            await UpdatePosts()
-                                .ConfigureAwait(true);
+                            return UpdatePosts();
                         }).ConfigureAwait(true);
 
                         return 0;
@@ -349,6 +375,9 @@ namespace Memenim.Pages
 
                     if (result?.error != false)
                         continue;
+
+                    if (result.data == null)
+                        result.data = new List<PostSchema>();
 
                     if (result.data.Count == 0)
                         break;
@@ -439,7 +468,7 @@ namespace Memenim.Pages
 
             base.OnEnter(sender, e);
 
-            ViewModel.OnPostScrollEnd = new BasicCommand(
+            ViewModel.OnPostScrollEnd = new AsyncBasicCommand(
                 _ => true, async _ =>
                 {
                     if (svPosts.HorizontalOffset == 0)
@@ -554,6 +583,11 @@ namespace Memenim.Pages
         {
             await UpdatePosts()
                 .ConfigureAwait(true);
+
+            SettingsManager.AppSettings.PostsType =
+                (int)((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+
+            SettingsManager.AppSettings.Save();
         }
 
         private async void btnNewPostsCount_Click(object sender, RoutedEventArgs e)

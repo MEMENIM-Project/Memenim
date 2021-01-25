@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Memenim.Commands
 {
-    public class BasicCommand : ICommand
+    public class AsyncBasicCommand : ICommand
     {
         public event EventHandler CanExecuteChanged
         {
@@ -18,10 +19,10 @@ namespace Memenim.Commands
         }
 
         public Func<object, bool> CanExecuteDelegate { get; set; }
-        public Action<object> ExecuteDelegate { get; set; }
+        public Func<object, Task> ExecuteDelegate { get; set; }
 
-        public BasicCommand(Func<object, bool> canExecute = null,
-            Action<object> execute = null)
+        public AsyncBasicCommand(Func<object, bool> canExecute = null,
+            Func<object, Task> execute = null)
         {
             CanExecuteDelegate = canExecute;
             ExecuteDelegate = execute;

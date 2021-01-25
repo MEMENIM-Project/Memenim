@@ -160,7 +160,7 @@ namespace Memenim.Pages
             await Task.Delay(TimeSpan.FromSeconds(1))
                 .ConfigureAwait(true);
 
-            ViewModel.SearchCommand = new BasicCommand(
+            ViewModel.SearchCommand = new AsyncBasicCommand(
                 _ => true, async query =>
                 {
                     await ExecuteSearch((string)query)

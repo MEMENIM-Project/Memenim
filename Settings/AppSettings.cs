@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using Memenim.Core.Schema;
 using RIS.Settings;
 using RIS.Settings.Ini;
 using Environment = RIS.Environment;
@@ -28,6 +29,8 @@ namespace Memenim.Settings
         public double WindowWidth { get; set; }
         [SettingCategory("Window")]
         public double WindowHeight { get; set; }
+        [SettingCategory("Feed")]
+        public int PostsType { get; set; }
         [SettingCategory("Misc")]
         public bool SpecialEventEnabled { get; set; }
         [SettingCategory("Misc")]
@@ -48,6 +51,7 @@ namespace Memenim.Settings
             WindowState = (int)System.Windows.WindowState.Normal;
             WindowWidth = MainWindow.Instance.Width;
             WindowHeight = MainWindow.Instance.Height;
+            PostsType = (int)PostType.Popular;
             SpecialEventEnabled = true;
             BgmVolume = 0.5;
             LogRetentionDaysPeriod = 7;
