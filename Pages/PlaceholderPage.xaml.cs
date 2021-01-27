@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Windows;
 using Memenim.Pages.ViewModel;
+using RIS.Randomizing;
 
 namespace Memenim.Pages
 {
     public partial class PlaceholderPage : PageContent
     {
-        private static readonly Random Random = new Random();
+        private static readonly FastSecureRandom RandomGenerator = new FastSecureRandom();
         private static readonly string[] Smiles =
         {
             "(ﾟдﾟ；)",
@@ -40,7 +41,34 @@ namespace Memenim.Pages
 
             base.OnEnter(sender, e);
 
-            txtSmile.Text = Smiles[Random.Next(0, Smiles.Length - 1)];
+            var biasZone =
+                int.MaxValue - (int.MaxValue % Smiles.Length) - 1;
+            int smileIndex =
+                (int)RandomGenerator.GetUInt32((uint)biasZone) % Smiles.Length;
+
+            if (Smiles[smileIndex] != txtSmile.Text)
+            {
+                txtSmile.Text = Smiles[smileIndex];
+                return;
+            }
+
+            if (smileIndex == 0)
+            {
+                ++smileIndex;
+            }
+            else if (smileIndex == Smiles.Length - 1)
+            {
+                --smileIndex;
+            }
+            else
+            {
+                if (Rand.Current.NextBoolean(0.5))
+                    ++smileIndex;
+                else
+                    --smileIndex;
+            }
+
+            txtSmile.Text = Smiles[smileIndex];
         }
     }
 }

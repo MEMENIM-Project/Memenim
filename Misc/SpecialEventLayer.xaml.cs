@@ -34,7 +34,7 @@ namespace Memenim.Misc
 
         private const double FadeAnimationSeconds = 3;
 
-        private static readonly Random Random = new Random();
+        private static readonly FastSecureRandom RandomGenerator = new FastSecureRandom();
 
         private readonly string[] _songs;
         private string _currentSong;
@@ -104,7 +104,10 @@ namespace Memenim.Misc
 
         private string GetRandomSong()
         {
-            int songIndex = Random.Next(0, _songs.Length - 1);
+            var biasZone =
+                int.MaxValue - (int.MaxValue % _songs.Length) - 1;
+            int songIndex =
+                (int)RandomGenerator.GetUInt32((uint)biasZone) % _songs.Length;
             string song = _songs[songIndex];
 
             if (song != _currentSong)
@@ -123,7 +126,7 @@ namespace Memenim.Misc
             }
             else
             {
-                if (Random.NextBoolean(0.5))
+                if (Rand.Current.NextBoolean(0.5))
                     ++songIndex;
                 else
                     --songIndex;
@@ -137,7 +140,11 @@ namespace Memenim.Misc
 
         private void SetRandomNextPadoruInterval()
         {
-            int seconds = 180 + Random.Next(180, 600);
+            const int biasZone =
+                int.MaxValue - (int.MaxValue % 420) - 1;
+            int randomSeconds =
+                (int)RandomGenerator.GetUInt32((uint)biasZone) % 420;
+            int seconds = 180 + randomSeconds;
 
             LogManager.Log.Info($"Next padoru in {seconds} seconds");
 
