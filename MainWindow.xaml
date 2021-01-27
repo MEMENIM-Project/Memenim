@@ -178,11 +178,15 @@
 
     <Grid x:Name="RootLayout">
         <Grid Grid.Row="0" Grid.Column="0" x:Name="loadingGrid"
+              Visibility="Collapsed" ZIndex="2147483646"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="0" x:Name="connectionFailedGrid"
               Visibility="Collapsed" ZIndex="2147483647"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
-            <StackPanel x:Name="connectionFailedPanel"
-                        Orientation="Vertical"
-                        Visibility="Collapsed"
+            <StackPanel Orientation="Vertical"
                         VerticalAlignment="Top">
                 <controls:MetroProgressBar MinHeight="2" Height="2"
                                            Style="{DynamicResource MahApps.Styles.ProgressBar}"
@@ -195,7 +199,7 @@
                            TextWrapping="Wrap"
                            Margin="10 5 10 5"/>
             </StackPanel>
-            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+            <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
                                                 SpeedRatio="2" IsActive="False" Visibility="Visible"/>
         </Grid>
     </Grid>

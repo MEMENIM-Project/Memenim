@@ -76,10 +76,18 @@
         </DockPanel>
         <Grid Grid.Row="1" Margin="0 5 0 5"
               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource ResourceKey=NotFoundAnyPostsTitle}"
+                           FontSize="20"
+                           Visibility="{Binding Path=IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </StackPanel>
             <controlsRis:ExtendedScrollViewer x:Name="svPosts" SpeedRatio="1.7"
                                               VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
                                               controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True"
                                               controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding Path=OnPostScrollEnd}"
+                                              Visibility="{Binding Path=IsEmpty, Converter={StaticResource InvertedBooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                                               ScrollChanged="SvPosts_ScrollChanged">
                     <WrapPanel Name="lstPosts" ItemWidth="400"
                                ItemHeight="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"

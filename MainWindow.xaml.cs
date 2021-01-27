@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,8 +46,33 @@ namespace Memenim
 
         private HwndSource _hwndSource;
         private WindowState _previousState;
-        private volatile bool _loadingGridStatus;
+
+        private int _loadingGridStatus;
+        public bool LoadingGridStatus
+        {
+            get
+            {
+                return _loadingGridStatus > 0;
+            }
+            private set
+            {
+                Interlocked.Exchange(ref _loadingGridStatus, value ? 1 : 0);
+            }
+        }
         private Task _loadingGridTask;
+        private int _connectionFailedGridStatus;
+        public bool ConnectionFailedGridStatus
+        {
+            get
+            {
+                return _connectionFailedGridStatus > 0;
+            }
+            private set
+            {
+                Interlocked.Exchange(ref _connectionFailedGridStatus, value ? 1 : 0);
+            }
+        }
+        private Task _connectionFailedGridTask;
 
         private bool _specialEventEnabled;
         public bool SpecialEventEnabled
@@ -134,8 +160,10 @@ namespace Memenim
                 SettingsManager.AppSettings.Save();
             }
 
-            _loadingGridStatus = false;
+            LoadingGridStatus = false;
             _loadingGridTask = Task.CompletedTask;
+            ConnectionFailedGridStatus = false;
+            _connectionFailedGridTask = Task.CompletedTask;
 
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
         }
@@ -174,7 +202,8 @@ namespace Memenim
         public void LinkOpenEnable(bool isEnabled)
         {
             if (NavigationController.Instance.RootLayout.DisplayMode == SplitViewDisplayMode.Inline
-                || loadingGrid.Visibility == Visibility.Visible)
+                || loadingGrid.Visibility == Visibility.Visible
+                || connectionFailedGrid.Visibility == Visibility.Visible)
             {
                 btnLinkOpen.IsEnabled = false;
                 return;
@@ -198,24 +227,15 @@ namespace Memenim
             SettingsFlyout.IsOpen = false;
         }
 
-        public Task ShowConnectionFailedGrid(bool status)
-        {
-            connectionFailedPanel.Visibility = status
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
-            return ShowLoadingGrid(status);
-        }
-
         public async Task ShowLoadingGrid(bool status)
         {
             await _loadingGridTask
                 .ConfigureAwait(true);
 
-            if (_loadingGridStatus == status)
-                return;
+            var oldStatus = Interlocked.Exchange(ref _loadingGridStatus, status ? 1 : 0);
 
-            _loadingGridStatus = status;
+            if (oldStatus == (status ? 1 : 0))
+                return;
 
             if (status)
             {
@@ -257,6 +277,61 @@ namespace Memenim
                 Dispatcher.Invoke(() =>
                 {
                     loadingGrid.Visibility = Visibility.Collapsed;
+                    LinkOpenEnable(true);
+                });
+            });
+        }
+
+        public async Task ShowConnectionFailedGrid(bool status)
+        {
+            await _connectionFailedGridTask
+                .ConfigureAwait(true);
+
+            var oldStatus = Interlocked.Exchange(ref _connectionFailedGridStatus, status ? 1 : 0);
+
+            if (oldStatus == (status ? 1 : 0))
+                return;
+
+            if (status)
+            {
+                LinkOpenEnable(false);
+                connectionFailedIndicator.IsActive = true;
+                connectionFailedGrid.Opacity = 1.0;
+                connectionFailedGrid.IsHitTestVisible = true;
+                connectionFailedGrid.Visibility = Visibility.Visible;
+
+                _connectionFailedGridTask = Task.CompletedTask;
+                return;
+            }
+
+            connectionFailedIndicator.IsActive = false;
+
+            _connectionFailedGridTask = Task.Run(async () =>
+            {
+                for (double i = 1.0; i > 0.0; i -= 0.025)
+                {
+                    var opacity = i;
+
+                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            connectionFailedGrid.IsHitTestVisible = false;
+                        });
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        connectionFailedGrid.Opacity = opacity;
+                    });
+
+                    await Task.Delay(4)
+                        .ConfigureAwait(false);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    connectionFailedGrid.Visibility = Visibility.Collapsed;
                     LinkOpenEnable(true);
                 });
             });

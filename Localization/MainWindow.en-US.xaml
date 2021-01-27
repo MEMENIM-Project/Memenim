@@ -29,9 +29,11 @@ Have fun.</system:String>
     <system:String x:Key="GoToChatWebPage">Open chat</system:String>
     
     <system:String x:Key="FeedTitle">Feed</system:String>
+    <system:String x:Key="WriteNewPost">Write a post</system:String>
+    <system:String x:Key="NotFoundAnyPostsTitle">We didn't found any posts for you :(</system:String>
+
     <system:String x:Key="PreviewTitle">Preview</system:String>
     <system:String x:Key="EditTitle">Edit</system:String>
-    <system:String x:Key="WriteNewPost">Write New Post</system:String>
     <system:String x:Key="SubmitPostTitle">Submit new post</system:String>
     <system:String x:Key="PostContent">Enter Post Content</system:String>
     <system:String x:Key="PostCategoryTitle">Category</system:String>

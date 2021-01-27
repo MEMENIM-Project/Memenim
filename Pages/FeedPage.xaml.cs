@@ -22,6 +22,10 @@ namespace Memenim.Pages
 {
     public partial class FeedPage : PageContent
     {
+        public static readonly DependencyProperty IsEmptyProperty =
+            DependencyProperty.Register(nameof(IsEmpty), typeof(bool), typeof(FeedPage),
+                new PropertyMetadata(true));
+
         private const int OffsetPerTime = 20;
 
         private readonly Timer _autoUpdateCountTimer;
@@ -29,6 +33,17 @@ namespace Memenim.Pages
         public readonly Storyboard LoadingMoreEnterAnimation;
         public readonly Storyboard LoadingMoreExitAnimation;
 
+        public bool IsEmpty
+        {
+            get
+            {
+                return (bool)GetValue(IsEmptyProperty);
+            }
+            private set
+            {
+                SetValue(IsEmptyProperty, value);
+            }
+        }
         public ReadOnlyDictionary<PostType, string> PostTypes { get; private set; }
 
         public FeedViewModel ViewModel
@@ -148,6 +163,8 @@ namespace Memenim.Pages
 
             ViewModel.Offset = 0;
 
+            IsEmpty = true;
+
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -163,6 +180,8 @@ namespace Memenim.Pages
             {
                 ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as PostWidget)?
                     .CurrentPostData.id ?? -1;
+
+                IsEmpty = false;
             }
 
             svPosts.IsEnabled = true;
@@ -206,7 +225,8 @@ namespace Memenim.Pages
         {
             ShowLoadingMoreGrid(true);
 
-            var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUser.Token,
+            var result = await PostApi.Get(
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     type, count, offset)
                 .ConfigureAwait(true);
 
@@ -299,7 +319,8 @@ namespace Memenim.Pages
 
                 while (!headOldIsFound)
                 {
-                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUser.Token,
+                    var result = await PostApi.Get(
+                            SettingsManager.PersistentSettings.CurrentUser.Token,
                             type, countPerTime, offset)
                         .ConfigureAwait(false);
 
@@ -369,7 +390,8 @@ namespace Memenim.Pages
 
                 while (true)
                 {
-                    var result = await PostApi.Get(SettingsManager.PersistentSettings.CurrentUser.Token,
+                    var result = await PostApi.Get(
+                            SettingsManager.PersistentSettings.CurrentUser.Token,
                             type, countPerTime, offset)
                         .ConfigureAwait(false);
 
@@ -541,9 +563,6 @@ namespace Memenim.Pages
                     break;
                 case PostType.My:
                 case PostType.Favorite:
-                    if (lstPosts.Children.Count == 0)
-                        break;
-
                     await UpdatePosts()
                         .ConfigureAwait(true);
 
@@ -638,6 +657,9 @@ namespace Memenim.Pages
             lstPosts.Children.Remove(post);
 
             --ViewModel.Offset;
+
+            if (lstPosts.Children.Count == 0)
+                IsEmpty = true;
 
             _autoUpdateCountTimer.Start();
         }

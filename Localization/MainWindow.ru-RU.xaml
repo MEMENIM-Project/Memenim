@@ -29,9 +29,11 @@
     <system:String x:Key="GoToChatWebPage">Перейти в чат</system:String>
 
     <system:String x:Key="FeedTitle">Лента</system:String>
+    <system:String x:Key="WriteNewPost">Написать пост</system:String>
+    <system:String x:Key="NotFoundAnyPostsTitle">Мы не нашли постов для вас :(</system:String>
+
     <system:String x:Key="PreviewTitle">Предпросмотр</system:String>
     <system:String x:Key="EditTitle">Редактирование</system:String>
-    <system:String x:Key="WriteNewPost">Написать пост</system:String>
     <system:String x:Key="SubmitPostTitle">Отправка нового поста</system:String>
     <system:String x:Key="PostContent">Введите содержимое</system:String>
     <system:String x:Key="PostCategoryTitle">Категория</system:String>
