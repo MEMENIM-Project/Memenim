@@ -11,6 +11,7 @@ using System.Windows;
 using Memenim.Dialogs;
 using Memenim.Settings;
 using Memenim.Utils;
+using RIS.Extensions;
 using Environment = RIS.Environment;
 
 namespace Memenim.Localization
@@ -19,38 +20,71 @@ namespace Memenim.Localization
     {
         public static event EventHandler<EventArgs> LanguageChanged;
 
-        private static void LoadLocales()
+        static LocalizationManager()
         {
-            LoadLocales(MainWindow.Instance);
-        }
-        private static void LoadLocales<T>(T element)
-            where T : FrameworkElement, ILocalizable
-        {
-            string directory = Environment.ExecAppDirectoryName;
+            var directory = Environment.ExecProcessDirectoryName;
 
             if (string.IsNullOrEmpty(directory) || directory == "Unknown")
                 return;
 
-            directory = Path.Combine(directory, "Localization");
+            directory = Path.Combine(directory, "localizations");
 
             if (!Directory.Exists(directory))
-                return;
+                Directory.CreateDirectory(directory);
+        }
 
-            var localesProperty = element.GetType().GetProperty("Locales",
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        private static IEnumerable<KeyValuePair<string, string>> EnumerateLocales(
+            string directoryBasePath, string directoryRelativePath)
+        {
+            return EnumerateLocales(MainWindow.Instance,
+                directoryBasePath, directoryRelativePath);
+        }
+        private static IEnumerable<KeyValuePair<string, string>> EnumerateLocales<T>(
+            T element, string directoryBasePath, string directoryRelativePath)
+            where T : FrameworkElement, ILocalizable
+        {
+            var result = Enumerable.Empty<KeyValuePair<string, string>>();
 
-            if (localesProperty == null)
-                return;
+            var directory = directoryBasePath;
 
-            Dictionary<string, string> locales = new Dictionary<string, string>();
-
-            foreach (var localeFile in Directory.EnumerateFiles(
-                directory, $"{GetElementName(element)}.*.xaml"))
+            if (string.IsNullOrEmpty(directory)
+                || directory == "Unknown"
+                || !Directory.Exists(directory))
             {
-                ResourceDictionary languageDictionary = new ResourceDictionary
+                return result;
+            }
+
+            directory = Path.Combine(directory, directoryRelativePath);
+
+            if (!Directory.Exists(directory))
+                return result;
+
+            var locales = new Dictionary<string, string>();
+            var elementName = GetElementName(element);
+
+            foreach (var localeFile in DirectoryExtensions.EnumerateAllFiles(directory))
+            {
+                var localeFileName = Path.GetFileName(localeFile);
+
+                if (!localeFileName.StartsWith($"{elementName}.")
+                    || !localeFileName.EndsWith(".xaml"))
                 {
-                    Source = new Uri(localeFile)
-                };
+                    continue;
+                }
+
+                ResourceDictionary languageDictionary;
+
+                try
+                {
+                    languageDictionary = new ResourceDictionary
+                    {
+                        Source = new Uri(localeFile)
+                    };
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
 
                 if (!languageDictionary.Contains("ResourceDictionaryName")
                     || languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
@@ -68,12 +102,42 @@ namespace Memenim.Localization
                 string cultureName = languageDictionary["ResourceCultureName"].ToString();
 
                 if (string.IsNullOrWhiteSpace(localeName)
-                    || string.IsNullOrWhiteSpace(localeName))
+                    || string.IsNullOrWhiteSpace(cultureName))
                 {
                     continue;
                 }
 
-                locales.Add(cultureName!, localeName);
+                locales[cultureName] = localeName;
+            }
+
+            return locales;
+        }
+
+        private static void LoadLocales()
+        {
+            LoadLocales(MainWindow.Instance);
+        }
+        private static void LoadLocales<T>(T element)
+            where T : FrameworkElement, ILocalizable
+        {
+            var localesProperty = element.GetType().GetProperty("Locales",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (localesProperty == null)
+                return;
+
+            Dictionary<string, string> locales = new Dictionary<string, string>();
+
+            foreach (var locale in EnumerateLocales(
+                Environment.ExecAppDirectoryName, "Localization"))
+            {
+                locales[locale.Key] = locale.Value;
+            }
+
+            foreach (var locale in EnumerateLocales(
+                Environment.ExecProcessDirectoryName, "localizations"))
+            {
+                locales[locale.Key] = locale.Value;
             }
 
             localesProperty.SetValue(element,
@@ -117,12 +181,21 @@ namespace Memenim.Localization
         private static string GetLocXamlFilePath<T>(T element, string сultureName)
             where T : FrameworkElement, ILocalizable
         {
-            string locXamlFile = $"{GetElementName(element)}.{сultureName}.xaml";
-            string directory = Environment.ExecAppDirectoryName;
+            string file = $"{GetElementName(element)}.{сultureName}.xaml";
+            string directory = Environment.ExecProcessDirectoryName;
+            string path = string.IsNullOrEmpty(directory) || directory == "Unknown"
+                ? Path.Combine("localizations", file)
+                : Path.Combine(directory, "localizations", file);
 
-            return string.IsNullOrEmpty(directory) || directory == "Unknown"
-                ? Path.Combine("Localization", locXamlFile)
-                : Path.Combine(directory, "Localization", locXamlFile);
+            if (File.Exists(path))
+                return path;
+
+            directory = Environment.ExecAppDirectoryName;
+            path = string.IsNullOrEmpty(directory) || directory == "Unknown"
+                ? Path.Combine("Localization", file)
+                : Path.Combine(directory, "Localization", file);
+
+            return path;
         }
 
         private static Task SetDefaultLanguageResourceDictionary(string resourceFile)

@@ -127,6 +127,11 @@ namespace Memenim
 
             AppVersion = $"v{SettingsManager.AppSettings.AppVersion}";
 
+            LoadingGridStatus = false;
+            _loadingGridTask = Task.CompletedTask;
+            ConnectionFailedGridStatus = false;
+            _connectionFailedGridTask = Task.CompletedTask;
+
             LoadSpecialEvent();
 
             LocalizationManager.ReloadLocales();
@@ -159,11 +164,6 @@ namespace Memenim
                 SettingsManager.AppSettings.Language = locale.Key;
                 SettingsManager.AppSettings.Save();
             }
-
-            LoadingGridStatus = false;
-            _loadingGridTask = Task.CompletedTask;
-            ConnectionFailedGridStatus = false;
-            _connectionFailedGridTask = Task.CompletedTask;
 
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
         }

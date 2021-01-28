@@ -22,6 +22,7 @@ namespace Memenim.Cryptography
         {
             return Service.GetDirectoryHash(Environment.ExecAppDirectoryName,false, new[]
             {
+                "localizations",
                 "storage",
                 "logs",
                 "hash",
