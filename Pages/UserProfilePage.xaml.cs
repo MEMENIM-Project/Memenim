@@ -282,7 +282,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLanguageChanged(object sender, EventArgs e)
+        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
         {
             ProfileStatPurpose
                 .GetBindingExpression(UserProfileStat.StatValueProperty)?

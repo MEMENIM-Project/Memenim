@@ -9,8 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Dialogs;
+using Memenim.Localization.Entities;
 using Memenim.Settings;
 using Memenim.Utils;
+using RIS;
 using RIS.Extensions;
 using Environment = RIS.Environment;
 
@@ -18,7 +20,20 @@ namespace Memenim.Localization
 {
     public static class LocalizationManager
     {
-        public static event EventHandler<EventArgs> LanguageChanged;
+        public static event EventHandler<LanguageChangedEventArgs> LanguageChanged;
+
+        private static LocalizationXamlFile _currentLanguage;
+        public static LocalizationXamlFile CurrentLanguage
+        {
+            get
+            {
+                return _currentLanguage;
+            }
+            private set
+            {
+                Interlocked.Exchange(ref _currentLanguage, value);
+            }
+        }
 
         static LocalizationManager()
         {
@@ -33,115 +48,28 @@ namespace Memenim.Localization
                 Directory.CreateDirectory(directory);
         }
 
-        private static IEnumerable<KeyValuePair<string, string>> EnumerateLocales(
-            string directoryBasePath, string directoryRelativePath)
+        public static void OnLanguageChanged(LocalizationXamlFile newLanguage)
         {
-            return EnumerateLocales(MainWindow.Instance,
-                directoryBasePath, directoryRelativePath);
+            OnLanguageChanged(null, newLanguage);
         }
-        private static IEnumerable<KeyValuePair<string, string>> EnumerateLocales<T>(
-            T element, string directoryBasePath, string directoryRelativePath)
-            where T : FrameworkElement, ILocalizable
+        public static void OnLanguageChanged(object sender, LocalizationXamlFile newLanguage)
         {
-            var result = Enumerable.Empty<KeyValuePair<string, string>>();
+            var oldLanguage = Interlocked.Exchange(ref _currentLanguage, newLanguage);
 
-            var directory = directoryBasePath;
-
-            if (string.IsNullOrEmpty(directory)
-                || directory == "Unknown"
-                || !Directory.Exists(directory))
-            {
-                return result;
-            }
-
-            directory = Path.Combine(directory, directoryRelativePath);
-
-            if (!Directory.Exists(directory))
-                return result;
-
-            var locales = new Dictionary<string, string>();
-            var elementName = GetElementName(element);
-
-            foreach (var localeFile in DirectoryExtensions.EnumerateAllFiles(directory))
-            {
-                var localeFileName = Path.GetFileName(localeFile);
-
-                if (!localeFileName.StartsWith($"{elementName}.")
-                    || !localeFileName.EndsWith(".xaml"))
-                {
-                    continue;
-                }
-
-                ResourceDictionary languageDictionary;
-
-                try
-                {
-                    languageDictionary = new ResourceDictionary
-                    {
-                        Source = new Uri(localeFile)
-                    };
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-
-                if (!languageDictionary.Contains("ResourceDictionaryName")
-                    || languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
-                {
-                    continue;
-                }
-
-                if (!languageDictionary.Contains("ResourceLocaleName")
-                    || !languageDictionary.Contains("ResourceCultureName"))
-                {
-                    continue;
-                }
-
-                string localeName = languageDictionary["ResourceLocaleName"].ToString();
-                string cultureName = languageDictionary["ResourceCultureName"].ToString();
-
-                if (string.IsNullOrWhiteSpace(localeName)
-                    || string.IsNullOrWhiteSpace(cultureName))
-                {
-                    continue;
-                }
-
-                locales[cultureName] = localeName;
-            }
-
-            return locales;
-        }
-
-        private static void LoadLocales()
-        {
-            LoadLocales(MainWindow.Instance);
-        }
-        private static void LoadLocales<T>(T element)
-            where T : FrameworkElement, ILocalizable
-        {
-            var localesProperty = element.GetType().GetProperty("Locales",
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-            if (localesProperty == null)
+            if (oldLanguage == newLanguage)
                 return;
 
-            Dictionary<string, string> locales = new Dictionary<string, string>();
+            LanguageChanged?.Invoke(sender,
+                new LanguageChangedEventArgs(oldLanguage, newLanguage));
+        }
 
-            foreach (var locale in EnumerateLocales(
-                Environment.ExecAppDirectoryName, "Localization"))
-            {
-                locales[locale.Key] = locale.Value;
-            }
-
-            foreach (var locale in EnumerateLocales(
-                Environment.ExecProcessDirectoryName, "localizations"))
-            {
-                locales[locale.Key] = locale.Value;
-            }
-
-            localesProperty.SetValue(element,
-                new ReadOnlyDictionary<string, string>(locales));
+        private static void OnLanguageChanged(LanguageChangedEventArgs e)
+        {
+            OnLanguageChanged(null, e);
+        }
+        private static void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
+        {
+            LanguageChanged?.Invoke(sender, e);
         }
 
         private static string GetAppName()
@@ -174,112 +102,193 @@ namespace Memenim.Localization
             return elName;
         }
 
-        private static string GetLocXamlFilePath(string сultureName)
+        private static Dictionary<string, LocalizationXamlFile> GetLocales(
+            string directoryBasePath, string directoryRelativePath = null)
         {
-            return GetLocXamlFilePath(MainWindow.Instance, сultureName);
+            return GetLocales(MainWindow.Instance,
+                directoryBasePath, directoryRelativePath);
         }
-        private static string GetLocXamlFilePath<T>(T element, string сultureName)
+        private static Dictionary<string, LocalizationXamlFile> GetLocales<T>(
+            T element, string directoryBasePath, string directoryRelativePath = null)
             where T : FrameworkElement, ILocalizable
         {
-            string file = $"{GetElementName(element)}.{сultureName}.xaml";
-            string directory = Environment.ExecProcessDirectoryName;
-            string path = string.IsNullOrEmpty(directory) || directory == "Unknown"
-                ? Path.Combine("localizations", file)
-                : Path.Combine(directory, "localizations", file);
+            var locales = new Dictionary<string, LocalizationXamlFile>();
+            var directory = directoryBasePath;
 
-            if (File.Exists(path))
-                return path;
+            if (string.IsNullOrEmpty(directory)
+                || directory == "Unknown"
+                || !Directory.Exists(directory))
+            {
+                return locales;
+            }
 
-            directory = Environment.ExecAppDirectoryName;
-            path = string.IsNullOrEmpty(directory) || directory == "Unknown"
-                ? Path.Combine("Localization", file)
-                : Path.Combine(directory, "Localization", file);
+            if (!string.IsNullOrEmpty(directoryRelativePath))
+            {
+                directory = Path.Combine(directory, directoryRelativePath);
 
-            return path;
+                if (!Directory.Exists(directory))
+                    return locales;
+            }
+
+            var elementName = GetElementName(element);
+
+            foreach (var filePath in DirectoryExtensions.EnumerateAllFiles(directory))
+            {
+                try
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(filePath);
+                    var fileExtension = Path.GetExtension(filePath);
+
+                    if (!fileName.StartsWith($"{elementName}.")
+                        || fileExtension != ".xaml")
+                    {
+                        continue;
+                    }
+
+                    var file = new LocalizationXamlFile(
+                        filePath, elementName);
+
+                    locales[file.CultureName] = file;
+                }
+                catch (Exception ex)
+                {
+                    Events.OnError(new RErrorEventArgs(ex,
+                        ex.Message, ex.StackTrace));
+                }
+            }
+
+            return locales;
         }
 
-        private static Task SetDefaultLanguageResourceDictionary(string resourceFile)
+        private static void LoadLocales()
         {
-            return SetDefaultLanguageResourceDictionary(MainWindow.Instance, resourceFile);
+            LoadLocales(MainWindow.Instance);
         }
-        private static async Task SetDefaultLanguageResourceDictionary<T>(T element, string resourceFilePath)
+        private static void LoadLocales<T>(T element)
             where T : FrameworkElement, ILocalizable
         {
-            if (!File.Exists(resourceFilePath))
+            var localesProperty = element.GetType().GetProperty("Locales",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (localesProperty == null)
+                return;
+
+            var locales = new Dictionary<string, LocalizationXamlFile>();
+
+            foreach (var locale in GetLocales(
+                Environment.ExecAppDirectoryName, "Localization"))
+            {
+                locales[locale.Key] = locale.Value;
+            }
+
+            foreach (var locale in GetLocales(
+                Environment.ExecProcessDirectoryName, "localizations"))
+            {
+                locales[locale.Key] = locale.Value;
+            }
+
+            localesProperty.SetValue(element,
+                new ReadOnlyDictionary<string, LocalizationXamlFile>(locales));
+        }
+
+        private static Task<LocalizationXamlFile> GetLocalizationFile(string cultureName)
+        {
+            return GetLocalizationFile(MainWindow.Instance, cultureName);
+        }
+        private static async Task<LocalizationXamlFile> GetLocalizationFile<T>(T element, string cultureName)
+            where T : FrameworkElement, ILocalizable
+        {
+            if (element.Locales.TryGetValue(cultureName, out var localizationFile))
+            {
+                if (File.Exists(localizationFile.Path))
+                    return localizationFile;
+
+                var fileTitle = LocalizationUtils.TryGetLocalized("FileTitle")
+                                ?? "File";
+                var notFoundTitle = LocalizationUtils.TryGetLocalized("NotFoundTitle1")
+                                    ?? "Not found";
+
+                await DialogManager.ShowErrorDialog(
+                        $"{fileTitle} '{localizationFile.Path}' {notFoundTitle.ToLower()}")
+                    .ConfigureAwait(true);
+                return null;
+            }
+
+            var message = LocalizationUtils.TryGetLocalized("CouldNotGetLocalizationMessage")
+                          ?? "Couldn't get localization";
+
+            await DialogManager.ShowErrorDialog(message)
+                .ConfigureAwait(true);
+            return null;
+        }
+
+        private static Task<bool> SetDefaultLocalization(LocalizationXamlFile localizationFile)
+        {
+            return SetDefaultLocalization(MainWindow.Instance, localizationFile);
+        }
+        private static async Task<bool> SetDefaultLocalization<T>(T element, LocalizationXamlFile localizationFile)
+            where T : FrameworkElement, ILocalizable
+        {
+            if (!File.Exists(localizationFile.Path))
             {
                 var fileTitle = LocalizationUtils.TryGetLocalized("FileTitle")
                                 ?? "File";
                 var notFoundTitle = LocalizationUtils.TryGetLocalized("NotFoundTitle1")
                                     ?? "Not found";
 
-                await DialogManager.ShowErrorDialog($"{fileTitle} '{resourceFilePath}' {notFoundTitle.ToLower()}")
+                await DialogManager.ShowErrorDialog(
+                        $"{fileTitle} '{localizationFile.Path}' {notFoundTitle.ToLower()}")
                     .ConfigureAwait(true);
-                return;
-            }
-
-            ResourceDictionary languageDictionary = new ResourceDictionary
-            {
-                Source = new Uri(resourceFilePath)
-            };
-
-            if (!languageDictionary.Contains("ResourceDictionaryName")
-                || languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
-            {
-                return;
+                return false;
             }
 
             int dictionaryIndex = -1;
 
             for (var i = 0; i < element.Resources.MergedDictionaries.Count; ++i)
             {
-                ResourceDictionary dictionary = element.Resources.MergedDictionaries[i];
+                ResourceDictionary dictionary =
+                    element.Resources.MergedDictionaries[i];
 
                 if (!dictionary.Contains("ResourceDictionaryName")
-                    || dictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
+                    || dictionary["ResourceDictionaryName"].ToString() != "localization-xaml")
                 {
                     continue;
                 }
 
                 dictionaryIndex = i;
+                break;
             }
 
             if (dictionaryIndex == -1)
             {
-                element.Resources.MergedDictionaries.Add(languageDictionary);
-                return;
+                element.Resources.MergedDictionaries.Add(
+                    localizationFile.Dictionary);
+                return true;
             }
 
-            element.Resources.MergedDictionaries[dictionaryIndex] = languageDictionary;
+            element.Resources.MergedDictionaries[dictionaryIndex] =
+                localizationFile.Dictionary;
+            return true;
         }
 
-        private static Task SetLanguageResourceDictionary(string resourceFile)
+        private static Task<bool> SetLocalization(LocalizationXamlFile localizationFile)
         {
-            return SetLanguageResourceDictionary(MainWindow.Instance, resourceFile);
+            return SetLocalization(MainWindow.Instance, localizationFile);
         }
-        private static async Task SetLanguageResourceDictionary<T>(T element, string resourceFilePath)
+        private static async Task<bool> SetLocalization<T>(T element, LocalizationXamlFile localizationFile)
             where T: FrameworkElement, ILocalizable
         {
-            if (!File.Exists(resourceFilePath))
+            if (!File.Exists(localizationFile.Path))
             {
                 var fileTitle = LocalizationUtils.TryGetLocalized("FileTitle")
-                                      ?? "File";
+                                ?? "File";
                 var notFoundTitle = LocalizationUtils.TryGetLocalized("NotFoundTitle1")
-                                       ?? "Not found";
+                                    ?? "Not found";
 
-                await DialogManager.ShowErrorDialog($"{fileTitle} '{resourceFilePath}' {notFoundTitle.ToLower()}")
+                await DialogManager.ShowErrorDialog(
+                        $"{fileTitle} '{localizationFile.Path}' {notFoundTitle.ToLower()}")
                     .ConfigureAwait(true);
-                return;
-            }
-
-            ResourceDictionary languageDictionary = new ResourceDictionary
-            {
-                Source = new Uri(resourceFilePath)
-            };
-
-            if (!languageDictionary.Contains("ResourceDictionaryName")
-                || languageDictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
-            {
-                return;
+                return false;
             }
 
             int dictionaryIndex = -1;
@@ -287,10 +296,11 @@ namespace Memenim.Localization
 
             for (var i = 0; i < element.Resources.MergedDictionaries.Count; ++i)
             {
-                ResourceDictionary dictionary = element.Resources.MergedDictionaries[i];
+                ResourceDictionary dictionary =
+                    element.Resources.MergedDictionaries[i];
 
                 if (!dictionary.Contains("ResourceDictionaryName")
-                    || dictionary["ResourceDictionaryName"].ToString()?.StartsWith("loc-") != true)
+                    || dictionary["ResourceDictionaryName"].ToString() != "localization-xaml")
                 {
                     continue;
                 }
@@ -307,11 +317,14 @@ namespace Memenim.Localization
 
             if (dictionaryIndex == -1)
             {
-                element.Resources.MergedDictionaries.Add(languageDictionary);
-                return;
+                element.Resources.MergedDictionaries.Add(
+                    localizationFile.Dictionary);
+                return true;
             }
 
-            element.Resources.MergedDictionaries[dictionaryIndex] = languageDictionary;
+            element.Resources.MergedDictionaries[dictionaryIndex] =
+                localizationFile.Dictionary;
+            return true;
         }
 
         public static void ReloadLocales()
@@ -329,11 +342,11 @@ namespace Memenim.Localization
             return CultureInfo.CurrentCulture.Name;
         }
 
-        public static Task SetDefaultLanguage()
+        public static Task<bool> SetDefaultLanguage()
         {
             return SetDefaultLanguage(MainWindow.Instance);
         }
-        public static async Task SetDefaultLanguage<T>(T element)
+        public static async Task<bool> SetDefaultLanguage<T>(T element)
             where T : FrameworkElement, ILocalizable
         {
             if (element.Locales.Count == 0)
@@ -343,7 +356,7 @@ namespace Memenim.Localization
 
                 await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
-                return;
+                return false;
             }
 
             string locale;
@@ -362,66 +375,93 @@ namespace Memenim.Localization
 
                 await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
-                return;
+                return false;
             }
 
             await SwitchDefaultLanguage(element, locale)
                 .ConfigureAwait(true);
+            return true;
         }
 
-        public static Task SwitchDefaultLanguage(string сultureName)
+        public static Task<bool> SwitchDefaultLanguage(string cultureName)
         {
-            return SwitchDefaultLanguage(MainWindow.Instance, сultureName);
+            return SwitchDefaultLanguage(MainWindow.Instance, cultureName);
         }
-        public static async Task SwitchDefaultLanguage<T>(T element, string сultureName)
+        public static async Task<bool> SwitchDefaultLanguage<T>(T element, string cultureName)
             where T : FrameworkElement, ILocalizable
         {
-            string locXamlFilePath = GetLocXamlFilePath(element, сultureName);
-
-            if (!File.Exists(locXamlFilePath))
-                return;
-
-            var primaryLanguage = SettingsManager.AppSettings.Language;
-
-            await SetDefaultLanguageResourceDictionary(element, locXamlFilePath)
+            var localizationFile = await GetLocalizationFile(
+                    element, cultureName)
                 .ConfigureAwait(true);
 
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(сultureName);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(сultureName);
+            if (localizationFile == null)
+                return false;
 
-            SettingsManager.AppSettings.Language = сultureName;
+            var currentLanguage = SettingsManager.AppSettings.Language;
+            var currentLocalizationFile = await GetLocalizationFile(
+                    element, currentLanguage)
+                .ConfigureAwait(true);
 
+            if (currentLocalizationFile == null)
+                return false;
+
+            var setDefaultLocalization = await SetDefaultLocalization(
+                    element, localizationFile)
+                .ConfigureAwait(true);
+
+            if (!setDefaultLocalization)
+                return false;
+
+            OnLanguageChanged(null, localizationFile);
+
+            var setCurrentLocalization = await SetLocalization(
+                    element, currentLocalizationFile)
+                .ConfigureAwait(true);
+
+            if (!setCurrentLocalization)
+                return false;
+
+            Thread.CurrentThread.CurrentCulture = currentLocalizationFile.Culture;
+            Thread.CurrentThread.CurrentUICulture = currentLocalizationFile.Culture;
+
+            SettingsManager.AppSettings.Language = currentLocalizationFile.CultureName;
             SettingsManager.AppSettings.Save();
 
-            LanguageChanged?.Invoke(null, EventArgs.Empty);
+            OnLanguageChanged(null, currentLocalizationFile);
 
-            await SwitchLanguage(element, primaryLanguage)
-                .ConfigureAwait(true);
+            return true;
         }
 
-        public static Task SwitchLanguage(string сultureName)
+        public static Task<bool> SwitchLanguage(string cultureName)
         {
-            return SwitchLanguage(MainWindow.Instance, сultureName);
+            return SwitchLanguage(MainWindow.Instance, cultureName);
         }
-        public static async Task SwitchLanguage<T>(T element, string сultureName)
+        public static async Task<bool> SwitchLanguage<T>(T element, string cultureName)
             where T : FrameworkElement, ILocalizable
         {
-            string locXamlFilePath = GetLocXamlFilePath(element, сultureName);
-
-            if (!File.Exists(locXamlFilePath))
-                return;
-
-            await SetLanguageResourceDictionary(element, locXamlFilePath)
+            var localizationFile = await GetLocalizationFile(
+                    element, cultureName)
                 .ConfigureAwait(true);
 
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(сultureName);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(сultureName);
+            if (localizationFile == null)
+                return false;
 
-            SettingsManager.AppSettings.Language = сultureName;
+            var setCurrentLocalization = await SetLocalization(
+                    element, localizationFile)
+                .ConfigureAwait(true);
 
+            if (!setCurrentLocalization)
+                return false;
+
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
+
+            SettingsManager.AppSettings.Language = cultureName;
             SettingsManager.AppSettings.Save();
 
-            LanguageChanged?.Invoke(null, EventArgs.Empty);
+            OnLanguageChanged(null, localizationFile);
+
+            return true;
         }
     }
 }

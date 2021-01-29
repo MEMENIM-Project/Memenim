@@ -3,18 +3,19 @@
                     xmlns:local="clr-namespace:Memenim.Localization"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
-    <system:String x:Key="ResourceDictionaryName">loc-ja-JP</system:String>
-    <system:String x:Key="ResourceLocaleName">日本語</system:String>
+    <system:String x:Key="ResourceDictionaryName">localization-xaml</system:String>
     <system:String x:Key="ResourceCultureName">ja-JP</system:String>
+    <system:String x:Key="ResourceLocaleName">日本語</system:String>
 
     <system:String x:Key="Login">ユーザー名前</system:String>
     <system:String x:Key="Password">パスワード</system:String>
     <system:String x:Key="RememberMe">ユーザーを覚えている</system:String>
 
-    <system:String x:Key="ErrorTitle">エーラー</system:String>
-
     <system:String x:Key="FeedTitle">フィードー</system:String>
 
+    <system:String x:Key="LanguageSettingsTitle">言語</system:String>
     <system:String x:Key="SignOut">サインアウト</system:String>
-    <system:String x:Key="LanguageTitle">言語</system:String>
+
+    <system:String x:Key="ErrorTitle">エーラー</system:String>
+
 </ResourceDictionary>

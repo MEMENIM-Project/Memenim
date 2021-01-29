@@ -3,9 +3,9 @@
                     xmlns:local="clr-namespace:Memenim.Localization"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
-    <system:String x:Key="ResourceDictionaryName">loc-en-US</system:String>
-    <system:String x:Key="ResourceLocaleName">English</system:String>
+    <system:String x:Key="ResourceDictionaryName">localization-xaml</system:String>
     <system:String x:Key="ResourceCultureName">en-US</system:String>
+    <system:String x:Key="ResourceLocaleName">English</system:String>
 
     <system:String x:Key="Login">Login</system:String>
     <system:String x:Key="Password">Password</system:String>

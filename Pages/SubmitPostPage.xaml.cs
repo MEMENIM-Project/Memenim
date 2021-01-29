@@ -142,7 +142,7 @@ namespace Memenim.Pages
             base.OnExit(sender, e);
         }
 
-        private void OnLanguageChanged(object sender, EventArgs e)
+        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
         {
             ReloadPostCategories();
         }

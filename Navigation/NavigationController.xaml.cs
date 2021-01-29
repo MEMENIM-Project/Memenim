@@ -137,7 +137,7 @@ namespace Memenim.Navigation
                 {
                     var exception =
                         new ArgumentException($"The {nameof(dataContext)} page type must match the {nameof(page)} type", nameof(dataContext));
-                    Events.OnError(this, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                    Events.OnError(this, new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
                     throw exception;
                 }
 
@@ -182,7 +182,7 @@ namespace Memenim.Navigation
                 {
                     var exception =
                         new ArgumentException($"The {nameof(dataContext)} page type must match the {nameof(page)} type", nameof(dataContext));
-                    Events.OnError(this, new RErrorEventArgs(exception.Message, exception.StackTrace));
+                    Events.OnError(this, new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
                     throw exception;
                 }
 
