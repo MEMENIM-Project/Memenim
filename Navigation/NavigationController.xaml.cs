@@ -89,6 +89,8 @@ namespace Memenim.Navigation
                 MainWindow.Instance.LinkOpenEnable(false);
                 RootLayout.DisplayMode = SplitViewDisplayMode.Inline;
 
+                MainWindow.Instance.HideSettings();
+
                 await NavBar.SwitchLayout(type)
                     .ConfigureAwait(true);
             }

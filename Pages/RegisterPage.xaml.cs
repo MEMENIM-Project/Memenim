@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,12 +10,14 @@ using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
 using RIS.Text.Generating;
+using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
 {
     public partial class RegisterPage : PageContent
     {
         private bool _changeNicknameExplicit;
+        private bool _loadingGridShowing;
 
         public RegisterViewModel ViewModel
         {
@@ -37,8 +40,59 @@ namespace Memenim.Pages
             return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
         }
 
+        public Task ShowLoadingGrid(bool status)
+        {
+            if (status)
+            {
+                _loadingGridShowing = true;
+                loadingIndicator.IsActive = true;
+                loadingGrid.Opacity = 1.0;
+                loadingGrid.IsHitTestVisible = true;
+                loadingGrid.Visibility = Visibility.Visible;
+
+                return Task.CompletedTask;
+            }
+
+            _loadingGridShowing = false;
+            loadingIndicator.IsActive = false;
+
+            return Task.Run(async () =>
+            {
+                for (double i = 1.0; i > 0.0; i -= 0.025)
+                {
+                    var opacity = i;
+
+                    if (_loadingGridShowing)
+                        break;
+
+                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            loadingGrid.IsHitTestVisible = false;
+                        });
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        loadingGrid.Opacity = opacity;
+                    });
+
+                    await Task.Delay(4)
+                        .ConfigureAwait(false);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    loadingGrid.Visibility = Visibility.Collapsed;
+                });
+            });
+        }
+
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
             txtLogin.Clear();
             txtPassword.Clear();
             txtNickname.Clear();
@@ -49,8 +103,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
         }
 
         private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
@@ -59,6 +111,8 @@ namespace Memenim.Pages
             btnGoToLogin.IsEnabled = false;
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
+            txtNickname.IsEnabled = false;
+            btnGeneratePassword.IsEnabled = false;
 
             try
             {
@@ -78,6 +132,8 @@ namespace Memenim.Pages
                 btnGoToLogin.IsEnabled = true;
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
+                txtNickname.IsEnabled = true;
+                btnGeneratePassword.IsEnabled = true;
             }
         }
 
@@ -88,6 +144,7 @@ namespace Memenim.Pages
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
             txtNickname.IsEnabled = false;
+            btnGeneratePassword.IsEnabled = false;
 
             try
             {
@@ -96,7 +153,8 @@ namespace Memenim.Pages
                 if (string.IsNullOrWhiteSpace(nickname))
                     nickname = null;
 
-                var result = await UserApi.Register(txtLogin.Text, txtPassword.Password, nickname)
+                var result = await UserApi.Register(
+                        txtLogin.Text, txtPassword.Password, nickname)
                     .ConfigureAwait(true);
 
                 if (result.error)
@@ -109,13 +167,14 @@ namespace Memenim.Pages
                     return;
                 }
 
-                if (!SettingsManager.PersistentSettings.SetUser(
+                var setUserSuccess = SettingsManager.PersistentSettings.SetUser(
                     txtLogin.Text,
                     result.data.token,
-                    result.data.id))
-                {
+                    result.data.id,
+                    null);
+
+                if (!setUserSuccess)
                     return;
-                }
 
                 if (!SettingsManager.PersistentSettings.SetCurrentUser(
                     txtLogin.Text))
@@ -143,6 +202,7 @@ namespace Memenim.Pages
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
                 txtNickname.IsEnabled = true;
+                btnGeneratePassword.IsEnabled = true;
             }
         }
 

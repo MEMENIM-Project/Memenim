@@ -7,6 +7,7 @@
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    mc:Ignorable="d"
@@ -216,6 +217,12 @@
                         </ListBox.ItemContainerStyle>
                     </ListBox>
                 </Grid>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Grid.ColumnSpan="3"
+                  x:Name="loadingGrid" Visibility="Collapsed" ZIndex="2147483647"
+                  Background="#FF353639" Margin="-25 0 -25 0">
+                <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                    SpeedRatio="2" IsActive="False" Visibility="Visible"/>
             </Grid>
         </Grid>
     </Border>

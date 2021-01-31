@@ -478,6 +478,8 @@ namespace Memenim.Pages
 
         protected override void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -487,8 +489,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnEnter(sender, e);
 
             ViewModel.OnPostScrollEnd = new AsyncBasicCommand(
                 _ => true, async _ =>
@@ -505,6 +505,10 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
+            _autoUpdateCountTimer.Stop();
+
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -514,8 +518,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            _autoUpdateCountTimer.Stop();
         }
 
         private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
@@ -555,6 +557,12 @@ namespace Memenim.Pages
                             continue;
 
                         tasks.Add(postWidget.UpdatePost());
+
+                        if (tasks.Count % 5 == 0)
+                        {
+                            await Task.Delay(TimeSpan.FromMilliseconds(500))
+                                .ConfigureAwait(true);
+                        }
                     }
 
                     await Task.WhenAll(tasks)
@@ -584,6 +592,12 @@ namespace Memenim.Pages
 
         private async void AutoUpdateCountTimerCallback(object sender, ElapsedEventArgs e)
         {
+            if (!_autoUpdateCountTimer.Enabled)
+                return;
+
+            if (PageState != PageStateType.Loaded)
+                return;
+
             _autoUpdateCountTimer.Stop();
 
             int newPostsCount = await GetNewPostsCount()

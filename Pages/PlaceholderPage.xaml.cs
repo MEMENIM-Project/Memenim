@@ -33,13 +33,13 @@ namespace Memenim.Pages
 
         protected override void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            base.OnEnter(sender, e);
 
             var biasZone =
                 int.MaxValue - (int.MaxValue % Smiles.Length) - 1;

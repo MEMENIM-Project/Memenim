@@ -9,6 +9,11 @@ namespace Memenim.Navigation
     {
         private static Dictionary<Type, PageContent> _pagesInstances = new Dictionary<Type, PageContent>();
 
+        static PageStorage()
+        {
+            CreatePage(typeof(LoginPage));
+        }
+
         private static PageContent FindPage(Type type)
         {
             if (!typeof(PageContent).IsAssignableFrom(type))

@@ -11,6 +11,7 @@ namespace Memenim.Pages
         public bool IsCreated { get; private set; }
         public bool IsOnEnterActive { get; set; }
         public bool IsOnExitActive { get; set; }
+        public PageStateType PageState { get; set; }
 
         protected PageContent()
         {
@@ -23,6 +24,7 @@ namespace Memenim.Pages
             IsCreated = false;
             IsOnEnterActive = true;
             IsOnExitActive = true;
+            PageState = PageStateType.Unknown;
         }
 
         protected virtual void OnCreated(object sender, EventArgs e)
@@ -42,6 +44,8 @@ namespace Memenim.Pages
 
         protected virtual void OnEnter(object sender, RoutedEventArgs e)
         {
+            PageState = PageStateType.Loaded;
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -51,6 +55,8 @@ namespace Memenim.Pages
 
         protected virtual void OnExit(object sender, RoutedEventArgs e)
         {
+            PageState = PageStateType.Unloaded;
+
             if (!IsOnExitActive)
             {
                 e.Handled = true;

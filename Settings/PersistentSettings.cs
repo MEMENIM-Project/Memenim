@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Memenim.Core.Api;
 using Memenim.Settings.Entities;
 using Memenim.Utils;
 using RIS.Extensions;
@@ -24,6 +25,7 @@ namespace Memenim.Settings
         public string SettingsFilePath { get; }
         public IniFile SettingsFile { get; }
 
+        public object AvailableUsersSyncRoot { get; }
         public ReadOnlyDictionary<string, User> AvailableUsers { get; private set; }
         public User CurrentUser { get; private set; }
 
@@ -31,27 +33,39 @@ namespace Memenim.Settings
         {
             SyncRoot = new object();
 
-            SettingsFilePath = Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName);
+            SettingsFilePath = Path.Combine(
+                Environment.ExecProcessDirectoryName,
+                SettingsFileName);
             SettingsFile = new IniFile();
+
+            AvailableUsersSyncRoot = new object();
 
             CurrentUser = new User(
                 null,
                 null,
                 -1,
+                null,
                 UserStoreType.Unknown);
 
             Load();
 
-            if (GetCurrentUserLogin() == null)
+            UpdateAvailableUsers();
+
+            if (string.IsNullOrEmpty(
+                GetCurrentUserLogin()))
+            {
                 ResetCurrentUserLogin();
 
-            UpdateAvailableUsers();
+                return;
+            }
 
             if (!SetCurrentUser(GetCurrentUserLogin()))
             {
                 RemoveUser(GetCurrentUserLogin());
             }
         }
+
+
 
         public void Load()
         {
@@ -144,37 +158,86 @@ namespace Memenim.Settings
 
         public void UpdateAvailableUsers()
         {
-            var defaultSectionName = SettingsFile.DefaultSectionName;
-            var userLogins = SettingsFile.GetSections()
-                .Where(userLogin =>
-                    userLogin != defaultSectionName)
-                .ToArray();
-            var users = new Dictionary<string, User>(userLogins.Length);
-
-            foreach (var sectionName in userLogins)
+            lock (AvailableUsersSyncRoot)
             {
-                try
-                {
-                    users.Add(
-                        sectionName,
-                        new User(
-                            sectionName,
-                            GetUserToken(sectionName),
-                            GetUserId(sectionName),
-                            UserStoreType.Permanent));
+                var defaultSectionName = SettingsFile.DefaultSectionName;
+                var userLogins = SettingsFile.GetSections()
+                    .Where(userLogin =>
+                        userLogin != defaultSectionName)
+                    .OrderBy(
+                        login => login,
+                        StringComparer.Ordinal)
+                    .ToArray();
+                var users = new Dictionary<string, User>(userLogins.Length);
 
-                }
-                catch (CryptographicException)
+                foreach (var login in userLogins)
                 {
-                    RemoveUser(sectionName);
+                    try
+                    {
+                        var token = GetUserToken(login);
+                        string rocketPassword = string.Empty;
+
+                        Task.Run(async () =>
+                        {
+                            try
+                            {
+                                rocketPassword = GetUserRocketPassword(login);
+
+                                if (string.IsNullOrEmpty(rocketPassword))
+                                {
+                                    var resultRocketPassword = await UserApi.GetRocketPassword(
+                                            token)
+                                        .ConfigureAwait(false);
+
+                                    if (!resultRocketPassword.error)
+                                    {
+                                        rocketPassword = resultRocketPassword.data.password;
+                                        SetUserRocketPassword(login, rocketPassword);
+                                    }
+                                    else
+                                    {
+                                        rocketPassword = string.Empty;
+                                        SetUserRocketPassword(login, rocketPassword);
+                                    }
+                                }
+                            }
+                            catch (CryptographicException)
+                            {
+                                rocketPassword = string.Empty;
+                                SetUserRocketPassword(login, rocketPassword);
+                            }
+                            catch (FormatException)
+                            {
+                                rocketPassword = string.Empty;
+                                SetUserRocketPassword(login, rocketPassword);
+                            }
+                        });
+
+                        users.Add(
+                            login,
+                            new User(
+                                login,
+                                token,
+                                GetUserId(login),
+                                rocketPassword,
+                                UserStoreType.Permanent));
+                    }
+                    catch (CryptographicException)
+                    {
+                        RemoveUser(login, false);
+                    }
+                    catch (FormatException)
+                    {
+                        RemoveUser(login, false);
+                    }
                 }
+
+                var oldAvailableUsers = AvailableUsers;
+                AvailableUsers = new ReadOnlyDictionary<string, User>(users);
+
+                AvailableUsersChanged?.Invoke(this,
+                    new AvailableUsersChangedEventArgs(oldAvailableUsers, AvailableUsers));
             }
-
-            var oldAvailableUsers = AvailableUsers;
-            AvailableUsers = new ReadOnlyDictionary<string, User>(users);
-
-            AvailableUsersChanged?.Invoke(this,
-                new AvailableUsersChangedEventArgs(oldAvailableUsers, AvailableUsers));
         }
 
         public bool IsExistUser(string login)
@@ -183,17 +246,12 @@ namespace Memenim.Settings
                 return false;
 
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 return true;
             }
 
             return AvailableUsers.ContainsKey(login);
-        }
-
-        public bool CurrentUserIsTemporary()
-        {
-            return CurrentUser.StoreType == UserStoreType.Temporary;
         }
 
         public bool SetCurrentUser(string login)
@@ -215,7 +273,8 @@ namespace Memenim.Settings
             return true;
         }
 
-        public bool SetCurrentUserTemporary(string login, string token, int id)
+        public bool SetCurrentUserTemporary(string login,
+            string token, int id)
         {
             ResetCurrentUserLogin();
 
@@ -224,6 +283,7 @@ namespace Memenim.Settings
                 login,
                 token,
                 id,
+                null,
                 UserStoreType.Temporary);
 
             CurrentUserChanged?.Invoke(this,
@@ -241,6 +301,7 @@ namespace Memenim.Settings
                 null,
                 null,
                 -1,
+                null,
                 UserStoreType.Unknown);
 
             CurrentUserChanged?.Invoke(this,
@@ -256,11 +317,12 @@ namespace Memenim.Settings
 
         public string GetCurrentUserLogin()
         {
-            if (CurrentUser.StoreType == UserStoreType.Temporary)
+            if (CurrentUser.IsTemporary())
                 return CurrentUser.Login;
 
             return GetDefault("CurrentUserLogin");
         }
+
 
         public void SetTenorAPIKey(string apiKey)
         {
@@ -270,7 +332,7 @@ namespace Memenim.Settings
         public void SetCurrentUserLogin(string login)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 return;
             }
@@ -278,9 +340,10 @@ namespace Memenim.Settings
             SetDefault("CurrentUserLogin", login);
         }
 
+
         public void ResetCurrentUserLogin()
         {
-            if (CurrentUser.StoreType == UserStoreType.Temporary)
+            if (CurrentUser.IsTemporary())
                 return;
 
             SetDefault("CurrentUserLogin", string.Empty);
@@ -291,7 +354,7 @@ namespace Memenim.Settings
         public bool GetUser(string login, out User user)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 user = CurrentUser;
 
@@ -302,6 +365,7 @@ namespace Memenim.Settings
                 null,
                 null,
                 -1,
+                null,
                 UserStoreType.Unknown);
 
             var userSection = GetSection(login);
@@ -311,14 +375,33 @@ namespace Memenim.Settings
 
             try
             {
+                string rocketPassword;
+
+                try
+                {
+                    rocketPassword = GetUserRocketPassword(login);
+                }
+                catch (CryptographicException)
+                {
+                    rocketPassword = null;
+                }
+                catch (FormatException)
+                {
+                    rocketPassword = null;
+                }
+
                 user = new User(
                     login,
                     GetUserToken(login),
                     GetUserId(login),
+                    rocketPassword,
                     UserStoreType.Permanent);
-
             }
             catch (CryptographicException)
+            {
+                return false;
+            }
+            catch (FormatException)
             {
                 return false;
             }
@@ -329,7 +412,7 @@ namespace Memenim.Settings
         public string GetUserToken(string login)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 return CurrentUser.Token;
             }
@@ -342,7 +425,7 @@ namespace Memenim.Settings
         public int GetUserId(string login)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 return CurrentUser.Id;
             }
@@ -356,15 +439,31 @@ namespace Memenim.Settings
                 : -1;
         }
 
-        public bool SetUser(string login, string token, int id)
+        public string GetUserRocketPassword(string login)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
+            {
+                return CurrentUser.RocketPassword;
+            }
+
+            return PersistentUtils.WinUnprotect(
+                Get(login, "UserRocketPassword"),
+                $"UserRocketPassword-{login}");
+        }
+
+
+        public bool SetUser(string login, string token, int id,
+            string rocketPassword, bool updateAvailableUsers = true)
+        {
+            if (CurrentUser.Login == login
+                && CurrentUser.IsTemporary())
             {
                 CurrentUser = new User(
                     CurrentUser.Login,
                     token,
                     id,
+                    rocketPassword,
                     CurrentUser.StoreType);
 
                 return true;
@@ -372,15 +471,33 @@ namespace Memenim.Settings
 
             try
             {
-                SetUserToken(login, token);
+                SetUserToken(login, token ?? string.Empty);
                 SetUserId(login, id);
+
+                try
+                {
+                    SetUserRocketPassword(login, rocketPassword ?? string.Empty);
+                }
+                catch (CryptographicException)
+                {
+                    SetUserRocketPassword(login, string.Empty);
+                }
+                catch (FormatException)
+                {
+                    SetUserRocketPassword(login, string.Empty);
+                }
             }
             catch (CryptographicException)
             {
                 return false;
             }
+            catch (FormatException)
+            {
+                return false;
+            }
 
-            UpdateAvailableUsers();
+            if (updateAvailableUsers)
+                UpdateAvailableUsers();
 
             return true;
         }
@@ -388,43 +505,73 @@ namespace Memenim.Settings
         public void SetUserToken(string login, string token)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 CurrentUser = new User(
                     CurrentUser.Login,
                     token,
                     CurrentUser.Id,
+                    CurrentUser.RocketPassword,
                     CurrentUser.StoreType);
 
                 return;
             }
 
             Set(login, "UserToken",
-                PersistentUtils.WinProtect(token, $"UserToken-{login}"));
+                PersistentUtils.WinProtect(
+                    token,
+                    $"UserToken-{login}"));
         }
 
         public void SetUserId(string login, int id)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
             {
                 CurrentUser = new User(
                     CurrentUser.Login,
                     CurrentUser.Token,
                     id,
+                    CurrentUser.RocketPassword,
                     CurrentUser.StoreType);
 
                 return;
             }
 
             Set(login, "UserId",
-                PersistentUtils.WinProtect(id.ToString(), $"UserId-{login}"));
+                PersistentUtils.WinProtect(
+                    id.ToString(),
+                    $"UserId-{login}"));
         }
 
-        public void RemoveUser(string login)
+        public void SetUserRocketPassword(string login,
+            string rocketPassword)
         {
             if (CurrentUser.Login == login
-                && CurrentUser.StoreType == UserStoreType.Temporary)
+                && CurrentUser.IsTemporary())
+            {
+                CurrentUser = new User(
+                    CurrentUser.Login,
+                    CurrentUser.Token,
+                    CurrentUser.Id,
+                    rocketPassword,
+                    CurrentUser.StoreType);
+
+                return;
+            }
+
+            Set(login, "UserRocketPassword",
+                PersistentUtils.WinProtect(
+                    rocketPassword,
+                    $"UserRocketPassword-{login}"));
+        }
+
+
+        public void RemoveUser(string login,
+            bool updateAvailableUsers = true)
+        {
+            if (CurrentUser.Login == login
+                && CurrentUser.IsTemporary())
             {
                 ResetCurrentUser();
 
@@ -436,7 +583,8 @@ namespace Memenim.Settings
             if (GetCurrentUserLogin() == login)
                 ResetCurrentUser();
 
-            UpdateAvailableUsers();
+            if (updateAvailableUsers)
+                UpdateAvailableUsers();
         }
     }
 }

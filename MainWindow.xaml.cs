@@ -440,7 +440,7 @@ namespace Memenim
 
         private async void btnSignInToAnotherAccount_Click(object sender, RoutedEventArgs e)
         {
-            if (SettingsManager.PersistentSettings.CurrentUserIsTemporary())
+            if (SettingsManager.PersistentSettings.CurrentUser.IsTemporary())
             {
                 var confirmResult = await DialogManager.ShowConfirmationDialog()
                     .ConfigureAwait(true);
@@ -458,7 +458,7 @@ namespace Memenim
             NavigationController.Instance.RequestPage<LoginPage>();
         }
 
-        private async void btnSignOut_Click(object sender, RoutedEventArgs e)
+        private async void btnSignOutAccount_Click(object sender, RoutedEventArgs e)
         {
             var confirmResult = await DialogManager.ShowConfirmationDialog()
                 .ConfigureAwait(true);
@@ -470,8 +470,6 @@ namespace Memenim
 
             SettingsManager.PersistentSettings.RemoveUser(
                 SettingsManager.PersistentSettings.CurrentUser.Login);
-
-            HideSettings();
 
             NavigationController.Instance.RequestPage<LoginPage>();
         }

@@ -106,13 +106,13 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            base.OnEnter(sender, e);
 
             if (ViewModel.CurrentPostData?.owner_id.HasValue == true)
             {
@@ -133,13 +133,13 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
             if (!IsOnExitActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
         }
 
         private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)

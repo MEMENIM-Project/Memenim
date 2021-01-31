@@ -132,7 +132,7 @@
                                     </Button>
                                     <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                                             Background="#FF9F0000"
-                                            Margin="5" Click="btnSignOut_Click">
+                                            Margin="5" Click="btnSignOutAccount_Click">
                                         <TextBlock Text="{DynamicResource ResourceKey=SignOut}"
                                                    MinHeight="15" FontSize="12"
                                                    TextAlignment="Center" TextWrapping="Wrap"

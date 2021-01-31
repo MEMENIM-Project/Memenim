@@ -138,6 +138,8 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             if (!CommentsIsOpen)
             {
                 wdgWriteComment.Visibility = Visibility.Collapsed;
@@ -158,8 +160,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnEnter(sender, e);
 
             svPost.ScrollToVerticalOffset(0.0);
 
@@ -191,6 +191,8 @@ namespace Memenim.Pages
 
         protected override async void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
             await StorageManager.SetPostCommentDraft(
                     SettingsManager.PersistentSettings.CurrentUser.Id,
                     ViewModel.CurrentPostData.id,
@@ -210,8 +212,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
         }
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
@@ -285,6 +285,9 @@ namespace Memenim.Pages
 
         private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
         {
+            if (e.NewUser.Id == -1)
+                return;
+
             await UpdatePost()
                 .ConfigureAwait(true);
 
@@ -292,8 +295,11 @@ namespace Memenim.Pages
                     SettingsManager.PersistentSettings.CurrentUser.Id)
                 .ConfigureAwait(true);
 
-            if (result.data != null)
+            if (!result.error
+                && result.data != null)
+            {
                 wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
+            }
 
             await StorageManager.SetPostCommentDraft(
                     e.OldUser.Id,

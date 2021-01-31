@@ -9,6 +9,9 @@ namespace Memenim.Utils
     {
         public static string WinProtect(string data, string additionalKey = "MEMENIM")
         {
+            if (string.IsNullOrWhiteSpace(data))
+                return data;
+
             return Base64.RemovePadding(Convert.ToBase64String(ProtectedData.Protect(
                 Encoding.UTF8.GetBytes(data),
                 Encoding.UTF8.GetBytes(additionalKey),
@@ -17,6 +20,9 @@ namespace Memenim.Utils
 
         public static string WinUnprotect(string data, string additionalKey = "MEMENIM")
         {
+            if (string.IsNullOrWhiteSpace(data))
+                return data;
+
             return Encoding.UTF8.GetString(ProtectedData.Unprotect(
                 Convert.FromBase64String(Base64.RestorePadding(data)),
                 Encoding.UTF8.GetBytes(additionalKey),

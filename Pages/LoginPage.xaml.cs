@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -12,12 +12,18 @@ using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
 using Memenim.Widgets;
+using Timer = System.Timers.Timer;
+using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
 {
     public partial class LoginPage : PageContent
     {
-        private readonly Timer _autoUpdateStatusTimer;
+        private readonly SemaphoreSlim _accountsUpdateLock = new SemaphoreSlim(1, 1);
+        private int _accountsUpdateWaitingCount;
+        private bool _loadingGridShowing;
+
+        private Timer _autoUpdateStatusTimer;
 
         public LoginViewModel ViewModel
         {
@@ -30,15 +36,6 @@ namespace Memenim.Pages
         public LoginPage()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
-
-            _autoUpdateStatusTimer = new Timer(TimeSpan.FromSeconds(15).TotalMilliseconds);
-            _autoUpdateStatusTimer.Elapsed += AutoUpdateStatusTimerCallback;
-            _autoUpdateStatusTimer.Stop();
-
-            btnLogin.IsEnabled = false;
-
-            SettingsManager.PersistentSettings.AvailableUsersChanged += OnAvailableUsersChanged;
         }
 
         ~LoginPage()
@@ -53,94 +50,244 @@ namespace Memenim.Pages
 
         public async Task ReloadStoredAccounts()
         {
-            lstStoredAccounts.Items.Clear();
+            _autoUpdateStatusTimer.Stop();
 
-            if (SettingsManager.PersistentSettings.AvailableUsers.Values.Count == 0)
-                return;
-
-            var tasks = new List<Task>(SettingsManager.PersistentSettings.AvailableUsers.Values.Count);
-
-            foreach (var user in SettingsManager.PersistentSettings.AvailableUsers.Values)
+            await Dispatcher.Invoke(() =>
             {
-                var storedAccountWidget = new StoredAccount
-                {
-                    Account = user
-                };
-                storedAccountWidget.AccountClick += StoredAccount_AccountClick;
-                storedAccountWidget.AccountDelete += StoredAccount_AccountDelete;
+                return ShowLoadingGrid(true);
+            }).ConfigureAwait(false);
 
-                tasks.Add(storedAccountWidget.UpdateAccount());
+            try
+            {
+                Interlocked.Increment(ref _accountsUpdateWaitingCount);
 
-                lstStoredAccounts.Items.Add(storedAccountWidget);
+                await _accountsUpdateLock.WaitAsync()
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _accountsUpdateWaitingCount);
             }
 
-            lstStoredAccounts.GetChildOfType<ScrollViewer>()?.ScrollToVerticalOffset(0);
+            try
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    lstStoredAccounts.Items.Clear();
+                });
 
-            await Task.WhenAll(tasks)
-                .ConfigureAwait(true);
+                if (SettingsManager.PersistentSettings.AvailableUsers.Values.Count == 0)
+                    return;
+
+                foreach (var user in SettingsManager.PersistentSettings.AvailableUsers.Values)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var storedAccountWidget = new StoredAccount
+                        {
+                            Account = user
+                        };
+                        storedAccountWidget.AccountClick += StoredAccount_AccountClick;
+                        storedAccountWidget.AccountDelete += StoredAccount_AccountDelete;
+
+                        lstStoredAccounts.Items.Add(storedAccountWidget);
+                    });
+                }
+
+                ItemCollection items = null;
+
+                Dispatcher.Invoke(() =>
+                {
+                    lstStoredAccounts.GetChildOfType<ScrollViewer>()?
+                        .ScrollToVerticalOffset(0);
+
+                    items = lstStoredAccounts.Items;
+                });
+
+                await Task.Delay(500)
+                    .ConfigureAwait(true);
+
+                if (_accountsUpdateWaitingCount == 0)
+                {
+                    await Dispatcher.Invoke(() =>
+                    {
+                        return ShowLoadingGrid(false);
+                    }).ConfigureAwait(false);
+                }
+
+                foreach (var item in items)
+                {
+                    var storedAccountWidget = item as StoredAccount;
+
+                    if (storedAccountWidget == null)
+                        continue;
+
+                    await Dispatcher.Invoke(() =>
+                    {
+                        return storedAccountWidget.UpdateAccount();
+                    }).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await Task.Delay(500)
+                    .ConfigureAwait(true);
+
+                if (_accountsUpdateWaitingCount == 0)
+                {
+                    await Dispatcher.Invoke(() =>
+                    {
+                        return ShowLoadingGrid(false);
+                    }).ConfigureAwait(false);
+
+                    _autoUpdateStatusTimer.Start();
+                }
+
+                _accountsUpdateLock.Release();
+            }
         }
 
-        private async Task UpdateStatusAccounts()
+        public async Task UpdateStatusAccounts()
         {
-            if (lstStoredAccounts.Items.Count == 0)
-                return;
+            _autoUpdateStatusTimer.Stop();
 
-            var tasks = new List<Task>(lstStoredAccounts.Items.Count);
+            await _accountsUpdateLock.WaitAsync()
+                .ConfigureAwait(true);
 
-            foreach (var item in lstStoredAccounts.Items)
+            try
             {
-                var storedAccountWidget = item as StoredAccount;
+                ItemCollection items = null;
 
-                if (storedAccountWidget == null)
-                    continue;
+                Dispatcher.Invoke(() =>
+                {
+                    items = lstStoredAccounts.Items;
+                });
 
-                tasks.Add(storedAccountWidget.UpdateStatus());
+                if (items == null
+                    || items.Count == 0)
+                {
+                    return;
+                }
+
+                foreach (var item in items)
+                {
+                    var storedAccountWidget = item as StoredAccount;
+
+                    if (storedAccountWidget == null)
+                        continue;
+
+                    await Dispatcher.Invoke(() =>
+                    {
+                        return storedAccountWidget.UpdateStatus();
+                    }).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (_accountsUpdateWaitingCount == 0)
+                    _autoUpdateStatusTimer.Start();
+
+                _accountsUpdateLock.Release();
+            }
+        }
+
+        public Task ShowLoadingGrid(bool status)
+        {
+            if (status)
+            {
+                _loadingGridShowing = true;
+                loadingIndicator.IsActive = true;
+                loadingGrid.Opacity = 1.0;
+                loadingGrid.IsHitTestVisible = true;
+                loadingGrid.Visibility = Visibility.Visible;
+
+                return Task.CompletedTask;
             }
 
-            await Task.WhenAll(tasks)
-                .ConfigureAwait(true);
+            _loadingGridShowing = false;
+            loadingIndicator.IsActive = false;
+
+            return Task.Run(async () =>
+            {
+                for (double i = 1.0; i > 0.0; i -= 0.025)
+                {
+                    var opacity = i;
+
+                    if (_loadingGridShowing)
+                        break;
+
+                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            loadingGrid.IsHitTestVisible = false;
+                        });
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        loadingGrid.Opacity = opacity;
+                    });
+
+                    await Task.Delay(4)
+                        .ConfigureAwait(false);
+                }
+
+                Dispatcher.Invoke(() =>
+                {
+                    loadingGrid.Visibility = Visibility.Collapsed;
+                });
+            });
         }
 
         protected override async void OnCreated(object sender, EventArgs e)
         {
+            base.OnCreated(sender, e);
+
+            DataContext = new LoginViewModel();
+
+            _autoUpdateStatusTimer = new Timer(TimeSpan.FromSeconds(20).TotalMilliseconds);
+            _autoUpdateStatusTimer.Elapsed += AutoUpdateStatusTimerCallback;
+            _autoUpdateStatusTimer.Stop();
+
+            btnLogin.IsEnabled = false;
+
+            SettingsManager.PersistentSettings.AvailableUsersChanged += OnAvailableUsersChanged;
+
             await ReloadStoredAccounts()
                 .ConfigureAwait(true);
-
-            base.OnCreated(sender, e);
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
                 return;
             }
 
-            base.OnEnter(sender, e);
-
             await UpdateStatusAccounts()
                 .ConfigureAwait(true);
-
-            _autoUpdateStatusTimer.Start();
         }
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
+            _autoUpdateStatusTimer.Stop();
+
             txtLogin.Clear();
             txtPassword.Clear();
             chkRememberMe.IsChecked = false;
             btnOpenStoredAccounts.IsChecked = false;
-
-            _autoUpdateStatusTimer.Stop();
 
             if (!IsOnExitActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
         }
 
         private async void OnAvailableUsersChanged(object sender, AvailableUsersChangedEventArgs e)
@@ -151,14 +298,14 @@ namespace Memenim.Pages
 
         private async void AutoUpdateStatusTimerCallback(object sender, ElapsedEventArgs e)
         {
-            _autoUpdateStatusTimer.Stop();
+            if (!_autoUpdateStatusTimer.Enabled)
+                return;
 
-            await Dispatcher.Invoke(() =>
-            {
-                return UpdateStatusAccounts();
-            }).ConfigureAwait(true);
+            if (PageState != PageStateType.Loaded)
+                return;
 
-            _autoUpdateStatusTimer.Start();
+            await UpdateStatusAccounts()
+                .ConfigureAwait(true);
         }
 
         private async void btnLogin_Click(object sender, RoutedEventArgs e)
@@ -168,10 +315,12 @@ namespace Memenim.Pages
             txtLogin.IsEnabled = false;
             txtPassword.IsEnabled = false;
             chkRememberMe.IsEnabled = false;
+            btnOpenStoredAccounts.IsEnabled = false;
 
             try
             {
-                var result = await UserApi.Login(txtLogin.Text, txtPassword.Password)
+                var result = await UserApi.Login(
+                        txtLogin.Text, txtPassword.Password)
                     .ConfigureAwait(true);
 
                 if (result.error)
@@ -186,13 +335,14 @@ namespace Memenim.Pages
 
                 if (chkRememberMe.IsChecked == true)
                 {
-                    if (!SettingsManager.PersistentSettings.SetUser(
+                    var setUserSuccess = SettingsManager.PersistentSettings.SetUser(
                         txtLogin.Text,
                         result.data.token,
-                        result.data.id))
-                    {
+                        result.data.id,
+                        null);
+
+                    if (!setUserSuccess)
                         return;
-                    }
 
                     if (!SettingsManager.PersistentSettings.SetCurrentUser(
                         txtLogin.Text))
@@ -237,6 +387,7 @@ namespace Memenim.Pages
                 txtLogin.IsEnabled = true;
                 txtPassword.IsEnabled = true;
                 chkRememberMe.IsEnabled = true;
+                btnOpenStoredAccounts.IsEnabled = true;
             }
         }
 
@@ -248,6 +399,7 @@ namespace Memenim.Pages
         private async void StoredAccount_AccountClick(object sender, RoutedEventArgs e)
         {
             lstStoredAccounts.IsEnabled = false;
+            btnOpenStoredAccounts.IsEnabled = false;
 
             StoredAccount storedAccount = sender as StoredAccount;
 
@@ -277,6 +429,7 @@ namespace Memenim.Pages
             finally
             {
                 lstStoredAccounts.IsEnabled = true;
+                btnOpenStoredAccounts.IsEnabled = true;
             }
         }
 
@@ -290,7 +443,7 @@ namespace Memenim.Pages
             lstStoredAccounts.Items.Remove(storedAccount);
 
             SettingsManager.PersistentSettings.RemoveUser(
-                storedAccount.Account.Login);
+                    storedAccount.Account.Login);
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

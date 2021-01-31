@@ -17,7 +17,7 @@ namespace Memenim.Widgets
             EventManager.RegisterRoutedEvent(nameof(AccountDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
         public static readonly DependencyProperty AccountProperty =
             DependencyProperty.Register(nameof(Account), typeof(User), typeof(StoredAccount),
-                new PropertyMetadata(new User(null, null, -1, UserStoreType.Unknown)));
+                new PropertyMetadata(new User(null, null, -1, null, UserStoreType.Unknown)));
         public static readonly DependencyProperty UserNameProperty =
             DependencyProperty.Register(nameof(UserName), typeof(string), typeof(StoredAccount),
                 new PropertyMetadata("Unknown"));

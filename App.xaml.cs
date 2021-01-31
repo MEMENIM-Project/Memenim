@@ -77,6 +77,10 @@ namespace Memenim
             Events.Warning += OnWarning;
             Events.Error += OnError;
 
+            ApiRequestEngine.Information += OnCoreInformation;
+            ApiRequestEngine.Warning += OnCoreWarning;
+            ApiRequestEngine.Error += OnCoreError;
+
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             AppDomain.CurrentDomain.FirstChanceException += OnFirstChanceException;
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
@@ -197,6 +201,8 @@ namespace Memenim
             return new ArgsKeyedWrapper(argsEntries);
         }
 
+
+
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -236,6 +242,17 @@ namespace Memenim
 
                 try
                 {
+                    if (string.IsNullOrEmpty(
+                        SettingsManager.PersistentSettings.GetCurrentUserLogin()))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            NavigationController.Instance.RequestPage<LoginPage>();
+                        });
+
+                        return;
+                    }
+
                     if (!SettingsManager.PersistentSettings.SetCurrentUser(
                         SettingsManager.PersistentSettings.GetCurrentUserLogin()))
                     {
@@ -352,9 +369,11 @@ namespace Memenim
             base.OnExit(e);
         }
 
+
+
         private static void OnInformation(object sender, RInformationEventArgs e)
         {
-            LogManager.Log.Info($"{e.Message}");
+            LogManager.DebugLog.Info($"{e.Message}");
         }
 
         private static void OnWarning(object sender, RWarningEventArgs e)
@@ -366,6 +385,25 @@ namespace Memenim
         {
             LogManager.Log.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? (e.SourceException?.Message ?? "Unknown")},HResult={e.SourceException?.HResult ?? 0},StackTrace=\n{e.Stacktrace ?? (e.SourceException?.StackTrace ?? "Unknown")}");
         }
+
+
+
+        private static void OnCoreInformation(object sender, CoreInformationEventArgs e)
+        {
+            //LogManager.DebugLog.Info($"{e.Message}");
+        }
+
+        private static void OnCoreWarning(object sender, CoreWarningEventArgs e)
+        {
+            LogManager.Log.Warn($"{e.Message}");
+        }
+
+        private static void OnCoreError(object sender, CoreErrorEventArgs e)
+        {
+            LogManager.Log.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? (e.SourceException?.Message ?? "Unknown")},HResult={e.SourceException?.HResult ?? 0},StackTrace=\n{e.Stacktrace ?? (e.SourceException?.StackTrace ?? "Unknown")}");
+        }
+
+
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -383,6 +421,8 @@ namespace Memenim
         {
             LogManager.DebugLog.Error($"{e.Exception.GetType().Name} - Message={e.Exception.Message},HResult={e.Exception.HResult},StackTrace=\n{e.Exception.StackTrace ?? "Unknown"}");
         }
+
+
 
         private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs e)
         {

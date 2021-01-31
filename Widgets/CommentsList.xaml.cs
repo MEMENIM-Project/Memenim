@@ -69,6 +69,7 @@ namespace Memenim.Widgets
         private readonly Timer _autoUpdateTimer;
         private bool _postIdChangedUpdate;
 
+        public PageStateType PageState { get; set; }
         public int PostId
         {
             get
@@ -221,10 +222,9 @@ namespace Memenim.Widgets
 
             if (commentsCount == 0)
             {
-                await Dispatcher.Invoke(async () =>
+                await Dispatcher.Invoke(() =>
                 {
-                    await UpdateComments(false)
-                        .ConfigureAwait(true);
+                    return UpdateComments(false);
                 }).ConfigureAwait(true);
 
                 return 0;
@@ -258,7 +258,8 @@ namespace Memenim.Widgets
 
                 while (!headOldIsFound)
                 {
-                    var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUser.Token,
+                    var result = await PostApi.GetComments(
+                            SettingsManager.PersistentSettings.CurrentUser.Token,
                             postId, countPerTime, offset)
                         .ConfigureAwait(false);
 
@@ -267,10 +268,9 @@ namespace Memenim.Widgets
 
                     if (result.data.Count == 0)
                     {
-                        await Dispatcher.Invoke(async () =>
+                        await Dispatcher.Invoke(() =>
                         {
-                            await UpdateComments(false)
-                                .ConfigureAwait(true);
+                            return UpdateComments(false);
                         }).ConfigureAwait(true);
 
                         return 0;
@@ -289,10 +289,9 @@ namespace Memenim.Widgets
 
                     if (countNew >= 500)
                     {
-                        await Dispatcher.Invoke(async () =>
+                        await Dispatcher.Invoke(() =>
                         {
-                            await UpdateComments(false)
-                                .ConfigureAwait(true);
+                            return UpdateComments(false);
                         }).ConfigureAwait(true);
 
                         return 0;
@@ -328,7 +327,8 @@ namespace Memenim.Widgets
             if (postId == -1)
                 return;
 
-            var result = await PostApi.GetComments(SettingsManager.PersistentSettings.CurrentUser.Token,
+            var result = await PostApi.GetComments(
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
                     postId, count, offset)
                 .ConfigureAwait(true);
 
@@ -400,6 +400,8 @@ namespace Memenim.Widgets
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            PageState = PageStateType.Loaded;
+
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -418,6 +420,8 @@ namespace Memenim.Widgets
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
+            PageState = PageStateType.Unloaded;
+
             _autoUpdateTimer.Stop();
 
             foreach (var comment in lstComments.Children)
@@ -471,6 +475,12 @@ namespace Memenim.Widgets
 
         private async void AutoUpdateTimerCallback(object sender, ElapsedEventArgs e)
         {
+            if (!_autoUpdateTimer.Enabled)
+                return;
+
+            if (PageState != PageStateType.Loaded)
+                return;
+
             await LoadNewComments()
                 .ConfigureAwait(true);
         }

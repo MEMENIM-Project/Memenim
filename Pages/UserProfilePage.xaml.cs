@@ -232,6 +232,8 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -242,27 +244,19 @@ namespace Memenim.Pages
                 return;
             }
 
-            base.OnEnter(sender, e);
-
             await UpdateProfile()
                 .ConfigureAwait(true);
         }
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
-            //ImageBehavior.SetAnimatedSource(img, null);
-
-            UpdateLayout();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            base.OnExit(sender, e);
 
             if (!IsOnExitActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
 
             ImageBehavior.SetAnimatedSource(img, null);
 

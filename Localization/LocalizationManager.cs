@@ -405,20 +405,20 @@ namespace Memenim.Localization
             if (currentLocalizationFile == null)
                 return false;
 
-            var setDefaultLocalization = await SetDefaultLocalization(
+            var setDefaultLocalizationSuccess = await SetDefaultLocalization(
                     element, localizationFile)
                 .ConfigureAwait(true);
 
-            if (!setDefaultLocalization)
+            if (!setDefaultLocalizationSuccess)
                 return false;
 
             OnLanguageChanged(null, localizationFile);
 
-            var setCurrentLocalization = await SetLocalization(
+            var setCurrentLocalizationSuccess = await SetLocalization(
                     element, currentLocalizationFile)
                 .ConfigureAwait(true);
 
-            if (!setCurrentLocalization)
+            if (!setCurrentLocalizationSuccess)
                 return false;
 
             Thread.CurrentThread.CurrentCulture = currentLocalizationFile.Culture;
@@ -446,11 +446,11 @@ namespace Memenim.Localization
             if (localizationFile == null)
                 return false;
 
-            var setCurrentLocalization = await SetLocalization(
+            var setLocalizationSuccess = await SetLocalization(
                     element, localizationFile)
                 .ConfigureAwait(true);
 
-            if (!setCurrentLocalization)
+            if (!setLocalizationSuccess)
                 return false;
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo(cultureName);

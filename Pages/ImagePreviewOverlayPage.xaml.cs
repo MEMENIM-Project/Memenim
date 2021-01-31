@@ -70,6 +70,8 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -79,8 +81,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnEnter(sender, e);
 
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
@@ -94,6 +94,8 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
             ViewModel.ImageSource = null;
 
             UpdateLayout();
@@ -105,8 +107,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
         }
 
         private void CopyImageUrl_Click(object sender, RoutedEventArgs e)

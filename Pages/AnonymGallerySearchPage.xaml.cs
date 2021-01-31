@@ -116,13 +116,13 @@ namespace Memenim.Pages
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            base.OnEnter(sender, e);
 
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
@@ -133,6 +133,8 @@ namespace Memenim.Pages
 
         protected override void OnExit(object sender, RoutedEventArgs e)
         {
+            base.OnExit(sender, e);
+
             foreach (var button in lstImages.Children)
             {
                 ImagePreviewButton imageButton = button as ImagePreviewButton;
@@ -154,8 +156,6 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
-
-            base.OnExit(sender, e);
         }
     }
 }
