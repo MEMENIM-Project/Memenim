@@ -320,7 +320,30 @@ namespace Memenim.Settings
             if (CurrentUser.IsTemporary())
                 return CurrentUser.Login;
 
-            return GetDefault("CurrentUserLogin");
+            try
+            {
+                return PersistentUtils.WinUnprotect(
+                    GetDefault("CurrentUserLogin"),
+                    "CurrentUserLogin");
+            }
+            catch (CryptographicException)
+            {
+                SetCurrentUserLogin(
+                    GetDefault("CurrentUserLogin"));
+
+                return PersistentUtils.WinUnprotect(
+                    GetDefault("CurrentUserLogin"),
+                    "CurrentUserLogin");
+            }
+            catch (FormatException)
+            {
+                SetCurrentUserLogin(
+                    GetDefault("CurrentUserLogin"));
+
+                return PersistentUtils.WinUnprotect(
+                    GetDefault("CurrentUserLogin"),
+                    "CurrentUserLogin");
+            }
         }
 
 
@@ -337,7 +360,10 @@ namespace Memenim.Settings
                 return;
             }
 
-            SetDefault("CurrentUserLogin", login);
+            SetDefault("CurrentUserLogin",
+                PersistentUtils.WinProtect(
+                    login,
+                    "CurrentUserLogin"));
         }
 
 
@@ -346,7 +372,7 @@ namespace Memenim.Settings
             if (CurrentUser.IsTemporary())
                 return;
 
-            SetDefault("CurrentUserLogin", string.Empty);
+            SetCurrentUserLogin(string.Empty);
         }
 
 
