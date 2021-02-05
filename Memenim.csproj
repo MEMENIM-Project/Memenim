@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.14.2.0</AssemblyVersion>
-    <FileVersion>0.14.2.0</FileVersion>
+    <AssemblyVersion>0.14.3.0</AssemblyVersion>
+    <FileVersion>0.14.3.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.14.2</Version>
+    <Version>0.14.3</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -38,13 +38,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="NLog.Schema" Version="4.7.7" />
-    <PackageReference Include="RIS" Version="3.8.0" />
+    <PackageReference Include="RIS" Version="3.9.1" />
     <PackageReference Include="RIS.Collections" Version="4.5.95" />
-    <PackageReference Include="RIS.Cryptography" Version="3.0.0" />
+    <PackageReference Include="RIS.Cryptography" Version="3.2.0" />
     <PackageReference Include="RIS.Graphics" Version="2.4.5" />
     <PackageReference Include="RIS.Reflection" Version="3.4.60" />
     <PackageReference Include="RIS.Settings" Version="1.2.5" />
-    <PackageReference Include="RIS.Text" Version="4.1.1" />
+    <PackageReference Include="RIS.Text" Version="4.1.2" />
     <PackageReference Include="TenorClient" Version="1.0.3" />
     <PackageReference Include="TinyIpc" Version="3.0.0" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
