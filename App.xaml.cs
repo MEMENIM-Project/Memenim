@@ -286,61 +286,13 @@ namespace Memenim
                         return;
                     }
 
-                    //if (resultPosts.error || resultPosts.data.Count == 0)
-                    //{
-                    //    Dispatcher.Invoke(() =>
-                    //    {
-                    //        NavigationController.Instance.RequestPage<LoginPage>();
-                    //    });
-
-                    //    return;
-                    //}
-
-                    //var resultPost = resultPosts.data[0];
-
-                    //for (int i = 0; i < 2; ++i)
-                    //{
-                    //    ApiResponse<CountSchema> result;
-
-                    //    if (resultPost.likes.my == 0)
-                    //    {
-                    //        result = await PostApi.AddLike(
-                    //                SettingsManager.PersistentSettings.CurrentUser.Token,
-                    //                resultPost.id)
-                    //            .ConfigureAwait(false);
-                    //    }
-                    //    else
-                    //    {
-                    //        result = await PostApi.RemoveLike(
-                    //                SettingsManager.PersistentSettings.CurrentUser.Token,
-                    //                resultPost.id)
-                    //            .ConfigureAwait(false);
-                    //    }
-
-                    //    if (result.error
-                    //        && (result.code == 400 || result.code == 401))
-                    //    {
-                    //        Dispatcher.Invoke(() =>
-                    //        {
-                    //            NavigationController.Instance.RequestPage<LoginPage>();
-                    //        });
-
-                    //        return;
-                    //    }
-
-                    //    if (resultPost.likes.my == 0)
-                    //        ++resultPost.likes.my;
-                    //    else
-                    //        --resultPost.likes.my;
-                    //}
-
                     Dispatcher.Invoke(() =>
                     {
                         NavigationController.Instance.RequestPage<FeedPage>();
-
-                        if (!string.IsNullOrEmpty(AppStartupUri))
-                            ProtocolManager.ParseUri(AppStartupUri);
                     });
+
+                    if (!string.IsNullOrEmpty(AppStartupUri))
+                        ProtocolManager.ParseUri(AppStartupUri);
                 }
                 catch (Exception)
                 {

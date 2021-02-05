@@ -123,67 +123,73 @@ namespace Memenim.Protocols.Schemas
                 if (id < 0)
                     return false;
 
-                MainWindow.Instance.Dispatcher.Invoke(() =>
+                var result = MainWindow.Instance.Dispatcher.Invoke(() =>
                 {
-                    NavigationController.Instance.RequestPage<FeedPage>();
+                    if (!NavigationController.Instance.IsCurrentPage<FeedPage>())
+                    {
+                        NavigationController.Instance.RequestPage<FeedPage>(
+                            null, true);
+                    }
 
                     PostWidget sourcePost = null;
-                    FeedPage page = (FeedPage)PageStorage.GetPage<FeedPage>();
+                    FeedPage page = (FeedPage) PageStorage.GetPage<FeedPage>();
 
-                    if (page != null)
+                    var slcPostTypes = page?.slcPostTypes;
+
+                    if (slcPostTypes?.SelectedItem == null)
+                        return false;
+
+                    var postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+
+                    switch (postType)
                     {
-                        var postType = ((KeyValuePair<PostType, string>)page.slcPostTypes.SelectedItem).Key;
-
-                        switch (postType)
-                        {
-                            case PostType.Popular:
-                                if (page.lstPosts.Children.Count == 0)
-                                    break;
-
-                                foreach (var element in page.lstPosts.Children)
-                                {
-                                    if (!(element is PostWidget post))
-                                        continue;
-
-                                    if (post.CurrentPostData.id != id)
-                                        continue;
-
-                                    sourcePost = post;
-                                    break;
-                                }
-
+                        case PostType.Popular:
+                            if (page.lstPosts.Children.Count == 0)
                                 break;
-                            case PostType.New:
-                            case PostType.My:
-                            case PostType.Favorite:
-                                if (page.lstPosts.Children.Count == 0)
-                                    break;
 
-                                if (page.lstPosts.Children.Count > 2
-                                    && (page.lstPosts.Children[0] is PostWidget startPost
-                                        && page.lstPosts.Children[^1] is PostWidget endPost)
-                                    && !(startPost.CurrentPostData.id >= id
-                                         && id >= endPost.CurrentPostData.id))
-                                {
-                                    break;
-                                }
+                            foreach (var element in page.lstPosts.Children)
+                            {
+                                if (!(element is PostWidget post))
+                                    continue;
 
-                                foreach (var element in page.lstPosts.Children)
-                                {
-                                    if (!(element is PostWidget post))
-                                        continue;
+                                if (post.CurrentPostData.id != id)
+                                    continue;
 
-                                    if (post.CurrentPostData.id != id)
-                                        continue;
-
-                                    sourcePost = post;
-                                    break;
-                                }
-
+                                sourcePost = post;
                                 break;
-                            default:
+                            }
+
+                            break;
+                        case PostType.New:
+                        case PostType.My:
+                        case PostType.Favorite:
+                            if (page.lstPosts.Children.Count == 0)
                                 break;
-                        }
+
+                            if (page.lstPosts.Children.Count > 2
+                                && (page.lstPosts.Children[0] is PostWidget startPost
+                                    && page.lstPosts.Children[^1] is PostWidget endPost)
+                                && !(startPost.CurrentPostData.id >= id
+                                     && id >= endPost.CurrentPostData.id))
+                            {
+                                break;
+                            }
+
+                            foreach (var element in page.lstPosts.Children)
+                            {
+                                if (!(element is PostWidget post))
+                                    continue;
+
+                                if (post.CurrentPostData.id != id)
+                                    continue;
+
+                                sourcePost = post;
+                                break;
+                            }
+
+                            break;
+                        default:
+                            break;
                     }
 
                     NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
@@ -194,7 +200,12 @@ namespace Memenim.Protocols.Schemas
                             id = id
                         }
                     });
+
+                    return true;
                 });
+
+                if (!result)
+                    return false;
 
                 return true;
             }

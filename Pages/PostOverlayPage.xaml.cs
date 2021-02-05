@@ -59,10 +59,12 @@ namespace Memenim.Pages
         }
         public async Task UpdatePost(int id)
         {
-            if (id < 0)
+            if (id < 1)
             {
-                NavigationController.Instance.GoBack();
-                NavigationController.Instance.GoBack();
+                if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
+                    return;
+
+                NavigationController.Instance.GoBack(true);
 
                 string message = LocalizationUtils.GetLocalized("PostNotFound");
 
@@ -81,8 +83,10 @@ namespace Memenim.Pages
 
             if (result.error)
             {
-                NavigationController.Instance.GoBack();
-                NavigationController.Instance.GoBack();
+                if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
+                    return;
+
+                NavigationController.Instance.GoBack(true);
 
                 await DialogManager.ShowErrorDialog(result.message)
                     .ConfigureAwait(true);
@@ -92,8 +96,10 @@ namespace Memenim.Pages
 
             if (result.data == null)
             {
-                NavigationController.Instance.GoBack();
-                NavigationController.Instance.GoBack();
+                if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
+                    return;
+
+                NavigationController.Instance.GoBack(true);
 
                 string message = LocalizationUtils.GetLocalized("PostNotFound");
 

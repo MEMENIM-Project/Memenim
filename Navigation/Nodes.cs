@@ -11,5 +11,6 @@ namespace Memenim.Navigation
         public PageViewModel DataContext { get; set; }
         public PageViewModel SubDataContext { get; set; }
         public PageContentType Type { get; set; }
+        public bool SkipWhenGoBack { get; set; }
     }
 }
