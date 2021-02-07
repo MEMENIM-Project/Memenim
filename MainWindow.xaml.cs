@@ -431,9 +431,9 @@ namespace Memenim
                     oldPassword, newPassword)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
             }
         }

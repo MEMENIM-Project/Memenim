@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Converters;
+using Memenim.Core.Schema;
 
 namespace Memenim.Widgets
 {
@@ -9,7 +9,7 @@ namespace Memenim.Widgets
     {
         public static readonly DependencyProperty StatusValueProperty =
                 DependencyProperty.Register(nameof(StatusValue), typeof(PostStatusType), typeof(PostStatus),
-                    new PropertyMetadata(PostStatusType.Premoderating));
+                    new PropertyMetadata(PostStatusType.Published));
 
         public PostStatusType StatusValue
         {

@@ -161,7 +161,7 @@ namespace Memenim.Widgets
                     PostId, count, offset)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
                 var message = LocalizationUtils.GetLocalized("CouldNotLoadCommentsMessage");
 
@@ -170,7 +170,7 @@ namespace Memenim.Widgets
                 return;
             }
 
-            await AddMoreComments(result.data)
+            await AddMoreComments(result.Data)
                 .ConfigureAwait(true);
 
             RaiseEvent(new RoutedEventArgs(OnCommentsUpdated));
@@ -198,7 +198,7 @@ namespace Memenim.Widgets
                 Dispatcher.Invoke(() =>
                 {
                     btnLoadMore.Visibility =
-                        lstComments.Children.Count >= CommentsCount.count
+                        lstComments.Children.Count >= CommentsCount.TotalCount
                             ? Visibility.Collapsed
                             : Visibility.Visible;
 
@@ -235,7 +235,7 @@ namespace Memenim.Widgets
             Dispatcher.Invoke(() =>
             {
                 headOldId = (lstComments.Children[^1] as UserComment)?
-                    .CurrentCommentData.id ?? -1;
+                    .CurrentCommentData.Id ?? -1;
             });
 
             if (headOldId == -1)
@@ -263,10 +263,10 @@ namespace Memenim.Widgets
                             postId, countPerTime, offset)
                         .ConfigureAwait(false);
 
-                    if (result?.error != false)
+                    if (result?.IsError != false)
                         continue;
 
-                    if (result.data.Count == 0)
+                    if (result.Data.Count == 0)
                     {
                         await Dispatcher.Invoke(() =>
                         {
@@ -276,9 +276,9 @@ namespace Memenim.Widgets
                         return 0;
                     }
 
-                    foreach (var comment in result.data)
+                    foreach (var comment in result.Data)
                     {
-                        if (comment.id == headOldId)
+                        if (comment.Id == headOldId)
                         {
                             headOldIsFound = true;
                             break;
@@ -332,7 +332,7 @@ namespace Memenim.Widgets
                     postId, count, offset)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
                 await Dispatcher.Invoke(() =>
                 {
@@ -356,7 +356,7 @@ namespace Memenim.Widgets
                 scrollableHeight = page?.svPost?.ScrollableHeight ?? scrollableHeight;
             });
 
-            await AddNewComments(result.data)
+            await AddNewComments(result.Data)
                 .ConfigureAwait(true);
 
             Dispatcher.Invoke(() =>
@@ -468,7 +468,7 @@ namespace Memenim.Widgets
                 return;
 
             commentsList.btnLoadMore.Visibility =
-                commentsList.lstComments.Children.Count >= ((StatisticSchema)e.NewValue).count
+                commentsList.lstComments.Children.Count >= ((StatisticSchema)e.NewValue).TotalCount
                     ? Visibility.Collapsed
                     : Visibility.Visible;
         }

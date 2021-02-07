@@ -96,7 +96,7 @@ namespace Memenim.Protocols.Schemas
                     {
                         CurrentProfileData = new ProfileSchema
                         {
-                            id = id
+                            Id = id
                         }
                     });
                 });
@@ -152,7 +152,7 @@ namespace Memenim.Protocols.Schemas
                                 if (!(element is PostWidget post))
                                     continue;
 
-                                if (post.CurrentPostData.id != id)
+                                if (post.CurrentPostData.Id != id)
                                     continue;
 
                                 sourcePost = post;
@@ -169,8 +169,8 @@ namespace Memenim.Protocols.Schemas
                             if (page.lstPosts.Children.Count > 2
                                 && (page.lstPosts.Children[0] is PostWidget startPost
                                     && page.lstPosts.Children[^1] is PostWidget endPost)
-                                && !(startPost.CurrentPostData.id >= id
-                                     && id >= endPost.CurrentPostData.id))
+                                && !(startPost.CurrentPostData.Id >= id
+                                     && id >= endPost.CurrentPostData.Id))
                             {
                                 break;
                             }
@@ -180,7 +180,7 @@ namespace Memenim.Protocols.Schemas
                                 if (!(element is PostWidget post))
                                     continue;
 
-                                if (post.CurrentPostData.id != id)
+                                if (post.CurrentPostData.Id != id)
                                     continue;
 
                                 sourcePost = post;
@@ -197,7 +197,7 @@ namespace Memenim.Protocols.Schemas
                         SourcePostWidget = sourcePost,
                         CurrentPostData = new PostSchema
                         {
-                            id = id
+                            Id = id
                         }
                     });
 

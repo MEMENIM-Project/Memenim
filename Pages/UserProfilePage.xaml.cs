@@ -72,7 +72,7 @@ namespace Memenim.Pages
 
         public Task UpdateProfile()
         {
-            return UpdateProfile(ViewModel.CurrentProfileData.id);
+            return UpdateProfile(ViewModel.CurrentProfileData.Id);
         }
         public async Task UpdateProfile(int id)
         {
@@ -113,20 +113,20 @@ namespace Memenim.Pages
                 var result = await UserApi.GetProfileById(id)
                     .ConfigureAwait(true);
 
-                if (result.error)
+                if (result.IsError)
                 {
                     if (!NavigationController.Instance.IsCurrentPage<UserProfilePage>())
                         return;
 
                     NavigationController.Instance.GoBack(true);
 
-                    await DialogManager.ShowErrorDialog(result.message)
+                    await DialogManager.ShowErrorDialog(result.Message)
                         .ConfigureAwait(true);
 
                     return;
                 }
 
-                if (result.data == null)
+                if (result.Data == null)
                 {
                     if (!NavigationController.Instance.IsCurrentPage<UserProfilePage>())
                         return;
@@ -141,7 +141,7 @@ namespace Memenim.Pages
                     return;
                 }
 
-                ViewModel.CurrentProfileData = result.data;
+                ViewModel.CurrentProfileData = result.Data;
 
                 UpdateStatBlock(wpStatBlock1, wpStatBlock2,
                     wpStatBlock3, wpStatBlock4);
@@ -303,12 +303,12 @@ namespace Memenim.Pages
 
         private void CopyUserLink_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText($"memenim://app/showuserid/{ViewModel.CurrentProfileData.id}");
+            Clipboard.SetText($"memenim://app/showuserid/{ViewModel.CurrentProfileData.Id}");
         }
 
         private void CopyUserId_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(ViewModel.CurrentProfileData.id.ToString());
+            Clipboard.SetText(ViewModel.CurrentProfileData.Id.ToString());
         }
 
         private void btnEditMode_Click(object sender, RoutedEventArgs e)
@@ -332,7 +332,7 @@ namespace Memenim.Pages
             await ProfileUtils.ChangeAvatar(url)
                 .ConfigureAwait(true);
 
-            ViewModel.CurrentProfileData.photo = url;
+            ViewModel.CurrentProfileData.PhotoUrl = url;
         }
 
         private void SelectAvatarFromAnonymGallery_Click(object sender, RoutedEventArgs e)
@@ -349,7 +349,7 @@ namespace Memenim.Pages
 
                     Dispatcher.Invoke(() =>
                     {
-                        ViewModel.CurrentProfileData.photo = url;
+                        ViewModel.CurrentProfileData.PhotoUrl = url;
                     });
                 }
             });
@@ -369,7 +369,7 @@ namespace Memenim.Pages
 
                     Dispatcher.Invoke(() =>
                     {
-                        ViewModel.CurrentProfileData.photo = url;
+                        ViewModel.CurrentProfileData.PhotoUrl = url;
                     });
                 }
             });
@@ -382,7 +382,7 @@ namespace Memenim.Pages
 
             Dispatcher.Invoke(() =>
             { 
-                ViewModel.CurrentProfileData.photo = string.Empty;
+                ViewModel.CurrentProfileData.PhotoUrl = string.Empty;
             });
         }
 
@@ -421,9 +421,9 @@ namespace Memenim.Pages
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -432,7 +432,7 @@ namespace Memenim.Pages
             }
 
             ProfileUtils.OnNameChanged(this,
-                new UserNameChangedEventArgs(oldValue, value, ViewModel.CurrentProfileData.id));
+                new UserNameChangedEventArgs(oldValue, value, ViewModel.CurrentProfileData.Id));
         }
 
         private async void EditSinglelineText_Click(object sender, RoutedEventArgs e)
@@ -469,9 +469,9 @@ namespace Memenim.Pages
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -519,9 +519,9 @@ namespace Memenim.Pages
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -554,18 +554,18 @@ namespace Memenim.Pages
             string enterName = LocalizationUtils.GetLocalized("EnterTitle");
 
             ReadOnlyCollection<string> localizedNames =
-                new ReadOnlyCollection<string>(ProfileStatPurposeType.Unknown.GetLocalizedNames());
+                new ReadOnlyCollection<string>(UserPurposeType.Unknown.GetLocalizedNames());
 
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
             string valueName = await DialogManager.ShowComboBoxDialog(title,
                     $"{enterName} '{element.StatTitle}'", localizedNames,
-                    ((ProfileStatPurposeType)((byte)oldValue)).GetLocalizedName())
+                    ((UserPurposeType)((byte)oldValue)).GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            int value = (byte)ProfileStatPurposeType.Unknown.ParseLocalizedName<ProfileStatPurposeType>(valueName);
+            int value = (byte)UserPurposeType.Unknown.ParseLocalizedName<UserPurposeType>(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
@@ -575,9 +575,9 @@ namespace Memenim.Pages
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -610,18 +610,18 @@ namespace Memenim.Pages
             string enterName = LocalizationUtils.GetLocalized("EnterTitle");
 
             ReadOnlyCollection<string> localizedNames =
-                new ReadOnlyCollection<string>(ProfileStatSexType.Unknown.GetLocalizedNames());
+                new ReadOnlyCollection<string>(UserSexType.Unknown.GetLocalizedNames());
 
             int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
             string valueName = await DialogManager.ShowComboBoxDialog(title,
                     $"{enterName} '{element.StatTitle}'", localizedNames,
-                    ((ProfileStatSexType)((byte)oldValue)).GetLocalizedName())
+                    ((UserSexType)((byte)oldValue)).GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            int value = (byte)ProfileStatSexType.Unknown.ParseLocalizedName<ProfileStatSexType>(valueName);
+            int value = (byte)UserSexType.Unknown.ParseLocalizedName<UserSexType>(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
@@ -631,9 +631,9 @@ namespace Memenim.Pages
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -682,9 +682,9 @@ namespace Memenim.Pages
                     ViewModel.CurrentProfileData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 sourceProperty.SetValue(sourceClass, oldValue);
@@ -700,12 +700,12 @@ namespace Memenim.Pages
 
         private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (string.IsNullOrEmpty(ViewModel.CurrentProfileData.photo))
+            if (string.IsNullOrEmpty(ViewModel.CurrentProfileData.PhotoUrl))
                 return;
 
             NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
             {
-                ImageSource = ViewModel.CurrentProfileData.photo
+                ImageSource = ViewModel.CurrentProfileData.PhotoUrl
             });
 
             e.Handled = true;

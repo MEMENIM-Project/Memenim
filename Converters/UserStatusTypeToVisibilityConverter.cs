@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using Memenim.Core.Schema;
 
 namespace Memenim.Converters
 {
@@ -13,6 +14,8 @@ namespace Memenim.Converters
 
             if (value is int intValue)
                 result = (UserStatusType)((byte)intValue);
+            else if (value is UserStatusType typeValue)
+                result = typeValue;
 
             return result != UserStatusType.Active
                 ? Visibility.Visible

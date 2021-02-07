@@ -104,18 +104,18 @@ namespace Memenim.Pages
                         SettingsManager.PersistentSettings.CurrentUser.Token)
                     .ConfigureAwait(true);
 
-                if (result.error)
+                if (result.IsError)
                 {
-                    await DialogManager.ShowErrorDialog(result.message)
+                    await DialogManager.ShowErrorDialog(result.Message)
                         .ConfigureAwait(true);
 
                     return;
                 }
 
                 SettingsManager.PersistentSettings.CurrentUser.SetRocketPassword(
-                    result.data.password);
+                    result.Data.Password);
 
-                Clipboard.SetText(result.data.password);
+                Clipboard.SetText(result.Data.Password);
             }
             finally
             {

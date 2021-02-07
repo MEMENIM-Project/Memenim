@@ -41,23 +41,23 @@
                 <local:PosterBanner DockPanel.Dock="Left"
                                     x:Name="wdgPoster"
                                     Margin="5 5 5 0"
-                                    UserId="{Binding Path=CurrentPostData.owner_id, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                    UserName="{Binding Path=CurrentPostData.owner_name, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                    UserAvatarSource="{Binding Path=CurrentPostData.owner_photo, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                    PostStatusValue="{Binding Path=CurrentPostData.status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                                    UserId="{Binding Path=CurrentPostData.OwnerId, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                    UserName="{Binding Path=CurrentPostData.OwnerNickname, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                    UserAvatarSource="{Binding Path=CurrentPostData.OwnerPhotoUrl, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                    PostStatus="{Binding Path=CurrentPostData.Status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
                 <local:StatButton DockPanel.Dock="Right"
                                   x:Name="stViews" StatValueFontSize="11.5"
                                   StatValueOnLeft="False" ButtonSize="25"
                                   IconKind="Eye" BorderSize="0"
                                   IsEnabled="False" Visibility="Visible"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
-                                  StatValue="{Binding Path=CurrentPostData.postviews.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                                  StatValue="{Binding Path=CurrentPostData.Views.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
             </DockPanel>
             <emoji:TextBlock Grid.Row="1" Grid.Column="0"
                              Grid.ColumnSpan="3"
-                             Grid.RowSpan="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToRowSpanConverter}}"
+                             Grid.RowSpan="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceToRowSpanConverter}}"
                              x:Name="txtContent"
-                             Text="{Binding Path=CurrentPostData.text}"
+                             Text="{Binding Path=CurrentPostData.Text}"
                              FontSize="16.0"
                              Style="{DynamicResource Paragraph}"
                              TextWrapping="Wrap"
@@ -73,18 +73,18 @@
                   MouseLeftButtonUp="PostImage_MouseLeftButtonUp">
                 <Image x:Name="PostImage"
                        MinWidth="300" MinHeight="300"
-                       Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"
-                       Visibility="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
+                       Source="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceConverter}}"
+                       Visibility="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceToVisibilityConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <StackPanel Grid.Row="3" Grid.Column="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Left">
-                <local:StatButton x:Name="stReposts"
+                <local:StatButton x:Name="stShares"
                                   ButtonSize="28" IconKind="Share"
-                                  StatValue="{Binding Path=CurrentPostData.reposts, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                  ButtonClick="Repost_Click"/>
+                                  StatValue="{Binding Path=CurrentPostData.Shares, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  ButtonClick="Share_Click"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="1"
                         Orientation="Horizontal"
@@ -92,20 +92,20 @@
                 <local:StatButton x:Name="stComments"
                                   ButtonSize="28" IconKind="Message"
                                   BorderSize="0" IsEnabled="False"
-                                  StatValue="{Binding Path=CurrentPostData.comments.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                                  StatValue="{Binding Path=CurrentPostData.Comments.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="2"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <local:StatButton x:Name="stLikes"
                                   ButtonSize="28" IconKind="ThumbsUp"
-                                  StatValue="{Binding Path=CurrentPostData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                  BorderBackground="{Binding Path=CurrentPostData.likes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  StatValue="{Binding Path=CurrentPostData.Likes.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  BorderBackground="{Binding Path=CurrentPostData.Likes.MyCount, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                   ButtonClick="Like_Click"/>
                 <local:StatButton x:Name="stDislikes"
                                   ButtonSize="28" IconKind="ThumbsDown"
-                                  StatValue="{Binding Path=CurrentPostData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                  BorderBackground="{Binding Path=CurrentPostData.dislikes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  StatValue="{Binding Path=CurrentPostData.Dislikes.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                  BorderBackground="{Binding Path=CurrentPostData.Dislikes.MyCount, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
                                   ButtonClick="Dislike_Click"/>
             </StackPanel>
         </Grid>

@@ -60,11 +60,11 @@ namespace Memenim.Widgets
                 SetValue(CurrentPostDataProperty, value);
             }
         }
-        public bool CommentsIsOpen
+        public bool IsCommentsOpen
         {
             get
             {
-                return CurrentPostData?.open_comments == 1;
+                return CurrentPostData?.IsCommentsOpen ?? false;
             }
         }
         public bool PreviewMode { get; set; }
@@ -81,24 +81,24 @@ namespace Memenim.Widgets
         {
             var result = await PostApi.GetById(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentPostData.id)
+                    CurrentPostData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
                 return;
             }
 
-            if (result.data == null)
+            if (result.Data == null)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
                 return;
             }
 
-            CurrentPostData = result.data;
+            CurrentPostData = result.Data;
         }
 
         public void LoadImage(string url)
@@ -106,12 +106,12 @@ namespace Memenim.Widgets
             if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
                 return;
 
-            CurrentPostData.attachments[0].photo.photo_medium = url;
+            CurrentPostData.Attachments[0].Photo.MediumUrl = url;
         }
 
         public void ClearImage()
         {
-            CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
+            CurrentPostData.Attachments[0].Photo.MediumUrl = string.Empty;
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -133,29 +133,28 @@ namespace Memenim.Widgets
                 stViews.ButtonSize = 20;
             }
 
-            wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.date ?? 0L)
+            wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.UtcDate ?? 0L)
                 .ToString(CultureInfo.CurrentCulture);
-            wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 2;
+            wdgPoster.IsAnonymous = CurrentPostData?.IsAnonymous ?? false;
 
             btnEdit.Visibility =
-                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
+                (CurrentPostData?.OwnerId ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
                     ? Visibility.Collapsed
                     : Visibility.Visible;
             btnDelete.Visibility =
-                (CurrentPostData?.owner_id ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
+                (CurrentPostData?.OwnerId ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
                     ? Visibility.Collapsed
                     : Visibility.Visible;
 
-            stComments.Visibility = !CommentsIsOpen
+            stComments.Visibility = !IsCommentsOpen
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
             if (PreviewMode)
             {
-                wdgPoster.PostTime = (CurrentPostData?.date ?? 0L) == 0L
+                wdgPoster.PostTime = (CurrentPostData?.UtcDate ?? 0L) == 0L
                     ? DateTime.UtcNow.ToLocalTime().ToString(CultureInfo.CurrentCulture)
                     : wdgPoster.PostTime;
-                wdgPoster.IsAnonymous = CurrentPostData?.author_watch != 1;
 
                 postMenu.IsEnabled = false;
                 postMenu.Visibility = Visibility.Collapsed;
@@ -164,7 +163,7 @@ namespace Memenim.Widgets
                 stDislikes.IsEnabled = false;
                 stComments.IsEnabled = false;
                 stViews.IsEnabled = false;
-                stReposts.IsEnabled = false;
+                stShares.IsEnabled = false;
             }
         }
 
@@ -175,37 +174,37 @@ namespace Memenim.Widgets
 
         private async void CopyPostLink_Click(object sender, RoutedEventArgs e)
         {
-            stReposts.IsEnabled = false;
+            stShares.IsEnabled = false;
 
-            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
+            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.Id}");
 
             var result = await PostApi.AddRepost(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentPostData.id)
+                    CurrentPostData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
-                stReposts.IsEnabled = true;
+                stShares.IsEnabled = true;
                 return;
             }
 
-            ++CurrentPostData.reposts;
+            ++CurrentPostData.Shares;
 
-            stReposts.IsEnabled = true;
+            stShares.IsEnabled = true;
         }
 
         private void CopyPostId_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentPostData.id.ToString());
+            Clipboard.SetText(CurrentPostData.Id.ToString());
         }
 
         private void CopyPostText_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentPostData.text);
+            Clipboard.SetText(CurrentPostData.Text);
         }
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
@@ -215,7 +214,7 @@ namespace Memenim.Widgets
             var title = LocalizationUtils.GetLocalized("EditingPostTitle");
             var message = LocalizationUtils.GetLocalized("EditingPostMessage");
 
-            string oldValue = CurrentPostData.text;
+            string oldValue = CurrentPostData.Text;
             string value = await DialogManager.ShowMultilineTextDialog(
                     title, message, oldValue)
                 .ConfigureAwait(true);
@@ -228,15 +227,15 @@ namespace Memenim.Widgets
 
             PostEditSchema postEditData = new PostEditSchema
             {
-                id = CurrentPostData.id,
-                text = value,
-                adult = CurrentPostData.adult,
-                author_watch = CurrentPostData.author_watch.ToString(),
-                category = CurrentPostData.category,
-                filter = CurrentPostData.filter,
-                hidden = CurrentPostData.hidden,
-                open_comments = CurrentPostData.open_comments,
-                type = CurrentPostData.type
+                Id = CurrentPostData.Id,
+                Text = value,
+                IsAdult = CurrentPostData.IsAdult,
+                IsAnonymous = CurrentPostData.IsAnonymous,
+                CategoryId = CurrentPostData.CategoryId,
+                Filter = CurrentPostData.Filter,
+                IsHidden = CurrentPostData.IsHidden,
+                IsCommentsOpen = CurrentPostData.IsCommentsOpen,
+                Type = CurrentPostData.Type
             };
 
             var request = await PostApi.Edit(
@@ -244,16 +243,16 @@ namespace Memenim.Widgets
                     postEditData)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 btnEdit.IsEnabled = true;
                 return;
             }
 
-            CurrentPostData.text = value;
+            CurrentPostData.Text = value;
 
             btnEdit.IsEnabled = true;
         }
@@ -273,12 +272,12 @@ namespace Memenim.Widgets
 
             var result = await PostApi.Remove(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentPostData.id)
+                    CurrentPostData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 btnDelete.IsEnabled = true;
@@ -292,29 +291,29 @@ namespace Memenim.Widgets
             btnDelete.IsEnabled = true;
         }
 
-        private async void Repost_Click(object sender, RoutedEventArgs e)
+        private async void Share_Click(object sender, RoutedEventArgs e)
         {
-            stReposts.IsEnabled = false;
+            stShares.IsEnabled = false;
 
-            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.id}");
+            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.Id}");
 
             var result = await PostApi.AddRepost(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentPostData.id)
+                    CurrentPostData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
-                stReposts.IsEnabled = true;
+                stShares.IsEnabled = true;
                 return;
             }
 
-            ++CurrentPostData.reposts;
+            ++CurrentPostData.Shares;
 
-            stReposts.IsEnabled = true;
+            stShares.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)
@@ -323,36 +322,36 @@ namespace Memenim.Widgets
 
             ApiResponse<CountSchema> result;
 
-            if (CurrentPostData.likes.my == 0)
+            if (CurrentPostData.Likes.MyCount == 0)
             {
                 result = await PostApi.AddLike(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentPostData.id)
+                        CurrentPostData.Id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveLike(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentPostData.id)
+                        CurrentPostData.Id)
                     .ConfigureAwait(true);
             }
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 stLikes.IsEnabled = true;
                 return;
             }
 
-            if (CurrentPostData.likes.my == 0)
-                ++CurrentPostData.likes.my;
+            if (CurrentPostData.Likes.MyCount == 0)
+                ++CurrentPostData.Likes.MyCount;
             else
-                --CurrentPostData.likes.my;
+                --CurrentPostData.Likes.MyCount;
 
-            CurrentPostData.likes.count = result.data.count;
+            CurrentPostData.Likes.TotalCount = result.Data.Count;
 
             stLikes.IsEnabled = true;
         }
@@ -363,48 +362,48 @@ namespace Memenim.Widgets
 
             ApiResponse<CountSchema> result;
 
-            if (CurrentPostData.dislikes.my == 0)
+            if (CurrentPostData.Dislikes.MyCount == 0)
             {
                 result = await PostApi.AddDislike(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentPostData.id)
+                        CurrentPostData.Id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveDislike(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentPostData.id)
+                        CurrentPostData.Id)
                     .ConfigureAwait(true);
             }
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 stDislikes.IsEnabled = true;
                 return;
             }
 
-            if (CurrentPostData.dislikes.my == 0)
-                ++CurrentPostData.dislikes.my;
+            if (CurrentPostData.Dislikes.MyCount == 0)
+                ++CurrentPostData.Dislikes.MyCount;
             else
-                --CurrentPostData.dislikes.my;
+                --CurrentPostData.Dislikes.MyCount;
 
-            CurrentPostData.dislikes.count = result.data.count;
+            CurrentPostData.Dislikes.TotalCount = result.Data.Count;
 
             stDislikes.IsEnabled = true;
         }
 
         private void PostImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (string.IsNullOrEmpty(CurrentPostData.attachments[0].photo.photo_medium))
+            if (string.IsNullOrEmpty(CurrentPostData.Attachments[0].Photo.MediumUrl))
                 return;
 
             NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
             {
-                ImageSource = CurrentPostData.attachments[0].photo.photo_medium
+                ImageSource = CurrentPostData.Attachments[0].Photo.MediumUrl
             });
 
             e.Handled = true;

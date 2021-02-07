@@ -157,11 +157,11 @@ namespace Memenim.Pages
                         txtLogin.Text, txtPassword.Password, nickname)
                     .ConfigureAwait(true);
 
-                if (result.error)
+                if (result.IsError)
                 {
                     var title = LocalizationUtils.GetLocalized("RegisterErrorTitle");
 
-                    await DialogManager.ShowMessageDialog(title, result.message)
+                    await DialogManager.ShowMessageDialog(title, result.Message)
                         .ConfigureAwait(true);
 
                     return;
@@ -169,8 +169,8 @@ namespace Memenim.Pages
 
                 var setUserSuccess = SettingsManager.PersistentSettings.SetUser(
                     txtLogin.Text,
-                    result.data.token,
-                    result.data.id,
+                    result.Data.Token,
+                    result.Data.Id,
                     null);
 
                 if (!setUserSuccess)

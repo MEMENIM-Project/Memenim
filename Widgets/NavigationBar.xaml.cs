@@ -139,7 +139,7 @@ namespace Memenim.Widgets
                     {
                         if (NavigationController.Instance.PageContent.Content is UserProfilePage page
                             && page.DataContext is UserProfileViewModel viewModel
-                            && viewModel.CurrentProfileData.id == SettingsManager.PersistentSettings.CurrentUser.Id)
+                            && viewModel.CurrentProfileData.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
                         {
                             return;
                         }
@@ -148,7 +148,7 @@ namespace Memenim.Widgets
                         {
                             CurrentProfileData = new ProfileSchema
                             {
-                                id = SettingsManager.PersistentSettings.CurrentUser.Id
+                                Id = SettingsManager.PersistentSettings.CurrentUser.Id
                             }
                         });
                     }

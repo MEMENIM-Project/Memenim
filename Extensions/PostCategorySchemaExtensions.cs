@@ -10,7 +10,7 @@ namespace Memenim.Extensions
     {
         public static string GetResourceKey(this PostCategorySchema targetSchema)
         {
-            return $"Schema-{targetSchema.GetType().Name}-{targetSchema.id}";
+            return $"Schema-{targetSchema.GetType().Name}-{targetSchema.Id}";
         }
         public static string GetResourceKey(this PostCategorySchema targetSchema, int id)
         {
@@ -20,7 +20,7 @@ namespace Memenim.Extensions
         public static string GetLocalizedName(this PostCategorySchema targetSchema)
         {
             string name =
-                targetSchema.text;
+                targetSchema.Name;
             string localizedName =
                 LocalizationUtils.GetLocalized(GetResourceKey(targetSchema));
 
@@ -42,7 +42,7 @@ namespace Memenim.Extensions
             {
                 ref var category = ref categories[i];
 
-                string name = category.text;
+                string name = category.Name;
 
                 string localizedName =
                     LocalizationUtils.GetLocalized(GetResourceKey(category));
@@ -75,8 +75,8 @@ namespace Memenim.Extensions
 
             return new PostCategorySchema
             {
-                id = 0,
-                text = null
+                Id = -1,
+                Name = null
             };
         }
     }

@@ -267,13 +267,13 @@ namespace Memenim
                         return;
                     }
 
-                    var resultPosts = await PostApi.Get(
+                    var result = await PostApi.Get(
                             SettingsManager.PersistentSettings.CurrentUser.Token,
                             PostType.Popular, 1)
                         .ConfigureAwait(false);
 
-                    if (resultPosts.error
-                        && (resultPosts.code == 400 || resultPosts.code == 401))
+                    if (result.IsError
+                        && (result.Code == 400 || result.Code == 401))
                     {
                         SettingsManager.PersistentSettings.RemoveUser(
                             SettingsManager.PersistentSettings.CurrentUser.Login);

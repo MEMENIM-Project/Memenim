@@ -121,10 +121,10 @@
             <convertersLocal:ProfileStatStringToVisibilityConverter x:Key="ProfileStatStringToVisibilityConverter"/>
             <convertersLocal:ProfileStatIntToVisibilityConverter x:Key="ProfileStatIntToVisibilityConverter"/>
             <convertersLocal:ProfileStatCollectionToVisibilityConverter x:Key="ProfileStatCollectionToVisibilityConverter"/>
-            <convertersLocal:ProfileStatPurposeTypeToStringConverter x:Key="ProfileStatPurposeTypeToStringConverter"/>
-            <convertersLocal:ProfileStatSexTypeToStringConverter x:Key="ProfileStatSexTypeToStringConverter"/>
             <convertersLocal:ProfileStatVisibilityMultiConverter x:Key="ProfileStatVisibilityMultiConverter"/>
             <convertersLocal:ProfileStatBlockVisibilityMultiConverter x:Key="ProfileStatBlockVisibilityMultiConverter"/>
+            <convertersLocal:UserPurposeTypeToStringConverter x:Key="UserPurposeTypeToStringConverter"/>
+            <convertersLocal:UserSexTypeToStringConverter x:Key="UserSexTypeToStringConverter"/>
             <convertersLocal:UserNameConverter x:Key="UserNameConverter"/>
             <convertersLocal:UserStatusTypeConverter x:Key="UserStatusTypeConverter"/>
             <convertersLocal:UserStatusTypeToVisibilityConverter x:Key="UserStatusTypeToVisibilityConverter"/>

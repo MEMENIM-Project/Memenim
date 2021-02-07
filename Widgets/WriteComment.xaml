@@ -42,9 +42,9 @@
                      TextWrapping="Wrap" AcceptsReturn="True"
                      KeyUp="txtContent_KeyUp"/>
             <local:IconToggleButton Grid.Column="2"
-                                    x:Name="btnAnonymous" Height="40" IconKind="UserDelete"
+                                    x:Name="btnSendAnonymously" Height="40" IconKind="UserDelete"
                                     Margin="0 5 0 5" VerticalAlignment="Top"
-                                    IconToggleButtonClick="btnAnonymous_Click"/>
+                                    IconToggleButtonClick="btnSendAnonymously_Click"/>
             <local:IconButton Grid.Column="3"
                               x:Name="btnSend" Height="40" IconKind="MessageSend"
                               Margin="0 5 0 5" VerticalAlignment="Top"

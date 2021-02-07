@@ -9,7 +9,7 @@ namespace Memenim.Pages.ViewModel
     {
         private ProfileSchema _currentProfileData = new ProfileSchema
         {
-            id = -1
+            Id = -1
         };
         public ProfileSchema CurrentProfileData
         {
@@ -36,7 +36,7 @@ namespace Memenim.Pages.ViewModel
         {
             get
             {
-                return CurrentProfileData.id == SettingsManager.PersistentSettings.CurrentUser.Id;
+                return CurrentProfileData.Id == SettingsManager.PersistentSettings.CurrentUser.Id;
             }
         }
 

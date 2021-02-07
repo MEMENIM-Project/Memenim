@@ -179,7 +179,7 @@ namespace Memenim.Pages
             else
             {
                 ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as PostWidget)?
-                    .CurrentPostData.id ?? -1;
+                    .CurrentPostData.Id ?? -1;
 
                 IsEmpty = false;
             }
@@ -233,10 +233,10 @@ namespace Memenim.Pages
             if (result == null)
                 return;
 
-            if (result.data == null)
-                result.data = new List<PostSchema>();
+            if (result.Data == null)
+                result.Data = new List<PostSchema>();
 
-            await AddMorePosts(result.data)
+            await AddMorePosts(result.Data)
                 .ConfigureAwait(true);
 
             ShowLoadingMoreGrid(false);
@@ -324,13 +324,13 @@ namespace Memenim.Pages
                             type, countPerTime, offset)
                         .ConfigureAwait(false);
 
-                    if (result?.error != false)
+                    if (result?.IsError != false)
                         continue;
 
-                    if (result.data == null)
-                        result.data = new List<PostSchema>();
+                    if (result.Data == null)
+                        result.Data = new List<PostSchema>();
 
-                    if (result.data.Count == 0)
+                    if (result.Data.Count == 0)
                     {
                         await Dispatcher.Invoke(() =>
                         {
@@ -342,13 +342,13 @@ namespace Memenim.Pages
 
                     if (isFirstRequest)
                     {
-                        headNewId = result.data[0].id;
+                        headNewId = result.Data[0].Id;
                         isFirstRequest = false;
                     }
 
-                    foreach (var post in result.data)
+                    foreach (var post in result.Data)
                     {
-                        if (post.id == headOldId)
+                        if (post.Id == headOldId)
                         {
                             headOldIsFound = true;
                             break;
@@ -395,16 +395,16 @@ namespace Memenim.Pages
                             type, countPerTime, offset)
                         .ConfigureAwait(false);
 
-                    if (result?.error != false)
+                    if (result?.IsError != false)
                         continue;
 
-                    if (result.data == null)
-                        result.data = new List<PostSchema>();
+                    if (result.Data == null)
+                        result.Data = new List<PostSchema>();
 
-                    if (result.data.Count == 0)
+                    if (result.Data.Count == 0)
                         break;
 
-                    countNew += result.data.Count;
+                    countNew += result.Data.Count;
                     offset += countPerTime;
                 }
 
@@ -659,7 +659,7 @@ namespace Memenim.Pages
                 return;
             }
 
-            if (ViewModel.LastNewHeadPostId == post.CurrentPostData.id)
+            if (ViewModel.LastNewHeadPostId == post.CurrentPostData.Id)
             {
                 await UpdatePosts()
                     .ConfigureAwait(true);

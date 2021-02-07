@@ -185,13 +185,14 @@ namespace Memenim.Settings
 
                                 if (string.IsNullOrEmpty(rocketPassword))
                                 {
-                                    var resultRocketPassword = await UserApi.GetRocketPassword(
+                                    var result = await UserApi.GetRocketPassword(
                                             token)
                                         .ConfigureAwait(false);
 
-                                    if (!resultRocketPassword.error)
+                                    if (!result.IsError
+                                        && result.Data != null)
                                     {
-                                        rocketPassword = resultRocketPassword.data.password;
+                                        rocketPassword = result.Data.Password;
                                         SetUserRocketPassword(login, rocketPassword);
                                     }
                                     else

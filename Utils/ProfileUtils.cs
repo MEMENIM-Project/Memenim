@@ -39,40 +39,40 @@ namespace Memenim.Utils
                         SettingsManager.PersistentSettings.CurrentUser.Id)
                     .ConfigureAwait(true);
 
-                if (result.error)
+                if (result.IsError)
                 {
-                    await DialogManager.ShowErrorDialog(result.message)
+                    await DialogManager.ShowErrorDialog(result.Message)
                         .ConfigureAwait(true);
                     return;
                 }
 
-                if (result.data == null)
+                if (result.Data == null)
                 {
                     var message = LocalizationUtils.GetLocalized("GettingProfileErrorMessage");
 
                     await DialogManager.ShowErrorDialog(
-                            $"{message}: " + result.message)
+                            $"{message}: " + result.Message)
                         .ConfigureAwait(true);
                     return;
                 }
 
-                var oldPhoto = result.data.photo;
-                result.data.photo = url;
+                var oldPhoto = result.Data.PhotoUrl;
+                result.Data.PhotoUrl = url;
 
                 var request = await UserApi.EditProfile(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        result.data)
+                        result.Data)
                     .ConfigureAwait(true);
 
-                if (request.error)
+                if (request.IsError)
                 {
-                    await DialogManager.ShowErrorDialog(request.message)
+                    await DialogManager.ShowErrorDialog(request.Message)
                         .ConfigureAwait(true);
                     return;
                 }
 
                 OnAvatarChanged(null,
-                    new UserPhotoChangedEventArgs(oldPhoto, result.data.photo, result.data.id));
+                    new UserPhotoChangedEventArgs(oldPhoto, result.Data.PhotoUrl, result.Data.Id));
             }
             catch (Exception ex)
             {
@@ -98,40 +98,40 @@ namespace Memenim.Utils
                         SettingsManager.PersistentSettings.CurrentUser.Id)
                     .ConfigureAwait(true);
 
-                if (result.error)
+                if (result.IsError)
                 {
-                    await DialogManager.ShowErrorDialog(result.message)
+                    await DialogManager.ShowErrorDialog(result.Message)
                         .ConfigureAwait(true);
                     return;
                 }
 
-                if (result.data == null)
+                if (result.Data == null)
                 {
                     var message = LocalizationUtils.GetLocalized("GettingProfileErrorMessage");
 
                     await DialogManager.ShowErrorDialog(
-                            $"{message}: " + result.message)
+                            $"{message}: " + result.Message)
                         .ConfigureAwait(true);
                     return;
                 }
 
-                var oldPhoto = result.data.banner;
-                result.data.banner = url;
+                var oldPhoto = result.Data.BannerUrl;
+                result.Data.BannerUrl = url;
 
                 var request = await UserApi.EditProfile(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        result.data)
+                        result.Data)
                     .ConfigureAwait(true);
 
-                if (request.error)
+                if (request.IsError)
                 {
-                    await DialogManager.ShowErrorDialog(request.message)
+                    await DialogManager.ShowErrorDialog(request.Message)
                         .ConfigureAwait(true);
                     return;
                 }
 
                 OnBannerChanged(null,
-                    new UserPhotoChangedEventArgs(oldPhoto, result.data.banner, result.data.id));
+                    new UserPhotoChangedEventArgs(oldPhoto, result.Data.BannerUrl, result.Data.Id));
             }
             catch (Exception ex)
             {

@@ -35,10 +35,10 @@
     <system:String x:Key="PreviewTitle">Предпросмотр</system:String>
     <system:String x:Key="EditTitle">Редактирование</system:String>
     <system:String x:Key="SubmitPostTitle">Отправка нового поста</system:String>
-    <system:String x:Key="PostContent">Введите содержимое</system:String>
+    <system:String x:Key="EnterPostContent">Введите содержимое поста</system:String>
     <system:String x:Key="PostCategoryTitle">Категория</system:String>
     <system:String x:Key="OpenComments">Открыть комментарии</system:String>
-    <system:String x:Key="PostAnonymous">Показать ваше имя :)</system:String>
+    <system:String x:Key="SubmitAnonymously">Отправить анонимно</system:String>
     <system:String x:Key="SelectImage">Выбрать изображение</system:String>
     <system:String x:Key="SubmitPost">Отправить пост</system:String>
 
@@ -90,24 +90,24 @@
     <system:String x:Key="Enum-PostType-Favorite">Фавориты</system:String>
     <system:String x:Key="Enum-PostType-My">Мои</system:String>
 
-    <system:String x:Key="Enum-ProfileStatPurposeType-Unknown">Неизвестно</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindFriends">Найти друга, друзей</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindPenPals">Найти друга, друзей по переписке</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindConversation">Найти собеседника по переписке</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindLikeMinded">Найти единомышленников</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindSoulMate">Найти вторую половинку</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindYourself">Найти себя</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindPurpose">Найти цель в жизни</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-HelpingOther">Помощь другим людям</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-FindUnderstanding">Найти понимание, поддержку, советы</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-ShareInteresting">Делиться интересными мыслями и новостями</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-BeHonest">Быть честным с собой</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-ChangeWorld">Изменить мир</system:String>
-    <system:String x:Key="Enum-ProfileStatPurposeType-Other">Другое</system:String>
+    <system:String x:Key="Enum-UserPurposeType-Unknown">Неизвестно</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindFriends">Найти друга, друзей</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindPenPals">Найти друга, друзей по переписке</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindConversation">Найти собеседника по переписке</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindLikeMinded">Найти единомышленников</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindSoulMate">Найти вторую половинку</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindYourself">Найти себя</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindPurpose">Найти цель в жизни</system:String>
+    <system:String x:Key="Enum-UserPurposeType-HelpingOther">Помощь другим людям</system:String>
+    <system:String x:Key="Enum-UserPurposeType-FindUnderstanding">Найти понимание, поддержку, советы</system:String>
+    <system:String x:Key="Enum-UserPurposeType-ShareInteresting">Делиться интересными мыслями и новостями</system:String>
+    <system:String x:Key="Enum-UserPurposeType-BeHonest">Быть честным с собой</system:String>
+    <system:String x:Key="Enum-UserPurposeType-ChangeWorld">Изменить мир</system:String>
+    <system:String x:Key="Enum-UserPurposeType-Other">Другое</system:String>
 
-    <system:String x:Key="Enum-ProfileStatSexType-Unknown">Неизвестно</system:String>
-    <system:String x:Key="Enum-ProfileStatSexType-Male">Мужской</system:String>
-    <system:String x:Key="Enum-ProfileStatSexType-Female">Женский</system:String>
+    <system:String x:Key="Enum-UserSexType-Unknown">Неизвестно</system:String>
+    <system:String x:Key="Enum-UserSexType-Male">Мужской</system:String>
+    <system:String x:Key="Enum-UserSexType-Female">Женский</system:String>
 
     <system:String x:Key="Enum-PostStatusType-Premoderating">Премодерация</system:String>
     <system:String x:Key="Enum-PostStatusType-Published">Опубликован</system:String>

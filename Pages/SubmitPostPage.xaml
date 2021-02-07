@@ -34,8 +34,8 @@
                                    Margin="5 10 5 10"/>
                         <TextBox MinHeight="200" AcceptsReturn="True"
                                  TextWrapping="Wrap" Margin="0 5"
-                                 Text="{Binding Path=CurrentPostData.text, Mode=TwoWay}"
-                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=PostContent}"/>
+                                 Text="{Binding Path=CurrentPostData.Text, Mode=TwoWay}"
+                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterPostContent}"/>
                         <TextBlock Text="{DynamicResource ResourceKey=ImageSourceTitle}"
                                    Style="{StaticResource AccentHeader}"
                                    HorizontalAlignment="Left"
@@ -55,7 +55,7 @@
                             </StackPanel>
                             <Image Height="100" Width="100"
                                    Margin="10" Stretch="Uniform"
-                                   Source="{Binding Path=CurrentPostData.attachments[0].photo.photo_medium, Converter={StaticResource PostImageSourceConverter}}"/>
+                                   Source="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceConverter}}"/>
                         </StackPanel>
                         <Button Content="{DynamicResource ResourceKey=SelectImage}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
@@ -81,12 +81,13 @@
                         <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}"
                                   Margin="0 5">Show post</CheckBox>-->
                         <CheckBox Content="{DynamicResource ResourceKey=OpenComments}"
-                                  IsChecked="{Binding Path=CurrentPostData.open_comments, Mode=TwoWay}"
+                                  IsChecked="{Binding Path=CurrentPostData.IsCommentsOpen, Mode=TwoWay}"
                                   Margin="0 5"/>
-                        <CheckBox IsChecked="{Binding Path=CurrentPostData.adult, Mode=TwoWay}"
-                                  Margin="0 5">18+</CheckBox>
-                        <CheckBox Content="{DynamicResource ResourceKey=PostAnonymous}"
-                                  IsChecked="{Binding Path=CurrentPostData.author_watch, Mode=TwoWay}"
+                        <CheckBox Content="18+"
+                                  IsChecked="{Binding Path=CurrentPostData.IsAdult, Mode=TwoWay}"
+                                  Margin="0 5"/>
+                        <CheckBox Content="{DynamicResource ResourceKey=SubmitAnonymously}"
+                                  IsChecked="{Binding Path=CurrentPostData.IsAnonymous, Mode=TwoWay}"
                                   Margin="0 5"/>
                         <Button x:Name="btnSubmit"
                                 Content="{DynamicResource ResourceKey=SubmitPost}"

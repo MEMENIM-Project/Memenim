@@ -112,7 +112,7 @@ namespace Memenim.Widgets
             if (writeComment == null)
                 return;
 
-            writeComment.btnAnonymous.IsChecked = writeComment.IsAnonymous;
+            writeComment.btnSendAnonymously.IsChecked = writeComment.IsAnonymous;
 
             if (!writeComment.IsAnonymous)
             {
@@ -146,9 +146,9 @@ namespace Memenim.Widgets
                     PostId, txtContent.Text, IsAnonymous)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 btnSend.IsEnabled = true;
@@ -164,9 +164,9 @@ namespace Memenim.Widgets
             btnSend.IsEnabled = true;
         }
 
-        private void btnAnonymous_Click(object sender, RoutedEventArgs e)
+        private void btnSendAnonymously_Click(object sender, RoutedEventArgs e)
         {
-            IsAnonymous = btnAnonymous.IsChecked;
+            IsAnonymous = btnSendAnonymously.IsChecked;
         }
     }
 }

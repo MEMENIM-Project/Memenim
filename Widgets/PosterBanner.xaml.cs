@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Memenim.Converters;
 using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -25,9 +24,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty PostTimeProperty =
             DependencyProperty.Register(nameof(PostTime), typeof(string), typeof(PosterBanner),
                 new PropertyMetadata(DateTime.MinValue.ToString(CultureInfo.CurrentCulture)));
-        public static readonly DependencyProperty PostStatusValueProperty =
-            DependencyProperty.Register(nameof(PostStatusValue), typeof(int), typeof(PosterBanner),
-                new PropertyMetadata(0));
+        public static readonly DependencyProperty PostStatusProperty =
+            DependencyProperty.Register(nameof(PostStatus), typeof(PostStatusType), typeof(PosterBanner),
+                new PropertyMetadata(PostStatusType.Published));
         public static readonly DependencyProperty IsAnonymousProperty =
             DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PosterBanner),
                 new PropertyMetadata(false));
@@ -76,15 +75,15 @@ namespace Memenim.Widgets
                 SetValue(PostTimeProperty, value);
             }
         }
-        public int PostStatusValue
+        public PostStatusType PostStatus
         {
             get
             {
-                return (int)GetValue(PostStatusValueProperty);
+                return (PostStatusType)GetValue(PostStatusProperty);
             }
             set
             {
-                SetValue(PostStatusValueProperty, value);
+                SetValue(PostStatusProperty, value);
             }
         }
         public bool IsAnonymous
@@ -114,7 +113,7 @@ namespace Memenim.Widgets
             {
                 CurrentProfileData = new ProfileSchema
                 {
-                    id = UserId
+                    Id = UserId
                 }
             });
 

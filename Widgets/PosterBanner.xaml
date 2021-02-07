@@ -46,8 +46,8 @@
                            VerticalAlignment="Center"
                            Style="{DynamicResource Paragraph}"/>
                 <local:PostStatus Margin="20 0 0 0"
-                                  StatusValue="{Binding Path=PostStatusValue, Converter={StaticResource PostStatusTypeConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PosterBanner}}"
-                                  Visibility="{Binding Path=PostStatusValue, Converter={StaticResource PostStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PosterBanner}}"/>
+                                  StatusValue="{Binding Path=PostStatus, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PosterBanner}}"
+                                  Visibility="{Binding Path=PostStatus, Converter={StaticResource PostStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PosterBanner}}"/>
             </StackPanel>
             
         </StackPanel>

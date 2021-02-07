@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Converters;
 using Memenim.Core.Api;
+using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Settings.Entities;
 
@@ -110,12 +110,12 @@ namespace Memenim.Widgets
             var result = await UserApi.GetProfileById(Account.Id)
                 .ConfigureAwait(true);
 
-            if (result.error || result.data == null)
+            if (result.IsError || result.Data == null)
                 return;
 
-            UserName = result.data.name;
-            UserAvatarSource = result.data.photo;
-            UserStatus = (UserStatusType)((byte)result.data.status);
+            UserName = result.Data.Nickname;
+            UserAvatarSource = result.Data.PhotoUrl;
+            UserStatus = (UserStatusType)((byte)result.Data.Status);
         }
 
         public async Task UpdateStatus()
@@ -126,10 +126,10 @@ namespace Memenim.Widgets
             var result = await UserApi.GetProfileById(Account.Id)
                 .ConfigureAwait(true);
 
-            if (result.error || result.data == null)
+            if (result.IsError || result.Data == null)
                 return;
 
-            UserStatus = (UserStatusType)((byte)result.data.status);
+            UserStatus = (UserStatusType)((byte)result.Data.Status);
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)

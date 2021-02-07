@@ -60,7 +60,7 @@ namespace Memenim.Pages
             for (var i = 0; i < categories.Length; ++i)
             {
                 postCategories.Add(
-                    categories[i].id,
+                    categories[i].Id,
                     localizedNames[i]);
             }
 
@@ -91,17 +91,17 @@ namespace Memenim.Pages
             if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
                 return;
 
-            ViewModel.CurrentPostData.attachments[0].photo.photo_medium = url;
+            ViewModel.CurrentPostData.Attachments[0].Photo.MediumUrl = url;
         }
 
         public void ClearImage()
         {
-            ViewModel.CurrentPostData.attachments[0].photo.photo_medium = string.Empty;
+            ViewModel.CurrentPostData.Attachments[0].Photo.MediumUrl = string.Empty;
         }
 
         public void ClearText()
         {
-            ViewModel.CurrentPostData.text = string.Empty;
+            ViewModel.CurrentPostData.Text = string.Empty;
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
@@ -114,20 +114,20 @@ namespace Memenim.Pages
                 return;
             }
 
-            if (ViewModel.CurrentPostData?.owner_id.HasValue == true)
+            if (ViewModel.CurrentPostData?.OwnerId.HasValue == true)
             {
-                if (ViewModel.CurrentPostData.owner_id == -1)
+                if (ViewModel.CurrentPostData.OwnerId == -1)
                     return;
 
                 var result = await UserApi.GetProfileById(
-                        ViewModel.CurrentPostData.owner_id.Value)
+                        ViewModel.CurrentPostData.OwnerId.Value)
                     .ConfigureAwait(true);
 
-                if (result.data == null)
+                if (result.Data == null)
                     return;
 
-                ViewModel.CurrentPostData.owner_name = result.data.name;
-                ViewModel.CurrentPostData.owner_photo = result.data.photo;
+                ViewModel.CurrentPostData.OwnerNickname = result.Data.Nickname;
+                ViewModel.CurrentPostData.OwnerPhotoUrl = result.Data.PhotoUrl;
             }
         }
 
@@ -155,35 +155,35 @@ namespace Memenim.Pages
             if (ViewModel.CurrentPostData == null)
                 return;
 
-            ViewModel.CurrentPostData.owner_id = e.NewUser.Id;
+            ViewModel.CurrentPostData.OwnerId = e.NewUser.Id;
 
-            if (ViewModel.CurrentPostData.owner_id == -1)
+            if (ViewModel.CurrentPostData.OwnerId == -1)
                 return;
 
             var result = await UserApi.GetProfileById(
-                    ViewModel.CurrentPostData.owner_id.Value)
+                    ViewModel.CurrentPostData.OwnerId.Value)
                 .ConfigureAwait(true);
 
-            if (result.data == null)
+            if (result.Data == null)
                 return;
 
-            ViewModel.CurrentPostData.owner_name = result.data.name;
-            ViewModel.CurrentPostData.owner_photo = result.data.photo;
+            ViewModel.CurrentPostData.OwnerNickname = result.Data.Nickname;
+            ViewModel.CurrentPostData.OwnerPhotoUrl = result.Data.PhotoUrl;
         }
 
         private void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
         {
-            ViewModel.CurrentPostData.owner_photo = e.NewPhoto;
+            ViewModel.CurrentPostData.OwnerPhotoUrl = e.NewPhoto;
         }
 
         private void OnNameChanged(object sender, UserNameChangedEventArgs e)
         {
-            ViewModel.CurrentPostData.owner_name = e.NewName;
+            ViewModel.CurrentPostData.OwnerNickname = e.NewName;
         }
 
         private void slcPostCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ViewModel.CurrentPostData.category = ((KeyValuePair<int, string>)slcPostCategories.SelectedItem).Key;
+            ViewModel.CurrentPostData.CategoryId = ((KeyValuePair<int, string>)slcPostCategories.SelectedItem).Key;
         }
 
         private async void SelectImage_Click(object sender, RoutedEventArgs e)
@@ -227,16 +227,14 @@ namespace Memenim.Pages
 
             try
             {
-                ViewModel.CurrentPostData.author_watch++;
-
                 var result = await PostApi.Add(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
                         ViewModel.CurrentPostData)
                     .ConfigureAwait(true);
 
-                if (result.error)
+                if (result.IsError)
                 {
-                    await DialogManager.ShowErrorDialog(result.message)
+                    await DialogManager.ShowErrorDialog(result.Message)
                         .ConfigureAwait(true);
                 }
                 else

@@ -29,19 +29,22 @@ namespace Memenim.Pages
             await ShowLoadingGrid(true)
                 .ConfigureAwait(true);
 
-            var searchResults = await PhotoApi.GetLibraryPhotos()
+            var result = await PhotoApi.GetLibraryPhotos()
                 .ConfigureAwait(true);
 
-            if (searchResults.error)
+            if (result.IsError
+                || result.Data == null)
+            {
                 return;
+            }
 
             lstImages.Children.Clear();
 
-            foreach (var img in searchResults.data)
+            foreach (var photo in result.Data)
             {
-                if (string.IsNullOrEmpty(img.photo_medium))
+                if (string.IsNullOrEmpty(photo.MediumUrl))
                     continue;
-                if (string.IsNullOrEmpty(img.photo_small))
+                if (string.IsNullOrEmpty(photo.SmallUrl))
                     continue;
 
                 ImagePreviewButton previewButton = new ImagePreviewButton()
@@ -56,8 +59,8 @@ namespace Memenim.Pages
 
                         return ViewModel.OnPicSelect(arg);
                     },
-                    SmallImageSource = img.photo_small,
-                    ImageSource = img.photo_medium
+                    SmallImageSource = photo.SmallUrl,
+                    ImageSource = photo.MediumUrl
                 };
 
                 lstImages.Children.Add(previewButton);

@@ -31,7 +31,7 @@ namespace Memenim.Pages
         {
             get
             {
-                return ViewModel.CurrentPostData?.open_comments == 1;
+                return ViewModel.CurrentPostData?.IsCommentsOpen ?? false;
             }
         }
 
@@ -55,7 +55,7 @@ namespace Memenim.Pages
 
         public Task UpdatePost()
         {
-            return UpdatePost(ViewModel.CurrentPostData.id);
+            return UpdatePost(ViewModel.CurrentPostData.Id);
         }
         public async Task UpdatePost(int id)
         {
@@ -74,27 +74,27 @@ namespace Memenim.Pages
                 return;
             }
 
-            ViewModel.CurrentPostData.id = id;
+            ViewModel.CurrentPostData.Id = id;
 
             var result = await PostApi.GetById(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    ViewModel.CurrentPostData.id)
+                    ViewModel.CurrentPostData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
                 if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
                     return;
 
                 NavigationController.Instance.GoBack(true);
 
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 return;
             }
 
-            if (result.data == null)
+            if (result.Data == null)
             {
                 if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
                     return;
@@ -109,9 +109,9 @@ namespace Memenim.Pages
                 return;
             }
 
-            ViewModel.CurrentPostData = result.data;
+            ViewModel.CurrentPostData = result.Data;
 
-            if (ViewModel.SourcePostWidget?.CurrentPostData.id == ViewModel.CurrentPostData.id)
+            if (ViewModel.SourcePostWidget?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
             {
                 ViewModel.SourcePostWidget?.SetValue(
                     PostWidget.CurrentPostDataProperty,
@@ -133,13 +133,13 @@ namespace Memenim.Pages
 
             var result = await PostApi.GetById(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    postData.id)
+                    postData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
                 return postData;
 
-            return result.data ?? postData;
+            return result.Data ?? postData;
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)
@@ -176,12 +176,12 @@ namespace Memenim.Pages
                     SettingsManager.PersistentSettings.CurrentUser.Id)
                 .ConfigureAwait(true);
 
-            if (result.data != null)
-                wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
+            if (result.Data != null)
+                wdgWriteComment.SetRealUserAvatarSource(result.Data.PhotoUrl);
 
             var draft = await StorageManager.GetPostCommentDraft(
                     SettingsManager.PersistentSettings.CurrentUser.Id,
-                    ViewModel.CurrentPostData.id)
+                    ViewModel.CurrentPostData.Id)
                 .ConfigureAwait(true);
 
             wdgWriteComment.CommentText = draft.CommentText;
@@ -201,7 +201,7 @@ namespace Memenim.Pages
 
             await StorageManager.SetPostCommentDraft(
                     SettingsManager.PersistentSettings.CurrentUser.Id,
-                    ViewModel.CurrentPostData.id,
+                    ViewModel.CurrentPostData.Id,
                     wdgWriteComment.CommentText,
                     wdgWriteComment.IsAnonymous)
                 .ConfigureAwait(true);
@@ -225,7 +225,7 @@ namespace Memenim.Pages
         {
             if (e.OldValue is PostOverlayViewModel oldViewModel)
             {
-                if (oldViewModel.SourcePostWidget?.CurrentPostData.id == oldViewModel.CurrentPostData.id)
+                if (oldViewModel.SourcePostWidget?.CurrentPostData.Id == oldViewModel.CurrentPostData.Id)
                 {
                     oldViewModel.SourcePostWidget?.SetValue(
                         PostWidget.CurrentPostDataProperty,
@@ -234,7 +234,7 @@ namespace Memenim.Pages
 
                 await StorageManager.SetPostCommentDraft(
                         SettingsManager.PersistentSettings.CurrentUser.Id,
-                        oldViewModel.CurrentPostData.id,
+                        oldViewModel.CurrentPostData.Id,
                         wdgWriteComment.CommentText,
                         wdgWriteComment.IsAnonymous)
                     .ConfigureAwait(true);
@@ -245,7 +245,7 @@ namespace Memenim.Pages
 
             if (e.NewValue is PostOverlayViewModel newViewModel)
             {
-                if (newViewModel.SourcePostWidget?.CurrentPostData.id == newViewModel.CurrentPostData.id)
+                if (newViewModel.SourcePostWidget?.CurrentPostData.Id == newViewModel.CurrentPostData.Id)
                 {
                     newViewModel.SourcePostWidget?.SetValue(
                         PostWidget.CurrentPostDataProperty,
@@ -254,7 +254,7 @@ namespace Memenim.Pages
 
                 var draft = await StorageManager.GetPostCommentDraft(
                         SettingsManager.PersistentSettings.CurrentUser.Id,
-                        newViewModel.CurrentPostData.id)
+                        newViewModel.CurrentPostData.Id)
                     .ConfigureAwait(true);
 
                 wdgWriteComment.CommentText = draft.CommentText;
@@ -280,7 +280,7 @@ namespace Memenim.Pages
             }
             else if (e.PropertyName == nameof(ViewModel.CurrentPostData))
             {
-                if (ViewModel.SourcePostWidget?.CurrentPostData.id == ViewModel.CurrentPostData.id)
+                if (ViewModel.SourcePostWidget?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
                 {
                     ViewModel.SourcePostWidget?.SetValue(
                         PostWidget.CurrentPostDataProperty,
@@ -301,22 +301,22 @@ namespace Memenim.Pages
                     SettingsManager.PersistentSettings.CurrentUser.Id)
                 .ConfigureAwait(true);
 
-            if (!result.error
-                && result.data != null)
+            if (!result.IsError
+                && result.Data != null)
             {
-                wdgWriteComment.SetRealUserAvatarSource(result.data.photo);
+                wdgWriteComment.SetRealUserAvatarSource(result.Data.PhotoUrl);
             }
 
             await StorageManager.SetPostCommentDraft(
                     e.OldUser.Id,
-                    ViewModel.CurrentPostData.id,
+                    ViewModel.CurrentPostData.Id,
                     wdgWriteComment.CommentText,
                     wdgWriteComment.IsAnonymous)
                 .ConfigureAwait(true);
 
             var draft = await StorageManager.GetPostCommentDraft(
                     e.NewUser.Id,
-                    ViewModel.CurrentPostData.id)
+                    ViewModel.CurrentPostData.Id)
                 .ConfigureAwait(true);
 
             if (!string.IsNullOrEmpty(draft.CommentText))
@@ -352,7 +352,7 @@ namespace Memenim.Pages
 
             Dispatcher.Invoke(() =>
             {
-                ViewModel.CurrentPostData.comments = postData.comments;
+                ViewModel.CurrentPostData.Comments = postData.Comments;
             });
         }
 
@@ -370,9 +370,9 @@ namespace Memenim.Pages
 
             double verticalOffset = svPost.VerticalOffset;
             double scrollableHeight = svPost.ScrollableHeight;
-            string replyText = //$">>> {commentsList.PostId}@{comment.CurrentCommentData.id}@{comment.CurrentCommentData.user.id} {comment.CurrentCommentData.user.name}:\n\n"
-                               $">>> {comment.CurrentCommentData.user.name}:\n\n"
-                               + $"{comment.CurrentCommentData.text}\n\n"
+            string replyText = //$">>> {commentsList.PostId}@{comment.CurrentCommentData.Id}@{comment.CurrentCommentData.User.Id} {comment.CurrentCommentData.User.Nickname}:\n\n"
+                               $">>> {comment.CurrentCommentData.User.Nickname}:\n\n"
+                               + $"{comment.CurrentCommentData.Text}\n\n"
                                + ">>>\n\n";
 
             int oldCaretIndex = wdgWriteComment.txtContent.CaretIndex;
@@ -384,30 +384,30 @@ namespace Memenim.Pages
             if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();
 
-            if (comment.CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUser.Id)
+            if (comment.CurrentCommentData.User.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
                 return;
 
             for (int i = 0; i < 2; ++i)
             {
-                if (comment.CurrentCommentData.likes.my == 0)
+                if (comment.CurrentCommentData.Likes.MyCount == 0)
                 {
                     await PostApi.AddLikeComment(
                             SettingsManager.PersistentSettings.CurrentUser.Token,
-                            comment.CurrentCommentData.id)
+                            comment.CurrentCommentData.Id)
                         .ConfigureAwait(true);
                 }
                 else
                 {
                     await PostApi.RemoveLikeComment(
                             SettingsManager.PersistentSettings.CurrentUser.Token,
-                            comment.CurrentCommentData.id)
+                            comment.CurrentCommentData.Id)
                         .ConfigureAwait(true);
                 }
 
-                if (comment.CurrentCommentData.likes.my == 0)
-                    ++comment.CurrentCommentData.likes.my;
+                if (comment.CurrentCommentData.Likes.MyCount == 0)
+                    ++comment.CurrentCommentData.Likes.MyCount;
                 else
-                    --comment.CurrentCommentData.likes.my;
+                    --comment.CurrentCommentData.Likes.MyCount;
             }
         }
 
@@ -423,7 +423,7 @@ namespace Memenim.Pages
 
             Dispatcher.Invoke(() =>
             {
-                ViewModel.CurrentPostData.comments = postData.comments;
+                ViewModel.CurrentPostData.Comments = postData.Comments;
             });
         }
 
@@ -439,7 +439,7 @@ namespace Memenim.Pages
 
             Dispatcher.Invoke(() =>
             {
-                ViewModel.CurrentPostData.comments = postData.comments;
+                ViewModel.CurrentPostData.Comments = postData.Comments;
             });
 
             await wdgCommentsList.LoadNewComments()

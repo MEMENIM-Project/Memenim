@@ -21,7 +21,7 @@ namespace Memenim.Widgets
             EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserComment));
         public static readonly DependencyProperty CurrentCommentDataProperty =
             DependencyProperty.Register(nameof(CurrentCommentData), typeof(CommentSchema), typeof(UserComment),
-                new PropertyMetadata(new CommentSchema { user = new CommentUserSchema {id = -1} }));
+                new PropertyMetadata(new CommentSchema { User = new CommentUserSchema {Id = -1} }));
 
         public event EventHandler<RoutedEventArgs> CommentReply
         {
@@ -66,13 +66,13 @@ namespace Memenim.Widgets
 
         public void UpdateComment()
         {
-            if (CurrentCommentData.user.id == -1)
+            if (CurrentCommentData.User.Id == -1)
             {
-                CurrentCommentData.user.name = "Unknown";
+                CurrentCommentData.User.Nickname = "Unknown";
                 return;
             }
 
-            if (CurrentCommentData.user.id == SettingsManager.PersistentSettings.CurrentUser.Id)
+            if (CurrentCommentData.User.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
             {
                 btnEdit.Visibility = Visibility.Visible;
                 btnDelete.Visibility = Visibility.Visible;
@@ -86,12 +86,12 @@ namespace Memenim.Widgets
 
         private void CopyCommentId_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentCommentData.id.ToString());
+            Clipboard.SetText(CurrentCommentData.Id.ToString());
         }
 
         private void CopyCommentText_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentCommentData.text);
+            Clipboard.SetText(CurrentCommentData.Text);
         }
 
         private void Reply_Click(object sender, RoutedEventArgs e)
@@ -110,7 +110,7 @@ namespace Memenim.Widgets
             var title = LocalizationUtils.GetLocalized("EditingCommentTitle");
             var message = LocalizationUtils.GetLocalized("EditingCommentMessage");
 
-            string oldValue = CurrentCommentData.text;
+            string oldValue = CurrentCommentData.Text;
             string value = await DialogManager.ShowMultilineTextDialog(
                     title, message, oldValue)
                 .ConfigureAwait(true);
@@ -123,20 +123,20 @@ namespace Memenim.Widgets
 
             var request = await PostApi.EditComment(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentCommentData.id,
+                    CurrentCommentData.Id,
                     value)
                 .ConfigureAwait(true);
 
-            if (request.error)
+            if (request.IsError)
             {
-                await DialogManager.ShowErrorDialog(request.message)
+                await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
                 btnEdit.IsEnabled = true;
                 return;
             }
 
-            CurrentCommentData.text = value;
+            CurrentCommentData.Text = value;
 
             btnEdit.IsEnabled = true;
         }
@@ -156,12 +156,12 @@ namespace Memenim.Widgets
 
             var result = await PostApi.RemoveComment(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentCommentData.id)
+                    CurrentCommentData.Id)
                 .ConfigureAwait(true);
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 btnDelete.IsEnabled = true;
@@ -181,36 +181,36 @@ namespace Memenim.Widgets
 
             ApiResponse<CountSchema> result;
 
-            if (CurrentCommentData.likes.my == 0)
+            if (CurrentCommentData.Likes.MyCount == 0)
             {
                 result = await PostApi.AddLikeComment(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentCommentData.id)
+                        CurrentCommentData.Id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveLikeComment(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentCommentData.id)
+                        CurrentCommentData.Id)
                     .ConfigureAwait(true);
             }
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 stLikes.IsEnabled = true;
                 return;
             }
 
-            if (CurrentCommentData.likes.my == 0)
-                ++CurrentCommentData.likes.my;
+            if (CurrentCommentData.Likes.MyCount == 0)
+                ++CurrentCommentData.Likes.MyCount;
             else
-                --CurrentCommentData.likes.my;
+                --CurrentCommentData.Likes.MyCount;
 
-            CurrentCommentData.likes.count = result.data.count;
+            CurrentCommentData.Likes.TotalCount = result.Data.Count;
 
             stLikes.IsEnabled = true;
         }
@@ -221,50 +221,50 @@ namespace Memenim.Widgets
 
             ApiResponse<CountSchema> result;
 
-            if (CurrentCommentData.dislikes.my == 0)
+            if (CurrentCommentData.Dislikes.MyCount == 0)
             {
                 result = await PostApi.AddDislikeComment(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentCommentData.id)
+                        CurrentCommentData.Id)
                     .ConfigureAwait(true);
             }
             else
             {
                 result = await PostApi.RemoveDislikeComment(
                         SettingsManager.PersistentSettings.CurrentUser.Token,
-                        CurrentCommentData.id)
+                        CurrentCommentData.Id)
                     .ConfigureAwait(true);
             }
 
-            if (result.error)
+            if (result.IsError)
             {
-                await DialogManager.ShowErrorDialog(result.message)
+                await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
                 stDislikes.IsEnabled = true;
                 return;
             }
 
-            if (CurrentCommentData.dislikes.my == 0)
-                ++CurrentCommentData.dislikes.my;
+            if (CurrentCommentData.Dislikes.MyCount == 0)
+                ++CurrentCommentData.Dislikes.MyCount;
             else
-                --CurrentCommentData.dislikes.my;
+                --CurrentCommentData.Dislikes.MyCount;
 
-            CurrentCommentData.dislikes.count = result.data.count;
+            CurrentCommentData.Dislikes.TotalCount = result.Data.Count;
 
             stDislikes.IsEnabled = true;
         }
 
         private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (CurrentCommentData.user.id == -1)
+            if (CurrentCommentData.User.Id == -1)
                 return;
 
             NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
             {
                 CurrentProfileData = new ProfileSchema()
                 {
-                    id = CurrentCommentData.user.id
+                    Id = CurrentCommentData.User.Id
                 }
             });
         }

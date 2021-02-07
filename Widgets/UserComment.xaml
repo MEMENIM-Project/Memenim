@@ -42,24 +42,24 @@
                         Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 <Image MinHeight="50" MinWidth="50"
                        x:Name="img"
-                       gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentCommentData.user.photo, Converter={StaticResource UserAvatarImageSourceConverter}}"
+                       gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentCommentData.User.PhotoUrl, Converter={StaticResource UserAvatarImageSourceConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <StackPanel Grid.Row="0" Grid.Column="1">
-                <emoji:TextBlock Text="{Binding Path=CurrentCommentData.user.name, Converter={StaticResource UserNameConverter}}"
+                <emoji:TextBlock Text="{Binding Path=CurrentCommentData.User.Nickname, Converter={StaticResource UserNameConverter}}"
                                  Style="{DynamicResource Header2}"
                                  TextWrapping="Wrap"
                                  VerticalAlignment="Top"
                                  Margin="5 0 5 0"/>
-                <TextBlock Text="{Binding Path=CurrentCommentData.date, Converter={StaticResource UnixTimeToStringConverter}}"
+                <TextBlock Text="{Binding Path=CurrentCommentData.UtcDate, Converter={StaticResource UnixTimeToStringConverter}}"
                            Style="{DynamicResource Paragraph}"
                            FontSize="11"
                            VerticalAlignment="Bottom"
                            Margin="5 0 5 5"/>
             </StackPanel>
             <emoji:TextBlock Grid.Row="1" Grid.Column="1"
-                             Text="{Binding Path=CurrentCommentData.text}"
+                             Text="{Binding Path=CurrentCommentData.Text}"
                              Style="{DynamicResource Paragraph}"
                              FontSize="14" TextWrapping="Wrap"
                              VerticalAlignment="Top" HorizontalAlignment="Stretch"
@@ -84,13 +84,13 @@
                         Margin="3 8 3 8"/>
                 <local:StatButton x:Name="stLikes"
                                   ButtonSize="22" IconKind="ThumbsUp"
-                                  StatValue="{Binding Path=CurrentCommentData.likes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
-                                  BorderBackground="{Binding Path=CurrentCommentData.likes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
+                                  StatValue="{Binding Path=CurrentCommentData.Likes.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
+                                  BorderBackground="{Binding Path=CurrentCommentData.Likes.MyCount, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
                                   ButtonClick="Like_Click"/>
                 <local:StatButton x:Name="stDislikes"
                                   ButtonSize="22" IconKind="ThumbsDown"
-                                  StatValue="{Binding Path=CurrentCommentData.dislikes.count, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
-                                  BorderBackground="{Binding Path=CurrentCommentData.dislikes.my, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
+                                  StatValue="{Binding Path=CurrentCommentData.Dislikes.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
+                                  BorderBackground="{Binding Path=CurrentCommentData.Dislikes.MyCount, Converter={StaticResource StatIntToBorderBackgroundConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserComment}}"
                                   ButtonClick="Dislike_Click"/>
             </StackPanel>
         </Grid>

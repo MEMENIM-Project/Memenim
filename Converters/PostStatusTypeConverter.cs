@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Memenim.Core.Schema;
 
 namespace Memenim.Converters
 {
@@ -12,6 +13,8 @@ namespace Memenim.Converters
 
             if (value is int intValue)
                 result = (PostStatusType)((byte)intValue);
+            else if (value is PostStatusType typeValue)
+                result = typeValue;
 
             return result;
         }
@@ -20,8 +23,10 @@ namespace Memenim.Converters
         {
             int result = 0;
 
-            if (value is PostStatusType enumValue)
-                result = (byte)enumValue;
+            if (value is int intValue)
+                result = intValue;
+            else if (value is PostStatusType typeValue)
+                result = (byte)typeValue;
 
             return result;
         }
