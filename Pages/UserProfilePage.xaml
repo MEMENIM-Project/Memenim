@@ -144,7 +144,7 @@
                                              EditClick="EditComboBoxPurpose_Click">
                         <widgets:UserProfileStat.Visibility>
                             <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
-                                <Binding Path="DataContext.CurrentProfileData.Purpose" Converter="{StaticResource ProfileStatIntToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="DataContext.CurrentProfileData.Purpose" Converter="{StaticResource UserPurposeTypeToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
                                 <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>
@@ -295,7 +295,7 @@
                                              EditClick="EditComboBoxSex_Click">
                         <widgets:UserProfileStat.Visibility>
                             <MultiBinding Converter="{StaticResource ProfileStatVisibilityMultiConverter}">
-                                <Binding Path="DataContext.CurrentProfileData.Sex" Converter="{StaticResource ProfileStatIntToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
+                                <Binding Path="DataContext.CurrentProfileData.Sex" Converter="{StaticResource UserSexTypeToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
                                 <Binding Path="IsEditMode" Converter="{StaticResource BooleanToVisibilityConverter}" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}"/>
                             </MultiBinding>
                         </widgets:UserProfileStat.Visibility>

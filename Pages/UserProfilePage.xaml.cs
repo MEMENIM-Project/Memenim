@@ -9,7 +9,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using MahApps.Metro.Controls;
-using Memenim.Converters;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
@@ -556,16 +555,16 @@ namespace Memenim.Pages
             ReadOnlyCollection<string> localizedNames =
                 new ReadOnlyCollection<string>(UserPurposeType.Unknown.GetLocalizedNames());
 
-            int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
+            UserPurposeType oldValue = (UserPurposeType)(sourceProperty.GetValue(sourceClass) ?? UserPurposeType.Unknown);
             string valueName = await DialogManager.ShowComboBoxDialog(title,
                     $"{enterName} '{element.StatTitle}'", localizedNames,
-                    ((UserPurposeType)((byte)oldValue)).GetLocalizedName())
+                    oldValue.GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            int value = (byte)UserPurposeType.Unknown.ParseLocalizedName<UserPurposeType>(valueName);
+            UserPurposeType value = UserPurposeType.Unknown.ParseLocalizedName<UserPurposeType>(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
@@ -612,16 +611,17 @@ namespace Memenim.Pages
             ReadOnlyCollection<string> localizedNames =
                 new ReadOnlyCollection<string>(UserSexType.Unknown.GetLocalizedNames());
 
-            int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
+            UserSexType oldValue = (UserSexType)(sourceProperty.GetValue(sourceClass)
+                                                 ?? UserSexType.Unknown);
             string valueName = await DialogManager.ShowComboBoxDialog(title,
                     $"{enterName} '{element.StatTitle}'", localizedNames,
-                    ((UserSexType)((byte)oldValue)).GetLocalizedName())
+                    oldValue.GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            int value = (byte)UserSexType.Unknown.ParseLocalizedName<UserSexType>(valueName);
+            UserSexType value = UserSexType.Unknown.ParseLocalizedName<UserSexType>(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
