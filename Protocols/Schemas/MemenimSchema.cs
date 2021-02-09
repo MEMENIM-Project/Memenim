@@ -8,23 +8,25 @@ using Memenim.Pages;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Widgets;
-using RIS.Reflection.Call;
+using RIS.Reflection.Mapping;
 
 namespace Memenim.Protocols.Schemas
 {
     public class MemenimSchema : IUserProtocolSchema
     {
-        private static Calls<MemenimSchema> SchemaCalls { get; }
+        private readonly MethodMap<MemenimSchema> _schemaMap;
 
         public string Name { get; }
 
-        static MemenimSchema()
-        {
-            SchemaCalls = new Calls<MemenimSchema>();
-        }
-
         public MemenimSchema()
         {
+            _schemaMap = new MethodMap<MemenimSchema>(
+                this,
+                new[]
+                {
+                    typeof(string)
+                },
+                typeof(bool));
             Name = "memenim";
         }
 
@@ -53,14 +55,11 @@ namespace Memenim.Protocols.Schemas
 
                 if (requestComponents.Length == 2)
                 {
-                    string methodName = requestComponents[0].Length < 2
-                        ? requestComponents[0].ToUpperInvariant()
-                        : requestComponents[0][0].ToString().ToUpperInvariant()
-                          + requestComponents[0][1..].ToLowerInvariant();
+                    string methodName = requestComponents[0];
 
-                    LogManager.DebugLog.Info($"Request method -  name={methodName},args={requestComponents[1]}");
+                    LogManager.DebugLog.Info($"Request method - Name={methodName},Args={requestComponents[1]}");
 
-                    return SchemaCalls.CallStaticMethod(methodName,
+                    return _schemaMap.Invoke<bool>(methodName,
                         requestComponents[1]);
                 }
 
@@ -75,9 +74,8 @@ namespace Memenim.Protocols.Schemas
 
 
 
-        // ReSharper disable IdentifierTypo
-
-        private static bool Showuserid(string args)
+        [MappedMethod("showuserid")]
+        private static bool ShowUserById(string args)
         {
             try
             {
@@ -110,7 +108,8 @@ namespace Memenim.Protocols.Schemas
             }
         }
 
-        private static bool Showpostid(string args)
+        [MappedMethod("showpostid")]
+        private static bool ShowPostById(string args)
         {
             try
             {
@@ -215,7 +214,5 @@ namespace Memenim.Protocols.Schemas
                 return false;
             }
         }
-
-        // ReSharper enable IdentifierTypo
     }
 }
