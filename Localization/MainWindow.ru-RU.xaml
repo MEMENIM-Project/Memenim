@@ -111,6 +111,7 @@
 
     <system:String x:Key="Enum-PostStatusType-Premoderating">Премодерация</system:String>
     <system:String x:Key="Enum-PostStatusType-Published">Опубликован</system:String>
+    <system:String x:Key="Enum-PostStatusType-Unlisted">Убран из выдачи</system:String>
     <system:String x:Key="Enum-PostStatusType-Rejected">Отклонён</system:String>
 
     <system:String x:Key="Enum-UserStatusType-Active">Активен</system:String>

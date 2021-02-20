@@ -47,11 +47,16 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <StackPanel Grid.Row="0" Grid.Column="1">
-                <emoji:TextBlock Text="{Binding Path=CurrentCommentData.User.Nickname, Converter={StaticResource UserNameConverter}}"
-                                 Style="{DynamicResource Header2}"
-                                 TextWrapping="Wrap"
-                                 VerticalAlignment="Top"
-                                 Margin="5 0 5 0"/>
+                <StackPanel Orientation="Horizontal">
+                    <emoji:TextBlock Text="{Binding Path=CurrentCommentData.User.Nickname, Converter={StaticResource UserNameConverter}}"
+                                     Style="{DynamicResource Header2}"
+                                     TextWrapping="Wrap"
+                                     VerticalAlignment="Top"
+                                     Margin="5 0 5 0"/>
+                    <TextBlock Text="Anonymous" Style="{DynamicResource Paragraph}"
+                               VerticalAlignment="Top" Margin="2 3 5 5"
+                               Visibility="{Binding Path=CurrentCommentData.IsAnonymous, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
                 <TextBlock Text="{Binding Path=CurrentCommentData.UtcDate, Converter={StaticResource UnixTimeToStringConverter}}"
                            Style="{DynamicResource Paragraph}"
                            FontSize="11"

@@ -66,7 +66,7 @@ namespace Memenim.Widgets
 
         public void UpdateComment()
         {
-            if (CurrentCommentData.User.Id == -1)
+            if (!CurrentCommentData.User.Id.HasValue || CurrentCommentData.User.Id == -1)
             {
                 CurrentCommentData.User.Nickname = "Unknown";
                 return;
@@ -107,6 +107,12 @@ namespace Memenim.Widgets
         {
             btnEdit.IsEnabled = false;
 
+            if (!CurrentCommentData.User.Id.HasValue || CurrentCommentData.User.Id == -1)
+                return;
+
+            if (CurrentCommentData.User.Id != SettingsManager.PersistentSettings.CurrentUser.Id)
+                return;
+
             var title = LocalizationUtils.GetLocalized("EditingCommentTitle");
             var message = LocalizationUtils.GetLocalized("EditingCommentMessage");
 
@@ -144,6 +150,12 @@ namespace Memenim.Widgets
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
             btnDelete.IsEnabled = false;
+
+            if (!CurrentCommentData.User.Id.HasValue || CurrentCommentData.User.Id == -1)
+                return;
+
+            if (CurrentCommentData.User.Id != SettingsManager.PersistentSettings.CurrentUser.Id)
+                return;
 
             var confirmResult = await DialogManager.ShowConfirmationDialog()
                 .ConfigureAwait(true);
@@ -257,14 +269,14 @@ namespace Memenim.Widgets
 
         private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (CurrentCommentData.User.Id == -1)
+            if (!CurrentCommentData.User.Id.HasValue || CurrentCommentData.User.Id == -1)
                 return;
 
             NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
             {
                 CurrentProfileData = new ProfileSchema()
                 {
-                    Id = CurrentCommentData.User.Id
+                    Id = CurrentCommentData.User.Id.Value
                 }
             });
         }

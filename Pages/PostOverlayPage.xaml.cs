@@ -371,7 +371,7 @@ namespace Memenim.Pages
             double verticalOffset = svPost.VerticalOffset;
             double scrollableHeight = svPost.ScrollableHeight;
             string replyText = //$">>> {commentsList.PostId}@{comment.CurrentCommentData.Id}@{comment.CurrentCommentData.User.Id} {comment.CurrentCommentData.User.Nickname}:\n\n"
-                               $">>> {comment.CurrentCommentData.User.Nickname}:\n\n"
+                               $">>> {(string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname) ? "Unknown" : comment.CurrentCommentData.User.Nickname)}:\n\n"
                                + $"{comment.CurrentCommentData.Text}\n\n"
                                + ">>>\n\n";
 
@@ -384,8 +384,11 @@ namespace Memenim.Pages
             if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();
 
-            if (comment.CurrentCommentData.User.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
+            if (comment.CurrentCommentData.User.Id.HasValue
+                && comment.CurrentCommentData.User.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
+            {
                 return;
+            }
 
             for (int i = 0; i < 2; ++i)
             {

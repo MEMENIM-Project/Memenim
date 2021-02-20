@@ -111,6 +111,7 @@ Have fun.</system:String>
 
     <system:String x:Key="Enum-PostStatusType-Premoderating">Pre-moderating</system:String>
     <system:String x:Key="Enum-PostStatusType-Published">Published</system:String>
+    <system:String x:Key="Enum-PostStatusType-Unlisted">Unlisted</system:String>
     <system:String x:Key="Enum-PostStatusType-Rejected">Rejected</system:String>
 
     <system:String x:Key="Enum-UserStatusType-Active">Active</system:String>
