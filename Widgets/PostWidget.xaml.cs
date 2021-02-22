@@ -133,10 +133,6 @@ namespace Memenim.Widgets
                 stViews.ButtonSize = 20;
             }
 
-            wdgPoster.PostTime = TimeUtils.UnixTimeStampToDateTime(CurrentPostData?.UtcDate ?? 0L)
-                .ToString(CultureInfo.CurrentCulture);
-            wdgPoster.IsAnonymous = CurrentPostData?.IsAnonymous ?? false;
-
             btnEdit.Visibility =
                 (CurrentPostData?.OwnerId ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
                     ? Visibility.Collapsed
@@ -152,9 +148,8 @@ namespace Memenim.Widgets
 
             if (PreviewMode)
             {
-                wdgPoster.PostTime = (CurrentPostData?.UtcDate ?? 0L) == 0L
-                    ? DateTime.UtcNow.ToLocalTime().ToString(CultureInfo.CurrentCulture)
-                    : wdgPoster.PostTime;
+                if (CurrentPostData != null)
+                    CurrentPostData.UtcDate = TimeUtils.ToUnixTimeStamp(DateTime.Now);
 
                 postMenu.IsEnabled = false;
                 postMenu.Visibility = Visibility.Collapsed;

@@ -42,7 +42,7 @@
                            Visibility="{Binding Path=IsAnonymous, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Path=PostTime}"
+                <TextBlock Text="{Binding Path=UtcDate, Converter={StaticResource UnixTimeToStringConverter}}"
                            VerticalAlignment="Center"
                            Style="{DynamicResource Paragraph}"/>
                 <local:PostStatus Margin="20 0 0 0"

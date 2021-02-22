@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,6 +6,7 @@ using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
+using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
@@ -21,9 +21,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty UserAvatarSourceProperty =
             DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(PosterBanner),
                 new PropertyMetadata((string) null));
-        public static readonly DependencyProperty PostTimeProperty =
-            DependencyProperty.Register(nameof(PostTime), typeof(string), typeof(PosterBanner),
-                new PropertyMetadata(DateTime.MinValue.ToString(CultureInfo.CurrentCulture)));
+        public static readonly DependencyProperty UtcDateProperty =
+            DependencyProperty.Register(nameof(UtcDate), typeof(long), typeof(PosterBanner),
+                new PropertyMetadata(0L));
         public static readonly DependencyProperty PostStatusProperty =
             DependencyProperty.Register(nameof(PostStatus), typeof(PostStatusType), typeof(PosterBanner),
                 new PropertyMetadata(PostStatusType.Published));
@@ -64,15 +64,15 @@ namespace Memenim.Widgets
                 SetValue(UserAvatarSourceProperty, value);
             }
         }
-        public string PostTime
+        public long UtcDate
         {
             get
             {
-                return (string)GetValue(PostTimeProperty);
+                return (long)GetValue(UtcDateProperty);
             }
             set
             {
-                SetValue(PostTimeProperty, value);
+                SetValue(UtcDateProperty, value);
             }
         }
         public PostStatusType PostStatus
