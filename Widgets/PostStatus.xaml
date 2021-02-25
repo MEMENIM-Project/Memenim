@@ -22,11 +22,11 @@
                         <DataTrigger Binding="{Binding Path=StatusValue}" Value="Published">
                             <Setter Property="Border.Background" Value="Green"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=StatusValue}" Value="Unlisted">
-                            <Setter Property="Border.Background" Value="DarkRed"/>
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding Path=StatusValue}" Value="Rejected">
                             <Setter Property="Border.Background" Value="Red"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=StatusValue}" Value="Unlisted">
+                            <Setter Property="Border.Background" Value="DarkRed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -46,11 +46,11 @@
                             <DataTrigger Binding="{Binding Path=StatusValue}" Value="Published">
                                 <Setter Property="TextBlock.Text" Value="{DynamicResource Enum-PostStatusType-Published}"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=StatusValue}" Value="Unlisted">
-                                <Setter Property="TextBlock.Text" Value="{DynamicResource Enum-PostStatusType-Unlisted}"/>
-                            </DataTrigger>
                             <DataTrigger Binding="{Binding Path=StatusValue}" Value="Rejected">
                                 <Setter Property="TextBlock.Text" Value="{DynamicResource Enum-PostStatusType-Rejected}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=StatusValue}" Value="Unlisted">
+                                <Setter Property="TextBlock.Text" Value="{DynamicResource Enum-PostStatusType-Unlisted}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
