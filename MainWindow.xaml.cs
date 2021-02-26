@@ -20,6 +20,7 @@ using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
 using Memenim.Utils;
+using RIS;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim
@@ -392,7 +393,17 @@ namespace Memenim
                 UseShellExecute = true
             };
 
-            Process.Start(startInfo);
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (Exception)
+            {
+                var exception = new Exception(
+                    $"An error occurred when opening the link '{link}'");
+                Events.OnError(new RErrorEventArgs(exception,
+                    exception.Message, exception.StackTrace));
+            }
         }
 
         private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
