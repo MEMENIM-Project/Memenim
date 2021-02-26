@@ -25,6 +25,7 @@
                                     ImageSizeLimit="True"
                                     CurrentPostData="{Binding Path=DataContext.CurrentPostData, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
                 <widgets:CommentsList x:Name="wdgCommentsList"
+                                      Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       PostId="{Binding Path=DataContext.CurrentPostData.Id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentsCount="{Binding Path=DataContext.CurrentPostData.Comments, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentsUpdate="CommentsList_CommentsUpdate"
@@ -36,6 +37,7 @@
                     Width="{Binding Path=ViewportWidth, ElementName=svPost}"
                     HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <widgets:WriteComment x:Name="wdgWriteComment" MinHeight="50"
+                                  Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                   PostId="{Binding Path=DataContext.CurrentPostData.Id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                   SizeChanged="WriteComment_SizeChanged"
                                   CommentAdd="WriteComment_CommentAdd"/>

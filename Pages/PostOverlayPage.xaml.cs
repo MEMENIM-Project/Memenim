@@ -27,13 +27,6 @@ namespace Memenim.Pages
                 return DataContext as PostOverlayViewModel;
             }
         }
-        public bool CommentsIsOpen
-        {
-            get
-            {
-                return ViewModel.CurrentPostData?.IsCommentsOpen ?? false;
-            }
-        }
 
         public PostOverlayPage()
         {
@@ -145,17 +138,6 @@ namespace Memenim.Pages
         protected override async void OnEnter(object sender, RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
-
-            if (!CommentsIsOpen)
-            {
-                wdgWriteComment.Visibility = Visibility.Collapsed;
-                wdgCommentsList.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                wdgCommentsList.Visibility = Visibility.Visible;
-                wdgWriteComment.Visibility = Visibility.Visible;
-            }
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();
