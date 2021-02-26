@@ -51,7 +51,7 @@ Have fun.</system:String>
     <system:String x:Key="ImageSourceTitle">Select an image</system:String>
     <system:String x:Key="GallerySelect">Select from Anonym Gallery</system:String>
     <system:String x:Key="TenorSelect">Select from Tenor</system:String>
-    <system:String x:Key="URLSelect">Paste an raw URL</system:String>
+    <system:String x:Key="URLSelect">Paste an URL</system:String>
     <system:String x:Key="UploadImage">Upload image</system:String>
     <system:String x:Key="RemoveImage">Remove image</system:String>
     <system:String x:Key="ImageSelection">Image selection</system:String>
@@ -193,6 +193,26 @@ Have fun.</system:String>
     <system:String x:Key="Schema-PostCategorySchema-142">Happy End</system:String>
     <system:String x:Key="Schema-PostCategorySchema-143">Strange</system:String>
 
+    <system:String x:Key="MenuItem-CopyUrl">Copy URL</system:String>
+    <system:String x:Key="MenuItem-CopyImage">Copy image</system:String>
+    <system:String x:Key="MenuItem-DownloadImage">Download image</system:String>
+
+    <system:String x:Key="MenuItem-CopyCommentId">Copy comment id</system:String>
+    <system:String x:Key="MenuItem-CopyCommentText">Copy comment text</system:String>
+
+    <system:String x:Key="MenuItem-CopyPostLink">Copy link to the post</system:String>
+    <system:String x:Key="MenuItem-CopyPostId">Copy post id</system:String>
+    <system:String x:Key="MenuItem-CopyPostText">Copy post text</system:String>
+    <system:String x:Key="MenuItem-EditPostText">Edit post text</system:String>
+    <system:String x:Key="MenuItem-DeletePost">Delete post</system:String>
+
+    <system:String x:Key="MenuItem-CopyUserLink">Copy link to the user</system:String>
+    <system:String x:Key="MenuItem-CopyUserId">Copy user id</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromUrl">Paste the image URL</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromGallery">Select image from Anonym Gallery</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromTenor">Select GIF-image from Tenor</system:String>
+    <system:String x:Key="MenuItem-RemoveImage">Remove image</system:String>
+
     <system:String x:Key="AttemptingRestoreConnection">We are attempting to restore the connection...</system:String>
 
     <system:String x:Key="ProfileEditingTitle">Profile editing</system:String>
@@ -206,6 +226,8 @@ Have fun.</system:String>
 
     <system:String x:Key="EditingCommentTitle">Comment editing</system:String>
     <system:String x:Key="EditingCommentMessage">Enter comment text</system:String>
+
+    <system:String x:Key="EnterURL">Enter URL</system:String>
 
     <system:String x:Key="OkTitle">Ok</system:String>
     <system:String x:Key="CancelTitle">Cancel</system:String>

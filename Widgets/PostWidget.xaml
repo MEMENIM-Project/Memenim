@@ -26,13 +26,13 @@
             
             <Grid.ContextMenu>
                 <ContextMenu x:Name="postMenu" Visibility="Visible">
-                    <MenuItem Header="Copy Post Link" Click="CopyPostLink_Click"/>
-                    <MenuItem Header="Copy Post Id" Click="CopyPostId_Click"/>
-                    <MenuItem Header="Copy Post Text" Click="CopyPostText_Click"/>
-                    <MenuItem Header="Edit Post Text" Name="btnEdit"
-                              Visibility="Collapsed" Click="Edit_Click"/>
-                    <MenuItem Header="Delete Post" Name="btnDelete"
-                              Visibility="Collapsed" Click="Delete_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-CopyPostLink}" Click="CopyPostLink_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-CopyPostId}" Click="CopyPostId_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-CopyPostText}" Click="CopyPostText_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-EditPostText}"
+                              Name="btnEdit" Visibility="Collapsed" Click="Edit_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-DeletePost}"
+                              Name="btnDelete" Visibility="Collapsed" Click="Delete_Click"/>
                 </ContextMenu>
             </Grid.ContextMenu>
 

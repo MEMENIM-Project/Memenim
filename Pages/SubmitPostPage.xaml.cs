@@ -191,10 +191,10 @@ namespace Memenim.Pages
             if (rbImageRaw.IsChecked == true)
             {
                 string title = LocalizationUtils.GetLocalized("InsertingImageTitle");
-                string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+                string message = LocalizationUtils.GetLocalized("EnterURL");
 
                 string url = await DialogManager.ShowSinglelineTextDialog(
-                        title, $"{enterName} URL")
+                        title, message)
                     .ConfigureAwait(true);
 
                 await SelectImage(url)

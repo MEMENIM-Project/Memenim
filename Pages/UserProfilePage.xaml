@@ -31,8 +31,8 @@
 
         <Grid.ContextMenu>
             <ContextMenu x:Name="userMenu" Visibility="Visible">
-                <MenuItem Header="Copy User Link" Click="CopyUserLink_Click"/>
-                <MenuItem Header="Copy User Id" Click="CopyUserId_Click"/>
+                <MenuItem Header="{DynamicResource MenuItem-CopyUserLink}" Click="CopyUserLink_Click"/>
+                <MenuItem Header="{DynamicResource MenuItem-CopyUserId}" Click="CopyUserId_Click"/>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -77,16 +77,16 @@
                 <ContextMenu IsHitTestVisible="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), RelativeSource={RelativeSource Mode=Self}}"
                              DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
                              d:DataContext="{d:DesignInstance Image}">
-                    <MenuItem Header="Select image from URL"
+                    <MenuItem Header="{DynamicResource MenuItem-SelectImageFromUrl}"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="SelectAvatarFromUrl_Click"/>
-                    <MenuItem Header="Select image from Anonym Gallery"
+                    <MenuItem Header="{DynamicResource MenuItem-SelectImageFromGallery}"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="SelectAvatarFromAnonymGallery_Click"/>
-                    <MenuItem Header="Select GIF from Tenor"
+                    <MenuItem Header="{DynamicResource MenuItem-SelectImageFromTenor}"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="SelectAvatarFromTenor_Click"/>
-                    <MenuItem Header="Remove image"
+                    <MenuItem Header="{DynamicResource MenuItem-RemoveImage}"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="RemoveAvatar_Click"/>
                 </ContextMenu>

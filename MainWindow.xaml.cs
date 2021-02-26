@@ -378,10 +378,10 @@ namespace Memenim
                 return;
 
             string title = LocalizationUtils.GetLocalized("LinkOpeningTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            string message = LocalizationUtils.GetLocalized("EnterURL");
 
             string link = await DialogManager.ShowSinglelineTextDialog(
-                    title, $"{enterName} URL")
+                    title, message)
                 .ConfigureAwait(true);
 
             if (string.IsNullOrWhiteSpace(link))

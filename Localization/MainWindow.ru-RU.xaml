@@ -51,7 +51,7 @@
     <system:String x:Key="ImageSourceTitle">Выберите изображение</system:String>
     <system:String x:Key="GallerySelect">Выбрать из галереи</system:String>
     <system:String x:Key="TenorSelect">Выбрать в Tenor</system:String>
-    <system:String x:Key="URLSelect">Вставить URL</system:String>
+    <system:String x:Key="URLSelect">Вставить URL-адрес</system:String>
     <system:String x:Key="UploadImage">Загрузить изображение</system:String>
     <system:String x:Key="RemoveImage">Убрать изображение</system:String>
     <system:String x:Key="ImageSelection">Выбор изображения</system:String>
@@ -193,6 +193,26 @@
     <system:String x:Key="Schema-PostCategorySchema-142">Счастливый конец</system:String>
     <system:String x:Key="Schema-PostCategorySchema-143">Странное</system:String>
 
+    <system:String x:Key="MenuItem-CopyUrl">Скопировать URL-адрес</system:String>
+    <system:String x:Key="MenuItem-CopyImage">Скопировать изображение</system:String>
+    <system:String x:Key="MenuItem-DownloadImage">Скачать изображение</system:String>
+
+    <system:String x:Key="MenuItem-CopyCommentId">Скопировать id комментария</system:String>
+    <system:String x:Key="MenuItem-CopyCommentText">Скопировать текст комментария</system:String>
+
+    <system:String x:Key="MenuItem-CopyPostLink">Скопировать ссылку на пост</system:String>
+    <system:String x:Key="MenuItem-CopyPostId">Скопировать id поста</system:String>
+    <system:String x:Key="MenuItem-CopyPostText">Скопировать текст поста</system:String>
+    <system:String x:Key="MenuItem-EditPostText">Редактировать текст поста</system:String>
+    <system:String x:Key="MenuItem-DeletePost">Удалить пост</system:String>
+
+    <system:String x:Key="MenuItem-CopyUserLink">Скопировать ссылку на пользователя</system:String>
+    <system:String x:Key="MenuItem-CopyUserId">Скопировать id пользователя</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromUrl">Вставить URL-адрес изображения</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromGallery">Выбрать изображение из галереи</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromTenor">Выбрать GIF-изображение в Tenor</system:String>
+    <system:String x:Key="MenuItem-RemoveImage">Убрать изображение</system:String>
+
     <system:String x:Key="AttemptingRestoreConnection">Мы пытаемся восстановить подключение...</system:String>
 
     <system:String x:Key="ProfileEditingTitle">Редактирование профиля</system:String>
@@ -206,6 +226,8 @@
 
     <system:String x:Key="EditingCommentTitle">Редактирование комментария</system:String>
     <system:String x:Key="EditingCommentMessage">Введите текст комментария</system:String>
+
+    <system:String x:Key="EnterURL">Введите URL-адрес</system:String>
 
     <system:String x:Key="OkTitle">Ок</system:String>
     <system:String x:Key="CancelTitle">Отмена</system:String>

@@ -30,11 +30,11 @@
                Stretch="Uniform" StretchDirection="Both">
             <Image.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copy Url"
+                    <MenuItem Header="{DynamicResource MenuItem-CopyUrl}"
                               Click="CopyImageUrl_Click"/>
-                    <MenuItem Header="Copy Image"
+                    <MenuItem Header="{DynamicResource MenuItem-CopyImage}"
                               Click="CopyImage_Click"/>
-                    <MenuItem Header="Download Image"
+                    <MenuItem Header="{DynamicResource MenuItem-DownloadImage}"
                               Click="DownloadImage_Click"/>
                 </ContextMenu>
             </Image.ContextMenu>

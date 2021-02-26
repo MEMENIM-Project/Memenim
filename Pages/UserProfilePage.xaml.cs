@@ -319,10 +319,10 @@ namespace Memenim.Pages
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
         {
             string title = LocalizationUtils.GetLocalized("InsertingImageTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            string message = LocalizationUtils.GetLocalized("EnterURL");
 
             string url = await DialogManager.ShowSinglelineTextDialog(
-                    title, $"{enterName} URL")
+                    title, message)
                 .ConfigureAwait(true);
 
             if (string.IsNullOrWhiteSpace(url))

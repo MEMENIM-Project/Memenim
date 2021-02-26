@@ -24,8 +24,8 @@
 
             <Grid.ContextMenu>
                 <ContextMenu x:Name="commentMenu" Visibility="Visible">
-                    <MenuItem Header="Copy Comment Id" Click="CopyCommentId_Click"/>
-                    <MenuItem Header="Copy Comment Text" Click="CopyCommentText_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-CopyCommentId}" Click="CopyCommentId_Click"/>
+                    <MenuItem Header="{DynamicResource MenuItem-CopyCommentText}" Click="CopyCommentText_Click"/>
                 </ContextMenu>
             </Grid.ContextMenu>
 
