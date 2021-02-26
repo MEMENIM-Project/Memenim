@@ -15,8 +15,8 @@
 
     <UserControl.Resources>
         <FrameworkElement x:Key="ProxyElement"
-                          d:DataContext="{d:DesignInstance local:UserProfilePage}"
-                          DataContext="{Binding}"/>
+                          DataContext="{Binding}"
+                          d:DataContext="{d:DesignInstance local:UserProfilePage}"/>
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource MahApps.Brushes.Window.Background}">
@@ -64,7 +64,7 @@
               Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
               MaxHeight="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
               Margin="20 20 20 20"
-              VerticalAlignment="Top"
+              VerticalAlignment="Top" HorizontalAlignment="Stretch"
               DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
               d:DataContext="{d:DesignInstance local:UserProfilePage}"
               MouseLeftButtonUp="Avatar_MouseLeftButtonUp"
@@ -76,7 +76,7 @@
             <Grid.ContextMenu>
                 <ContextMenu IsHitTestVisible="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), RelativeSource={RelativeSource Mode=Self}}"
                              DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
-                             d:DataContext="{d:DesignInstance Image}">
+                             d:DataContext="{d:DesignInstance Grid}">
                     <MenuItem Header="{DynamicResource MenuItem-SelectImageFromUrl}"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="SelectAvatarFromUrl_Click"/>
@@ -97,7 +97,7 @@
                     CornerRadius="0"
                     Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
             <Image MinHeight="200" MinWidth="200"
-                   x:Name="img"
+                   x:Name="AvatarImage"
                    gif:ImageBehavior.AnimatedSource="{Binding Path=DataContext.CurrentProfileData.PhotoUrl, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                    Stretch="UniformToFill" StretchDirection="Both"
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

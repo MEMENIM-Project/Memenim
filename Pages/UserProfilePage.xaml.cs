@@ -266,7 +266,7 @@ namespace Memenim.Pages
                 return;
             }
 
-            ImageBehavior.SetAnimatedSource(img, null);
+            ImageBehavior.SetAnimatedSource(AvatarImage, null);
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();

@@ -104,6 +104,8 @@ namespace Memenim.Pages
 
             ViewModel.CurrentPostData = result.Data;
 
+            wdgPost.UpdateContextMenus();
+
             if (ViewModel.SourcePostWidget?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
             {
                 ViewModel.SourcePostWidget?.SetValue(

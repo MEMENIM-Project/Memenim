@@ -132,6 +132,7 @@
             <convertersLocal:UserStatusTypeToVisibilityConverter x:Key="UserStatusTypeToVisibilityConverter"/>
             <convertersLocal:UserAvatarImageSourceConverter x:Key="UserAvatarImageSourceConverter"/>
             <convertersLocal:UserBannerImageSourceConverter x:Key="UserBannerImageSourceConverter"/>
+            <convertersLocal:OwnerIdToVisibilityConverter x:Key="OwnerIdToVisibilityConverter"/>
             <convertersLocal:PostImageSourceConverter x:Key="PostImageSourceConverter"/>
             <convertersLocal:PostImageSourceToVisibilityConverter x:Key="PostImageSourceToVisibilityConverter"/>
             <convertersLocal:PostImageSourceToRowSpanConverter x:Key="PostImageSourceToRowSpanConverter"/>

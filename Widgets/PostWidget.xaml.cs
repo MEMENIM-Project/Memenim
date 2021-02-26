@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -60,13 +59,6 @@ namespace Memenim.Widgets
                 SetValue(CurrentPostDataProperty, value);
             }
         }
-        public bool IsCommentsOpen
-        {
-            get
-            {
-                return CurrentPostData?.IsCommentsOpen ?? false;
-            }
-        }
         public bool PreviewMode { get; set; }
         public bool ImageSizeLimit { get; set; }
         public bool TextSizeLimit { get; set; }
@@ -75,6 +67,23 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+
+            SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
+        }
+
+        ~PostWidget()
+        {
+            SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
+        }
+
+        public void UpdateContextMenus()
+        {
+            btnEdit
+                .GetBindingExpression(VisibilityProperty)?
+                .UpdateTarget();
+            btnDelete
+                .GetBindingExpression(VisibilityProperty)?
+                .UpdateTarget();
         }
 
         public async Task UpdatePost()
@@ -99,6 +108,8 @@ namespace Memenim.Widgets
             }
 
             CurrentPostData = result.Data;
+
+            UpdateContextMenus();
         }
 
         public void LoadImage(string url)
@@ -133,19 +144,6 @@ namespace Memenim.Widgets
                 stViews.ButtonSize = 20;
             }
 
-            btnEdit.Visibility =
-                (CurrentPostData?.OwnerId ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
-            btnDelete.Visibility =
-                (CurrentPostData?.OwnerId ?? -1) != SettingsManager.PersistentSettings.CurrentUser.Id
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
-
-            stComments.Visibility = !IsCommentsOpen
-                ? Visibility.Collapsed
-                : Visibility.Visible;
-
             if (PreviewMode)
             {
                 if (CurrentPostData != null)
@@ -160,6 +158,11 @@ namespace Memenim.Widgets
                 stViews.IsEnabled = false;
                 stShares.IsEnabled = false;
             }
+        }
+
+        private void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        {
+            UpdateContextMenus();
         }
 
         private void Post_Click(object sender, RoutedEventArgs e)
