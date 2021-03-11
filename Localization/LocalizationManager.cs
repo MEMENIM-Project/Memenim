@@ -152,8 +152,7 @@ namespace Memenim.Localization
                 }
                 catch (Exception ex)
                 {
-                    Events.OnError(new RErrorEventArgs(ex,
-                        ex.Message, ex.StackTrace));
+                    Events.OnError(new RErrorEventArgs(ex, ex.Message));
                 }
             }
 

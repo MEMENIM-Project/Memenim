@@ -83,7 +83,7 @@ namespace Memenim.Logs
             if (!Directory.Exists(filesDirectoryPath))
             {
                 var exception = new DirectoryNotFoundException($"Cannot start log files deletion. Directory '{filesDirectoryPath}' not found");
-                Events.OnError(new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
+                Events.OnError(new RErrorEventArgs(exception, exception.Message));
                 throw exception;
             }
 
@@ -121,7 +121,7 @@ namespace Memenim.Logs
                     }
                     catch (Exception ex)
                     {
-                        Events.OnError(new RErrorEventArgs(ex, ex.Message, ex.StackTrace));
+                        Events.OnError(new RErrorEventArgs(ex, ex.Message));
                     }
                 }
 
@@ -129,7 +129,7 @@ namespace Memenim.Logs
             }
             catch (Exception ex)
             {
-                Events.OnError(new RErrorEventArgs(ex, ex.Message, ex.StackTrace));
+                Events.OnError(new RErrorEventArgs(ex, ex.Message));
                 throw;
             }
         }

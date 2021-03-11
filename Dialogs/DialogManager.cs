@@ -60,8 +60,7 @@ namespace Memenim.Dialogs
                            ?? "Error";
 
             Events.OnError(new RErrorEventArgs(
-                $"{title} - {message}",
-                "at Memenim.Dialogs.DialogManager.ShowErrorDialog(string message, bool isCancellable, MetroDialogSettings settings)"));
+                $"{title} - {message}"));
 
             return ShowMessageDialog(title, message,
                 isCancellable, settings);

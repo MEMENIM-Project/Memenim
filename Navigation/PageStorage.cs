@@ -20,7 +20,7 @@ namespace Memenim.Navigation
             {
                 var exception =
                     new ArgumentException("The page class must be derived from the PageContent", nameof(type));
-                Events.OnError(null, new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
+                Events.OnError(null, new RErrorEventArgs(exception, exception.Message));
                 throw exception;
             }
 
@@ -35,7 +35,7 @@ namespace Memenim.Navigation
             {
                 var exception =
                     new ArgumentException("The page class must be derived from the PageContent", nameof(type));
-                Events.OnError(null, new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
+                Events.OnError(null, new RErrorEventArgs(exception, exception.Message));
                 throw exception;
             }
 
@@ -51,7 +51,7 @@ namespace Memenim.Navigation
             catch (Exception)
             {
                 var exception = new TypeLoadException("Failed to create a page");
-                Events.OnError(null, new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
+                Events.OnError(null, new RErrorEventArgs(exception, exception.Message));
                 throw exception;
             }
 

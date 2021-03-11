@@ -17,7 +17,7 @@ namespace Memenim.Pages.ViewModel
             {
                 var exception =
                     new ArgumentException("The page class must be derived from the PageContent", nameof(pageType));
-                Events.OnError(null, new RErrorEventArgs(exception, exception.Message, exception.StackTrace));
+                Events.OnError(null, new RErrorEventArgs(exception, exception.Message));
                 throw exception;
             }
 

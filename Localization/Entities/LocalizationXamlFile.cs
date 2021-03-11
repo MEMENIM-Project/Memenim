@@ -35,7 +35,7 @@ namespace Memenim.Localization.Entities
                     $"Path['{path}'] must contain the root",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
             if (System.IO.Path.GetFileName(path) == null)
@@ -44,7 +44,7 @@ namespace Memenim.Localization.Entities
                     $"Path['{path}'] must refer to the file",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
             if (!File.Exists(path))
@@ -52,7 +52,7 @@ namespace Memenim.Localization.Entities
                 var exception = new FileNotFoundException(
                     $"File '{path}' not found");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -64,7 +64,7 @@ namespace Memenim.Localization.Entities
                     "Element name must not be null or empty",
                     nameof(elementName));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -78,7 +78,7 @@ namespace Memenim.Localization.Entities
                     $"File['{path}'] extension must not be null or empty",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
             if (extension != ".xaml")
@@ -87,7 +87,7 @@ namespace Memenim.Localization.Entities
                     $"File['{path}'] must have an extension '.xaml'",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -101,7 +101,7 @@ namespace Memenim.Localization.Entities
                     $"File['{path}'] name must not be null or empty",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
             if (!name.StartsWith($"{elementName}."))
@@ -112,7 +112,7 @@ namespace Memenim.Localization.Entities
                     "(culture name must be in the ISO 639 format (for example, 'en-US' or 'ru-RU'))",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -132,7 +132,7 @@ namespace Memenim.Localization.Entities
                     $"Culture named '{cultureName}' for file['{path}'] not found",
                     nameof(path));
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -150,7 +150,7 @@ namespace Memenim.Localization.Entities
             }
             catch (Exception ex)
             {
-                Events.OnError(new RErrorEventArgs(ex, ex.Message, ex.StackTrace));
+                Events.OnError(new RErrorEventArgs(ex, ex.Message));
                 throw;
             }
 
@@ -161,7 +161,7 @@ namespace Memenim.Localization.Entities
                 var exception = new KeyNotFoundException(
                     $"Dictionary file['{path}'] does not contain 'ResourceDictionaryName' definition");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -172,7 +172,7 @@ namespace Memenim.Localization.Entities
                 var exception = new Exception(
                     $"ResourceDictionaryName value in file['{path}'] must not be null or empty");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
             if (dictionaryName != "localization-xaml")
@@ -181,7 +181,7 @@ namespace Memenim.Localization.Entities
                     $"The dictionary file['{path}'] is not a localization dictionary " +
                     "(The ResourceDictionaryName value must be 'localization-xaml')");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -192,7 +192,7 @@ namespace Memenim.Localization.Entities
                 var exception = new KeyNotFoundException(
                     $"Dictionary file['{path}'] does not contain 'ResourceCultureName' definition");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -203,7 +203,7 @@ namespace Memenim.Localization.Entities
                 var exception = new Exception(
                     $"ResourceCultureName value in file['{path}'] must not be null or empty");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
             if (dictionaryCultureName != cultureName)
@@ -212,7 +212,7 @@ namespace Memenim.Localization.Entities
                     $"Dictionary file['{path}'] is not intended for the culture that is declared in its name " +
                     $"('{dictionaryCultureName}' is not equal to '{cultureName}')");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -221,7 +221,7 @@ namespace Memenim.Localization.Entities
                 var exception = new KeyNotFoundException(
                     $"Dictionary file['{path}'] does not contain 'ResourceLocaleName' definition");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 
@@ -232,7 +232,7 @@ namespace Memenim.Localization.Entities
                 var exception = new Exception(
                     $"ResourceLocaleName value in file['{path}'] must not be null or empty");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
                 throw exception;
             }
 

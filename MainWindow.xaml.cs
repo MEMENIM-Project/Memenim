@@ -402,7 +402,7 @@ namespace Memenim
                 var exception = new Exception(
                     $"An error occurred when opening the link '{link}'");
                 Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message, exception.StackTrace));
+                    exception.Message));
             }
         }
 
