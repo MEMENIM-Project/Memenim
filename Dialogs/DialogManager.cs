@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using MahApps.Metro.Controls.Dialogs;
-using Memenim.Logs;
+using Memenim.Logging;
 using Memenim.Utils;
 using RIS;
 

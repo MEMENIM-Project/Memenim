@@ -5,7 +5,7 @@ using Memenim.Resources;
 using NLog.Config;
 using RIS;
 
-namespace Memenim.Logs
+namespace Memenim.Logging
 {
     public static class LogManager
     {

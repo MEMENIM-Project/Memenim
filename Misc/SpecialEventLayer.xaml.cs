@@ -4,7 +4,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using Memenim.Logs;
+using Memenim.Logging;
 using Memenim.Settings;
 using RIS.Randomizing;
 using Environment = RIS.Environment;

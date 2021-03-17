@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Memenim.Core.Schema;
-using Memenim.Logs;
+using Memenim.Logging;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;

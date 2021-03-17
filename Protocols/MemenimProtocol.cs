@@ -1,5 +1,5 @@
 ﻿using System;
-using Memenim.Logs;
+using Memenim.Logging;
 using Memenim.Protocols.Schemas;
 using Microsoft.Win32;
 using Environment = RIS.Environment;

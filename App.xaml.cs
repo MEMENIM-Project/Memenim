@@ -12,7 +12,7 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Cryptography;
 using Memenim.Dialogs;
-using Memenim.Logs;
+using Memenim.Logging;
 using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;

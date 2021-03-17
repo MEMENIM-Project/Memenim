@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Memenim.Logs;
+using Memenim.Logging;
 using Memenim.Storage.Entities;
 using Microsoft.EntityFrameworkCore;
 using Environment = RIS.Environment;
