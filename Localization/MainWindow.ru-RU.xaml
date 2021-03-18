@@ -143,7 +143,7 @@
     <system:String x:Key="Schema-PostCategorySchema-86">Страшное</system:String>
     <system:String x:Key="Schema-PostCategorySchema-87">Для взрослых</system:String>
     <system:String x:Key="Schema-PostCategorySchema-88">Не для всех</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-89">Мечты и сны</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-89">Желания и сны</system:String>
     <system:String x:Key="Schema-PostCategorySchema-90">Закрытая комната</system:String>
     <system:String x:Key="Schema-PostCategorySchema-91">Записки сумасшедшего, Шиза</system:String>
     <system:String x:Key="Schema-PostCategorySchema-93">Мой секрет, Признания</system:String>
