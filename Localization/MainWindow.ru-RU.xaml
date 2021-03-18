@@ -137,7 +137,7 @@
     <system:String x:Key="Schema-PostCategorySchema-80">Стыдно</system:String>
     <system:String x:Key="Schema-PostCategorySchema-81">Политика, Власть</system:String>
     <system:String x:Key="Schema-PostCategorySchema-82">Путешествие</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-83">Делимся/Предлагаем</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-83">Делимся, Предлагаем</system:String>
     <system:String x:Key="Schema-PostCategorySchema-84">Творчество</system:String>
     <system:String x:Key="Schema-PostCategorySchema-85">Мистика, Эзотерика</system:String>
     <system:String x:Key="Schema-PostCategorySchema-86">Страшное</system:String>
@@ -171,7 +171,7 @@
     <system:String x:Key="Schema-PostCategorySchema-120">Мысли в космос</system:String>
     <system:String x:Key="Schema-PostCategorySchema-121">Несправедливость</system:String>
     <system:String x:Key="Schema-PostCategorySchema-122">История успеха</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-123">Мировые Новости</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-123">Мировые новости</system:String>
     <system:String x:Key="Schema-PostCategorySchema-124">Религия</system:String>
     <system:String x:Key="Schema-PostCategorySchema-125">Медицина</system:String>
     <system:String x:Key="Schema-PostCategorySchema-126">Психология</system:String>
