@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Memenim.Native.Window
+namespace Memenim.Native
 {
     internal enum IpcBusContentType : byte
     {
