@@ -26,7 +26,7 @@ using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
-    public sealed partial class MainWindow : MetroWindow, ILocalizable, INativeRestorable
+    public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow, ILocalizable
     {
         private static readonly object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;

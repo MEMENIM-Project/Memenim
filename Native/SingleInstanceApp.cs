@@ -168,7 +168,7 @@ namespace Memenim.Native
         public void OnWndProc(System.Windows.Window window, IntPtr hwnd, uint msg,
             IntPtr wParam, IntPtr lParam, bool restorePlacement, bool activate)
         {
-            if (!(window is INativeRestorable restorableWindow))
+            if (!(window is INativeRestorableWindow restorableWindow))
             {
                 OnWndProc(hwnd, msg, wParam, lParam, restorePlacement, activate);
 
