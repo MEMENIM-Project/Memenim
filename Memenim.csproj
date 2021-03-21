@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Emoji.Wpf" Version="0.2.5">
+    <PackageReference Include="Emoji.Wpf" Version="0.3.0">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.4.4" />
@@ -41,8 +41,8 @@
     <PackageReference Include="RIS" Version="3.10.1" />
     <PackageReference Include="RIS.Collections" Version="4.7.4" />
     <PackageReference Include="RIS.Cryptography" Version="3.2.2" />
-    <PackageReference Include="RIS.Graphics" Version="2.5.0" />
-    <PackageReference Include="RIS.Reflection" Version="4.0.1" />
+    <PackageReference Include="RIS.Graphics" Version="2.6.0" />
+    <PackageReference Include="RIS.Reflection" Version="4.0.3" />
     <PackageReference Include="RIS.Settings" Version="1.3.2" />
     <PackageReference Include="RIS.Text" Version="4.1.4" />
     <PackageReference Include="TenorClient" Version="1.0.3" />
