@@ -22,6 +22,8 @@ namespace Memenim.Settings
         public double WindowHeight { get; set; }
         [SettingCategory("Feed")]
         public int PostsType { get; set; }
+        [SettingCategory("Comments")]
+        public int CommentReplyMode { get; set; }
         [SettingCategory("Misc")]
         public bool SpecialEventEnabled { get; set; }
         public double BgmVolume { get; set; }
@@ -38,6 +40,7 @@ namespace Memenim.Settings
             WindowWidth = MainWindow.Instance.Width;
             WindowHeight = MainWindow.Instance.Height;
             PostsType = (int)PostType.Popular;
+            CommentReplyMode = (int)CommentReplyModeType.Legacy;
             SpecialEventEnabled = true;
             BgmVolume = 0.5;
             LogRetentionDaysPeriod = 7;

@@ -12,6 +12,7 @@ using System.Windows.Interop;
 using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Extensions;
 using Memenim.Localization;
 using Memenim.Localization.Entities;
 using Memenim.Misc;
@@ -25,7 +26,7 @@ using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
-    public sealed partial class MainWindow : MetroWindow, ILocalizable, INativeRestorableWindow
+    public sealed partial class MainWindow : MetroWindow, ILocalizable, INativeRestorable
     {
         private static readonly object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;
@@ -105,6 +106,7 @@ namespace Memenim
             }
         }
         public ReadOnlyDictionary<string, LocalizationXamlFile> Locales { get; private set; }
+        public ReadOnlyDictionary<CommentReplyModeType, string> CommentReplyModes { get; private set; }
         public string AppVersion { get; private set; }
         public bool DuringRestoreToMaximized { get; private set; }
 
@@ -168,11 +170,69 @@ namespace Memenim
             }
 
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
+            LocalizationManager.LanguageChanged += OnLanguageChanged;
+
+            ReloadCommentReplyModes();
+
+            if (Enum.TryParse<CommentReplyModeType>(
+                Enum.GetName(typeof(CommentReplyModeType), SettingsManager.AppSettings.CommentReplyMode),
+                true, out var commentReplyModeType))
+            {
+                slcCommentReplyMode.SelectedItem =
+                    new KeyValuePair<CommentReplyModeType, string>(
+                        commentReplyModeType, CommentReplyModes[commentReplyModeType]);
+            }
+            else
+            {
+                slcCommentReplyMode.SelectedItem =
+                    new KeyValuePair<CommentReplyModeType, string>(
+                        CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
+            }
         }
 
         ~MainWindow()
         {
             ApiRequestEngine.ConnectionStateChanged -= OnConnectionStateChanged;
+            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+        }
+
+        private void ReloadCommentReplyModes()
+        {
+            var names = Enum.GetNames(typeof(CommentReplyModeType));
+            var localizedNames = CommentReplyModeType.Legacy.GetLocalizedNames();
+            var postTypes = new Dictionary<CommentReplyModeType, string>(names.Length);
+
+            for (var i = 0; i < names.Length; ++i)
+            {
+                postTypes.Add(
+                    Enum.Parse<CommentReplyModeType>(names[i], true),
+                    localizedNames[i]);
+            }
+
+            slcCommentReplyMode.SelectionChanged -= slcCommentReplyMode_SelectionChanged;
+
+            KeyValuePair<CommentReplyModeType, string> selectedItem =
+                new KeyValuePair<CommentReplyModeType, string>();
+
+            if (slcCommentReplyMode.SelectedItem != null)
+            {
+                selectedItem =
+                    (KeyValuePair<CommentReplyModeType, string>)slcCommentReplyMode.SelectedItem;
+            }
+
+            CommentReplyModes = new ReadOnlyDictionary<CommentReplyModeType, string>(postTypes);
+
+            slcCommentReplyMode
+                .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
+                .UpdateTarget();
+
+            if (selectedItem.Value != null)
+            {
+                slcCommentReplyMode.SelectedItem =
+                    new KeyValuePair<CommentReplyModeType, string>(selectedItem.Key, postTypes[selectedItem.Key]);
+            }
+
+            slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
         }
 
         private void LoadSpecialEvent()
@@ -372,6 +432,11 @@ namespace Memenim
             }).ConfigureAwait(true);
         }
 
+        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
+        {
+            ReloadCommentReplyModes();
+        }
+
         private async void OpenLink_Click(object sender, RoutedEventArgs e)
         {
             if (!btnLinkOpen.IsEnabled)
@@ -412,6 +477,55 @@ namespace Memenim
 
             await LocalizationManager.SwitchLanguage(selectedPair.Key)
                 .ConfigureAwait(true);
+        }
+
+        private async void slcCommentReplyMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var newReplyMode = ((KeyValuePair<CommentReplyModeType, string>)slcCommentReplyMode.SelectedItem).Key;
+
+            switch (newReplyMode)
+            {
+                case CommentReplyModeType.Experimental:
+                    var additionalMessage = LocalizationUtils
+                        .GetLocalized("YouMaybeBannedConfirmationMessage");
+                    var confirmResult = await DialogManager.ShowConfirmationDialog(
+                            additionalMessage)
+                        .ConfigureAwait(true);
+
+                    if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                    {
+                        slcCommentReplyMode.SelectionChanged -= slcCommentReplyMode_SelectionChanged;
+
+                        if (e.RemovedItems.Count == 0 || e.RemovedItems[0] == null)
+                        {
+                            slcCommentReplyMode.SelectedItem =
+                                new KeyValuePair<CommentReplyModeType, string>(
+                                    CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
+
+                            slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
+
+                            break;
+                        }
+
+                        var oldReplyMode = ((KeyValuePair<CommentReplyModeType, string>)e.RemovedItems[0]).Key;
+
+                        slcCommentReplyMode.SelectedItem =
+                            new KeyValuePair<CommentReplyModeType, string>(
+                                oldReplyMode, CommentReplyModes[oldReplyMode]);
+
+                        slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
+                    }
+
+                    break;
+                case CommentReplyModeType.Legacy:
+                default:
+                    break;
+            }
+
+            SettingsManager.AppSettings.CommentReplyMode =
+                (int)((KeyValuePair<CommentReplyModeType, string>)slcCommentReplyMode.SelectedItem).Key;
+
+            SettingsManager.AppSettings.Save();
         }
 
         private async void btnChangePassword_Click(object sender, RoutedEventArgs e)

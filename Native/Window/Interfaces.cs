@@ -2,7 +2,7 @@
 
 namespace Memenim.Native.Window
 {
-    interface INativeRestorableWindow
+    interface INativeRestorable
     {
         public bool DuringRestoreToMaximized { get; }
     }

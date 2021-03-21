@@ -60,8 +60,10 @@ Have fun.</system:String>
     <system:String x:Key="SettingsTitle">Settings</system:String>
     <system:String x:Key="SpecialEventSettingsTitle">Special event</system:String>
     <system:String x:Key="LanguageSettingsTitle">Language</system:String>
+    <system:String x:Key="CommentsSettingsTitle">Comments</system:String>
     <system:String x:Key="AccountSettingsTitle">Account</system:String>
     <system:String x:Key="BgmVolumeTitle">BGM volume</system:String>
+    <system:String x:Key="CommentReplyModeTitle">Replies mode</system:String>
     <system:String x:Key="ChangingPasswordTitle">Changing password</system:String>
     <system:String x:Key="ChangePassword">Change password</system:String>
     <system:String x:Key="OldPassword">Old password</system:String>
@@ -89,6 +91,9 @@ Have fun.</system:String>
     <system:String x:Key="Enum-PostType-Popular">Popular</system:String>
     <system:String x:Key="Enum-PostType-Favorite">Favorite</system:String>
     <system:String x:Key="Enum-PostType-My">My</system:String>
+
+    <system:String x:Key="Enum-CommentReplyModeType-Legacy">Legacy</system:String>
+    <system:String x:Key="Enum-CommentReplyModeType-Experimental">Experimental</system:String>
 
     <system:String x:Key="Enum-UserPurposeType-Unknown">Unknown</system:String>
     <system:String x:Key="Enum-UserPurposeType-FindFriends">Find a friend, friends</system:String>
@@ -254,5 +259,7 @@ Have fun.</system:String>
     <system:String x:Key="CouldNotGetLocalizationMessage">Couldn't get localization</system:String>
     <system:String x:Key="CouldNotLoadCommentsMessage">Couldn't load comments</system:String>
     <system:String x:Key="GettingProfileErrorMessage">Error getting a profile</system:String>
+
+    <system:String x:Key="YouMaybeBannedConfirmationMessage">You may be banned while using this feature</system:String>
 
 </ResourceDictionary>

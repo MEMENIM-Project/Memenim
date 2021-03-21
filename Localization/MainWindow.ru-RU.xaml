@@ -60,8 +60,10 @@
     <system:String x:Key="SettingsTitle">Настройки</system:String>
     <system:String x:Key="SpecialEventSettingsTitle">Спец. ивент</system:String>
     <system:String x:Key="LanguageSettingsTitle">Язык</system:String>
+    <system:String x:Key="CommentsSettingsTitle">Комментарии</system:String>
     <system:String x:Key="AccountSettingsTitle">Аккаунт</system:String>
     <system:String x:Key="BgmVolumeTitle">Громкость фоновой музыки</system:String>
+    <system:String x:Key="CommentReplyModeTitle">Режим ответов</system:String>
     <system:String x:Key="ChangingPasswordTitle">Изменение пароля</system:String>
     <system:String x:Key="ChangePassword">Изменить пароль</system:String>
     <system:String x:Key="OldPassword">Старый пароль</system:String>
@@ -89,6 +91,9 @@
     <system:String x:Key="Enum-PostType-Popular">Популярные</system:String>
     <system:String x:Key="Enum-PostType-Favorite">Фавориты</system:String>
     <system:String x:Key="Enum-PostType-My">Мои</system:String>
+
+    <system:String x:Key="Enum-CommentReplyModeType-Legacy">Стандартный</system:String>
+    <system:String x:Key="Enum-CommentReplyModeType-Experimental">Экспериментальный</system:String>
 
     <system:String x:Key="Enum-UserPurposeType-Unknown">Неизвестно</system:String>
     <system:String x:Key="Enum-UserPurposeType-FindFriends">Найти друга, друзей</system:String>
@@ -254,5 +259,7 @@
     <system:String x:Key="CouldNotGetLocalizationMessage">Не удалось получить локализацию</system:String>
     <system:String x:Key="CouldNotLoadCommentsMessage">Не удалось загрузить комментарии</system:String>
     <system:String x:Key="GettingProfileErrorMessage">Ошибка получения профиля</system:String>
+
+    <system:String x:Key="YouMaybeBannedConfirmationMessage">Вы можете быть забанены в процессе использования этой функции</system:String>
 
 </ResourceDictionary>

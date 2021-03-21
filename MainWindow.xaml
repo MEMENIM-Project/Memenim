@@ -112,6 +112,20 @@
                                     </controls:SplitButton>
                                 </StackPanel>
                                 <StackPanel Margin="0 0 0 20">
+                                    <TextBlock Text="{DynamicResource CommentsSettingsTitle}"
+                                               Style="{StaticResource AccentHeader}"
+                                               HorizontalAlignment="Left"
+                                               Margin="5 0 5 10"/>
+                                    <TextBlock Text="{DynamicResource CommentReplyModeTitle}"
+                                               Style="{StaticResource Header3}"
+                                               Margin="5"/>
+                                    <controls:SplitButton Name="slcCommentReplyMode"
+                                                          ItemsSource="{Binding Path=CommentReplyModes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
+                                                          DisplayMemberPath="Value"
+                                                          Margin="5"
+                                                          SelectionChanged="slcCommentReplyMode_SelectionChanged"/>
+                                </StackPanel>
+                                <StackPanel Margin="0 0 0 20">
                                     <TextBlock Text="{DynamicResource AccountSettingsTitle}"
                                                Style="{StaticResource AccentHeader}"
                                                HorizontalAlignment="Left"

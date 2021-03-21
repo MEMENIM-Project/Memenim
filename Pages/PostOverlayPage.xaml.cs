@@ -354,12 +354,28 @@ namespace Memenim.Pages
 
             double verticalOffset = svPost.VerticalOffset;
             double scrollableHeight = svPost.ScrollableHeight;
-            string replyText = //$">>> {commentsList.PostId}@{comment.CurrentCommentData.Id}@{comment.CurrentCommentData.User.Id} {comment.CurrentCommentData.User.Nickname}:\n\n"
-                               $">>> {(string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname) ? "Unknown" : comment.CurrentCommentData.User.Nickname)}:\n\n"
-                               + $"{comment.CurrentCommentData.Text}\n\n"
-                               + ">>>\n\n";
+            CommentReplyModeType replyType = (CommentReplyModeType)SettingsManager.AppSettings.CommentReplyMode;
+
+            string replyText;
+
+            switch (replyType)
+            {
+                case CommentReplyModeType.Experimental:
+                    replyText =
+                        //$">>> {commentsList.PostId}@{comment.CurrentCommentData.Id}@{comment.CurrentCommentData.User.Id} {comment.CurrentCommentData.User.Nickname}:\n\n"
+                        $">>> {(string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname) ? "Unknown" : comment.CurrentCommentData.User.Nickname)}:\n\n"
+                        + $"{comment.CurrentCommentData.Text}\n\n"
+                        + ">>>\n\n";
+                    break;
+                case CommentReplyModeType.Legacy:
+                default:
+                    replyText =
+                        $"{(string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname) ? "Unknown" : comment.CurrentCommentData.User.Nickname)}, ";
+                    break;
+            }
 
             int oldCaretIndex = wdgWriteComment.txtContent.CaretIndex;
+
             wdgWriteComment.CommentText = replyText + wdgWriteComment.CommentText;
             wdgWriteComment.txtContent.CaretIndex = replyText.Length + oldCaretIndex;
             wdgWriteComment.txtContent.ScrollToEnd();
