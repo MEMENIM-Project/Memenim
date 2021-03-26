@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.15.10.0</AssemblyVersion>
-    <FileVersion>0.15.10.0</FileVersion>
+    <AssemblyVersion>0.15.11.0</AssemblyVersion>
+    <FileVersion>0.15.11.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.15.10</Version>
+    <Version>0.15.11</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -38,7 +38,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="NLog.Schema" Version="4.7.8" />
-    <PackageReference Include="RIS" Version="3.10.1" />
+    <PackageReference Include="RIS" Version="3.11.0" />
     <PackageReference Include="RIS.Collections" Version="4.7.4" />
     <PackageReference Include="RIS.Cryptography" Version="3.2.2" />
     <PackageReference Include="RIS.Graphics" Version="2.6.0" />
