@@ -4,6 +4,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Memenim.Generating;
 using Memenim.Logging;
 using Memenim.Settings;
 using RIS.Randomizing;
@@ -33,8 +34,6 @@ namespace Memenim.Misc
         }
 
         private const double FadeAnimationSeconds = 3;
-
-        private static readonly FastSecureRandom RandomGenerator = new FastSecureRandom();
 
         private readonly string[] _songs;
         private string _currentSong;
@@ -107,7 +106,8 @@ namespace Memenim.Misc
             var biasZone =
                 int.MaxValue - (int.MaxValue % _songs.Length) - 1;
             int songIndex =
-                (int)RandomGenerator.GetUInt32((uint)biasZone) % _songs.Length;
+                (int)GeneratingManager.CachedRandomGenerator
+                    .GetUInt32((uint)biasZone) % _songs.Length;
             string song = _songs[songIndex];
 
             if (song != _currentSong)
@@ -143,7 +143,8 @@ namespace Memenim.Misc
             const int biasZone =
                 int.MaxValue - (int.MaxValue % 420) - 1;
             int randomSeconds =
-                (int)RandomGenerator.GetUInt32((uint)biasZone) % 420;
+                (int)GeneratingManager.CachedRandomGenerator
+                    .GetUInt32((uint)biasZone) % 420;
             int seconds = 180 + randomSeconds;
 
             LogManager.Log.Info($"Next padoru in {seconds} seconds");

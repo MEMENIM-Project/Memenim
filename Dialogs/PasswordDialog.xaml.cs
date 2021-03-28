@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 using MahApps.Metro.Controls.Dialogs;
+using Memenim.Generating;
 using Memenim.Utils;
-using RIS.Text.Generating;
 
 namespace Memenim.Dialogs
 {
@@ -116,7 +116,8 @@ namespace Memenim.Dialogs
 
             try
             {
-                string password = StringGenerator.GenerateString(20);
+                string password = GeneratingManager.RandomStringGenerator
+                    .GenerateString(20);
 
                 txtPassword.Password = password;
                 InputValue = password;

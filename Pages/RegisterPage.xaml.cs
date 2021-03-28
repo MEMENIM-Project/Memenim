@@ -5,11 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Generating;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
-using RIS.Text.Generating;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
@@ -116,7 +116,8 @@ namespace Memenim.Pages
 
             try
             {
-                string password = StringGenerator.GenerateString(20);
+                string password = GeneratingManager.RandomStringGenerator
+                    .GenerateString(20);
 
                 txtPassword.Password = password;
                 Clipboard.SetText(password);

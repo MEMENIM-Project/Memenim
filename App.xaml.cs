@@ -21,6 +21,7 @@ using Memenim.Settings;
 using Memenim.Storage;
 using Memenim.Utils;
 using RIS;
+using RIS.Cryptography;
 using RIS.Wrappers;
 using Environment = RIS.Environment;
 
@@ -167,7 +168,7 @@ namespace Memenim
 
             using (var file = new StreamWriter(
                 Path.Combine(hashFileDirectoryName, $"{hashName}.{hashFileNameWithoutExtension}.{hashType}"),
-                false, RIS.Cryptography.Utils.SecureUTF8))
+                false, SecureUtils.SecureUTF8))
             {
                 file.WriteLine(hash);
             }

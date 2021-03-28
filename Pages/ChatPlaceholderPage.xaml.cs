@@ -3,24 +3,14 @@ using System.Diagnostics;
 using System.Windows;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Generating;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
-using RIS.Randomizing;
 
 namespace Memenim.Pages
 {
     public partial class ChatPlaceholderPage : PageContent
     {
-        private static readonly FastSecureRandom RandomGenerator = new FastSecureRandom();
-        private static readonly string[] Smiles =
-        {
-            "(ﾟдﾟ；)",
-            "(ó﹏ò｡)",
-            "(´ω｀*)",
-            "(┛ಠДಠ)┛彡┻━┻",
-            "(* _ω_)…"
-        };
-
         public ChatPlaceholderViewModel ViewModel
         {
             get
@@ -45,34 +35,7 @@ namespace Memenim.Pages
                 return;
             }
 
-            var biasZone =
-                int.MaxValue - (int.MaxValue % Smiles.Length) - 1;
-            int smileIndex =
-                (int)RandomGenerator.GetUInt32((uint)biasZone) % Smiles.Length;
-
-            if (Smiles[smileIndex] != txtSmile.Text)
-            {
-                txtSmile.Text = Smiles[smileIndex];
-                return;
-            }
-
-            if (smileIndex == 0)
-            {
-                ++smileIndex;
-            }
-            else if (smileIndex == Smiles.Length - 1)
-            {
-                --smileIndex;
-            }
-            else
-            {
-                if (Rand.Current.NextBoolean(0.5))
-                    ++smileIndex;
-                else
-                    --smileIndex;
-            }
-
-            txtSmile.Text = Smiles[smileIndex];
+            txtSmile.Text = GeneratingManager.GetRandomSmile();
         }
 
         private void CopyLogin_Click(object sender, RoutedEventArgs e)
