@@ -13,21 +13,22 @@ namespace Memenim.Localization.Entities
         public string Name { get; private set; }
         public string Extension { get; private set; }
 
-        public ResourceDictionary Dictionary { get; private set; }
         public string ElementName { get; private set; }
+
+        public ResourceDictionary Dictionary { get; private set; }
         public string DictionaryName { get; private set; }
-        public string LocaleName { get; private set; }
 
         public CultureInfo Culture { get; private set; }
         public string CultureName { get; private set; }
 
-        public LocalizationXamlFile(string path,
+        public LocalizationXamlFile(string filePath,
             string elementName)
         {
-            Load(path, elementName);
+            Load(filePath, elementName);
         }
 
-        private void Load(string path, string elementName)
+        private void Load(string path,
+            string elementName)
         {
             if (!System.IO.Path.IsPathRooted(path))
             {
@@ -50,25 +51,13 @@ namespace Memenim.Localization.Entities
             if (!File.Exists(path))
             {
                 var exception = new FileNotFoundException(
-                    $"File '{path}' not found");
+                    $"File['{path}'] not found");
                 Events.OnError(new RErrorEventArgs(exception,
                     exception.Message));
                 throw exception;
             }
 
             Path = path;
-
-            if (string.IsNullOrEmpty(elementName))
-            {
-                var exception = new ArgumentException(
-                    "Element name must not be null or empty",
-                    nameof(elementName));
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            ElementName = elementName;
 
             var extension = System.IO.Path.GetExtension(path);
 
@@ -92,6 +81,18 @@ namespace Memenim.Localization.Entities
             }
 
             Extension = extension;
+
+            if (string.IsNullOrEmpty(elementName))
+            {
+                var exception = new ArgumentException(
+                    "Element name must not be null or empty",
+                    nameof(elementName));
+                Events.OnError(new RErrorEventArgs(exception,
+                    exception.Message));
+                throw exception;
+            }
+
+            ElementName = elementName;
 
             var name = System.IO.Path.GetFileNameWithoutExtension(path);
 
@@ -186,57 +187,6 @@ namespace Memenim.Localization.Entities
             }
 
             DictionaryName = dictionaryName;
-
-            if (!dictionary.Contains("ResourceCultureName"))
-            {
-                var exception = new KeyNotFoundException(
-                    $"Dictionary file['{path}'] does not contain 'ResourceCultureName' definition");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            string dictionaryCultureName = dictionary["ResourceCultureName"].ToString();
-
-            if (string.IsNullOrWhiteSpace(dictionaryCultureName))
-            {
-                var exception = new Exception(
-                    $"ResourceCultureName value in file['{path}'] must not be null or empty");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-            if (dictionaryCultureName != cultureName)
-            {
-                var exception = new Exception(
-                    $"Dictionary file['{path}'] is not intended for the culture that is declared in its name " +
-                    $"('{dictionaryCultureName}' is not equal to '{cultureName}')");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            if (!dictionary.Contains("ResourceLocaleName"))
-            {
-                var exception = new KeyNotFoundException(
-                    $"Dictionary file['{path}'] does not contain 'ResourceLocaleName' definition");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            string dictionaryLocaleName = dictionary["ResourceLocaleName"].ToString();
-
-            if (string.IsNullOrWhiteSpace(dictionaryLocaleName))
-            {
-                var exception = new Exception(
-                    $"ResourceLocaleName value in file['{path}'] must not be null or empty");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            LocaleName = dictionaryLocaleName;
         }
     }
 }

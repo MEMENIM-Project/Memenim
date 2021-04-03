@@ -105,7 +105,7 @@ namespace Memenim
                 _bgmVolume = value;
             }
         }
-        public ReadOnlyDictionary<string, LocalizationXamlFile> Locales { get; private set; }
+        public ReadOnlyDictionary<string, LocalizationXamlModule> Locales { get; private set; }
         public ReadOnlyDictionary<CommentReplyModeType, string> CommentReplyModes { get; private set; }
         public string AppVersion { get; private set; }
         public bool DuringRestoreToMaximized { get; private set; }
@@ -146,15 +146,15 @@ namespace Memenim
             LocalizationManager.SetDefaultLanguage()
                 .ConfigureAwait(true);
 
-            if (Locales.TryGetValue(SettingsManager.AppSettings.Language, out var localizationFile))
+            if (Locales.TryGetValue(SettingsManager.AppSettings.Language, out var localizationModule))
             {
-                slcLanguage.SelectedItem = new KeyValuePair<string, LocalizationXamlFile>(
-                    SettingsManager.AppSettings.Language, localizationFile);
+                slcLanguage.SelectedItem = new KeyValuePair<string, LocalizationXamlModule>(
+                    SettingsManager.AppSettings.Language, localizationModule);
             }
-            else if (Locales.TryGetValue("en-US", out localizationFile))
+            else if (Locales.TryGetValue("en-US", out localizationModule))
             {
-                slcLanguage.SelectedItem = new KeyValuePair<string, LocalizationXamlFile>(
-                    "en-US", localizationFile);
+                slcLanguage.SelectedItem = new KeyValuePair<string, LocalizationXamlModule>(
+                    "en-US", localizationModule);
 
                 SettingsManager.AppSettings.Language = "en-US";
                 SettingsManager.AppSettings.Save();
@@ -473,7 +473,7 @@ namespace Memenim
 
         private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedPair = (KeyValuePair<string, LocalizationXamlFile>)slcLanguage.SelectedItem;
+            var selectedPair = (KeyValuePair<string, LocalizationXamlModule>)slcLanguage.SelectedItem;
 
             await LocalizationManager.SwitchLanguage(selectedPair.Key)
                 .ConfigureAwait(true);

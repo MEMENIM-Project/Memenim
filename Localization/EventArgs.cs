@@ -5,11 +5,11 @@ namespace Memenim.Localization
 {
     public class LanguageChangedEventArgs : EventArgs
     {
-        public LocalizationXamlFile OldLanguage { get; }
-        public LocalizationXamlFile NewLanguage { get; }
+        public LocalizationXamlModule OldLanguage { get; }
+        public LocalizationXamlModule NewLanguage { get; }
 
-        public LanguageChangedEventArgs(LocalizationXamlFile oldLanguage,
-            LocalizationXamlFile newLanguage)
+        public LanguageChangedEventArgs(LocalizationXamlModule oldLanguage,
+            LocalizationXamlModule newLanguage)
         {
             OldLanguage = oldLanguage;
             NewLanguage = newLanguage;

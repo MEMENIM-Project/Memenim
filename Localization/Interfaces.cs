@@ -6,6 +6,6 @@ namespace Memenim.Localization
 {
     public interface ILocalizable
     {
-        ReadOnlyDictionary<string, LocalizationXamlFile> Locales { get; }
+        ReadOnlyDictionary<string, LocalizationXamlModule> Locales { get; }
     }
 }
