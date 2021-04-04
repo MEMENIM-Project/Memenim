@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Media;
 using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
@@ -20,6 +21,7 @@ using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
+using Memenim.Styles;
 using Memenim.Utils;
 using RIS;
 using Math = RIS.Mathematics.Math;
@@ -76,6 +78,23 @@ namespace Memenim
             }
         }
         private Task _connectionFailedGridTask;
+
+        private int _titleLockStatus;
+        public bool TitleLockStatus
+        {
+            get
+            {
+                return _titleLockStatus > 0;
+            }
+            private set
+            {
+                Interlocked.Exchange(ref _titleLockStatus, value ? 1 : 0);
+            }
+        }
+        private bool _loadingGridTitleLockStatus;
+        private bool _connectionFailedGridTitleLockStatus;
+
+        private ResourceDictionary _loadingStyle;
 
         private bool _specialEventEnabled;
         public bool SpecialEventEnabled
@@ -135,6 +154,9 @@ namespace Memenim
             _loadingGridTask = Task.CompletedTask;
             ConnectionFailedGridStatus = false;
             _connectionFailedGridTask = Task.CompletedTask;
+
+            _loadingStyle = StylesManager.GetStyle(
+                "Smile1LoadingTheme");
 
             LoadSpecialEvent();
 
@@ -294,10 +316,26 @@ namespace Memenim
             await _loadingGridTask
                 .ConfigureAwait(true);
 
-            var oldStatus = Interlocked.Exchange(ref _loadingGridStatus, status ? 1 : 0);
+            var newStatus = status ? 1 : 0;
+            var oldStatus = Interlocked.Exchange(
+                ref _loadingGridStatus, newStatus);
 
-            if (oldStatus == (status ? 1 : 0))
+            if (oldStatus == newStatus)
                 return;
+
+            bool changeStyleNeeded;
+
+            if (!TitleLockStatus)
+            {
+                TitleLockStatus = true;
+                _loadingGridTitleLockStatus = true;
+
+                changeStyleNeeded = true;
+            }
+            else
+            {
+                changeStyleNeeded = false;
+            }
 
             if (status)
             {
@@ -305,7 +343,14 @@ namespace Memenim
                 loadingIndicator.IsActive = true;
                 loadingGrid.Opacity = 1.0;
                 loadingGrid.IsHitTestVisible = true;
+                loadingImage.Visibility = Visibility.Visible;
                 loadingGrid.Visibility = Visibility.Visible;
+
+                if (changeStyleNeeded)
+                {
+                    Resources.MergedDictionaries
+                        .Add(_loadingStyle);
+                }
 
                 _loadingGridTask = Task.CompletedTask;
                 return;
@@ -313,23 +358,57 @@ namespace Memenim
 
             loadingIndicator.IsActive = false;
 
+            if (_loadingGridTitleLockStatus)
+                changeStyleNeeded = true;
+
+            var color = ((SolidColorBrush)FindResource("Window.Main.TitleBackground")).Color;
+
             _loadingGridTask = Task.Run(async () =>
             {
+                Action<double> changeOpacityFunction;
+
+                if (changeStyleNeeded)
+                {
+                    changeOpacityFunction = opacity =>
+                    {
+                        loadingGrid.Opacity = opacity;
+
+                        var brush = new SolidColorBrush(
+                            Color.FromArgb((byte)(255 * opacity),
+                                color.R, color.G, color.B));
+
+                        WindowTitleBrush = brush;
+                        NonActiveWindowTitleBrush = brush;
+                    };
+                }
+                else
+                {
+                    changeOpacityFunction = opacity =>
+                    {
+                        loadingGrid.Opacity = opacity;
+                    };
+                }
+
+                var isHitTestVisible = true;
+
                 for (double i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
-                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
+                    if (isHitTestVisible
+                        && Math.AlmostEquals(opacity, 0.7, 0.01))
                     {
                         Dispatcher.Invoke(() =>
                         {
                             loadingGrid.IsHitTestVisible = false;
                         });
+
+                        isHitTestVisible = false;
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        changeOpacityFunction(opacity);
                     });
 
                     await Task.Delay(4)
@@ -338,8 +417,24 @@ namespace Memenim
 
                 Dispatcher.Invoke(() =>
                 {
+                    if (changeStyleNeeded)
+                    {
+                        Resources.MergedDictionaries
+                            .Remove(_loadingStyle);
+
+                        SetResourceReference(WindowTitleBrushProperty, "Window.Main.TitleBackground");
+                        SetResourceReference(NonActiveWindowTitleBrushProperty, "Window.Main.NonActiveTitleBackground");
+                    }
+
+                    loadingGrid.IsHitTestVisible = false;
                     loadingGrid.Visibility = Visibility.Collapsed;
                     LinkOpenEnable(true);
+
+                    if (changeStyleNeeded)
+                    {
+                        TitleLockStatus = false;
+                        _loadingGridTitleLockStatus = false;
+                    }
                 });
             });
         }
@@ -349,10 +444,26 @@ namespace Memenim
             await _connectionFailedGridTask
                 .ConfigureAwait(true);
 
-            var oldStatus = Interlocked.Exchange(ref _connectionFailedGridStatus, status ? 1 : 0);
+            var newStatus = status ? 1 : 0;
+            var oldStatus = Interlocked.Exchange(
+                ref _connectionFailedGridStatus, newStatus);
 
-            if (oldStatus == (status ? 1 : 0))
+            if (oldStatus == newStatus)
                 return;
+
+            bool changeStyleNeeded;
+
+            if (!TitleLockStatus)
+            {
+                TitleLockStatus = true;
+                _connectionFailedGridTitleLockStatus = true;
+
+                changeStyleNeeded = true;
+            }
+            else
+            {
+                changeStyleNeeded = false;
+            }
 
             if (status)
             {
@@ -360,7 +471,14 @@ namespace Memenim
                 connectionFailedIndicator.IsActive = true;
                 connectionFailedGrid.Opacity = 1.0;
                 connectionFailedGrid.IsHitTestVisible = true;
+                connectionFailedImage.Visibility = Visibility.Visible;
                 connectionFailedGrid.Visibility = Visibility.Visible;
+
+                if (changeStyleNeeded)
+                {
+                   Resources.MergedDictionaries
+                        .Add(_loadingStyle);
+                }
 
                 _connectionFailedGridTask = Task.CompletedTask;
                 return;
@@ -368,23 +486,57 @@ namespace Memenim
 
             connectionFailedIndicator.IsActive = false;
 
+            if (_connectionFailedGridTitleLockStatus)
+                changeStyleNeeded = true;
+
+            var color = ((SolidColorBrush)FindResource("Window.Main.TitleBackground")).Color;
+
             _connectionFailedGridTask = Task.Run(async () =>
             {
+                Action<double> changeOpacityFunction;
+
+                if (changeStyleNeeded)
+                {
+                    changeOpacityFunction = opacity =>
+                    {
+                        connectionFailedGrid.Opacity = opacity;
+
+                        var brush = new SolidColorBrush(
+                            Color.FromArgb((byte)(255 * opacity),
+                                color.R, color.G, color.B));
+
+                        WindowTitleBrush = brush;
+                        NonActiveWindowTitleBrush = brush;
+                    };
+                }
+                else
+                {
+                    changeOpacityFunction = opacity =>
+                    {
+                        connectionFailedGrid.Opacity = opacity;
+                    };
+                }
+
+                var isHitTestVisible = true;
+
                 for (double i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
-                    if (Math.AlmostEquals(opacity, 0.7, 0.01))
+                    if (isHitTestVisible
+                        && Math.AlmostEquals(opacity, 0.7, 0.01))
                     {
                         Dispatcher.Invoke(() =>
                         {
                             connectionFailedGrid.IsHitTestVisible = false;
                         });
+
+                        isHitTestVisible = false;
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        connectionFailedGrid.Opacity = opacity;
+                        changeOpacityFunction(opacity);
                     });
 
                     await Task.Delay(4)
@@ -393,8 +545,24 @@ namespace Memenim
 
                 Dispatcher.Invoke(() =>
                 {
+                    if (changeStyleNeeded)
+                    {
+                        Resources.MergedDictionaries
+                            .Remove(_loadingStyle);
+
+                        SetResourceReference(WindowTitleBrushProperty, "Window.Main.TitleBackground");
+                        SetResourceReference(NonActiveWindowTitleBrushProperty, "Window.Main.NonActiveTitleBackground");
+                    }
+
+                    connectionFailedGrid.IsHitTestVisible = false;
                     connectionFailedGrid.Visibility = Visibility.Collapsed;
                     LinkOpenEnable(true);
+
+                    if (changeStyleNeeded)
+                    {
+                        TitleLockStatus = false;
+                        _connectionFailedGridTitleLockStatus = false;
+                    }
                 });
             });
         }

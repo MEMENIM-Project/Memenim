@@ -12,7 +12,8 @@
                       mc:Ignorable="d"
                       ShowTitleBar="True"
                       ShowIconOnTitleBar="False"
-                      WindowTitleBrush="{StaticResource MahApps.Brushes.Menu.Background}"
+                      WindowTitleBrush="{DynamicResource Window.Main.TitleBackground}"
+                      NonActiveWindowTitleBrush="{DynamicResource Window.Main.NonActiveTitleBackground}"
                       GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
                       dialogs:DialogParticipation.Register="{Binding}"
                       Title="MEMENIM Desktop"
@@ -28,6 +29,7 @@
                     <TextBlock Text="MEMENIM DESKTOP"
                                FontSize="16" FontWeight="Thin"
                                TextAlignment="Center"
+                               Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
                                Margin="5 0 10 0"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"/>
@@ -41,6 +43,7 @@
                             Click="OpenLink_Click">
                         <iconPacks:PackIconModern Width="15" Height="15"
                                                   Kind="Link"
+                                                  Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
                                                   Margin="3 0 3 0"
                                                   HorizontalAlignment="Center"
                                                   VerticalAlignment="Center"/>
@@ -194,15 +197,27 @@
         <Grid Grid.Row="0" Grid.Column="0" x:Name="loadingGrid"
               Visibility="Collapsed" ZIndex="2147483646"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
-            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+            <Rectangle Fill="{DynamicResource Window.Main.Background}"
+                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="loadingImage"
+                       Width="256" Height="256"
+                       Source="Resources/Images/Smiles/SMILEWITHTEAR_bg_2.png"
+                       Stretch="Uniform"/>
+                <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                    SpeedRatio="2" IsActive="False" Visibility="Visible"
+                                                    Margin="30"/>
+            </StackPanel>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="0" x:Name="connectionFailedGrid"
               Visibility="Collapsed" ZIndex="2147483647"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
+            <Rectangle Fill="{DynamicResource Window.Main.Background}"
+                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Top">
-                <controls:MetroProgressBar MinHeight="2" Height="2"
+                <controls:MetroProgressBar MinHeight="4" Height="4"
                                            Style="{DynamicResource MahApps.Styles.ProgressBar}"
                                            IsIndeterminate="True"
                                            BorderThickness="0"/>
@@ -211,10 +226,19 @@
                            FontSize="15"
                            TextAlignment="Center"
                            TextWrapping="Wrap"
+                           Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
                            Margin="10 5 10 5"/>
             </StackPanel>
-            <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="connectionFailedImage"
+                       Width="256" Height="256"
+                       Source="Resources/Images/Smiles/SMILEWITHTEAR_bg_2.png"
+                       Stretch="Uniform"/>
+                <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
+                                                    SpeedRatio="2" IsActive="False" Visibility="Visible"
+                                                    Margin="30"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </controls:MetroWindow>

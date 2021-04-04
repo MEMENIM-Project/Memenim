@@ -11,7 +11,6 @@
         <system:String>PlaceholderPage</system:String>
         <system:String>ChatPlaceholderPage</system:String>
         <system:String>UserProfilePage</system:String>
-        <system:String>MemesPage</system:String>
         <system:String>PostOverlayPage</system:String>
     </x:Array>
 

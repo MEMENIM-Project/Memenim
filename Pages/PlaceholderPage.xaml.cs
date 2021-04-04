@@ -7,32 +7,6 @@ namespace Memenim.Pages
 {
     public partial class PlaceholderPage : PageContent
     {
-        private static readonly string[] Smiles =
-        {
-            "(ﾟдﾟ；)",
-            "(ó﹏ò｡)",
-            "(´ω｀*)",
-            "(┛ಠДಠ)┛彡┻━┻",
-            "(* _ω_)…",
-            "(ﾉ･д･)ﾉ",
-            "(⊃｡•́‿•̀｡)⊃",
-            "ლ(๏‿๏ ◝ლ)",
-            "ლ(*꒪ヮ꒪*)ლ",
-            "(ﾉ･ｪ･)ﾉ",
-            "(＾▽＾)",
-            "(•‿•)",
-            "(☉_☉)",
-            "(,,◕ ⋏ ◕,,)",
-            "(๑❛ꇳ❛๑)",
-            "(-, – )…zzzZZZ",
-            "┬─┬ノ( º _ ºノ)",
-            "(⌒‿⌒)",
-            "\\ (•◡•) /",
-            "⚆ _ ⚆",
-            "(づ￣ ³￣)づ",
-            "ಠ‿↼"
-        };
-
         public PlaceholderViewModel ViewModel
         {
             get

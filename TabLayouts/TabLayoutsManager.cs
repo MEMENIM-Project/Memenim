@@ -31,9 +31,9 @@ namespace Memenim.TabLayouts
         private static string GetLayoutXamlFilePath(FrameworkElement element, string layoutTypeName)
         {
             string elementName = GetElementName(element);
-            string layoutXamlFile = $"{layoutTypeName}.xaml";
+            string layoutXamlFileName = $"{layoutTypeName}.xaml";
 
-            return $"pack://application:,,,/TabLayouts/{elementName}/{layoutXamlFile}";
+            return $"pack://application:,,,/TabLayouts/{elementName}/{layoutXamlFileName}";
         }
 
         private static async Task<ResourceDictionary> GetLayoutResourceDictionary(FrameworkElement element, string resourceFilePath)

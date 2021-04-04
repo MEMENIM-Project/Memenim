@@ -10,11 +10,15 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml"/>
                 <!-- Theme setting -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="Window.Main.TitleBackground" Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
+            <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground" Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
+            <SolidColorBrush x:Key="Window.Main.Background" Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
 
             <SolidColorBrush x:Key="Overlay.Background" Color="#E54D4D4D"/>
 

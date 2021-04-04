@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.16.1.0</AssemblyVersion>
-    <FileVersion>0.16.1.0</FileVersion>
+    <AssemblyVersion>0.16.3.0</AssemblyVersion>
+    <FileVersion>0.16.3.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.16.1</Version>
+    <Version>0.16.3</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -92,7 +92,10 @@
     <None Remove="Resources\Music\SpecialEvent\song4.mp3" />
     <None Remove="Resources\Music\SpecialEvent\song5.mp3" />
     <None Remove="Resources\Music\SpecialEvent\song6.mp3" />
-    <None Remove="Widgets\IconButton.xaml~RF16f6b05.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Images\Smiles\SMILEWITHTEAR_bg_2.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -145,6 +148,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Smiles\SMILEWITHTEAR_bg_2.png"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="TabLayouts\NavigationBar\NavBarNone.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
@@ -152,6 +159,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
     <Page Update="TabLayouts\NavigationBar\NavBarBackOnly.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\LoadingDarkTheme.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
   </ItemGroup>

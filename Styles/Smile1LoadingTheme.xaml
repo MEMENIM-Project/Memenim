@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Memenim.Styles"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+
+    <SolidColorBrush x:Key="Window.Main.TitleBackground" Color="#FFFBCB3C"/>
+    <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground" Color="#FFFBCB3C"/>
+    <SolidColorBrush x:Key="Window.Main.Background" Color="#FFFBCB3C"/>
+
+    <Color x:Key="MahApps.Colors.IdealForeground">Black</Color>
+    <SolidColorBrush x:Key="MahApps.Brushes.IdealForeground" Color="{StaticResource MahApps.Colors.IdealForeground}"/>
+</ResourceDictionary>
