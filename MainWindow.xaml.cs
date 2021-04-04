@@ -95,6 +95,7 @@ namespace Memenim
         private bool _connectionFailedGridTitleLockStatus;
 
         private ResourceDictionary _loadingStyle;
+        private ResourceDictionary _loadingMahAppsStyle;
 
         private bool _specialEventEnabled;
         public bool SpecialEventEnabled
@@ -156,7 +157,17 @@ namespace Memenim
             _connectionFailedGridTask = Task.CompletedTask;
 
             _loadingStyle = StylesManager.GetStyle(
-                "Smile1LoadingTheme");
+                "Loading", "Smile1LoadingTheme");
+
+            string mahAppsStyleName;
+
+            if (_loadingStyle.Contains("MahAppsThemeName"))
+                mahAppsStyleName = (string)_loadingStyle["MahAppsThemeName"];
+            else
+                mahAppsStyleName = "DarkTheme";
+
+            _loadingMahAppsStyle = StylesManager.GetStyle(
+                "MahApps", mahAppsStyleName);
 
             LoadSpecialEvent();
 
@@ -350,6 +361,8 @@ namespace Memenim
                 {
                     Resources.MergedDictionaries
                         .Add(_loadingStyle);
+                    Resources.MergedDictionaries
+                        .Add(_loadingMahAppsStyle);
                 }
 
                 _loadingGridTask = Task.CompletedTask;
@@ -401,6 +414,9 @@ namespace Memenim
                         Dispatcher.Invoke(() =>
                         {
                             loadingGrid.IsHitTestVisible = false;
+
+                            Resources.MergedDictionaries
+                                .Remove(_loadingMahAppsStyle);
                         });
 
                         isHitTestVisible = false;
@@ -478,6 +494,8 @@ namespace Memenim
                 {
                    Resources.MergedDictionaries
                         .Add(_loadingStyle);
+                   Resources.MergedDictionaries
+                       .Add(_loadingMahAppsStyle);
                 }
 
                 _connectionFailedGridTask = Task.CompletedTask;
@@ -529,6 +547,9 @@ namespace Memenim
                         Dispatcher.Invoke(() =>
                         {
                             connectionFailedGrid.IsHitTestVisible = false;
+
+                            Resources.MergedDictionaries
+                                .Remove(_loadingMahAppsStyle);
                         });
 
                         isHitTestVisible = false;
@@ -610,10 +631,10 @@ namespace Memenim
             if (!btnLinkOpen.IsEnabled)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("LinkOpeningTitle");
-            string message = LocalizationUtils.GetLocalized("EnterURL");
+            var title = LocalizationUtils.GetLocalized("LinkOpeningTitle");
+            var message = LocalizationUtils.GetLocalized("EnterURL");
 
-            string link = await DialogManager.ShowSinglelineTextDialog(
+            var link = await DialogManager.ShowSinglelineTextDialog(
                     title, message)
                 .ConfigureAwait(true);
 
@@ -769,22 +790,48 @@ namespace Memenim
 
         private void Discord_Click(object sender, RoutedEventArgs e)
         {
-            //var startInfo = new ProcessStartInfo
-            //{
-            //    FileName = "cmd",
-            //    Arguments = "/C start https://discord.gg/yfSrUwCmZ8",
-            //    WindowStyle = ProcessWindowStyle.Hidden,
-            //    CreateNoWindow = true,
-            //    UseShellExecute = false
-            //};
+            const string link = "https://discord.gg/yfSrUwCmZ8";
 
             var startInfo = new ProcessStartInfo
             {
-                FileName = "https://discord.gg/yfSrUwCmZ8",
+                FileName = link,
                 UseShellExecute = true
             };
 
-            Process.Start(startInfo);
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (Exception)
+            {
+                var exception = new Exception(
+                    $"An error occurred when opening the link '{link}'");
+                Events.OnError(new RErrorEventArgs(exception,
+                    exception.Message));
+            }
+        }
+
+        private void Telegram_Click(object sender, RoutedEventArgs e)
+        {
+            const string link = "https://t.me/joinchat/Vf9B3XM5SM-zUbkf";
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = link,
+                UseShellExecute = true
+            };
+
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (Exception)
+            {
+                var exception = new Exception(
+                    $"An error occurred when opening the link '{link}'");
+                Events.OnError(new RErrorEventArgs(exception,
+                    exception.Message));
+            }
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)

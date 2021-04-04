@@ -3,10 +3,9 @@
                     xmlns:local="clr-namespace:Memenim.Styles"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
+    <system:String x:Key="MahAppsThemeName">LightTheme</system:String>
+
     <SolidColorBrush x:Key="Window.Main.TitleBackground" Color="#FFFBCB3C"/>
     <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground" Color="#FFFBCB3C"/>
     <SolidColorBrush x:Key="Window.Main.Background" Color="#FFFBCB3C"/>
-
-    <Color x:Key="MahApps.Colors.IdealForeground">Black</Color>
-    <SolidColorBrush x:Key="MahApps.Brushes.IdealForeground" Color="{StaticResource MahApps.Colors.IdealForeground}"/>
 </ResourceDictionary>

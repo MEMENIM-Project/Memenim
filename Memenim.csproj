@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.16.3.0</AssemblyVersion>
-    <FileVersion>0.16.3.0</FileVersion>
+    <AssemblyVersion>0.16.5.0</AssemblyVersion>
+    <FileVersion>0.16.5.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.16.3</Version>
+    <Version>0.16.5</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -148,7 +148,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\Smiles\SMILEWITHTEAR_bg_2.png"/>
+    <Resource Include="Resources\Images\Smiles\SMILEWITHTEAR_bg_2.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -164,7 +164,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Styles\LoadingDarkTheme.xaml">
+    <Page Update="Styles\MahApps\DarkTheme.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Styles\MahApps\LightTheme.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Styles\Smile1LoadingTheme.xaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Page>
   </ItemGroup>

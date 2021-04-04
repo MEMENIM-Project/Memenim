@@ -18,6 +18,7 @@ RU: Кастомный клиент для https://anonym.network/ социал�
 
 # <div align="center">**Links / Ссылки**</div>
 
-[Discord](https://discord.gg/yfSrUwCmZ8)
+- [Discord](https://discord.gg/yfSrUwCmZ8)
+- [Telegram](https://t.me/joinchat/Vf9B3XM5SM-zUbkf)
 
 

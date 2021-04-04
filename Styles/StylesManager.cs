@@ -5,14 +5,16 @@ namespace Memenim.Styles
 {
     public static class StylesManager
     {
-        private static string GetStyleXamlFilePath(string styleName)
+        private static string GetStyleXamlFilePath(
+            string categoryName, string styleName)
         {
             string styleXamlFileName = $"{styleName}.xaml";
 
-            return $"pack://application:,,,/Styles/{styleXamlFileName}";
+            return $"pack://application:,,,/Styles/{categoryName}/{styleXamlFileName}";
         }
 
-        private static ResourceDictionary GetStyleResourceDictionary(string resourceFilePath)
+        private static ResourceDictionary GetStyleResourceDictionary(
+            string resourceFilePath)
         {
             if (!Uri.TryCreate(resourceFilePath, UriKind.RelativeOrAbsolute, out _))
                 return null;
@@ -25,9 +27,12 @@ namespace Memenim.Styles
             return styleDictionary;
         }
 
-        public static ResourceDictionary GetStyle(string styleName)
+        public static ResourceDictionary GetStyle(
+            string categoryName, string styleName)
         {
-            return GetStyleResourceDictionary(GetStyleXamlFilePath(styleName));
+            return GetStyleResourceDictionary(
+                GetStyleXamlFilePath(
+                    categoryName, styleName));
         }
     }
 }

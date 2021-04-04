@@ -177,6 +177,15 @@
                                                                    Width="20" Height="20"
                                                                    Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
                                 </Button>
+                                <Button Width="35" Height="35"
+                                        Background="Transparent"
+                                        Foreground="Transparent"
+                                        BorderThickness="0"
+                                        Click="Telegram_Click">
+                                    <iconPacks:PackIconFontAwesome Kind="TelegramBrands"
+                                                                   Width="20" Height="20"
+                                                                   Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
+                                </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{DynamicResource ResourceKey=Version}" FontSize="13.5"
