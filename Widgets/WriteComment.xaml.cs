@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
@@ -164,9 +165,31 @@ namespace Memenim.Widgets
             btnSend.IsEnabled = true;
         }
 
-        private void btnSendAnonymously_Click(object sender, RoutedEventArgs e)
+        private async void btnSendAnonymously_Click(object sender, RoutedEventArgs e)
         {
-            IsAnonymous = btnSendAnonymously.IsChecked;
+            if (!btnSendAnonymously.IsChecked)
+            {
+                IsAnonymous = false;
+
+                return;
+            }
+
+            var additionalMessage = LocalizationUtils
+                .GetLocalized("YouMaybeBannedConfirmationMessage");
+            var confirmResult = await DialogManager.ShowConfirmationDialog(
+                    additionalMessage)
+                .ConfigureAwait(true);
+
+            if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+            {
+                btnSendAnonymously.IsChecked = false;
+
+                Keyboard.ClearFocus();
+
+                return;
+            }
+
+            IsAnonymous = true;
         }
     }
 }
