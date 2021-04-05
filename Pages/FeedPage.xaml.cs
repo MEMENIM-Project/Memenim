@@ -59,8 +59,10 @@ namespace Memenim.Pages
             InitializeComponent();
             DataContext = new FeedViewModel();
 
-            LoadingMoreEnterAnimation = (Storyboard) FindResource(nameof(LoadingMoreEnterAnimation));
-            LoadingMoreExitAnimation = (Storyboard) FindResource(nameof(LoadingMoreExitAnimation));
+            LoadingMoreEnterAnimation = (Storyboard)FindResource(
+                nameof(LoadingMoreEnterAnimation));
+            LoadingMoreExitAnimation = (Storyboard)FindResource(
+                nameof(LoadingMoreExitAnimation));
 
             _autoUpdateCountTimer = new Timer(TimeSpan.FromSeconds(60).TotalMilliseconds);
             _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimerCallback;
@@ -484,12 +486,6 @@ namespace Memenim.Pages
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            if (!IsOnEnterActive)
-            {
-                e.Handled = true;
-                return;
-            }
-
             ViewModel.OnPostScrollEnd = new AsyncBasicCommand(
                 _ => true, async _ =>
                 {
@@ -499,6 +495,12 @@ namespace Memenim.Pages
                     await LoadMorePosts()
                         .ConfigureAwait(true);
                 });
+
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
 
             _autoUpdateCountTimer.Start();
         }

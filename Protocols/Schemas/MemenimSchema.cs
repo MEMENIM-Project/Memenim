@@ -131,7 +131,7 @@ namespace Memenim.Protocols.Schemas
                     }
 
                     PostWidget sourcePost = null;
-                    FeedPage page = (FeedPage) PageStorage.GetPage<FeedPage>();
+                    var page = (FeedPage)PageStorage.GetPage<FeedPage>();
 
                     var slcPostTypes = page?.slcPostTypes;
 

@@ -148,6 +148,13 @@ namespace Memenim.Pages
         {
             base.OnEnter(sender, e);
 
+            ViewModel.SearchCommand = new AsyncBasicCommand(
+                _ => true, async query =>
+                {
+                    await ExecuteSearch((string)query)
+                        .ConfigureAwait(true);
+                });
+
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -159,13 +166,6 @@ namespace Memenim.Pages
 
             await Task.Delay(TimeSpan.FromSeconds(1))
                 .ConfigureAwait(true);
-
-            ViewModel.SearchCommand = new AsyncBasicCommand(
-                _ => true, async query =>
-                {
-                    await ExecuteSearch((string)query)
-                        .ConfigureAwait(true);
-                });
 
             await ExecuteSearch(txtSearchQuery.Text)
                 .ConfigureAwait(true);
