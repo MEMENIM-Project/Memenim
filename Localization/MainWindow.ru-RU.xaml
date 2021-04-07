@@ -4,8 +4,6 @@
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
     <system:String x:Key="ResourceDictionaryName">localization-xaml</system:String>
-    <system:String x:Key="ResourceCultureName">ru-RU</system:String>
-    <system:String x:Key="ResourceLocaleName">Русский</system:String>
 
     <system:String x:Key="Login">Логин</system:String>
     <system:String x:Key="Password">Пароль</system:String>

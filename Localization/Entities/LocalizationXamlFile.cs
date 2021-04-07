@@ -20,6 +20,24 @@ namespace Memenim.Localization.Entities
 
         public CultureInfo Culture { get; private set; }
         public string CultureName { get; private set; }
+        private string _cultureNativeName;
+        public string CultureNativeName
+        {
+            get
+            {
+                return _cultureNativeName;
+            }
+            private set
+            {
+                if (value.Length > 1)
+                {
+                    value = char.ToUpper(value[0], Culture)
+                            + value.Remove(0, 1);
+                }
+
+                _cultureNativeName = value;
+            }
+        }
 
         public LocalizationXamlFile(string filePath,
             string elementName)
@@ -139,6 +157,7 @@ namespace Memenim.Localization.Entities
 
             Culture = culture;
             CultureName = cultureName;
+            CultureNativeName = culture.NativeName;
 
             ResourceDictionary dictionary;
 

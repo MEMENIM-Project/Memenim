@@ -23,10 +23,27 @@ namespace Memenim.Localization.Entities
         public string ElementName { get; private set; }
 
         public ResourceDictionary Dictionary { get; }
-        public string LocaleName { get; private set; }
 
         public CultureInfo Culture { get; private set; }
         public string CultureName { get; private set; }
+        private string _cultureNativeName;
+        public string CultureNativeName
+        {
+            get
+            {
+                return _cultureNativeName;
+            }
+            private set
+            {
+                if (value.Length > 1)
+                {
+                    value = char.ToUpper(value[0], Culture)
+                            + value.Remove(0, 1);
+                }
+
+                _cultureNativeName = value;
+            }
+        }
 
         public LocalizationXamlModule(IEnumerable<string> filesPaths,
             string elementName)
@@ -45,6 +62,7 @@ namespace Memenim.Localization.Entities
                 ElementName = file.ElementName;
                 Culture = file.Culture;
                 CultureName = file.CultureName;
+                CultureNativeName = file.CultureNativeName;
 
                 return;
             }
@@ -73,6 +91,14 @@ namespace Memenim.Localization.Entities
                     exception.Message));
                 throw exception;
             }
+            if (CultureNativeName != file.CultureNativeName)
+            {
+                var exception = new Exception(
+                    $"Culture native name '{CultureNativeName}' in base dictionary file['{_files[0].Path}'] is not equal to '{file.CultureNativeName}' in dictionary file['{file.Path}']");
+                Events.OnError(new RErrorEventArgs(exception,
+                    exception.Message));
+                throw exception;
+            }
         }
 
         private void Load(string[] filesPaths,
@@ -87,69 +113,6 @@ namespace Memenim.Localization.Entities
 
                 _files.Add(file);
                 Dictionary.MergedDictionaries.Add(file.Dictionary);
-            }
-
-            if (!Dictionary.Contains("ResourceCultureName"))
-            {
-                var exception = new KeyNotFoundException(
-                    $"Dictionary files['{string.Join("', '", filesPaths)}'] does not contain 'ResourceCultureName' definition");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            string dictionaryCultureName = Dictionary["ResourceCultureName"].ToString();
-
-            if (string.IsNullOrWhiteSpace(dictionaryCultureName))
-            {
-                var exception = new Exception(
-                    $"ResourceCultureName value in files['{string.Join("', '", filesPaths)}'] must not be null or empty");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-            if (dictionaryCultureName != CultureName)
-            {
-                var exception = new Exception(
-                    $"Dictionary files['{string.Join("', '", filesPaths)}'] is not intended for the culture that is declared in its name " +
-                    $"('{dictionaryCultureName}' is not equal to '{CultureName}')");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            if (!Dictionary.Contains("ResourceLocaleName"))
-            {
-                var exception = new KeyNotFoundException(
-                    $"Dictionary files['{string.Join("', '", filesPaths)}'] does not contain 'ResourceLocaleName' definition");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            string dictionaryLocaleName = Dictionary["ResourceLocaleName"].ToString();
-
-            if (string.IsNullOrWhiteSpace(dictionaryLocaleName))
-            {
-                var exception = new Exception(
-                    $"ResourceLocaleName value in files['{string.Join("', '", filesPaths)}'] must not be null or empty");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-                throw exception;
-            }
-
-            if (string.IsNullOrEmpty(LocaleName))
-            {
-                foreach (var file in Files)
-                {
-                    if (!file.Dictionary.Contains("ResourceLocaleName"))
-                        continue;
-
-                    LocaleName = file.Dictionary["ResourceLocaleName"]
-                        .ToString();
-
-                    break;
-                }
             }
         }
 
