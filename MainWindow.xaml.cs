@@ -790,48 +790,16 @@ namespace Memenim
 
         private void Discord_Click(object sender, RoutedEventArgs e)
         {
-            const string link = "https://discord.gg/yfSrUwCmZ8";
+            const string link = "https://discord.gg/yhATVBWxZG";
 
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = link,
-                UseShellExecute = true
-            };
-
-            try
-            {
-                Process.Start(startInfo);
-            }
-            catch (Exception)
-            {
-                var exception = new Exception(
-                    $"An error occurred when opening the link '{link}'");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-            }
+            LinkUtils.OpenLink(link);
         }
 
         private void Telegram_Click(object sender, RoutedEventArgs e)
         {
             const string link = "https://t.me/joinchat/Vf9B3XM5SM-zUbkf";
 
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = link,
-                UseShellExecute = true
-            };
-
-            try
-            {
-                Process.Start(startInfo);
-            }
-            catch (Exception)
-            {
-                var exception = new Exception(
-                    $"An error occurred when opening the link '{link}'");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-            }
+            LinkUtils.OpenLink(link);
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
