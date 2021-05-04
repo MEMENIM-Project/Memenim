@@ -8,6 +8,7 @@ using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Logging;
 using Memenim.Pages;
 using Memenim.Settings;
 using Memenim.Utils;
@@ -503,7 +504,7 @@ namespace Memenim.Widgets
 
             UpdateLayout();
 
-            if (page?.svPost?.VerticalOffset > page?.wdgPost?.ActualHeight - ((page?.wdgPost?.ActualHeight % page?.svPost?.ActualHeight) / 100 * 50))
+            if (page?.svPost?.VerticalOffset > page?.wdgPost?.ActualHeight - (page?.svPost?.ActualHeight / 100 * 50))
             {
                 page?.svPost?.ScrollToVerticalOffset(
                     page.svPost.VerticalOffset + (page.svPost.ScrollableHeight - scrollableHeight));
