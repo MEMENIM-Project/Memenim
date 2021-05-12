@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Memenim.Core.Api;
+using Memenim.Cryptography.Windows;
 using Memenim.Settings.Entities;
 using Memenim.Utils;
 using RIS.Extensions;
@@ -323,7 +324,7 @@ namespace Memenim.Settings
 
             try
             {
-                return PersistentUtils.WinUnprotect(
+                return WindowsCipherManager.Decrypt(
                     GetDefault("CurrentUserLogin"),
                     "CurrentUserLogin");
             }
@@ -332,7 +333,7 @@ namespace Memenim.Settings
                 SetCurrentUserLogin(
                     GetDefault("CurrentUserLogin"));
 
-                return PersistentUtils.WinUnprotect(
+                return WindowsCipherManager.Decrypt(
                     GetDefault("CurrentUserLogin"),
                     "CurrentUserLogin");
             }
@@ -341,7 +342,7 @@ namespace Memenim.Settings
                 SetCurrentUserLogin(
                     GetDefault("CurrentUserLogin"));
 
-                return PersistentUtils.WinUnprotect(
+                return WindowsCipherManager.Decrypt(
                     GetDefault("CurrentUserLogin"),
                     "CurrentUserLogin");
             }
@@ -362,7 +363,7 @@ namespace Memenim.Settings
             }
 
             SetDefault("CurrentUserLogin",
-                PersistentUtils.WinProtect(
+                WindowsCipherManager.Encrypt(
                     login,
                     "CurrentUserLogin"));
         }
@@ -444,7 +445,7 @@ namespace Memenim.Settings
                 return CurrentUser.Token;
             }
 
-            return PersistentUtils.WinUnprotect(
+            return WindowsCipherManager.Decrypt(
                 Get(login, "UserToken"),
                 $"UserToken-{login}");
         }
@@ -457,7 +458,7 @@ namespace Memenim.Settings
                 return CurrentUser.Id;
             }
 
-            var userId = PersistentUtils.WinUnprotect(
+            var userId = WindowsCipherManager.Decrypt(
                 Get(login, "UserId"),
                 $"UserId-{login}");
 
@@ -474,7 +475,7 @@ namespace Memenim.Settings
                 return CurrentUser.RocketPassword;
             }
 
-            return PersistentUtils.WinUnprotect(
+            return WindowsCipherManager.Decrypt(
                 Get(login, "UserRocketPassword"),
                 $"UserRocketPassword-{login}");
         }
@@ -545,7 +546,7 @@ namespace Memenim.Settings
             }
 
             Set(login, "UserToken",
-                PersistentUtils.WinProtect(
+                WindowsCipherManager.Encrypt(
                     token,
                     $"UserToken-{login}"));
         }
@@ -566,7 +567,7 @@ namespace Memenim.Settings
             }
 
             Set(login, "UserId",
-                PersistentUtils.WinProtect(
+                WindowsCipherManager.Encrypt(
                     id.ToString(),
                     $"UserId-{login}"));
         }
@@ -588,7 +589,7 @@ namespace Memenim.Settings
             }
 
             Set(login, "UserRocketPassword",
-                PersistentUtils.WinProtect(
+                WindowsCipherManager.Encrypt(
                     rocketPassword,
                     $"UserRocketPassword-{login}"));
         }

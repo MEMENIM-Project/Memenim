@@ -67,6 +67,7 @@ namespace Memenim.Downloads
 
                     await stream.ReadAsync(data, 0, data.Length)
                         .ConfigureAwait(true);
+
                     await file.WriteAsync(data, 0, data.Length)
                         .ConfigureAwait(true);
                 }

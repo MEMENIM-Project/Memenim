@@ -3,11 +3,11 @@ using System.Security.Cryptography;
 using System.Text;
 using RIS.Text.Encoding.Base;
 
-namespace Memenim.Utils
+namespace Memenim.Cryptography.Windows
 {
-    public static class PersistentUtils
+    public static class WindowsCipherManager
     {
-        public static string WinProtect(string data, string additionalKey = "MEMENIM")
+        public static string Encrypt(string data, string additionalKey = "MEMENIM")
         {
             if (string.IsNullOrWhiteSpace(data))
                 return data;
@@ -18,7 +18,7 @@ namespace Memenim.Utils
                 DataProtectionScope.CurrentUser)));
         }
 
-        public static string WinUnprotect(string data, string additionalKey = "MEMENIM")
+        public static string Decrypt(string data, string additionalKey = "MEMENIM")
         {
             if (string.IsNullOrWhiteSpace(data))
                 return data;

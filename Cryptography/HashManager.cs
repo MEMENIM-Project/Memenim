@@ -22,11 +22,14 @@ namespace Memenim.Cryptography
         {
             return Service.GetDirectoryHash(Environment.ExecAppDirectoryName,false, new[]
             {
+                "scripts",
+                Path.Combine("Script", "scripts"),
                 "localizations",
+                "downloads",
                 "storage",
+                "temp",
                 "logs",
                 "hash",
-                "downloads",
                 "AppSettings.config",
                 "PersistentSettings.store",
                 "MEMENIM.exe",

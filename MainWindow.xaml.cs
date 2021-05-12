@@ -156,19 +156,7 @@ namespace Memenim
             ConnectionFailedGridStatus = false;
             _connectionFailedGridTask = Task.CompletedTask;
 
-            _loadingStyle = StylesManager.GetStyle(
-                "Loading", "Smile1LoadingTheme");
-
-            string mahAppsStyleName;
-
-            if (_loadingStyle.Contains("MahAppsThemeName"))
-                mahAppsStyleName = (string)_loadingStyle["MahAppsThemeName"];
-            else
-                mahAppsStyleName = "DarkTheme";
-
-            _loadingMahAppsStyle = StylesManager.GetStyle(
-                "MahApps", mahAppsStyleName);
-
+            LoadLoadingStyle();
             LoadSpecialEvent();
 
             LocalizationManager.ReloadLocales();
@@ -266,6 +254,22 @@ namespace Memenim
             }
 
             slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
+        }
+
+        private void LoadLoadingStyle()
+        {
+            _loadingStyle = StylesManager.GetStyle(
+                "Loading", "SmileWithTearTheme");
+
+            string mahAppsStyleName;
+
+            if (_loadingStyle.Contains("MahAppsThemeName"))
+                mahAppsStyleName = (string)_loadingStyle["MahAppsThemeName"];
+            else
+                mahAppsStyleName = "DarkTheme";
+
+            _loadingMahAppsStyle = StylesManager.GetStyle(
+                "MahApps", mahAppsStyleName);
         }
 
         private void LoadSpecialEvent()

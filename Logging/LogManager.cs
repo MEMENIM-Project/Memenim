@@ -49,7 +49,8 @@ namespace Memenim.Logging
         static LogManager()
         {
             NLog.LogManager.Configuration = XmlLoggingConfiguration
-                .CreateFromXmlString(ResourceManager.GetEmbeddedAsString("nlog.config"));
+                .CreateFromXmlString(ResourceManager
+                    .GetEmbeddedAsString(@"Configs\nlog.config"));
             NLog.LogManager.AutoShutdown = true;
             NLog.LogManager.Flush();
 

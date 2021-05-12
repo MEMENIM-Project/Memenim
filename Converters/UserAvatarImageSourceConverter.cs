@@ -14,7 +14,7 @@ namespace Memenim.Converters
                 result = stringValue;
 
             return result == null || !Uri.TryCreate(result, UriKind.Absolute, out Uri _)
-                ? "pack://application:,,,/Resources/placeholder_avatar.jpg"
+                ? "pack://application:,,,/Resources/Images/Placeholders/placeholder_avatar.jpg"
                 : result;
         }
 
@@ -26,7 +26,7 @@ namespace Memenim.Converters
                 result = stringValue;
 
             return result == null || !Uri.TryCreate(result, UriKind.Absolute, out Uri _)
-                                  || result == "pack://application:,,,/Resources/placeholder_avatar.jpg"
+                                  || result == "pack://application:,,,/Resources/Images/Placeholders/placeholder_avatar.jpg"
                 ? string.Empty
                 : result;
         }

@@ -7,36 +7,47 @@ namespace Memenim.Resources
 {
     public static class ResourceManager
     {
-        public static byte[] GetEmbedded(string fileName)
-        {
-            var provider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly(),
-                "Memenim.Resources");
+        private static readonly EmbeddedFileProvider ResourceProvider;
 
-            using (var stream = provider.GetFileInfo(fileName).CreateReadStream())
+        static ResourceManager()
+        {
+            ResourceProvider = new EmbeddedFileProvider(
+                Assembly.GetExecutingAssembly(),
+                $"Memenim.Resources");
+        }
+
+        public static byte[] GetEmbeddedAsBytes(
+            string filePath)
+        {
+            using (var stream = ResourceProvider
+                .GetFileInfo(filePath)
+                .CreateReadStream())
             {
                 if (stream == null)
                     return null;
 
                 using (var reader = new BinaryReader(stream))
                 {
-                    return reader.ReadBytes((int)reader.BaseStream.Length);
+                    return reader
+                        .ReadBytes((int)reader.BaseStream.Length);
                 }
             }
         }
 
-        public static string GetEmbeddedAsString(string fileName)
+        public static string GetEmbeddedAsString(
+            string filePath)
         {
-            var provider = new EmbeddedFileProvider(Assembly.GetExecutingAssembly(),
-                "Memenim.Resources");
-
-            using (var stream = provider.GetFileInfo(fileName).CreateReadStream())
+            using (var stream = ResourceProvider
+                .GetFileInfo(filePath)
+                .CreateReadStream())
             {
                 if (stream == null)
                     return null;
 
                 using (var reader = new StreamReader(stream))
                 {
-                    return reader.ReadToEnd();
+                    return reader
+                        .ReadToEnd();
                 }
             }
         }

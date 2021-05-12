@@ -8,7 +8,8 @@ namespace Memenim.Localization
         public LocalizationXamlModule OldLanguage { get; }
         public LocalizationXamlModule NewLanguage { get; }
 
-        public LanguageChangedEventArgs(LocalizationXamlModule oldLanguage,
+        public LanguageChangedEventArgs(
+            LocalizationXamlModule oldLanguage,
             LocalizationXamlModule newLanguage)
         {
             OldLanguage = oldLanguage;

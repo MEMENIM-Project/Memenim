@@ -212,7 +212,7 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image x:Name="loadingImage"
                        Width="256" Height="256"
-                       Source="Resources/Images/Smiles/SMILEWITHTEAR_bg_2.png"
+                       Source="Resources/Images/Loading/SmileWithTear_fg.png"
                        Stretch="Uniform"/>
                 <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
                                                     SpeedRatio="2" IsActive="False" Visibility="Visible"
@@ -242,7 +242,7 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image x:Name="connectionFailedImage"
                        Width="256" Height="256"
-                       Source="Resources/Images/Smiles/SMILEWITHTEAR_bg_2.png"
+                       Source="Resources/Images/Loading/SmileWithTear_fg.png"
                        Stretch="Uniform"/>
                 <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
                                                     SpeedRatio="2" IsActive="False" Visibility="Visible"
