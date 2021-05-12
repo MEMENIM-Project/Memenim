@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.16.15.0</AssemblyVersion>
-    <FileVersion>0.16.15.0</FileVersion>
+    <AssemblyVersion>0.16.17.0</AssemblyVersion>
+    <FileVersion>0.16.17.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.16.15</Version>
+    <Version>0.16.17</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -39,7 +39,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="NLog.Schema" Version="4.7.9" />
-    <PackageReference Include="RIS" Version="3.13.0" />
+    <PackageReference Include="RIS" Version="3.13.1" />
     <PackageReference Include="RIS.Collections" Version="4.7.4" />
     <PackageReference Include="RIS.Cryptography" Version="3.5.0" />
     <PackageReference Include="RIS.Graphics" Version="2.6.1" />
@@ -90,8 +90,14 @@
 
   <ItemGroup>
     <Resource Include="Resources\Icons\ic_launcher.ico" />
-    <EmbeddedResource Include="Resources\Configs\nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Images\Placeholders\placeholder_avatar.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Configs\nlog.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -127,6 +133,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\Images\Loading\SmileWithTear_fg.png" />
+    <Resource Include="Resources\Images\Loading\Marina_fg.png" />
+    <Resource Include="Resources\Images\Loading\Kurtka_fg.png" />
   </ItemGroup>
 
 </Project>

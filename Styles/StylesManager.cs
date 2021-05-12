@@ -1,14 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
+using Memenim.Generating;
+using Memenim.Styles.Loading.Entities;
 
 namespace Memenim.Styles
 {
     public static class StylesManager
     {
+        private static ReadOnlyCollection<LoadingStyle> LoadingStyles { get; }
+
+        static StylesManager()
+        {
+            LoadingStyles = GetLoadingStyles();
+        }
+
+
+
         private static string GetStyleXamlFilePath(
             string categoryName, string styleName)
         {
             string styleXamlFileName = $"{styleName}.xaml";
+            categoryName = categoryName.Replace('\\', '/');
 
             return $"pack://application:,,,/Styles/{categoryName}/{styleXamlFileName}";
         }
@@ -27,12 +41,41 @@ namespace Memenim.Styles
             return styleDictionary;
         }
 
+        private static ReadOnlyCollection<LoadingStyle> GetLoadingStyles()
+        {
+            var loadingStyles = new List<LoadingStyle>();
+
+            void AddStyle(string styleName)
+            {
+                loadingStyles.Add(new LoadingStyle(
+                    styleName, GetStyle("Loading", styleName)));
+            }
+
+            AddStyle("SmileWithTearTheme");
+            AddStyle("MarinaTheme");
+            AddStyle("KurtkaTheme");
+
+
+            return new ReadOnlyCollection<LoadingStyle>(
+                loadingStyles);
+        }
+
+
+
         public static ResourceDictionary GetStyle(
             string categoryName, string styleName)
         {
             return GetStyleResourceDictionary(
                 GetStyleXamlFilePath(
                     categoryName, styleName));
+        }
+
+        public static LoadingStyle GetRandomLoadingStyle()
+        {
+            var index = (int)GeneratingManager.RandomGenerator
+                .GetNormalizedIndex((uint)LoadingStyles.Count);
+
+            return LoadingStyles[index];
         }
     }
 }

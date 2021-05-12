@@ -2,13 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime">
 
-    <system:String x:Key="LoadingMahAppsThemeName">LightTheme</system:String>
+    <system:String x:Key="LoadingMahAppsThemeName">DarkTheme</system:String>
 
-    <SolidColorBrush x:Key="Window.Main.TitleBackground" Color="#FFFBCB3C"/>
-    <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground" Color="#FFFBCB3C"/>
-    <SolidColorBrush x:Key="Window.Main.Background" Color="#FFFBCB3C"/>
+    <SolidColorBrush x:Key="Window.Main.TitleBackground" Color="#FF151719"/>
+    <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground" Color="#FF151719"/>
+    <SolidColorBrush x:Key="Window.Main.Background" Color="#FF151719"/>
 
-    <system:String x:Key="LoadingForegroundImagePath">Resources/Images/Loading/SmileWithTear_fg.png</system:String>
+    <system:String x:Key="LoadingForegroundImagePath">Resources/Images/Loading/Kurtka_fg.png</system:String>
     <system:String x:Key="LoadingBackgroundImagePath">None</system:String>
 
     <system:String x:Key="LoadingIndicatorHorizontalAlignment">Right</system:String>

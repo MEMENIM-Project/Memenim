@@ -208,22 +208,29 @@
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
             <Rectangle Fill="{DynamicResource Window.Main.Background}"
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <StackPanel Orientation="Vertical"
-                        HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image x:Name="loadingImage"
-                       Width="256" Height="256"
-                       Source="Resources/Images/Loading/SmileWithTear_fg.png"
-                       Stretch="Uniform"/>
-                <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                    SpeedRatio="2" IsActive="False" Visibility="Visible"
-                                                    Margin="30"/>
-            </StackPanel>
+            <Image x:Name="loadingBackgroundImage"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Image x:Name="loadingForegroundImage"
+                   Width="256" Height="256"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="False" Visibility="Visible"
+                                                Margin="30"/>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="0" x:Name="connectionFailedGrid"
               Visibility="Collapsed" ZIndex="2147483647"
               Background="{DynamicResource MahApps.Brushes.Window.Background}">
             <Rectangle Fill="{DynamicResource Window.Main.Background}"
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Image x:Name="connectionFailedBackgroundImage"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Image x:Name="connectionFailedForegroundImage"
+                   Width="256" Height="256"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Top">
                 <controls:MetroProgressBar MinHeight="4" Height="4"
@@ -238,16 +245,9 @@
                            Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
                            Margin="10 5 10 5"/>
             </StackPanel>
-            <StackPanel Orientation="Vertical"
-                        HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image x:Name="connectionFailedImage"
-                       Width="256" Height="256"
-                       Source="Resources/Images/Loading/SmileWithTear_fg.png"
-                       Stretch="Uniform"/>
-                <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
-                                                    SpeedRatio="2" IsActive="False" Visibility="Visible"
-                                                    Margin="30"/>
-            </StackPanel>
+            <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
+                                                SpeedRatio="2" IsActive="False" Visibility="Visible"
+                                                Margin="30"/>
         </Grid>
     </Grid>
 </controls:MetroWindow>
