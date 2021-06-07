@@ -37,18 +37,21 @@ namespace Memenim.Localization
 
         static LocalizationManager()
         {
-            var baseDirectory = Environment.ExecProcessDirectoryName;
+            var baseAppDirectory = Environment.ExecAppDirectoryName;
+            var baseProcessDirectory = Environment.ExecProcessDirectoryName;
 
-            if (string.IsNullOrEmpty(baseDirectory) || baseDirectory == "Unknown")
+            if (string.IsNullOrEmpty(baseAppDirectory) || baseAppDirectory == "Unknown")
+                return;
+            if (string.IsNullOrEmpty(baseProcessDirectory) || baseProcessDirectory == "Unknown")
                 return;
 
-            var directory = Path.Combine(baseDirectory,
+            var directory = Path.Combine(baseAppDirectory,
                 "Localization", "localizations");
 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            directory = Path.Combine(baseDirectory,
+            directory = Path.Combine(baseProcessDirectory,
                 "localizations");
 
             if (!Directory.Exists(directory))
