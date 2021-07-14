@@ -53,6 +53,7 @@
     <system:String x:Key="RemoveImage">Убрать изображение</system:String>
     <system:String x:Key="ImageSelection">Выбор изображения</system:String>
     <system:String x:Key="GIFSelection">Выбор GIF-изображения</system:String>
+    <system:String x:Key="EnterSearchQuery">Введите поисковый запрос</system:String>
     
     <system:String x:Key="SettingsTitle">Настройки</system:String>
     <system:String x:Key="SpecialEventSettingsTitle">Спец. ивент</system:String>
@@ -210,10 +211,14 @@
 
     <system:String x:Key="MenuItem-CopyUserLink">Скопировать ссылку на пользователя</system:String>
     <system:String x:Key="MenuItem-CopyUserId">Скопировать id пользователя</system:String>
+    <system:String x:Key="MenuItem-CopyUserNickname">Скопировать никнейм пользователя</system:String>
+    <system:String x:Key="MenuItem-CopyUserLogin">Скопировать логин пользователя</system:String>
     <system:String x:Key="MenuItem-SelectImageFromUrl">Вставить URL-адрес изображения</system:String>
     <system:String x:Key="MenuItem-SelectImageFromGallery">Выбрать изображение из галереи</system:String>
     <system:String x:Key="MenuItem-SelectImageFromTenor">Выбрать GIF-изображение в Tenor</system:String>
     <system:String x:Key="MenuItem-RemoveImage">Убрать изображение</system:String>
+
+    <system:String x:Key="MenuItem-CopyProfileStatText">Скопировать текст</system:String>
 
     <system:String x:Key="AttemptingRestoreConnection">Мы пытаемся восстановить подключение...</system:String>
 

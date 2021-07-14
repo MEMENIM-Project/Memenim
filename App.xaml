@@ -146,6 +146,7 @@
             <convertersLocal:WriteCommentTextConverter x:Key="WriteCommentTextConverter"/>
             <convertersLocal:BgmVolumeConverter x:Key="BgmVolumeConverter"/>
             <convertersLocal:UnixTimeToStringConverter x:Key="UnixTimeToStringConverter"/>
+            <convertersLocal:BirthDateToAgeStringConverter x:Key="BirthDateToAgeStringConverter"/>
 
             <convertersRis:SimpleArithmeticConverter x:Key="SimpleArithmeticConverter"/>
             <convertersRis:ScriptEvaluatorConverter x:Key="ScriptEvaluatorConverter"/>

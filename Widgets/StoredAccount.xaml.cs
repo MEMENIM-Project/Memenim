@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
@@ -9,7 +8,7 @@ using Memenim.Settings.Entities;
 
 namespace Memenim.Widgets
 {
-    public partial class StoredAccount : UserControl
+    public partial class StoredAccount : WidgetContent
     {
         public static readonly RoutedEvent OnAccountClicked =
             EventManager.RegisterRoutedEvent(nameof(AccountClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));

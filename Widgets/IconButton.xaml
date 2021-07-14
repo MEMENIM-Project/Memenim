@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Memenim.Widgets.IconButton"
+﻿<local:WidgetContent x:Class="Memenim.Widgets.IconButton"
              d:DataContext="{d:DesignInstance local:IconButton}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -72,4 +72,4 @@
                                       Height="{Binding Path=IconSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]}"/>
         </Button>
     </Grid>
-</UserControl>
+</local:WidgetContent>

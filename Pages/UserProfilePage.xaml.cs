@@ -189,6 +189,11 @@ namespace Memenim.Pages
             UpdateLayout();
         }
 
+        public void Share()
+        {
+            Clipboard.SetText($"memenim://app/user/id/{ViewModel.CurrentProfileData.Id}");
+        }
+
         public Task ShowLoadingGrid(bool status)
         {
             if (status)
@@ -302,12 +307,22 @@ namespace Memenim.Pages
 
         private void CopyUserLink_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText($"memenim://app/showuserid/{ViewModel.CurrentProfileData.Id}");
+            Share();
         }
 
         private void CopyUserId_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(ViewModel.CurrentProfileData.Id.ToString());
+        }
+
+        private void CopyUserNickname_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(ViewModel.CurrentProfileData.Nickname);
+        }
+
+        private void CopyUserLogin_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(ViewModel.CurrentProfileData.Login);
         }
 
         private void btnEditMode_Click(object sender, RoutedEventArgs e)

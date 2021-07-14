@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Memenim.Logging;
 using Memenim.Native.Window;
 using Memenim.Protocols;
 using ProtoBuf;
+using RIS.Extensions;
+using RIS.Logging;
 using TinyIpc.Messaging;
 
 namespace Memenim.Native
@@ -20,6 +21,8 @@ namespace Memenim.Native
         public string UniqueName { get; }
         public Mutex Mutex { get; }
         public uint SingleInstanceMessage { get; }
+
+
 
         public SingleInstanceApp(string uniqueName)
         {
@@ -34,52 +37,7 @@ namespace Memenim.Native
             SingleInstanceMessage = WindowNative.RegisterWindowMessage($"WM_{uniqueName}");
         }
 
-        private void InstanceBus_MessageReceived(object sender, TinyMessageReceivedEventArgs e)
-        {
-            var message = UnwrapMessage(e.Message);
 
-            if (!message.HasValue)
-                return;
-
-            LogManager.DebugLog.Info($"Receive message - name = {message.Value.Name}, " +
-                                     $"type = {message.Value.ContentType}, restoreWindow = {message.Value.RestoreWindow}");
-
-            if (message.Value.ContentType == IpcBusContentType.StringUtf8)
-                LogManager.DebugLog.Info($"Receive message content - {message.Value.GetStringUtf8()}");
-
-            if (message.Value.Name == "SendArgs")
-            {
-                string[] args = message.Value.GetStringUtf8().Split(" || ");
-                var wrapper = App.UnwrapArgs(args);
-
-                foreach (var argEntry in wrapper.Enumerate())
-                {
-                    switch (argEntry.Key)
-                    {
-                        case "startupUri":
-                            string startupUri = (string)argEntry.Value;
-
-                            if (!string.IsNullOrEmpty(startupUri))
-                                ProtocolManager.ParseUri(startupUri);
-
-                            break;
-                        case "createHashFiles":
-                        default:
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                return;
-            }
-
-            if (message.Value.RestoreWindow)
-            {
-                _ = WindowNative.PostMessage((IntPtr)WindowNative.HwndBroadcast,
-                    SingleInstanceMessage, IntPtr.Zero, IntPtr.Zero);
-            }
-        }
 
         private static byte[] WrapMessage(string name, byte[] content,
             IpcBusContentType type, bool restoreWindow)
@@ -106,37 +64,14 @@ namespace Memenim.Native
             return message;
         }
 
-        private Task SendMessage(string name, byte[] content,
-            IpcBusContentType type, bool restoreWindow = true)
+
+
+        public Task Run(Action action)
         {
-            byte[] message = WrapMessage(name, content,
-                type, restoreWindow);
-
-            if (message == null || message.Length == 0)
-                return Task.CompletedTask;
-
-            LogManager.DebugLog.Info($"Send message - name = {name}, " +
-                                 $"type = {type}, restoreWindow = {restoreWindow}");
-
-            if (type == IpcBusContentType.StringUtf8)
-                LogManager.DebugLog.Info($"Send message content - {Encoding.UTF8.GetString(content)}");
-
-            return LocalBus.PublishAsync(message);
+            return RunInternal(action, IntPtr.Zero, IntPtr.Zero);
         }
-
-        public Task SendMessageStringUtf8(string name, string content,
-            bool restoreWindow = true)
-        {
-            return SendMessage(name, Encoding.UTF8.GetBytes(content),
-                IpcBusContentType.StringUtf8, restoreWindow);
-        }
-
-        public void Run(Action action)
-        {
-            RunInternal(action, IntPtr.Zero, IntPtr.Zero).Wait();
-        }
-
-        private async Task RunInternal(Action action, IntPtr wParam, IntPtr lParam)
+        private async Task RunInternal(Action action,
+            IntPtr wParam, IntPtr lParam)
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
@@ -156,6 +91,35 @@ namespace Memenim.Native
                 ReleaseMutex();
             }
         }
+
+
+
+        public Task SendMessageStringUtf8(string name, string content,
+            bool restoreWindow = true)
+        {
+            return SendMessageInternal(name, Encoding.UTF8.GetBytes(content),
+                IpcBusContentType.StringUtf8, restoreWindow);
+        }
+
+        private Task SendMessageInternal(string name, byte[] content,
+            IpcBusContentType type, bool restoreWindow = true)
+        {
+            byte[] message = WrapMessage(name, content,
+                type, restoreWindow);
+
+            if (message == null || message.Length == 0)
+                return Task.CompletedTask;
+
+            LogManager.DebugLog.Info($"Send message - name = {name}, " +
+                                 $"type = {type}, restoreWindow = {restoreWindow}");
+
+            if (type == IpcBusContentType.StringUtf8)
+                LogManager.DebugLog.Info($"Send message content - {Encoding.UTF8.GetString(content)}");
+
+            return LocalBus.PublishAsync(message);
+        }
+
+
 
         public static void ActivateWindow(IntPtr hwnd)
         {
@@ -225,6 +189,7 @@ namespace Memenim.Native
             WindowUtils.ActivateWindow(WindowUtils.GetModalWindow(hwnd));
         }
 
+
         public Task<bool> WaitMutex(IntPtr wParam, IntPtr lParam)
         {
             return WaitMutex(false, wParam, lParam);
@@ -261,7 +226,6 @@ namespace Memenim.Native
 
             return !exist;
         }
-
         private bool WaitMutexInternal(bool force)
         {
             if (force)
@@ -280,6 +244,72 @@ namespace Memenim.Native
         public void ReleaseMutex()
         {
             Mutex.ReleaseMutex();
+        }
+
+
+
+        private void InstanceBus_MessageReceived(object sender, TinyMessageReceivedEventArgs e)
+        {
+            var message = UnwrapMessage(e.Message);
+
+            if (!message.HasValue)
+                return;
+
+            LogManager.DebugLog.Info($"Receive message - name = {message.Value.Name}, " +
+                                     $"type = {message.Value.ContentType}, restoreWindow = {message.Value.RestoreWindow}");
+
+            if (message.Value.ContentType == IpcBusContentType.StringUtf8)
+                LogManager.DebugLog.Info($"Receive message content - {message.Value.GetStringUtf8()}");
+
+            if (message.Value.Name == "SendArgs")
+            {
+                var args = message.Value.GetStringUtf8().Split(" || ");
+                var wrapper = App.UnwrapArgs(args);
+
+                foreach (var argEntry in wrapper.Enumerate())
+                {
+                    switch (argEntry.Key)
+                    {
+                        case "startupUri":
+                            var startupUri = (string)argEntry.Value;
+
+                            if (!string.IsNullOrEmpty(startupUri))
+                                ProtocolManager.ParseUri(startupUri);
+
+                            break;
+                        case "createHashFiles":
+                            var createHashFilesString = (string)argEntry.Value;
+                            bool createHashFiles;
+
+                            try
+                            {
+                                createHashFiles = string.IsNullOrWhiteSpace(createHashFilesString)
+                                                  || createHashFilesString.ToBoolean();
+                            }
+                            catch (Exception)
+                            {
+                                createHashFiles = false;
+                            }
+
+                            if (createHashFiles)
+                                App.CreateHashFiles();
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            if (message.Value.RestoreWindow)
+            {
+                _ = WindowNative.PostMessage((IntPtr)WindowNative.HwndBroadcast,
+                    SingleInstanceMessage, IntPtr.Zero, IntPtr.Zero);
+            }
         }
     }
 }

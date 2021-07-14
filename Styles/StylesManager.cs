@@ -47,13 +47,15 @@ namespace Memenim.Styles
 
             void AddStyle(string styleName)
             {
+                styleName += "Theme";
+
                 loadingStyles.Add(new LoadingStyle(
                     styleName, GetStyle("Loading", styleName)));
             }
 
-            AddStyle("SmileWithTearTheme");
-            AddStyle("MarinaTheme");
-            AddStyle("KurtkaTheme");
+            AddStyle("SmileWithTear");
+            AddStyle("Marina");
+            AddStyle("Kurtka");
 
 
             return new ReadOnlyCollection<LoadingStyle>(

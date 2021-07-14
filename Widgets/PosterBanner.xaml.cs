@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
-using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
-    public partial class PosterBanner : UserControl
+    public partial class PosterBanner : WidgetContent
     {
         public static readonly DependencyProperty UserIdProperty =
             DependencyProperty.Register(nameof(UserId), typeof(int), typeof(PosterBanner),

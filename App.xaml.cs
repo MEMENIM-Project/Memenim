@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -12,7 +9,6 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Cryptography;
 using Memenim.Dialogs;
-using Memenim.Logging;
 using Memenim.Native;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -20,8 +16,10 @@ using Memenim.Protocols;
 using Memenim.Settings;
 using Memenim.Storage;
 using Memenim.Utils;
-using RIS;
 using RIS.Cryptography;
+using RIS.Extensions;
+using RIS.Logging;
+using RIS.Synchronization.Context;
 using RIS.Wrappers;
 using Environment = RIS.Environment;
 
@@ -53,76 +51,41 @@ namespace Memenim
         }
 
         private static string AppStartupUri { get; set; }
-        private static bool CreateHashFiles { get; set; }
+        private static bool AppCreateHashFiles { get; set; }
 
         [STAThread]
         private static void Main(string[] args)
         {
-#pragma warning disable SS002 // DateTime.Now was referenced
-            NLog.GlobalDiagnosticsContext.Set("AppStartupTime", DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture));
-#pragma warning restore SS002 // DateTime.Now was referenced
-
             ParseArgs(args);
 
-            Instance.Run(() =>
+            LogManager.Startup();
+
+            SingleThreadedSynchronizationContext.Await(() =>
             {
-                SingleInstanceMain();
+                return Instance.Run(() =>
+                {
+                    SingleInstanceMain();
+                });
             });
         }
 
         private static void SingleInstanceMain()
         {
-            LogManager.Log.Info("App Run");
-
-            Events.Information += OnInformation;
-            Events.Warning += OnWarning;
-            Events.Error += OnError;
-
-            ApiRequestEngine.Information += OnCoreInformation;
-            ApiRequestEngine.Warning += OnCoreWarning;
-            ApiRequestEngine.Error += OnCoreError;
-
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-            AppDomain.CurrentDomain.FirstChanceException += OnFirstChanceException;
-            AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += OnAssemblyResolve;
-            AppDomain.CurrentDomain.TypeResolve += OnResolve;
-            AppDomain.CurrentDomain.ResourceResolve += OnResolve;
-
             App app = new App();
 
-            Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
+            ApiRequestEngine.Information += app.OnCoreInformation;
+            ApiRequestEngine.Warning += app.OnCoreWarning;
+            ApiRequestEngine.Error += app.OnCoreError;
 
-            LogManager.Log.Info($"Unique Name - {UniqueName}");
-            LogManager.Log.Info($"Libraries Directory - {Environment.ExecAppDirectoryName}");
-            LogManager.Log.Info($"Execution File Directory - {Environment.ExecProcessDirectoryName}");
-            LogManager.Log.Info($"Is Standalone App - {Environment.IsStandalone}");
-            LogManager.Log.Info($"Is Single File App - {Environment.IsSingleFile}");
-            LogManager.Log.Info($"Runtime Name - {Environment.RuntimeName}");
-            LogManager.Log.Info($"Runtime Version - {Environment.RuntimeVersion}");
-            LogManager.Log.Info($"Runtime Identifier - {Environment.RuntimeIdentifier}");
+            app.DispatcherUnhandledException += app.OnDispatcherUnhandledException;
 
-            string librariesHash = HashManager.GetLibrariesHash();
-            string exeHash = HashManager.GetExeHash();
-            string exePdbHash = HashManager.GetExePdbHash();
+            LogManager.LoggingShutdown += app.LogManager_LoggingShutdown;
 
-            LogManager.Log.Info($"Libraries SHA512 - {librariesHash}");
-            LogManager.Log.Info($"Exe SHA512 - {exeHash}");
-            LogManager.Log.Info($"Exe PDB SHA512 - {exePdbHash}");
-
-            if (CreateHashFiles)
+            if (AppCreateHashFiles)
             {
-                const string hashType = "sha512";
+                CreateHashFiles();
 
-                LogManager.Log.Info($"Hash file creation started - {hashType}");
-
-                CreateHashFile(librariesHash, "LibrariesHash", hashType);
-                CreateHashFile(exeHash, "ExeHash", hashType);
-                CreateHashFile(exePdbHash, "ExePdbHash", hashType);
-
-                LogManager.Log.Info($"Hash files creation completed - {hashType}");
-
-                Current.Shutdown(0x0);
+                app.Shutdown(0x0);
                 return;
             }
 
@@ -142,7 +105,18 @@ namespace Memenim
                         AppStartupUri = (string)argEntry.Value;
                         break;
                     case "createHashFiles":
-                        CreateHashFiles = bool.Parse((string)argEntry.Value);
+                        var createHashFilesString = (string)argEntry.Value;
+
+                        try
+                        {
+                            AppCreateHashFiles = string.IsNullOrWhiteSpace(createHashFilesString)
+                                                 || createHashFilesString.ToBoolean();
+                        }
+                        catch (Exception)
+                        {
+                            AppCreateHashFiles = false;
+                        }
+
                         break;
                     default:
                         break;
@@ -174,6 +148,8 @@ namespace Memenim
             }
         }
 
+
+
         public static ArgsKeyedWrapper UnwrapArgs(string[] args)
         {
             var argsEntries = new List<(string Key, object Value)>(args.Length);
@@ -187,19 +163,54 @@ namespace Memenim
 
                 if (separatorPosition == -1)
                 {
-                    argsEntries.Add(
-                        (arg.Trim(' ', '\'', '\"'),
-                        string.Empty));
+                    argsEntries.Add((
+                        arg
+                            .Trim(' ', '-', '\'', '\"')
+                            .TrimStart('-'),
+                        string.Empty
+                        ));
 
                     continue;
                 }
 
-                argsEntries.Add(
-                    (arg.Substring(0, separatorPosition).Trim(' ', '\'', '\"'),
-                    arg.Substring(separatorPosition + 1).Trim(' ', '\'', '\"')));
+                argsEntries.Add((
+                    arg.Substring(0, separatorPosition)
+                        .Trim(' ', '\'', '\"')
+                        .TrimStart('-'),
+                    arg.Substring(separatorPosition + 1)
+                        .Trim(' ', '\'', '\"')
+                    ));
             }
 
             return new ArgsKeyedWrapper(argsEntries);
+        }
+
+        public static (string LibrariesHash, string ExeHash, string ExePdbHash) CalculateHashes()
+        {
+            var librariesHash = HashManager.GetLibrariesHash();
+            var exeHash = HashManager.GetExeHash();
+            var exePdbHash = HashManager.GetExePdbHash();
+
+            LogManager.Log.Info($"Libraries SHA512 - {librariesHash}");
+            LogManager.Log.Info($"Exe SHA512 - {exeHash}");
+            LogManager.Log.Info($"Exe PDB SHA512 - {exePdbHash}");
+
+            return (librariesHash, exeHash, exePdbHash);
+        }
+
+        public static void CreateHashFiles()
+        {
+            const string hashType = "sha512";
+
+            LogManager.Log.Info($"Hash file creation started - {hashType}");
+
+            var hashes = CalculateHashes();
+
+            CreateHashFile(hashes.LibrariesHash, "LibrariesHash", hashType);
+            CreateHashFile(hashes.ExeHash, "ExeHash", hashType);
+            CreateHashFile(hashes.ExePdbHash, "ExePdbHash", hashType);
+
+            LogManager.Log.Info($"Hash files creation completed - {hashType}");
         }
 
 
@@ -242,10 +253,8 @@ namespace Memenim
 
             await Task.Run(async () =>
             {
-                LogManager.Log.Info("Deleted older logs - " +
-                                    $"{LogManager.DeleteLogs(Path.Combine(Environment.ExecProcessDirectoryName, "logs"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
-                LogManager.Log.Info("Deleted older debug logs - " +
-                                    $"{LogManager.DeleteLogs(Path.Combine(Environment.ExecProcessDirectoryName, "logs", "debug"), SettingsManager.AppSettings.LogRetentionDaysPeriod)}");
+                LogManager.DeleteLogs(SettingsManager.AppSettings
+                    .LogRetentionDaysPeriod);
 
                 try
                 {
@@ -322,82 +331,42 @@ namespace Memenim
         {
             SettingsManager.AppSettings.Save();
 
-            LogManager.Log.Info($"App Exit Code - {e.ApplicationExitCode}");
-            NLog.LogManager.Shutdown();
-
             base.OnExit(e);
         }
 
 
 
-        private static void OnInformation(object sender, RInformationEventArgs e)
-        {
-            LogManager.DebugLog.Info($"{e.Message}");
-        }
-
-        private static void OnWarning(object sender, RWarningEventArgs e)
-        {
-            LogManager.Log.Warn($"{e.Message}");
-        }
-
-        private static void OnError(object sender, RErrorEventArgs e)
-        {
-            LogManager.Log.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? "Unknown"},HResult={e.SourceException?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.SourceException?.StackTrace ?? "Unknown"}");
-        }
-
-
-
-        private static void OnCoreInformation(object sender, CoreInformationEventArgs e)
+        private void OnCoreInformation(object sender, CoreInformationEventArgs e)
         {
             //LogManager.DebugLog.Info($"{e.Message}");
         }
 
-        private static void OnCoreWarning(object sender, CoreWarningEventArgs e)
+        private void OnCoreWarning(object sender, CoreWarningEventArgs e)
         {
             LogManager.Log.Warn($"{e.Message}");
         }
 
-        private static void OnCoreError(object sender, CoreErrorEventArgs e)
+        private void OnCoreError(object sender, CoreErrorEventArgs e)
         {
             LogManager.Log.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? "Unknown"},HResult={e.SourceException?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.SourceException?.StackTrace ?? "Unknown"}");
         }
 
 
 
-        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Exception exception = null;
-
-            if (e.ExceptionObject is Exception exceptionObject)
-                exception = exceptionObject;
-
-            LogManager.Log.Fatal($"{exception?.GetType().Name ?? "Unknown"} - Message={exception?.Message ?? "Unknown"},HResult={exception?.HResult.ToString() ?? "Unknown"},StackTrace=\n{exception?.StackTrace ?? "Unknown"}");
-        }
-
-        private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             LogManager.Log.Fatal($"{e.Exception?.GetType().Name ?? "Unknown"} - Message={e.Exception?.Message ?? "Unknown"},HResult={e.Exception?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.Exception?.StackTrace ?? "Unknown"}");
         }
 
-        private static void OnFirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+
+
+        private void LogManager_LoggingShutdown(object sender, EventArgs e)
         {
-            LogManager.DebugLog.Error($"{e.Exception.GetType().Name} - Message={e.Exception.Message},HResult={e.Exception.HResult},StackTrace=\n{e.Exception.StackTrace ?? "Unknown"}");
-        }
+            ApiRequestEngine.Information -= OnCoreInformation;
+            ApiRequestEngine.Warning -= OnCoreWarning;
+            ApiRequestEngine.Error -= OnCoreError;
 
-
-
-        private static Assembly OnAssemblyResolve(object sender, ResolveEventArgs e)
-        {
-            LogManager.DebugLog.Info($"Resolve - Name={e.Name ?? "Unknown"},RequestingAssembly={e.RequestingAssembly?.FullName ?? "Unknown"}");
-
-            return e.RequestingAssembly;
-        }
-
-        private static Assembly OnResolve(object sender, ResolveEventArgs e)
-        {
-            LogManager.DebugLog.Info($"Resolve - Name={e.Name ?? "Unknown"},RequestingAssembly={e.RequestingAssembly?.FullName ?? "Unknown"}");
-
-            return e.RequestingAssembly;
+            DispatcherUnhandledException -= OnDispatcherUnhandledException;
         }
     }
 }

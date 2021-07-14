@@ -53,6 +53,7 @@ Have fun.</system:String>
     <system:String x:Key="RemoveImage">Remove image</system:String>
     <system:String x:Key="ImageSelection">Image selection</system:String>
     <system:String x:Key="GIFSelection">GIF-image selection</system:String>
+    <system:String x:Key="EnterSearchQuery">Enter search query</system:String>
 
     <system:String x:Key="SettingsTitle">Settings</system:String>
     <system:String x:Key="SpecialEventSettingsTitle">Special event</system:String>
@@ -210,10 +211,14 @@ Have fun.</system:String>
 
     <system:String x:Key="MenuItem-CopyUserLink">Copy link to the user</system:String>
     <system:String x:Key="MenuItem-CopyUserId">Copy user id</system:String>
+    <system:String x:Key="MenuItem-CopyUserNickname">Copy user nickname</system:String>
+    <system:String x:Key="MenuItem-CopyUserLogin">Copy user login</system:String>
     <system:String x:Key="MenuItem-SelectImageFromUrl">Paste the image URL</system:String>
     <system:String x:Key="MenuItem-SelectImageFromGallery">Select image from Anonym Gallery</system:String>
     <system:String x:Key="MenuItem-SelectImageFromTenor">Select GIF-image from Tenor</system:String>
     <system:String x:Key="MenuItem-RemoveImage">Remove image</system:String>
+
+    <system:String x:Key="MenuItem-CopyProfileStatText">Copy text</system:String>
 
     <system:String x:Key="AttemptingRestoreConnection">We are attempting to restore the connection...</system:String>
 

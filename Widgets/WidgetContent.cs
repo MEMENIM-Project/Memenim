@@ -1,19 +1,17 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Memenim.Pages.ViewModel;
 
-namespace Memenim.Pages
+namespace Memenim.Widgets
 {
-    public abstract class PageContent : UserControl
+    public abstract class WidgetContent : UserControl
     {
         public bool IsCreated { get; private set; }
         public bool IsOnEnterActive { get; set; }
         public bool IsOnExitActive { get; set; }
-        public PageStateType State { get; set; }
+        public WidgetStateType State { get; protected set; }
 
-        protected PageContent()
+        protected WidgetContent()
         {
             Initialized += OnCreated;
             Initialized += OnInitialized;
@@ -24,7 +22,7 @@ namespace Memenim.Pages
             IsCreated = false;
             IsOnEnterActive = true;
             IsOnExitActive = true;
-            State = PageStateType.Unknown;
+            State = WidgetStateType.Unknown;
         }
 
         protected virtual void OnCreated(object sender, EventArgs e)
@@ -44,7 +42,7 @@ namespace Memenim.Pages
 
         protected virtual void OnEnter(object sender, RoutedEventArgs e)
         {
-            State = PageStateType.Loaded;
+            State = WidgetStateType.Loaded;
 
             if (!IsOnEnterActive)
             {
@@ -55,7 +53,7 @@ namespace Memenim.Pages
 
         protected virtual void OnExit(object sender, RoutedEventArgs e)
         {
-            State = PageStateType.Unloaded;
+            State = WidgetStateType.Unloaded;
 
             if (!IsOnExitActive)
             {
@@ -65,27 +63,6 @@ namespace Memenim.Pages
         }
 
         protected virtual void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            try
-            {
-                if (e.OldValue != null)
-                    ((PageViewModel) e.OldValue).PropertyChanged -= ViewModelPropertyChanged;
-            }
-            catch (NullReferenceException)
-            {
-
-            }
-
-            if (e.NewValue != null)
-            {
-                ((PageViewModel) e.NewValue).PropertyChanged += ViewModelPropertyChanged;
-
-                if (!IsOnEnterActive)
-                    ((PageViewModel) e.NewValue).OnPropertyChanged(string.Empty);
-            }
-        }
-
-        protected virtual void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
         }

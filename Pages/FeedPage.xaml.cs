@@ -597,7 +597,7 @@ namespace Memenim.Pages
             if (!_autoUpdateCountTimer.Enabled)
                 return;
 
-            if (PageState != PageStateType.Loaded)
+            if (State != PageStateType.Loaded)
                 return;
 
             _autoUpdateCountTimer.Stop();

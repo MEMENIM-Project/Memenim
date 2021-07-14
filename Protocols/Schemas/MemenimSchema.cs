@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Memenim.Core.Schema;
-using Memenim.Logging;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 using Memenim.Widgets;
+using RIS.Logging;
 using RIS.Reflection.Mapping;
 
 namespace Memenim.Protocols.Schemas
@@ -17,6 +19,8 @@ namespace Memenim.Protocols.Schemas
         private readonly MethodMap<MemenimSchema> _schemaMap;
 
         public string Name { get; }
+
+
 
         public MemenimSchema()
         {
@@ -29,6 +33,8 @@ namespace Memenim.Protocols.Schemas
                 typeof(bool));
             Name = "memenim";
         }
+
+
 
         public bool ParseUri(string uriString)
         {
@@ -53,14 +59,16 @@ namespace Memenim.Protocols.Schemas
 
                 LogManager.DebugLog.Info($"Request components - {string.Join(',', requestComponents)}");
 
-                if (requestComponents.Length == 2)
+                if (requestComponents.Length >= 2)
                 {
-                    string methodName = requestComponents[0];
+                    string methodName = string.Join('/',
+                        requestComponents[..^1]);
+                    string args = requestComponents[^1];
 
-                    LogManager.DebugLog.Info($"Request method - Name={methodName},Args={requestComponents[1]}");
+                    LogManager.DebugLog.Info($"Request method - Name={methodName},Args={args}");
 
-                    return _schemaMap.Invoke<bool>(methodName,
-                        requestComponents[1]);
+                    return _schemaMap.Invoke<bool>(
+                        methodName, args);
                 }
 
                 return false;
@@ -68,12 +76,16 @@ namespace Memenim.Protocols.Schemas
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Schema parse uri error");
+
                 return false;
             }
         }
 
 
 
+        // ReSharper disable UnusedMember.Local
+
+        [MappedMethod("user/id")]
         [MappedMethod("showuserid")]
         private static bool ShowUserById(string args)
         {
@@ -103,11 +115,18 @@ namespace Memenim.Protocols.Schemas
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Schema parse uri error");
+                var method = MethodBase.GetCurrentMethod();
+
+                ProtocolSchemaUtils.LogMethodError(
+                    ex, method, args);
+
                 return false;
             }
         }
 
+
+
+        [MappedMethod("post/id")]
         [MappedMethod("showpostid")]
         private static bool ShowPostById(string args)
         {
@@ -210,9 +229,48 @@ namespace Memenim.Protocols.Schemas
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Schema parse uri error");
+                var method = MethodBase.GetCurrentMethod();
+
+                ProtocolSchemaUtils.LogMethodError(
+                    ex, method, args);
+
                 return false;
             }
         }
+
+
+
+        [MappedMethod("hash/files")]
+        private static bool ManageHashFiles(string args)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(args))
+                    return false;
+
+                switch (args)
+                {
+                    case "create":
+                        App.CreateHashFiles();
+
+                        break;
+                    default:
+                        break;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var method = MethodBase.GetCurrentMethod();
+
+                ProtocolSchemaUtils.LogMethodError(
+                    ex, method, args);
+
+                return false;
+            }
+        }
+
+        // ReSharper restore UnusedMember.Local
     }
 }

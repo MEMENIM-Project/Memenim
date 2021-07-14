@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using MahApps.Metro.Controls.Dialogs;
-using Memenim.Logging;
 using Memenim.Utils;
 using RIS;
+using RIS.Logging;
 
 namespace Memenim.Dialogs
 {

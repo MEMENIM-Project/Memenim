@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro.IconPacks;
 
 namespace Memenim.Widgets
 {
-    public partial class IconToggleButton : UserControl
+    public partial class IconToggleButton : WidgetContent
     {
         public static readonly RoutedEvent OnIconToggleButtonClicked =
             EventManager.RegisterRoutedEvent(nameof(IconToggleButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconToggleButton));

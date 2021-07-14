@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Memenim.Widgets.WriteComment"
+﻿<local:WidgetContent x:Class="Memenim.Widgets.WriteComment"
              d:DataContext="{d:DesignInstance local:WriteComment}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="400"
@@ -33,14 +34,14 @@
                        Stretch="UniformToFill" StretchDirection="Both"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
-            <TextBox Grid.Column="1" x:Name="txtContent" Margin="10 5 10 5"
-                     Text="{Binding Path=CommentText, Mode=TwoWay}"
-                     controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterCommentText}"
-                     Style="{DynamicResource MahApps.Styles.TextBox}"
-                     HorizontalScrollBarVisibility="Disabled"
-                     VerticalScrollBarVisibility="Auto"
-                     TextWrapping="Wrap" AcceptsReturn="True"
-                     KeyUp="txtContent_KeyUp"/>
+            <emoji:TextBox Grid.Column="1" x:Name="txtContent" Margin="10 5 10 5"
+                           Text="{Binding Path=CommentText, Mode=TwoWay}"
+                           controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterCommentText}"
+                           Style="{DynamicResource MahApps.Styles.TextBox}"
+                           HorizontalScrollBarVisibility="Disabled"
+                           VerticalScrollBarVisibility="Auto"
+                           TextWrapping="Wrap" AcceptsReturn="True"
+                           KeyUp="txtContent_KeyUp"/>
             <local:IconToggleButton Grid.Column="2"
                                     x:Name="btnSendAnonymously" Height="40" IconKind="UserDelete"
                                     Margin="0 5 0 5" VerticalAlignment="Top"
@@ -51,4 +52,4 @@
                               IconButtonClick="btnSend_Click"/>
         </Grid>
     </Border>
-</UserControl>
+</local:WidgetContent>

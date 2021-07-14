@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
@@ -9,7 +8,7 @@ using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
-    public partial class WriteComment : UserControl
+    public partial class WriteComment : WidgetContent
     {
         public static readonly RoutedEvent OnCommentAdded =
             EventManager.RegisterRoutedEvent(nameof(CommentAdd), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(WriteComment));

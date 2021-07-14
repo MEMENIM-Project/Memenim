@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Memenim.Widgets.PosterBanner"
+﻿<local:WidgetContent x:Class="Memenim.Widgets.PosterBanner"
              d:DataContext="{d:DesignInstance local:PosterBanner}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -52,4 +52,4 @@
             
         </StackPanel>
     </Grid>
-</UserControl>
+</local:WidgetContent>

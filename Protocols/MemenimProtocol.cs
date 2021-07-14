@@ -1,7 +1,7 @@
 ﻿using System;
-using Memenim.Logging;
 using Memenim.Protocols.Schemas;
 using Microsoft.Win32;
+using RIS.Logging;
 using Environment = RIS.Environment;
 
 namespace Memenim.Protocols
@@ -9,15 +9,17 @@ namespace Memenim.Protocols
     public class MemenimProtocol : IUserProtocol
     {
         public string Name { get; }
-        public string SchemaName { get; }
         public IUserProtocolSchema Schema { get; }
+
+
 
         private MemenimProtocol()
         {
             Name = "MEMENIM App Protocol";
-            SchemaName = "memenim";
             Schema = new MemenimSchema();
         }
+
+
 
         public bool Register()
         {
@@ -28,13 +30,13 @@ namespace Memenim.Protocols
             try
             {
                 if (string.IsNullOrWhiteSpace(Name)
-                    || string.IsNullOrWhiteSpace(SchemaName))
+                    || string.IsNullOrWhiteSpace(Schema.Name))
                 {
                     return false;
                 }
 
                 using (var schemeKey =
-                    Registry.CurrentUser.CreateSubKey($@"SOFTWARE\Classes\{SchemaName}"))
+                    Registry.CurrentUser.CreateSubKey($@"SOFTWARE\Classes\{Schema.Name}"))
                 {
                     if (schemeKey == null)
                         return false;
@@ -71,9 +73,11 @@ namespace Memenim.Protocols
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Protocol register error");
+
                 return false;
             }
         }
+
 
         public bool Exists()
         {
@@ -84,13 +88,13 @@ namespace Memenim.Protocols
             try
             {
                 if (string.IsNullOrWhiteSpace(Name)
-                    || string.IsNullOrWhiteSpace(SchemaName))
+                    || string.IsNullOrWhiteSpace(Schema.Name))
                 {
                     return false;
                 }
 
                 using (var schemeKey =
-                    Registry.CurrentUser.OpenSubKey($@"SOFTWARE\Classes\{SchemaName}"))
+                    Registry.CurrentUser.OpenSubKey($@"SOFTWARE\Classes\{Schema.Name}"))
                 {
                     if (schemeKey != null)
                         return true;
@@ -101,6 +105,7 @@ namespace Memenim.Protocols
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Protocol check exists error");
+
                 return false;
             }
         }

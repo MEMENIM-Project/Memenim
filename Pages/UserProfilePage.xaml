@@ -31,8 +31,14 @@
 
         <Grid.ContextMenu>
             <ContextMenu x:Name="userMenu" Visibility="Visible">
-                <MenuItem Header="{DynamicResource MenuItem-CopyUserLink}" Click="CopyUserLink_Click"/>
-                <MenuItem Header="{DynamicResource MenuItem-CopyUserId}" Click="CopyUserId_Click"/>
+                <MenuItem Header="{DynamicResource MenuItem-CopyUserLink}"
+                          Click="CopyUserLink_Click"/>
+                <MenuItem Header="{DynamicResource MenuItem-CopyUserId}"
+                          Click="CopyUserId_Click"/>
+                <MenuItem Header="{DynamicResource MenuItem-CopyUserNickname}"
+                          Click="CopyUserNickname_Click"/>
+                <MenuItem Header="{DynamicResource MenuItem-CopyUserLogin}"
+                          Click="CopyUserLogin_Click"/>
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -42,14 +48,32 @@
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
                 <emoji:TextBlock x:Name="txtName"
-                           Style="{DynamicResource Header1}" Margin="20 0 10 0"
+                           Style="{DynamicResource Header1}"
                            Text="{Binding Path=CurrentProfileData.Nickname, Converter={StaticResource UserNameConverter}}"
+                           Margin="20 0 0 0"
                            HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                 <widgets:IconButton DockPanel.Dock="Right" IconKind="Edit"
-                                    Width="40" Margin="-5 0 5 0"
+                                    Width="40"
+                                    Margin="2 0 -3 0"
                                     HorizontalAlignment="Right"
                                     Visibility="{Binding Path=IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     IconButtonClick="EditName_Click"/>
+                <emoji:TextBlock Style="{DynamicResource Header3}"
+                                 Foreground="Gray"
+                                 Text="("
+                                 Margin="5 0 0 3"
+                                 HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <TextBlock x:Name="txtLogin"
+                           Style="{DynamicResource Header3}"
+                           Foreground="Gray"
+                           Text="{Binding Path=CurrentProfileData.Login, Converter={StaticResource UserNameConverter}}"
+                           Margin="1 0 1 3"
+                           HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <emoji:TextBlock Style="{DynamicResource Header3}"
+                                 Foreground="Gray"
+                                 Text=")"
+                                 Margin="0 0 5 3"
+                                 HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
                 <widgets:UserStatus Margin="0 0 10 0"
                                     StatusValue="{Binding Path=DataContext.CurrentProfileData.Status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     Visibility="{Binding Path=DataContext.CurrentProfileData.Status, Converter={StaticResource UserStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
@@ -103,6 +127,7 @@
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <ScrollViewer Grid.Row="1" Grid.Column="1"
+                      Margin="0 20 0 0"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <StackPanel x:Name="wpStatBlock1"

@@ -6,7 +6,7 @@ using MahApps.Metro.IconPacks;
 
 namespace Memenim.Widgets
 {
-    public partial class StatButton : UserControl
+    public partial class StatButton : WidgetContent
     {
         public static readonly RoutedEvent OnButtonClicked =
             EventManager.RegisterRoutedEvent(nameof(ButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StatButton));

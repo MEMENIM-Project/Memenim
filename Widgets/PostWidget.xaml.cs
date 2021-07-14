@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Memenim.Utils;
@@ -15,7 +14,7 @@ using Memenim.Pages.ViewModel;
 
 namespace Memenim.Widgets
 {
-    public partial class PostWidget : UserControl
+    public partial class PostWidget : WidgetContent
     {
         public static readonly RoutedEvent OnPostClicked =
             EventManager.RegisterRoutedEvent(nameof(PostClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(PostWidget));
@@ -125,6 +124,31 @@ namespace Memenim.Widgets
             CurrentPostData.Attachments[0].Photo.MediumUrl = string.Empty;
         }
 
+        public async Task Share()
+        {
+            stShares.IsEnabled = false;
+
+            Clipboard.SetText($"memenim://app/post/id/{CurrentPostData.Id}");
+
+            var result = await PostApi.AddRepost(
+                    SettingsManager.PersistentSettings.CurrentUser.Token,
+                    CurrentPostData.Id)
+                .ConfigureAwait(true);
+
+            if (result.IsError)
+            {
+                await DialogManager.ShowErrorDialog(result.Message)
+                    .ConfigureAwait(true);
+
+                stShares.IsEnabled = true;
+                return;
+            }
+
+            ++CurrentPostData.Shares;
+
+            stShares.IsEnabled = true;
+        }
+
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             if (ImageSizeLimit)
@@ -146,8 +170,10 @@ namespace Memenim.Widgets
 
             if (PreviewMode)
             {
+#pragma warning disable SS002 // DateTime.Now was referenced
                 if (CurrentPostData != null)
                     CurrentPostData.UtcDate = TimeUtils.ToUnixTimeStamp(DateTime.Now);
+#pragma warning restore SS002 // DateTime.Now was referenced
 
                 postMenu.IsEnabled = false;
                 postMenu.Visibility = Visibility.Collapsed;
@@ -172,27 +198,8 @@ namespace Memenim.Widgets
 
         private async void CopyPostLink_Click(object sender, RoutedEventArgs e)
         {
-            stShares.IsEnabled = false;
-
-            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.Id}");
-
-            var result = await PostApi.AddRepost(
-                    SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentPostData.Id)
+            await Share()
                 .ConfigureAwait(true);
-
-            if (result.IsError)
-            {
-                await DialogManager.ShowErrorDialog(result.Message)
-                    .ConfigureAwait(true);
-
-                stShares.IsEnabled = true;
-                return;
-            }
-
-            ++CurrentPostData.Shares;
-
-            stShares.IsEnabled = true;
         }
 
         private void CopyPostId_Click(object sender, RoutedEventArgs e)
@@ -291,27 +298,8 @@ namespace Memenim.Widgets
 
         private async void Share_Click(object sender, RoutedEventArgs e)
         {
-            stShares.IsEnabled = false;
-
-            Clipboard.SetText($"memenim://app/showpostid/{CurrentPostData.Id}");
-
-            var result = await PostApi.AddRepost(
-                    SettingsManager.PersistentSettings.CurrentUser.Token,
-                    CurrentPostData.Id)
+            await Share()
                 .ConfigureAwait(true);
-
-            if (result.IsError)
-            {
-                await DialogManager.ShowErrorDialog(result.Message)
-                    .ConfigureAwait(true);
-
-                stShares.IsEnabled = true;
-                return;
-            }
-
-            ++CurrentPostData.Shares;
-
-            stShares.IsEnabled = true;
         }
 
         private async void Like_Click(object sender, RoutedEventArgs e)

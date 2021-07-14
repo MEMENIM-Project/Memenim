@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Memenim.Widgets.CommentsList"
+﻿<local:WidgetContent x:Class="Memenim.Widgets.CommentsList"
              d:DataContext="{d:DesignInstance local:CommentsList}"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -37,4 +37,4 @@
             </Grid>
         </Grid>
     </Border>
-</UserControl>
+</local:WidgetContent>

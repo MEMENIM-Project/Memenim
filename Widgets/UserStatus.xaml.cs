@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Core.Schema;
 
 namespace Memenim.Widgets
 {
-    public partial class UserStatus : UserControl
+    public partial class UserStatus : WidgetContent
     {
         public static readonly DependencyProperty StatusValueProperty =
             DependencyProperty.Register(nameof(StatusValue), typeof(UserStatusType), typeof(UserStatus),

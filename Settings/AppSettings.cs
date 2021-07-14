@@ -10,7 +10,7 @@ namespace Memenim.Settings
 {
     public class AppSettings : IniSettings
     {
-        private const string SettingsFileName = "AppSettings.config";
+        public const string SettingsFileName = "AppSettings.config";
 
         [SettingCategory("Localization")]
         public string Language { get; set; }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Navigation;
 
 namespace Memenim.Widgets
 {
-    public partial class ImagePreviewButton : UserControl
+    public partial class ImagePreviewButton : WidgetContent
     {
         public static readonly DependencyProperty ImageSourceProperty =
             DependencyProperty.Register(nameof(ImageSource), typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));

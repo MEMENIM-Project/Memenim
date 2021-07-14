@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
 using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
-using Memenim.Logging;
 using Memenim.Pages;
 using Memenim.Settings;
 using Memenim.Utils;
@@ -16,7 +14,7 @@ using WpfAnimatedGif;
 
 namespace Memenim.Widgets
 {
-    public partial class CommentsList : UserControl
+    public partial class CommentsList : WidgetContent
     {
         public static readonly RoutedEvent OnCommentsUpdated =
             EventManager.RegisterRoutedEvent(nameof(CommentsUpdate), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));

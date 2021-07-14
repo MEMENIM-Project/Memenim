@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Navigation;
@@ -15,7 +14,7 @@ using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
-    public partial class NavigationBar : UserControl
+    public partial class NavigationBar : WidgetContent
     {
         public static readonly RoutedEvent OnRedirectRequested =
             EventManager.RegisterRoutedEvent(nameof(RedirectRequest), RoutingStrategy.Bubble, typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));

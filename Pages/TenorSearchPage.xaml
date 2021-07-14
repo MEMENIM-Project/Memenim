@@ -24,7 +24,7 @@
                Margin="10 0 0 0"/>
         <TextBox Grid.Row="1" x:Name="txtSearchQuery" Margin="5 5 5 5"
                  Text="{Binding Path=SearchText, Mode=TwoWay}"
-                 controls:TextBoxHelper.Watermark="Enter parameter"
+                 controls:TextBoxHelper.Watermark="{DynamicResource EnterSearchQuery}"
                  Style="{DynamicResource MahApps.Styles.TextBox.Search}"
                  controls:TextBoxHelper.ButtonCommand="{Binding Path=SearchCommand, Mode=OneWay}"
                  controls:TextBoxHelper.ButtonCommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=Self}}">

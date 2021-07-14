@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Memenim.Logging;
 using Memenim.Storage.Entities;
 using Microsoft.EntityFrameworkCore;
+using RIS.Logging;
 using Environment = RIS.Environment;
 
 namespace Memenim.Storage
@@ -79,6 +79,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return new PostCommentDraft
                 {
                     UserId = userId < 0
@@ -129,6 +130,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }
@@ -155,6 +157,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }
@@ -176,6 +179,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }
@@ -200,6 +204,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }
@@ -226,6 +231,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }
@@ -249,6 +255,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }
@@ -269,6 +276,7 @@ namespace Memenim.Storage
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "Storage error");
+
                 return false;
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using RIS.Extensions;
 using RIS.Randomizing;
 using RIS.Text.Generating;
 
@@ -51,11 +52,8 @@ namespace Memenim.Generating
 
         public static string GetRandomSmile()
         {
-            var biasZone =
-                int.MaxValue - (int.MaxValue % Smiles.Length) - 1;
-            int smileIndex =
-                (int)CachedRandomGenerator
-                    .GetUInt32((uint)biasZone) % Smiles.Length;
+            var smileIndex = (int)CachedRandomGenerator
+                .GetNormalizedIndex((uint)Smiles.Length);
 
             if (Smiles[smileIndex] != _previousSmile)
             {

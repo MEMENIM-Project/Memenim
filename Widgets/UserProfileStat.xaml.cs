@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Memenim.Widgets
 {
-    public partial class UserProfileStat : UserControl
+    public partial class UserProfileStat : WidgetContent
     {
         public static readonly RoutedEvent OnEditClicked =
             EventManager.RegisterRoutedEvent(nameof(EditClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserProfileStat));
@@ -68,6 +67,11 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        private void CopyProfileStatText_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(StatValue);
         }
 
         private void Edit_Click(object sender, RoutedEventArgs e)

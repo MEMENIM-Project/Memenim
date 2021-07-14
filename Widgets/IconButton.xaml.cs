@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro.IconPacks;
 
 namespace Memenim.Widgets
 {
-    public partial class IconButton : UserControl
+    public partial class IconButton : WidgetContent
     {
         public static readonly RoutedEvent OnIconButtonClicked =
             EventManager.RegisterRoutedEvent(nameof(IconButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));

@@ -5,8 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using Memenim.Generating;
-using Memenim.Logging;
 using Memenim.Settings;
+using RIS.Extensions;
+using RIS.Logging;
 using RIS.Randomizing;
 using Environment = RIS.Environment;
 

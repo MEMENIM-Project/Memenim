@@ -157,7 +157,7 @@ namespace Memenim
             ConnectionFailedGridStatus = false;
             _connectionFailedGridTask = Task.CompletedTask;
 
-            LoadLoadingStyle();
+            ApplyLoadingStyle();
             LoadSpecialEvent();
 
             LocalizationManager.ReloadLocales();
@@ -257,7 +257,7 @@ namespace Memenim
             slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
         }
 
-        private void LoadLoadingStyle()
+        private void ApplyLoadingStyle()
         {
             _loadingStyle = StylesManager.GetRandomLoadingStyle();
 
@@ -630,7 +630,7 @@ namespace Memenim
         {
             base.OnSourceInitialized(e);
 
-            _hwndSource = (HwndSource) PresentationSource.FromVisual(this);
+            _hwndSource = (HwndSource)PresentationSource.FromVisual(this);
             _hwndSource?.AddHook(WindowUtils.HwndSourceHook);
         }
 

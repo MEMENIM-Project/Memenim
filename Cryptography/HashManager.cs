@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Memenim.Settings;
 using RIS.Cryptography.Hash;
 using RIS.Cryptography.Hash.Methods;
 using Environment = RIS.Environment;
@@ -30,10 +31,10 @@ namespace Memenim.Cryptography
                 "temp",
                 "logs",
                 "hash",
-                "AppSettings.config",
-                "PersistentSettings.store",
-                "MEMENIM.exe",
-                "MEMENIM.pdb",
+                AppSettings.SettingsFileName,
+                PersistentSettings.SettingsFileName,
+                Path.ChangeExtension(Path.GetFileName(Environment.ExecProcessFilePath), "exe"),
+                Path.ChangeExtension(Path.GetFileName(Environment.ExecProcessFilePath), "pdb"),
                 //dev
                 "publish",
                 "win-x64",

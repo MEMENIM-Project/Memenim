@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Memenim.Logging;
+using RIS.Logging;
 
 namespace Memenim.Protocols
 {
@@ -10,15 +10,19 @@ namespace Memenim.Protocols
     {
         private static Dictionary<string, IUserProtocol> UserProtocols { get; }
 
+
+
         static ProtocolManager()
         {
             UserProtocols = new Dictionary<string, IUserProtocol>();
 
             foreach (var protocol in GetUserProtocols())
             {
-                UserProtocols.Add(protocol.SchemaName, protocol);
+                UserProtocols.Add(protocol.Schema.Name, protocol);
             }
         }
+
+
 
         private static IUserProtocol[] GetUserProtocols()
         {
@@ -45,9 +49,12 @@ namespace Memenim.Protocols
             catch (Exception ex)
             {
                 LogManager.Log.Error(ex, "User protocols get error");
+
                 return Array.Empty<IUserProtocol>();
             }
         }
+
+
 
         public static void RegisterAll()
         {

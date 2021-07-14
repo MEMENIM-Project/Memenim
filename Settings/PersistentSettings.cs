@@ -17,7 +17,7 @@ namespace Memenim.Settings
 {
     public class PersistentSettings
     {
-        private const string SettingsFileName = "PersistentSettings.store";
+        public const string SettingsFileName = "PersistentSettings.store";
 
         public event EventHandler<AvailableUsersChangedEventArgs> AvailableUsersChanged;
         public event EventHandler<UserChangedEventArgs> CurrentUserChanged;

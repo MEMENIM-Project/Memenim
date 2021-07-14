@@ -8,6 +8,7 @@
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    mc:Ignorable="d"
                    d:DesignHeight="450" d:DesignWidth="800">
     
@@ -32,10 +33,10 @@
                                    Style="{StaticResource AccentHeader}"
                                    HorizontalAlignment="Left"
                                    Margin="5 10 5 10"/>
-                        <TextBox MinHeight="200" AcceptsReturn="True"
-                                 TextWrapping="Wrap" Margin="0 5"
-                                 Text="{Binding Path=CurrentPostData.Text, Mode=TwoWay}"
-                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterPostContent}"/>
+                        <emoji:TextBox MinHeight="200" AcceptsReturn="True"
+                                       TextWrapping="Wrap" Margin="0 5"
+                                       Text="{Binding Path=CurrentPostData.Text, Mode=TwoWay}"
+                                       controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterPostContent}"/>
                         <TextBlock Text="{DynamicResource ResourceKey=ImageSourceTitle}"
                                    Style="{StaticResource AccentHeader}"
                                    HorizontalAlignment="Left"
