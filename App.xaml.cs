@@ -56,16 +56,27 @@ namespace Memenim
         [STAThread]
         private static void Main(string[] args)
         {
+            SingleThreadedSynchronizationContext.Await(() =>
+            {
+                return MainAsync(args);
+            });
+        }
+        private static Task MainAsync(string[] args)
+        {
             ParseArgs(args);
 
             LogManager.Startup();
 
-            SingleThreadedSynchronizationContext.Await(() =>
+            if (AppCreateHashFiles)
             {
-                return Instance.Run(() =>
-                {
-                    SingleInstanceMain();
-                });
+                CreateHashFiles();
+
+                return Task.CompletedTask;
+            }
+
+            return Instance.Run(() =>
+            { 
+                SingleInstanceMain();
             });
         }
 
@@ -80,14 +91,6 @@ namespace Memenim
             app.DispatcherUnhandledException += app.OnDispatcherUnhandledException;
 
             LogManager.LoggingShutdown += app.LogManager_LoggingShutdown;
-
-            if (AppCreateHashFiles)
-            {
-                CreateHashFiles();
-
-                app.Shutdown(0x0);
-                return;
-            }
 
             app.InitializeComponent();
             app.Run(Memenim.MainWindow.Instance);
