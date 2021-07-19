@@ -20,8 +20,8 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(PosterBanner),
                 new PropertyMetadata((string) null));
         public static readonly DependencyProperty UtcDateProperty =
-            DependencyProperty.Register(nameof(UtcDate), typeof(long), typeof(PosterBanner),
-                new PropertyMetadata(0L));
+            DependencyProperty.Register(nameof(UtcDate), typeof(ulong), typeof(PosterBanner),
+                new PropertyMetadata(0UL));
         public static readonly DependencyProperty PostStatusProperty =
             DependencyProperty.Register(nameof(PostStatus), typeof(PostStatusType), typeof(PosterBanner),
                 new PropertyMetadata(PostStatusType.Published));
@@ -62,11 +62,11 @@ namespace Memenim.Widgets
                 SetValue(UserAvatarSourceProperty, value);
             }
         }
-        public long UtcDate
+        public ulong UtcDate
         {
             get
             {
-                return (long)GetValue(UtcDateProperty);
+                return (ulong)GetValue(UtcDateProperty);
             }
             set
             {

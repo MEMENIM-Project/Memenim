@@ -13,7 +13,9 @@ namespace Memenim.Converters
             {
                 var result = 0UL;
 
-                if (value is ulong ulongValue)
+                if (value is long longValue)
+                    result = (ulong)longValue;
+                else if (value is ulong ulongValue)
                     result = ulongValue;
 
                 return TimeUtils.ToDateTime(result)
@@ -21,7 +23,7 @@ namespace Memenim.Converters
             }
             catch (Exception)
             {
-                return TimeUtils.ToDateTime(0)
+                return TimeUtils.ToDateTime(0UL)
                     .ToString(CultureInfo.CurrentCulture);
             }
         }
@@ -42,7 +44,7 @@ namespace Memenim.Converters
             }
             catch (Exception)
             {
-                var result = TimeUtils.ToDateTime(0)
+                var result = TimeUtils.ToDateTime(0UL)
                     .ToString(CultureInfo.CurrentCulture);
 
                 return TimeUtils.ToUnixTimeStamp(

@@ -225,6 +225,8 @@ namespace Memenim.Pages
         {
             btnSubmit.IsEnabled = false;
 
+            btnSubmit.Focus();
+
             try
             {
                 var result = await PostApi.Add(
