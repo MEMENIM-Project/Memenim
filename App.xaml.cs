@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -18,6 +19,8 @@ using Memenim.Storage;
 using Memenim.Utils;
 using RIS.Cryptography;
 using RIS.Extensions;
+using RIS.Localization;
+using RIS.Localization.Providers;
 using RIS.Logging;
 using RIS.Synchronization.Context;
 using RIS.Wrappers;
@@ -50,8 +53,14 @@ namespace Memenim
             }
         }
 
+
         private static string AppStartupUri { get; set; }
         private static bool AppCreateHashFiles { get; set; }
+
+
+        public static LocalizationFactory LocalizationFactory { get; private set; }
+
+
 
         [STAThread]
         private static void Main(string[] args)
@@ -92,9 +101,24 @@ namespace Memenim
 
             LogManager.LoggingShutdown += app.LogManager_LoggingShutdown;
 
+            var assemblyName = typeof(App).Assembly
+                .GetName().Name;
+
+            LocalizationFactory = LocalizationFactory
+                .Create(assemblyName, "MEMENIM");
+
+            LocalizationManager.SetCurrentFactory(
+                assemblyName, LocalizationFactory);
+
+            LocalizationUtils.LocalizationChanged += app.LocalizationUtils_LocalizationChanged;
+            LocalizationUtils.LocalizationsNotFound += app.LocalizationUtils_LocalizationsNotFound;
+            LocalizationUtils.LocalizationFileNotFound += app.LocalizationUtils_LocalizationFileNotFound;
+            LocalizationUtils.LocalizedCultureNotFound += app.LocalizationUtils_LocalizedCultureNotFound;
+
             app.InitializeComponent();
             app.Run(Memenim.MainWindow.Instance);
         }
+
 
         private static void ParseArgs(string[] args)
         {
@@ -194,9 +218,9 @@ namespace Memenim
             var exeHash = HashManager.GetExeHash();
             var exePdbHash = HashManager.GetExePdbHash();
 
-            LogManager.Log.Info($"Libraries SHA512 - {librariesHash}");
-            LogManager.Log.Info($"Exe SHA512 - {exeHash}");
-            LogManager.Log.Info($"Exe PDB SHA512 - {exePdbHash}");
+            LogManager.Default.Info($"Libraries SHA512 - {librariesHash}");
+            LogManager.Default.Info($"Exe SHA512 - {exeHash}");
+            LogManager.Default.Info($"Exe PDB SHA512 - {exePdbHash}");
 
             return (librariesHash, exeHash, exePdbHash);
         }
@@ -205,7 +229,7 @@ namespace Memenim
         {
             const string hashType = "sha512";
 
-            LogManager.Log.Info($"Hash file creation started - {hashType}");
+            LogManager.Default.Info($"Hash file creation started - {hashType}");
 
             var hashes = CalculateHashes();
 
@@ -213,7 +237,7 @@ namespace Memenim
             CreateHashFile(hashes.ExeHash, "ExeHash", hashType);
             CreateHashFile(hashes.ExePdbHash, "ExePdbHash", hashType);
 
-            LogManager.Log.Info($"Hash files creation completed - {hashType}");
+            LogManager.Default.Info($"Hash files creation completed - {hashType}");
         }
 
 
@@ -236,18 +260,13 @@ namespace Memenim
             await Task.Delay(TimeSpan.FromMilliseconds(500))
                 .ConfigureAwait(true);
 
-            if (Memenim.MainWindow.Instance.Locales.Count == 0)
-            {
-                var message = LocalizationUtils.TryGetLocalized("NoLocalizationsFoundMessage")
-                              ?? "No localizations found";
+            LocalizationUtils.ReloadLocalizations<XamlLocalizationProvider>();
+            LocalizationUtils.SwitchLocalization(
+                SettingsManager.AppSettings.Language);
+            LocalizationUtils.SetDefaultCulture("en-US");
 
-                await DialogManager.ShowErrorDialog(message)
-                    .ConfigureAwait(true);
-
-                Current.Shutdown(0x1);
-
+            if (LocalizationUtils.Localizations.Count == 0)
                 return;
-            }
 
             await StorageManager.Initialize()
                 .ConfigureAwait(true);
@@ -341,24 +360,24 @@ namespace Memenim
 
         private void OnCoreInformation(object sender, CoreInformationEventArgs e)
         {
-            //LogManager.DebugLog.Info($"{e.Message}");
+            //LogManager.Debug.Info($"{e.Message}");
         }
 
         private void OnCoreWarning(object sender, CoreWarningEventArgs e)
         {
-            LogManager.Log.Warn($"{e.Message}");
+            LogManager.Default.Warn($"{e.Message}");
         }
 
         private void OnCoreError(object sender, CoreErrorEventArgs e)
         {
-            LogManager.Log.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? "Unknown"},HResult={e.SourceException?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.SourceException?.StackTrace ?? "Unknown"}");
+            LogManager.Default.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? "Unknown"},HResult={e.SourceException?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.SourceException?.StackTrace ?? "Unknown"}");
         }
 
 
 
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            LogManager.Log.Fatal($"{e.Exception?.GetType().Name ?? "Unknown"} - Message={e.Exception?.Message ?? "Unknown"},HResult={e.Exception?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.Exception?.StackTrace ?? "Unknown"}");
+            LogManager.Default.Fatal($"{e.Exception?.GetType().Name ?? "Unknown"} - Message={e.Exception?.Message ?? "Unknown"},HResult={e.Exception?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.Exception?.StackTrace ?? "Unknown"}");
         }
 
 
@@ -370,6 +389,68 @@ namespace Memenim
             ApiRequestEngine.Error -= OnCoreError;
 
             DispatcherUnhandledException -= OnDispatcherUnhandledException;
+        }
+
+
+
+        private void LocalizationUtils_LocalizationChanged(object sender, LocalizationChangedEventArgs e)
+        {
+            Current?.Dispatcher?.Invoke(() =>
+            {
+                Thread.CurrentThread.CurrentCulture = e.NewLocalization?.Culture ?? LocalizationUtils.DefaultCulture;
+                Thread.CurrentThread.CurrentUICulture = e.NewLocalization?.Culture ?? LocalizationUtils.DefaultCulture;
+            });
+
+            SettingsManager.AppSettings.Language = e.NewLocalization.CultureName;
+
+            SettingsManager.AppSettings.Save();
+        }
+
+        private async void LocalizationUtils_LocalizationsNotFound(object sender, EventArgs e)
+        {
+            LocalizationUtils.TryGetLocalized("LocalizationsNotFoundMessage", out var message);
+
+            if (string.IsNullOrEmpty(message))
+                message = "Localizations not found";
+
+            await DialogManager.ShowErrorDialog(message)
+                .ConfigureAwait(true);
+
+            Current.Shutdown(0x1);
+        }
+
+        private async void LocalizationUtils_LocalizationFileNotFound(object sender, LocalizationFileNotFoundEventArgs e)
+        {
+            LocalizationUtils.TryGetLocalized("LocalizationFileTitle", out var localizationFileTitle);
+
+            if (string.IsNullOrEmpty(localizationFileTitle))
+                localizationFileTitle = "Localization file";
+
+            LocalizationUtils.TryGetLocalized("NotFoundTitle1", out var notFoundTitle);
+
+            if (string.IsNullOrEmpty(notFoundTitle))
+                notFoundTitle = "Not found";
+
+            await DialogManager.ShowErrorDialog(
+                    $"{localizationFileTitle}['{e.FilePath}'] {notFoundTitle.ToLower()}")
+                .ConfigureAwait(true);
+        }
+
+        private async void LocalizationUtils_LocalizedCultureNotFound(object sender, LocalizedCultureNotFoundEventArgs e)
+        {
+            LocalizationUtils.TryGetLocalized("LocalizedCultureTitle", out var localizedCultureTitle);
+
+            if (string.IsNullOrEmpty(localizedCultureTitle))
+                localizedCultureTitle = "Localized culture";
+
+            LocalizationUtils.TryGetLocalized("NotFoundTitle2", out var notFoundTitle);
+
+            if (string.IsNullOrEmpty(notFoundTitle))
+                notFoundTitle = "Not found";
+
+            await DialogManager.ShowErrorDialog(
+                    $"{localizedCultureTitle}['{e.CultureName}'] {notFoundTitle.ToLower()}")
+                .ConfigureAwait(true);
         }
     }
 }

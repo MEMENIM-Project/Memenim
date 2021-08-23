@@ -4,7 +4,7 @@ using System.Reflection;
 using Memenim.Scripting.Core;
 using RIS;
 
-namespace Memenim.Script.Entities
+namespace Memenim.Scripting.Entities
 {
     public class MemenimScriptModule : IDisposable
     {

@@ -148,7 +148,7 @@ namespace Memenim.Misc
                     .GetUInt32((uint)biasZone) % 420;
             int seconds = 180 + randomSeconds;
 
-            LogManager.Log.Info($"Next padoru in {seconds} seconds");
+            LogManager.Default.Info($"Next padoru in {seconds} seconds");
 
             _padoruTimer.Interval = seconds * 1000;
         }
@@ -211,7 +211,7 @@ namespace Memenim.Misc
 
                 _padoruTimer.Start();
 
-                LogManager.Log.Info("Special event - On");
+                LogManager.Default.Info("Special event - On");
             }
             else
             {
@@ -227,7 +227,7 @@ namespace Memenim.Misc
                 MusicPlayer.IsEnabled = false;
                 PadoruPlayer.IsEnabled = false;
 
-                LogManager.Log.Info("Special event - Off");
+                LogManager.Default.Info("Special event - Off");
             }
 
             SettingsManager.AppSettings.SpecialEventEnabled = state;

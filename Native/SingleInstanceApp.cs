@@ -110,11 +110,11 @@ namespace Memenim.Native
             if (message == null || message.Length == 0)
                 return Task.CompletedTask;
 
-            LogManager.DebugLog.Info($"Send message - name = {name}, " +
+            LogManager.Debug.Info($"Send message - name = {name}, " +
                                  $"type = {type}, restoreWindow = {restoreWindow}");
 
             if (type == IpcBusContentType.StringUtf8)
-                LogManager.DebugLog.Info($"Send message content - {Encoding.UTF8.GetString(content)}");
+                LogManager.Debug.Info($"Send message content - {Encoding.UTF8.GetString(content)}");
 
             return LocalBus.PublishAsync(message);
         }
@@ -255,11 +255,11 @@ namespace Memenim.Native
             if (!message.HasValue)
                 return;
 
-            LogManager.DebugLog.Info($"Receive message - name = {message.Value.Name}, " +
+            LogManager.Debug.Info($"Receive message - name = {message.Value.Name}, " +
                                      $"type = {message.Value.ContentType}, restoreWindow = {message.Value.RestoreWindow}");
 
             if (message.Value.ContentType == IpcBusContentType.StringUtf8)
-                LogManager.DebugLog.Info($"Receive message content - {message.Value.GetStringUtf8()}");
+                LogManager.Debug.Info($"Receive message content - {message.Value.GetStringUtf8()}");
 
             if (message.Value.Name == "SendArgs")
             {

@@ -6,6 +6,7 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
+                   xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
@@ -18,7 +19,7 @@
                              Style="{StaticResource Header1}"
                              Margin="20" HorizontalAlignment="Center"/>
             <emoji:TextBlock MaxWidth="600"
-                             Text="{DynamicResource ChatPlaceholderDescription}"
+                             Text="{markupLocalization:LocalizedString ChatPlaceholderDescription}"
                              FontSize="18" TextWrapping="Wrap"
                              Style="{StaticResource Paragraph}"/>
             <StackPanel MaxWidth="300"
@@ -30,7 +31,7 @@
                         Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                         HorizontalContentAlignment="Center"
                         Click="CopyLogin_Click">
-                    <TextBlock Text="{DynamicResource CopyLogin}"
+                    <TextBlock Text="{markupLocalization:LocalizedString CopyLogin}"
                                FontSize="14" TextWrapping="Wrap"
                                TextAlignment="Center"/>
                 </Button>
@@ -44,7 +45,7 @@
                         Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                         HorizontalContentAlignment="Center"
                         Click="CopyPassword_Click">
-                    <TextBlock Text="{DynamicResource CopyPassword}"
+                    <TextBlock Text="{markupLocalization:LocalizedString CopyPassword}"
                                FontSize="14" TextWrapping="Wrap"
                                TextAlignment="Center"/>
                 </Button>
@@ -57,7 +58,7 @@
                         Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                         HorizontalContentAlignment="Center"
                         Click="GoToChatWebPage_Click">
-                    <TextBlock Text="{DynamicResource GoToChatWebPage}"
+                    <TextBlock Text="{markupLocalization:LocalizedString GoToChatWebPage}"
                                FontSize="14" TextWrapping="Wrap"
                                TextAlignment="Center"/>
                 </Button>

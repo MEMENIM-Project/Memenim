@@ -57,7 +57,7 @@ namespace Memenim.Protocols.Schemas
                     .Where(segment => !string.IsNullOrEmpty(segment))
                     .ToArray();
 
-                LogManager.DebugLog.Info($"Request components - {string.Join(',', requestComponents)}");
+                LogManager.Debug.Info($"Request components - {string.Join(',', requestComponents)}");
 
                 if (requestComponents.Length >= 2)
                 {
@@ -65,7 +65,7 @@ namespace Memenim.Protocols.Schemas
                         requestComponents[..^1]);
                     string args = requestComponents[^1];
 
-                    LogManager.DebugLog.Info($"Request method - Name={methodName},Args={args}");
+                    LogManager.Debug.Info($"Request method - Name={methodName},Args={args}");
 
                     return _schemaMap.Invoke<bool>(
                         methodName, args);
@@ -75,7 +75,7 @@ namespace Memenim.Protocols.Schemas
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Schema parse uri error");
+                LogManager.Default.Error(ex, "Schema parse uri error");
 
                 return false;
             }

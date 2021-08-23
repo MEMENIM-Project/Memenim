@@ -13,7 +13,7 @@ namespace Memenim.Dialogs
             string message, MessageDialogStyle style = MessageDialogStyle.Affirmative,
             MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             return MainWindow.Instance.ShowMessageAsync(
                 title, message, style, settings);
@@ -23,7 +23,7 @@ namespace Memenim.Dialogs
             string message, bool isCancellable = false,
             MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             MessageDialog dialog = new MessageDialog(title,
                 message, isCancellable);
@@ -41,10 +41,10 @@ namespace Memenim.Dialogs
         public static Task<MessageDialogResult> ShowConfirmationDialog(
             string additionalMessage = null, MetroDialogSettings settings = null)
         {
-            string title = LocalizationUtils.TryGetLocalized("ConfirmationTitle")
-                           ?? "Confirmation";
-            string message = LocalizationUtils.TryGetLocalized("ConfirmationMessage")
-                             ?? "Are you sure?";
+            if (!LocalizationUtils.TryGetLocalized("ConfirmationTitle", out var title))
+                title = "Confirmation";
+            if (!LocalizationUtils.TryGetLocalized("ConfirmationMessage", out var message))
+                message = "Are you sure?";
 
             if (!string.IsNullOrEmpty(additionalMessage))
                 message += " " + additionalMessage;
@@ -56,8 +56,8 @@ namespace Memenim.Dialogs
         public static Task<MessageDialogResult> ShowErrorDialog(string message,
             bool isCancellable = false, MetroDialogSettings settings = null)
         {
-            string title = LocalizationUtils.TryGetLocalized("ErrorTitle")
-                           ?? "Error";
+            if (!LocalizationUtils.TryGetLocalized("ErrorTitle", out var title))
+                title = "Error";
 
             Events.OnError(new RErrorEventArgs(
                 $"{title} - {message}"));
@@ -69,8 +69,8 @@ namespace Memenim.Dialogs
         public static Task<MessageDialogResult> ShowSuccessDialog(string message,
             bool isCancellable = false, MetroDialogSettings settings = null)
         {
-            string title = LocalizationUtils.TryGetLocalized("SuccessTitle")
-                           ?? "Success";
+            if (!LocalizationUtils.TryGetLocalized("SuccessTitle", out var title))
+                title = "Success";
 
             return ShowMessageDialog(title, message,
                 isCancellable, settings);
@@ -80,7 +80,7 @@ namespace Memenim.Dialogs
             string message, bool canGeneratePassword = false, string defaultValue = null,
             bool isCancellable = true, MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             PasswordDialog dialog = new PasswordDialog(title,
                 message, canGeneratePassword, defaultValue,
@@ -100,7 +100,7 @@ namespace Memenim.Dialogs
             string message, string inputValue = "", string defaultValue = null,
             bool isCancellable = true, MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             SinglelineTextDialog dialog = new SinglelineTextDialog(title,
                 message, inputValue, defaultValue, isCancellable);
@@ -119,7 +119,7 @@ namespace Memenim.Dialogs
             string message, string inputValue = "", string defaultValue = null,
             bool isCancellable = true, MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             MultilineTextDialog dialog = new MultilineTextDialog(title,
                 message, inputValue, defaultValue, isCancellable);
@@ -139,7 +139,7 @@ namespace Memenim.Dialogs
             string defaultValue = null, bool isCancellable = true,
             MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             ComboBoxDialog dialog = new ComboBoxDialog(title,
                 message, values, selectedValue, defaultValue,
@@ -161,7 +161,7 @@ namespace Memenim.Dialogs
             string stringFormatInputValue = "F0", double? defaultValue = null,
             bool isCancellable = true, MetroDialogSettings settings = null)
         {
-            LogManager.Log.Info($"{title} - {message}");
+            LogManager.Default.Info($"{title} - {message}");
 
             NumericDialog dialog = new NumericDialog(title,
                 message, inputValue, minimumInputValue, maximumInputValue,

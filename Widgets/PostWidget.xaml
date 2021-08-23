@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Widgets"
+             xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -41,17 +42,17 @@
                     <ContextMenu x:Name="postMenu" Visibility="Visible"
                                  DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
                                  d:DataContext="{d:DesignInstance Grid}">
-                        <MenuItem Header="{DynamicResource MenuItem-CopyPostLink}"
+                        <MenuItem Header="{markupLocalization:LocalizedString MenuItem-CopyPostLink}"
                                   Click="CopyPostLink_Click"/>
-                        <MenuItem Header="{DynamicResource MenuItem-CopyPostId}"
+                        <MenuItem Header="{markupLocalization:LocalizedString MenuItem-CopyPostId}"
                                   Click="CopyPostId_Click"/>
-                        <MenuItem Header="{DynamicResource MenuItem-CopyPostText}"
+                        <MenuItem Header="{markupLocalization:LocalizedString MenuItem-CopyPostText}"
                                   Click="CopyPostText_Click"/>
-                        <MenuItem Header="{DynamicResource MenuItem-EditPostText}"
+                        <MenuItem Header="{markupLocalization:LocalizedString MenuItem-EditPostText}"
                                   Name="btnEdit"
                                   Visibility="{Binding Path=DataContext.DataContext.(local:PostWidget.CurrentPostData).OwnerId, Converter={StaticResource OwnerIdToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                                   Click="Edit_Click"/>
-                        <MenuItem Header="{DynamicResource MenuItem-DeletePost}"
+                        <MenuItem Header="{markupLocalization:LocalizedString MenuItem-DeletePost}"
                                   Name="btnDelete"
                                   Visibility="{Binding Path=DataContext.DataContext.(local:PostWidget.CurrentPostData).OwnerId, Converter={StaticResource OwnerIdToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                                   Click="Delete_Click"/>

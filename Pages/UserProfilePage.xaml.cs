@@ -13,12 +13,12 @@ using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
 using Memenim.Extensions;
-using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
 using Memenim.Widgets;
+using RIS.Localization;
 using WpfAnimatedGif;
 using Math = RIS.Mathematics.Math;
 
@@ -59,13 +59,13 @@ namespace Memenim.Pages
             InitializeComponent();
             DataContext = new UserProfileViewModel();
 
-            LocalizationManager.LanguageChanged += OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~UserProfilePage()
         {
-            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
@@ -289,7 +289,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
+        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
         {
             ProfileStatPurpose
                 .GetBindingExpression(UserProfileStat.StatValueProperty)?

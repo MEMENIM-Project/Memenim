@@ -78,7 +78,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return new PostCommentDraft
                 {
@@ -129,7 +129,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }
@@ -156,7 +156,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }
@@ -178,7 +178,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }
@@ -203,7 +203,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }
@@ -230,7 +230,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }
@@ -254,7 +254,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }
@@ -275,7 +275,7 @@ namespace Memenim.Storage
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Storage error");
+                LogManager.Default.Error(ex, "Storage error");
 
                 return false;
             }

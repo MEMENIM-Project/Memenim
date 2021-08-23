@@ -10,11 +10,12 @@ using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Extensions;
-using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 using Memenim.Widgets;
+using RIS.Localization;
 using WpfAnimatedGif;
 using Math = RIS.Mathematics.Math;
 
@@ -83,13 +84,13 @@ namespace Memenim.Pages
                     new KeyValuePair<PostType, string>(PostType.Popular, PostTypes[PostType.Popular]);
             }
 
-            LocalizationManager.LanguageChanged += OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~FeedPage()
         {
-            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
@@ -522,7 +523,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
+        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
         {
             ReloadPostTypes();
         }

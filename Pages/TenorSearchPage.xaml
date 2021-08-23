@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Memenim.Pages"
              xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
+             xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
              xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
@@ -19,12 +20,12 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0"
-               Content="{DynamicResource GIFSelection}"
+               Content="{markupLocalization:LocalizedString GIFSelection}"
                Style="{DynamicResource DescriptionHeader}"
                Margin="10 0 0 0"/>
         <TextBox Grid.Row="1" x:Name="txtSearchQuery" Margin="5 5 5 5"
                  Text="{Binding Path=SearchText, Mode=TwoWay}"
-                 controls:TextBoxHelper.Watermark="{DynamicResource EnterSearchQuery}"
+                 controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString EnterSearchQuery}"
                  Style="{DynamicResource MahApps.Styles.TextBox.Search}"
                  controls:TextBoxHelper.ButtonCommand="{Binding Path=SearchCommand, Mode=OneWay}"
                  controls:TextBoxHelper.ButtonCommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=Self}}">

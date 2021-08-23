@@ -99,9 +99,9 @@ namespace Memenim.Dialogs
             if (selectedValue != null)
                 lstValues.SelectedItem = selectedValue;
 
-            if (string.IsNullOrEmpty(LocalizationUtils.TryGetLocalized("OkTitle")))
+            if (!LocalizationUtils.TryGetLocalized("OkTitle", out _))
                 btnOk.Content = "Ok";
-            if (string.IsNullOrEmpty(LocalizationUtils.TryGetLocalized("CancelTitle")))
+            if (!LocalizationUtils.TryGetLocalized("CancelTitle", out _))
                 btnCancel.Content = "Cancel";
         }
 

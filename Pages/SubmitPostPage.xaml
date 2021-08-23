@@ -6,8 +6,9 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
-                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
+                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    mc:Ignorable="d"
                    d:DesignHeight="450" d:DesignWidth="800">
@@ -19,57 +20,57 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="{DynamicResource ResourceKey=SubmitPostTitle}"
+                   Text="{markupLocalization:LocalizedString SubmitPostTitle}"
                    Style="{DynamicResource Header1}"
                    Margin="15 5"/>
         <controls:MetroAnimatedTabControl Grid.Row="1"
                                           controls:TabControlHelper.Underlined="TabItems"
                                           Margin="15 5">
-            <TabItem Header="{DynamicResource ResourceKey=EditTitle}">
+            <TabItem Header="{markupLocalization:LocalizedString EditTitle}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBlock Text="{DynamicResource ResourceKey=PostContentTitle}"
+                        <TextBlock Text="{markupLocalization:LocalizedString PostContentTitle}"
                                    Style="{StaticResource AccentHeader}"
                                    HorizontalAlignment="Left"
                                    Margin="5 10 5 10"/>
-                        <emoji:TextBox MinHeight="200" AcceptsReturn="True"
-                                       TextWrapping="Wrap" Margin="0 5"
-                                       Text="{Binding Path=CurrentPostData.Text, Mode=TwoWay}"
-                                       controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=EnterPostContent}"/>
-                        <TextBlock Text="{DynamicResource ResourceKey=ImageSourceTitle}"
+                        <TextBox MinHeight="200" AcceptsReturn="True"
+                                 TextWrapping="Wrap" Margin="0 5"
+                                 Text="{Binding Path=CurrentPostData.Text, Mode=TwoWay}"
+                                 controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString EnterPostContent}"/>
+                        <TextBlock Text="{markupLocalization:LocalizedString ImageSourceTitle}"
                                    Style="{StaticResource AccentHeader}"
                                    HorizontalAlignment="Left"
                                    Margin="5 20 5 10"/>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
                                 <RadioButton Name="rbImageRaw" GroupName="ImageSource"
-                                             Content="{DynamicResource ResourceKey=URLSelect}"
+                                             Content="{markupLocalization:LocalizedString URLSelect}"
                                              IsChecked="True"
                                              Margin="0 5"/>
                                 <RadioButton Name="rbImageTenor" GroupName="ImageSource"
-                                             Content="{DynamicResource ResourceKey=TenorSelect}"
+                                             Content="{markupLocalization:LocalizedString TenorSelect}"
                                              Margin="0 5"/>
                                 <RadioButton Name="rbImageGallery" GroupName="ImageSource"
-                                             Content="{DynamicResource ResourceKey=GallerySelect}"
+                                             Content="{markupLocalization:LocalizedString GallerySelect}"
                                              Margin="0 5"/>
                             </StackPanel>
                             <Image Height="100" Width="100"
                                    Margin="10" Stretch="Uniform"
                                    Source="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceConverter}}"/>
                         </StackPanel>
-                        <Button Content="{DynamicResource ResourceKey=SelectImage}"
+                        <Button Content="{markupLocalization:LocalizedString SelectImage}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
                                 Margin="0 5" Click="SelectImage_Click"/>
-                        <Button Content="{DynamicResource ResourceKey=RemoveImage}"
+                        <Button Content="{markupLocalization:LocalizedString RemoveImage}"
                                 Style="{StaticResource MahApps.Styles.Button.Square}"
                                 Margin="0 5" Click="RemoveImage_Click"/>
                         <TextBlock Style="{StaticResource AccentHeader}"
-                                   Text="{DynamicResource ResourceKey=AdditionalOptionsTitle}"
+                                   Text="{markupLocalization:LocalizedString AdditionalOptionsTitle}"
                                    HorizontalAlignment="Left"
                                    Margin="5 20 5 10"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{DynamicResource ResourceKey=PostCategoryTitle}"
+                            <TextBlock Text="{markupLocalization:LocalizedString PostCategoryTitle}"
                                        Margin="0 5 5 5"/>
                             <TextBlock Text=": "
                                        Margin="0 5 5 5"/>
@@ -81,23 +82,23 @@
                         </StackPanel>
                         <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}"
                                   Margin="0 5">Show post</CheckBox>-->
-                        <CheckBox Content="{DynamicResource ResourceKey=OpenComments}"
+                        <CheckBox Content="{markupLocalization:LocalizedString OpenComments}"
                                   IsChecked="{Binding Path=CurrentPostData.IsCommentsOpen, Mode=TwoWay}"
                                   Margin="0 5"/>
                         <CheckBox Content="18+"
                                   IsChecked="{Binding Path=CurrentPostData.IsAdult, Mode=TwoWay}"
                                   Margin="0 5"/>
-                        <CheckBox Content="{DynamicResource ResourceKey=SubmitAnonymously}"
+                        <CheckBox Content="{markupLocalization:LocalizedString SubmitAnonymously}"
                                   IsChecked="{Binding Path=CurrentPostData.IsAnonymous, Mode=TwoWay}"
                                   Margin="0 5"/>
                         <Button x:Name="btnSubmit"
-                                Content="{DynamicResource ResourceKey=SubmitPost}"
+                                Content="{markupLocalization:LocalizedString SubmitPost}"
                                 Style="{StaticResource MahApps.Styles.Button.Square.Accent}"
                                 Margin="0 5" Click="Submit_Click"/> 
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="{DynamicResource ResourceKey=PreviewTitle}">
+            <TabItem Header="{markupLocalization:LocalizedString PreviewTitle}">
                 <widgets:PostWidget PreviewMode="True"
                                     ImageSizeLimit="True"
                                     CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using Memenim.Script.Entities;
+using Memenim.Scripting.Entities;
 using RIS;
 using Environment = RIS.Environment;
 
-namespace Memenim.Script
+namespace Memenim.Scripting
 {
     public static class ScriptManager
     {
@@ -27,12 +27,6 @@ namespace Memenim.Script
                 return;
 
             var directory = Path.Combine(baseDirectory,
-                "Script", "scripts");
-
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
-
-            directory = Path.Combine(baseDirectory,
                 "scripts");
 
             if (!Directory.Exists(directory))
@@ -88,25 +82,20 @@ namespace Memenim.Script
 
 
         private static Dictionary<string, MemenimScriptModule> GetScriptsPaths(
-            string directoryBasePath, string directoryRelativePath = null)
+            string directoryBasePath)
         {
-            var scripts = new Dictionary<string, MemenimScriptModule>();
+            var scriptsPaths = new Dictionary<string, MemenimScriptModule>(10);
             var directory = directoryBasePath;
 
             if (string.IsNullOrEmpty(directory)
                 || directory == "Unknown"
                 || !Directory.Exists(directory))
             {
-                return scripts;
+                return scriptsPaths;
             }
 
-            if (!string.IsNullOrEmpty(directoryRelativePath))
-            {
-                directory = Path.Combine(directory, directoryRelativePath);
-
-                if (!Directory.Exists(directory))
-                    return scripts;
-            }
+            if (!Directory.Exists(directory))
+                return scriptsPaths;
 
             foreach (var directoryPath in Directory.EnumerateDirectories(directory))
             {
@@ -115,7 +104,7 @@ namespace Memenim.Script
                     var module = new MemenimScriptModule(
                         directoryPath);
 
-                    scripts[module.Name] = module;
+                    scriptsPaths[module.Name] = module;
                 }
                 catch (Exception ex)
                 {
@@ -123,23 +112,18 @@ namespace Memenim.Script
                 }
             }
 
-            return scripts;
+            return scriptsPaths;
         }
 
         private static Dictionary<string, MemenimScriptModule> GetScripts()
         {
-            var scripts = new Dictionary<string, MemenimScriptModule>();
+            var scripts = new Dictionary<string, MemenimScriptModule>(10);
+
+            var scriptsDirectoryName = Path.Combine(
+                Environment.ExecProcessDirectoryName, "scripts");
 
             foreach (var script in GetScriptsPaths(
-                Environment.ExecAppDirectoryName,
-                Path.Combine("Script", "scripts")))
-            {
-                scripts[script.Key] = script.Value;
-            }
-
-            foreach (var script in GetScriptsPaths(
-                Environment.ExecProcessDirectoryName,
-                "scripts"))
+                scriptsDirectoryName))
             {
                 scripts[script.Key] = script.Value;
             }

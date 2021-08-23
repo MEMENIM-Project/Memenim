@@ -5,6 +5,8 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:local="clr-namespace:Memenim"
+                      xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
+                      xmlns:controlsLocalization="clr-namespace:RIS.Localization.UI.WPF.Controls;assembly=RIS.Localization.UI.WPF"
                       xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                       xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -56,7 +58,7 @@
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="SettingsFlyout"
-                             Header="{DynamicResource ResourceKey=SettingsTitle}"
+                             Header="{markupLocalization:LocalizedString SettingsTitle}"
                              MinWidth="300" MaxWidth="300"
                              IsOpen="False" Position="Right"
                              Theme="Adapt">
@@ -76,15 +78,15 @@
                                 <StackPanel x:Name="SpecialEventPanel"
                                             Visibility="Collapsed"
                                             Margin="0 0 0 20">
-                                    <TextBlock Text="{DynamicResource SpecialEventSettingsTitle}"
+                                    <TextBlock Text="{markupLocalization:LocalizedString SpecialEventSettingsTitle}"
                                                Style="{StaticResource AccentHeader}"
                                                HorizontalAlignment="Left"
                                                Margin="5 0 5 10"/>
                                     <controls:ToggleSwitch x:Name="tglSpecialEvent"
-                                                           Content="{DynamicResource EnableTitle}"
+                                                           Content="{markupLocalization:LocalizedString EnableTitle}"
                                                            IsOn="{Binding Path=SpecialEventEnabled, Mode=TwoWay}"
                                                            Margin="5"/>
-                                    <TextBlock Text="{DynamicResource BgmVolumeTitle}"
+                                    <TextBlock Text="{markupLocalization:LocalizedString BgmVolumeTitle}"
                                                Style="{StaticResource Header3}"
                                                Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
                                                Margin="5"/>
@@ -99,27 +101,18 @@
                                             Margin="5"/>
                                 </StackPanel>
                                 <StackPanel Margin="0 0 0 20">
-                                    <TextBlock Text="{DynamicResource LanguageSettingsTitle}"
+                                    <TextBlock Text="{markupLocalization:LocalizedString LanguageSettingsTitle}"
                                                Style="{StaticResource AccentHeader}"
                                                HorizontalAlignment="Left"
                                                Margin="5 0 5 10"/>
-                                    <controls:SplitButton Name="slcLanguage"
-                                                          ItemsSource="{Binding Path=Locales, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
-                                                          DisplayMemberPath="Value.CultureNativeName"
-                                                          Margin="5"
-                                                          SelectionChanged="slcLanguage_SelectionChanged">
-                                        <controls:SplitButton.Icon>
-                                            <iconPacks:PackIconModern Kind="Globe"
-                                                                      Margin="5"/>
-                                        </controls:SplitButton.Icon>
-                                    </controls:SplitButton>
+                                    <controlsLocalization:MetroLocalizationButton Margin="5"/>
                                 </StackPanel>
                                 <StackPanel Margin="0 0 0 20">
-                                    <TextBlock Text="{DynamicResource CommentsSettingsTitle}"
+                                    <TextBlock Text="{markupLocalization:LocalizedString CommentsSettingsTitle}"
                                                Style="{StaticResource AccentHeader}"
                                                HorizontalAlignment="Left"
                                                Margin="5 0 5 10"/>
-                                    <TextBlock Text="{DynamicResource CommentReplyModeTitle}"
+                                    <TextBlock Text="{markupLocalization:LocalizedString CommentReplyModeTitle}"
                                                Style="{StaticResource Header3}"
                                                Margin="5"/>
                                     <controls:SplitButton Name="slcCommentReplyMode"
@@ -129,20 +122,20 @@
                                                           SelectionChanged="slcCommentReplyMode_SelectionChanged"/>
                                 </StackPanel>
                                 <StackPanel Margin="0 0 0 20">
-                                    <TextBlock Text="{DynamicResource AccountSettingsTitle}"
+                                    <TextBlock Text="{markupLocalization:LocalizedString AccountSettingsTitle}"
                                                Style="{StaticResource AccentHeader}"
                                                HorizontalAlignment="Left"
                                                Margin="5 0 5 10"/>
                                     <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                                             Margin="5" Click="btnChangePassword_Click">
-                                        <TextBlock Text="{DynamicResource ResourceKey=ChangePassword}"
+                                        <TextBlock Text="{markupLocalization:LocalizedString ChangePassword}"
                                                    MinHeight="15" FontSize="12"
                                                    TextAlignment="Center" TextWrapping="Wrap"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </Button>
                                     <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                                             Margin="5" Click="btnSignInToAnotherAccount_Click">
-                                        <TextBlock Text="{DynamicResource ResourceKey=SignInToAnotherAccount}"
+                                        <TextBlock Text="{markupLocalization:LocalizedString SignInToAnotherAccount}"
                                                    MinHeight="15" FontSize="12"
                                                    TextAlignment="Center" TextWrapping="Wrap"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -150,7 +143,7 @@
                                     <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                                             Background="#FF9F0000"
                                             Margin="5" Click="btnSignOutAccount_Click">
-                                        <TextBlock Text="{DynamicResource ResourceKey=SignOut}"
+                                        <TextBlock Text="{markupLocalization:LocalizedString SignOut}"
                                                    MinHeight="15" FontSize="12"
                                                    TextAlignment="Center" TextWrapping="Wrap"
                                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -188,7 +181,7 @@
                                 </Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource ResourceKey=Version}" FontSize="13.5"
+                                <TextBlock Text="{markupLocalization:LocalizedString Version}" FontSize="13.5"
                                            Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
                                 <TextBlock Text=":  " FontSize="13.5"
                                            Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
@@ -238,7 +231,7 @@
                                            IsIndeterminate="True"
                                            BorderThickness="0"/>
                 <TextBlock MinHeight="20"
-                           Text="{DynamicResource AttemptingRestoreConnection}"
+                           Text="{markupLocalization:LocalizedString AttemptingRestoreConnection}"
                            FontSize="15"
                            TextAlignment="Center"
                            TextWrapping="Wrap"

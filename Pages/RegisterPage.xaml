@@ -6,6 +6,7 @@
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
+                   xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -77,7 +78,7 @@
                 </TextBlock.LayoutTransform>
             </TextBlock>
             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                       Text="{DynamicResource ResourceKey=SignUpTitle}"
+                       Text="{markupLocalization:LocalizedString SignUpTitle}"
                        MinHeight="10" FontSize="14.5"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        TextAlignment="Center" TextWrapping="Wrap"/>
@@ -91,7 +92,7 @@
 
                     <TextBox Grid.Column="0" Grid.ColumnSpan="3"
                              Name="txtLogin" MinWidth="200" MinHeight="25"
-                             controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
+                             controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Login}"
                              controls:TextBoxHelper.SelectAllOnFocus="True"
                              Margin="25 10 25 10"
                              Style="{DynamicResource MahApps.Styles.TextBox}"
@@ -108,7 +109,7 @@
 
                     <PasswordBox Grid.Column="0" Grid.ColumnSpan="3"
                                  Name="txtPassword" MinWidth="200" MinHeight="25"
-                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
+                                 controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Password}"
                                  controls:TextBoxHelper.SelectAllOnFocus="True"
                                  Margin="25 0 25 10"
                                  Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
@@ -137,7 +138,7 @@
 
                     <TextBox Grid.Column="0" Grid.ColumnSpan="3"
                              Name="txtNickname" MinWidth="200" MinHeight="25"
-                             controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Nickname}"
+                             controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Nickname}"
                              controls:TextBoxHelper.SelectAllOnFocus="True"
                              Margin="25 0 25 10"
                              Style="{DynamicResource MahApps.Styles.TextBox}"
@@ -152,7 +153,7 @@
                         FontSize="16" Margin="40 5 40 5"
                         Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                         Click="btnRegister_Click">
-                    <TextBlock Text="{DynamicResource ResourceKey=SignUp}"
+                    <TextBlock Text="{markupLocalization:LocalizedString SignUp}"
                                MinHeight="10" FontSize="16"
                                VerticalAlignment="Center" HorizontalAlignment="Center"
                                TextAlignment="Center" TextWrapping="Wrap"/>
@@ -164,7 +165,7 @@
                     Style="{StaticResource WithoutBackgroundButton}"
                     VerticalAlignment="Bottom"
                     Click="btnGoToLogin_Click">
-                <TextBlock Text="{DynamicResource ResourceKey=GoToLogin}"
+                <TextBlock Text="{markupLocalization:LocalizedString GoToLogin}"
                            MinHeight="15" FontSize="12"
                            VerticalAlignment="Center" HorizontalAlignment="Center"
                            TextAlignment="Center" TextWrapping="Wrap"/>

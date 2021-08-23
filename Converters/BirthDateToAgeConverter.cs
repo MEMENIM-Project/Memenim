@@ -7,6 +7,7 @@ namespace Memenim.Converters
 {
     public sealed class BirthDateToAgeStringConverter : IValueConverter
     {
+#pragma warning disable SS002 // DateTime.Now was referenced
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
@@ -20,9 +21,7 @@ namespace Memenim.Converters
                     return string.Empty;
 
                 var birthDateTime = TimeUtils.ToDateTime(result);
-#pragma warning disable SS002 // DateTime.Now was referenced
                 var age = DateTime.Now.Year - birthDateTime.Year;
-#pragma warning restore SS002 // DateTime.Now was referenced
 
                 return age.ToString();
 
@@ -32,6 +31,7 @@ namespace Memenim.Converters
                 return "0";
             }
         }
+#pragma warning restore SS002 // DateTime.Now was referenced
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

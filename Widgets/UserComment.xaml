@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Memenim.Widgets"
+             xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
              xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
              xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
              mc:Ignorable="d" 
@@ -24,8 +25,8 @@
 
             <Grid.ContextMenu>
                 <ContextMenu x:Name="commentMenu" Visibility="Visible">
-                    <MenuItem Header="{DynamicResource MenuItem-CopyCommentId}" Click="CopyCommentId_Click"/>
-                    <MenuItem Header="{DynamicResource MenuItem-CopyCommentText}" Click="CopyCommentText_Click"/>
+                    <MenuItem Header="{markupLocalization:LocalizedString MenuItem-CopyCommentId}" Click="CopyCommentId_Click"/>
+                    <MenuItem Header="{markupLocalization:LocalizedString MenuItem-CopyCommentText}" Click="CopyCommentText_Click"/>
                 </ContextMenu>
             </Grid.ContextMenu>
 

@@ -243,6 +243,8 @@
     <system:String x:Key="ErrorTitle">Ошибка</system:String>
     <system:String x:Key="SuccessTitle">Успех</system:String>
     <system:String x:Key="FileTitle">Файл</system:String>
+    <system:String x:Key="LocalizationFileTitle">Файл локализации</system:String>
+    <system:String x:Key="LocalizedCultureTitle">Локализованная культура</system:String>
     <system:String x:Key="NotFoundTitle1">Не найден</system:String>
     <system:String x:Key="NotFoundTitle2">Не найдена</system:String>
     <system:String x:Key="NotFoundTitle3">Не найдено</system:String>
@@ -257,8 +259,7 @@
     <system:String x:Key="LoginErrorTitle">Ошибка входа</system:String>
     <system:String x:Key="RegisterErrorTitle">Ошибка регистрации</system:String>
 
-    <system:String x:Key="NoLocalizationsFoundMessage">Локализации не найдены</system:String>
-    <system:String x:Key="CouldNotGetLocalizationMessage">Не удалось получить локализацию</system:String>
+    <system:String x:Key="LocalizationsNotFoundMessage">Локализации не найдены</system:String>
     <system:String x:Key="CouldNotLoadCommentsMessage">Не удалось загрузить комментарии</system:String>
     <system:String x:Key="GettingProfileErrorMessage">Ошибка получения профиля</system:String>
 

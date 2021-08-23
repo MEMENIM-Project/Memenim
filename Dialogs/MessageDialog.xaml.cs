@@ -76,9 +76,9 @@ namespace Memenim.Dialogs
             DialogMessage = message;
             IsCancellable = isCancellable;
 
-            if (string.IsNullOrEmpty(LocalizationUtils.TryGetLocalized("OkTitle")))
+            if (!LocalizationUtils.TryGetLocalized("OkTitle", out _))
                 btnOk.Content = "Ok";
-            if (string.IsNullOrEmpty(LocalizationUtils.TryGetLocalized("CancelTitle")))
+            if (!LocalizationUtils.TryGetLocalized("CancelTitle", out _))
                 btnCancel.Content = "Cancel";
         }
 

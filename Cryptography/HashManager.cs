@@ -24,7 +24,6 @@ namespace Memenim.Cryptography
             return Service.GetDirectoryHash(Environment.ExecAppDirectoryName,false, new[]
             {
                 "scripts",
-                Path.Combine("Script", "scripts"),
                 "localizations",
                 "downloads",
                 "storage",

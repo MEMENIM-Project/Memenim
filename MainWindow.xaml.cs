@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,8 +13,6 @@ using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Extensions;
-using Memenim.Localization;
-using Memenim.Localization.Entities;
 using Memenim.Misc;
 using Memenim.Native.Window;
 using Memenim.Navigation;
@@ -26,11 +22,13 @@ using Memenim.Styles;
 using Memenim.Styles.Loading.Entities;
 using Memenim.Utils;
 using RIS;
+using RIS.Localization;
+using Environment = RIS.Environment;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
-    public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow, ILocalizable
+    public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow
     {
         private static readonly object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;
@@ -126,7 +124,6 @@ namespace Memenim
                 _bgmVolume = value;
             }
         }
-        public ReadOnlyDictionary<string, LocalizationXamlModule> Locales { get; private set; }
         public ReadOnlyDictionary<CommentReplyModeType, string> CommentReplyModes { get; private set; }
         public string AppVersion { get; private set; }
         public bool DuringRestoreToMaximized { get; private set; }
@@ -160,62 +157,15 @@ namespace Memenim
             ApplyLoadingStyle();
             LoadSpecialEvent();
 
-            LocalizationManager.ReloadLocales();
-
-            if (Locales.Count == 0)
-                return;
-
-            LocalizationManager.SetDefaultLanguage()
-                .ConfigureAwait(true);
-
-            if (Locales.TryGetValue(SettingsManager.AppSettings.Language, out var localizationModule))
-            {
-                slcLanguage.SelectedItem = new KeyValuePair<string, LocalizationXamlModule>(
-                    SettingsManager.AppSettings.Language, localizationModule);
-            }
-            else if (Locales.TryGetValue("en-US", out localizationModule))
-            {
-                slcLanguage.SelectedItem = new KeyValuePair<string, LocalizationXamlModule>(
-                    "en-US", localizationModule);
-
-                SettingsManager.AppSettings.Language = "en-US";
-                SettingsManager.AppSettings.Save();
-            }
-            else
-            {
-                var locale = Locales.First();
-
-                slcLanguage.SelectedItem = locale;
-
-                SettingsManager.AppSettings.Language = locale.Key;
-                SettingsManager.AppSettings.Save();
-            }
-
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
-            LocalizationManager.LanguageChanged += OnLanguageChanged;
-
-            ReloadCommentReplyModes();
-
-            if (Enum.TryParse<CommentReplyModeType>(
-                Enum.GetName(typeof(CommentReplyModeType), SettingsManager.AppSettings.CommentReplyMode),
-                true, out var commentReplyModeType))
-            {
-                slcCommentReplyMode.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(
-                        commentReplyModeType, CommentReplyModes[commentReplyModeType]);
-            }
-            else
-            {
-                slcCommentReplyMode.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(
-                        CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
-            }
+            LocalizationUtils.LocalizationsLoaded += OnLocalizationsLoaded;
+            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
         }
 
         ~MainWindow()
         {
             ApiRequestEngine.ConnectionStateChanged -= OnConnectionStateChanged;
-            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
         }
 
         private void ReloadCommentReplyModes()
@@ -308,20 +258,30 @@ namespace Memenim
             connectionFailedIndicator.VerticalAlignment = _loadingStyle.LoadingIndicatorVerticalAlignment;
         }
 
+#pragma warning disable SS002 // DateTime.Now was referenced
         private void LoadSpecialEvent()
         {
-            var appStartupTime = DateTime.ParseExact(
-                NLog.GlobalDiagnosticsContext.Get("AppStartupTime"),
-                "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture);
-            var eventStartTime = DateTime.ParseExact("0001.12.20 00-00-00",
-                    "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture)
-                .AddYears(appStartupTime.Year - 1);
-            var eventEndTime = DateTime.ParseExact("0001.01.10 23-59-59",
-                    "yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture)
-                .AddYears(appStartupTime.Year - 1);
+            DateTime startupTime;
 
-            if (!(eventStartTime <= appStartupTime
-                  || appStartupTime <= eventEndTime))
+            try
+            {
+                startupTime = Environment.Process.StartTime
+                    .ToLocalTime();
+            }
+            catch (Exception)
+            {
+                startupTime = DateTime.Now;
+            }
+
+            var eventStartTime = new DateTime(day: 20, month: 12, year: 1,
+                    hour: 0, minute: 0, second: 0)
+                .AddYears(startupTime.Year - 1);
+            var eventEndTime = new DateTime(day: 10, month: 1, year: 1,
+                    hour: 23, minute: 59, second: 59)
+                .AddYears(startupTime.Year - 1);
+
+            if (!(eventStartTime <= startupTime
+                  || startupTime <= eventEndTime))
             {
                 return;
             }
@@ -333,6 +293,7 @@ namespace Memenim
             SpecialEventEnabled = SettingsManager.AppSettings.SpecialEventEnabled;
             BgmVolume = SettingsManager.AppSettings.BgmVolume;
         }
+#pragma warning restore SS002 // DateTime.Now was referenced
 
         public void LinkOpenEnable(bool isEnabled)
         {
@@ -659,7 +620,32 @@ namespace Memenim
             }).ConfigureAwait(true);
         }
 
-        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
+        private void OnLocalizationsLoaded(object sender, LocalizationLoadedEventArgs e)
+        {
+            LocalizationUtils.LocalizationsLoaded -= OnLocalizationsLoaded;
+
+            if (LocalizationUtils.Localizations.Count == 0)
+                return;
+
+            ReloadCommentReplyModes();
+
+            if (Enum.TryParse<CommentReplyModeType>(
+                Enum.GetName(typeof(CommentReplyModeType), SettingsManager.AppSettings.CommentReplyMode),
+                true, out var commentReplyModeType))
+            {
+                slcCommentReplyMode.SelectedItem =
+                    new KeyValuePair<CommentReplyModeType, string>(
+                        commentReplyModeType, CommentReplyModes[commentReplyModeType]);
+            }
+            else
+            {
+                slcCommentReplyMode.SelectedItem =
+                    new KeyValuePair<CommentReplyModeType, string>(
+                        CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
+            }
+        }
+
+        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
         {
             ReloadCommentReplyModes();
         }
@@ -696,14 +682,6 @@ namespace Memenim
                 Events.OnError(new RErrorEventArgs(exception,
                     exception.Message));
             }
-        }
-
-        private async void slcLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedPair = (KeyValuePair<string, LocalizationXamlModule>)slcLanguage.SelectedItem;
-
-            await LocalizationManager.SwitchLanguage(selectedPair.Key)
-                .ConfigureAwait(true);
         }
 
         private async void slcCommentReplyMode_SelectionChanged(object sender, SelectionChangedEventArgs e)

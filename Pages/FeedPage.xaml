@@ -7,6 +7,7 @@
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:controlsRis="clr-namespace:RIS.Graphics.WPF.Controls;assembly=RIS.Graphics"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
@@ -44,7 +45,7 @@
                     VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                     Margin="0 5 10 5" Padding="0 0 0 0" DockPanel.Dock="Left"
                     Click="btnNewPostsCount_Click"/>
-            <Label Content="{DynamicResource FeedTitle}"
+            <Label Content="{markupLocalization:LocalizedString FeedTitle}"
                    Style="{DynamicResource DescriptionHeader}"
                    DockPanel.Dock="Left" VerticalContentAlignment="Center"/>
             <controls:SplitButton Name="slcPostTypes"
@@ -68,7 +69,7 @@
                                               Kind="NewspaperCreate"
                                               VerticalAlignment="Center"
                                               Margin="5" />
-                    <TextBlock Text="{DynamicResource WriteNewPost}"
+                    <TextBlock Text="{markupLocalization:LocalizedString WriteNewPost}"
                                VerticalAlignment="Center"
                                Margin="5"/>
                 </StackPanel>
@@ -78,7 +79,7 @@
               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="{DynamicResource ResourceKey=NotFoundAnyPostsTitle}"
+                <TextBlock Text="{markupLocalization:LocalizedString NotFoundAnyPostsTitle}"
                            FontSize="20"
                            Visibility="{Binding Path=IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                            HorizontalAlignment="Center" VerticalAlignment="Center"/>

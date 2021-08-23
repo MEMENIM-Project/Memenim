@@ -1,7 +1,7 @@
 ﻿using System;
-using Memenim.Script.Entities;
+using Memenim.Scripting.Entities;
 
-namespace Memenim.Script
+namespace Memenim.Scripting
 {
     public class ScriptInformationEventArgs : EventArgs
     {

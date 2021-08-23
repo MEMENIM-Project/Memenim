@@ -8,11 +8,11 @@ using System.Windows.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Extensions;
-using Memenim.Localization;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Utils;
+using RIS.Localization;
 
 namespace Memenim.Pages
 {
@@ -37,7 +37,7 @@ namespace Memenim.Pages
 
             slcPostCategories.SelectedIndex = 0;
 
-            LocalizationManager.LanguageChanged += OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
             ProfileUtils.AvatarChanged += OnAvatarChanged;
             ProfileUtils.NameChanged += OnNameChanged;
@@ -45,7 +45,7 @@ namespace Memenim.Pages
 
         ~SubmitPostPage()
         {
-            LocalizationManager.LanguageChanged -= OnLanguageChanged;
+            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
             ProfileUtils.AvatarChanged -= OnAvatarChanged;
             ProfileUtils.NameChanged -= OnNameChanged;
@@ -142,7 +142,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLanguageChanged(object sender, LanguageChangedEventArgs e)
+        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
         {
             ReloadPostCategories();
         }

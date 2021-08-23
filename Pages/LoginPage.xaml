@@ -7,9 +7,9 @@
                    xmlns:local="clr-namespace:Memenim.Pages"
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
+                   xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    mc:Ignorable="d"
                    Height="300" Width="300"
                    MinHeight="300" MinWidth="300">
@@ -78,7 +78,7 @@
                 </TextBlock.LayoutTransform>
             </TextBlock>
             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                       Text="{DynamicResource ResourceKey=SignInTitle}"
+                       Text="{markupLocalization:LocalizedString SignInTitle}"
                        MinHeight="10" FontSize="14.5"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        TextAlignment="Center" TextWrapping="Wrap"/>
@@ -94,7 +94,7 @@
                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
                     <TextBox Grid.Column="0" Grid.ColumnSpan="3"
                              Name="txtLogin" MinWidth="200" MinHeight="25"
-                             controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Login}"
+                             controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Login}"
                              controls:TextBoxHelper.SelectAllOnFocus="True"
                              Margin="25 10 25 10"
                              Style="{DynamicResource MahApps.Styles.TextBox}"
@@ -113,7 +113,7 @@
                                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
                     <PasswordBox Grid.Column="0" Grid.ColumnSpan="3"
                                  Name="txtPassword" MinWidth="200" MinHeight="25"
-                                 controls:TextBoxHelper.Watermark="{DynamicResource ResourceKey=Password}"
+                                 controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Password}"
                                  controls:TextBoxHelper.SelectAllOnFocus="True"
                                  Margin="25 0 25 10"
                                  Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
@@ -131,7 +131,7 @@
                     <CheckBox Grid.Column="0" Grid.ColumnSpan="3"
                               Name="chkRememberMe" MinWidth="100" MinHeight="25"
                               FontSize="12" Margin="25 0 25 10"
-                              Content="{DynamicResource ResourceKey=RememberMe}"
+                              Content="{markupLocalization:LocalizedString RememberMe}"
                               Style="{StaticResource MahApps.Styles.CheckBox.Win10}"
                               VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 </Grid>
@@ -150,7 +150,7 @@
                             FontSize="16" Margin="40 5 40 5"
                             Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
                             Click="btnLogin_Click">
-                        <TextBlock Text="{DynamicResource ResourceKey=SignIn}"
+                        <TextBlock Text="{markupLocalization:LocalizedString SignIn}"
                                    MinHeight="10" FontSize="16"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"
                                    TextAlignment="Center" TextWrapping="Wrap"/>
@@ -169,7 +169,7 @@
                     Style="{StaticResource WithoutBackgroundButton}"
                     VerticalAlignment="Bottom"
                     Click="btnGoToRegister_Click">
-                <TextBlock Text="{DynamicResource ResourceKey=GoToRegister}"
+                <TextBlock Text="{markupLocalization:LocalizedString GoToRegister}"
                            MinHeight="15" FontSize="12"
                            TextAlignment="Center" TextWrapping="Wrap"
                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -185,7 +185,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0"
-                               Text="{DynamicResource ResourceKey=StoredAccountsTitle}"
+                               Text="{markupLocalization:LocalizedString StoredAccountsTitle}"
                                TextAlignment="Center"
                                TextWrapping="Wrap"
                                Margin="0 0 0 5"

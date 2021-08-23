@@ -72,7 +72,7 @@ namespace Memenim.Protocols
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Protocol register error");
+                LogManager.Default.Error(ex, "Protocol register error");
 
                 return false;
             }
@@ -104,7 +104,7 @@ namespace Memenim.Protocols
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "Protocol check exists error");
+                LogManager.Default.Error(ex, "Protocol check exists error");
 
                 return false;
             }

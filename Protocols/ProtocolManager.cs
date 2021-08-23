@@ -48,7 +48,7 @@ namespace Memenim.Protocols
             }
             catch (Exception ex)
             {
-                LogManager.Log.Error(ex, "User protocols get error");
+                LogManager.Default.Error(ex, "User protocols get error");
 
                 return Array.Empty<IUserProtocol>();
             }

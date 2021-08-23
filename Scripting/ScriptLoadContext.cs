@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Memenim.Script
+namespace Memenim.Scripting
 {
     public class ScriptLoadContext : AssemblyLoadContext
     {

@@ -12,7 +12,7 @@ namespace Memenim.Utils
         {
             if (method == null)
             {
-                LogManager.Log.Error(exception, $"Schema mapped method with args [{args}] error");
+                LogManager.Default.Error(exception, $"Schema mapped method with args [{args}] error");
 
                 return;
             }
@@ -34,7 +34,7 @@ namespace Memenim.Utils
                     .Name;
             }
 
-            LogManager.Log.Error(exception, $"Schema {methodType} [{methodName}] with args [{args}] error");
+            LogManager.Default.Error(exception, $"Schema {methodType} [{methodName}] with args [{args}] error");
         }
     }
 }
