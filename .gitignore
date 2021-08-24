@@ -340,3 +340,16 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /MigrationBackup/5f78dc90/Memenim
+
+##################################### General #####################################
+
+# Files
+
+*.lnk
+
+# Directories
+
+.git/
+.vs/
+.idea/
+_release/
