@@ -24,15 +24,19 @@
             <Grid Grid.Column="0" Width="40" Height="40" Margin="0 5 0 5"
                   VerticalAlignment="Top" HorizontalAlignment="Center">
                 <Grid.OpacityMask>
-                    <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
+                    <VisualBrush Visual="{Binding ElementName=AvatarBorder}" />
                 </Grid.OpacityMask>
 
-                <Border Name="ImageBorder" CornerRadius="0" SnapsToDevicePixels="True"
-                        Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                <Border x:Name="AvatarBorder"
+                        Background="{StaticResource MahApps.Brushes.Window.Background}"
+                        CornerRadius="0"
+                        SnapsToDevicePixels="True"/>
                 <Image MinHeight="40" MinWidth="40"
-                       gif:ImageBehavior.AnimatedSource="{Binding UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"
+                       x:Name="AvatarImage"
+                       gif:ImageBehavior.AnimatedSource="{Binding Path=UserAvatarSource, Converter={StaticResource UserAvatarImageSourceConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       SizeChanged="AvatarImage_SizeChanged"/>
             </Grid>
             <TextBox Grid.Column="1" x:Name="txtContent" Margin="10 5 10 5"
                      Text="{Binding Path=CommentText, Mode=TwoWay}"

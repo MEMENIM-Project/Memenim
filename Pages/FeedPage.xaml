@@ -16,13 +16,13 @@
                    d:DesignHeight="720" d:DesignWidth="1280">
     
     <local:PageContent.Resources>
-        <Storyboard x:Key="LoadingMoreEnterAnimation">
+        <Storyboard x:Key="LoadingMoreShowAnimation">
             <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
                                 Storyboard.TargetProperty="Margin"
                                 To="0 0 -15 0"
                                 Duration="0:0:0.35"/>
         </Storyboard>
-        <Storyboard x:Key="LoadingMoreExitAnimation">
+        <Storyboard x:Key="LoadingMoreHideAnimation">
             <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
                                 Storyboard.TargetProperty="Margin"
                                 To="0 0 -85 0"

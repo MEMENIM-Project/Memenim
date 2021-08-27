@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
@@ -45,6 +46,9 @@ namespace Memenim.Widgets
             }
         }
 
+        public readonly Brush AvatarBorderBackground;
+        public readonly Brush AvatarBorderDefaultBackground;
+
         public CommentSchema CurrentCommentData
         {
             get
@@ -61,6 +65,10 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+
+            AvatarBorderDefaultBackground = (Brush)FindResource(
+                "MahApps.Brushes.Gray10");
+            AvatarBorderBackground = AvatarBorder.Background;
         }
 
         public void UpdateComment()
@@ -278,6 +286,18 @@ namespace Memenim.Widgets
                     Id = CurrentCommentData.User.Id.Value
                 }
             });
+        }
+
+        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                AvatarBorder.Background = AvatarBorderDefaultBackground;
+
+                return;
+            }
+
+            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

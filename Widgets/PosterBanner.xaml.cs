@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -28,6 +29,9 @@ namespace Memenim.Widgets
         public static readonly DependencyProperty IsAnonymousProperty =
             DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PosterBanner),
                 new PropertyMetadata(false));
+
+        public readonly Brush AvatarBorderBackground;
+        public readonly Brush AvatarBorderDefaultBackground;
 
         public int UserId
         {
@@ -100,6 +104,10 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+
+            AvatarBorderDefaultBackground = (Brush)FindResource(
+                "MahApps.Brushes.Gray10");
+            AvatarBorderBackground = AvatarBorder.Background;
         }
 
         private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -116,6 +124,18 @@ namespace Memenim.Widgets
             });
 
             e.Handled = true;
+        }
+
+        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                AvatarBorder.Background = AvatarBorderDefaultBackground;
+
+                return;
+            }
+
+            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

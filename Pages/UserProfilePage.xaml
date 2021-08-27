@@ -8,17 +8,18 @@
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets ="clr-namespace:Memenim.Widgets"
                    xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
+                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
 
-    <UserControl.Resources>
+    <local:PageContent.Resources>
         <FrameworkElement x:Key="ProxyElement"
                           DataContext="{Binding}"
                           d:DataContext="{d:DesignInstance local:UserProfilePage}"/>
-    </UserControl.Resources>
+    </local:PageContent.Resources>
 
     <Grid Background="{DynamicResource MahApps.Brushes.Window.Background}">
         <Grid.ColumnDefinitions>
@@ -95,7 +96,7 @@
               MouseLeftButtonUp="Avatar_MouseLeftButtonUp"
               MouseRightButtonUp="Avatar_MouseRightButtonUp">
             <Grid.OpacityMask>
-                <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
+                <VisualBrush Visual="{Binding ElementName=AvatarBorder}"/>
             </Grid.OpacityMask>
 
             <Grid.ContextMenu>
@@ -118,14 +119,16 @@
             </Grid.ContextMenu>
 
             <!--CornerRadius="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"-->
-            <Border Name="ImageBorder" SnapsToDevicePixels="True"
+            <Border x:Name="AvatarBorder"
+                    Background="{StaticResource MahApps.Brushes.Gray10}"
                     CornerRadius="0"
-                    Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                    SnapsToDevicePixels="True"/>
             <Image MinHeight="200" MinWidth="200"
                    x:Name="AvatarImage"
                    gif:ImageBehavior.AnimatedSource="{Binding Path=DataContext.CurrentProfileData.PhotoUrl, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                    Stretch="UniformToFill" StretchDirection="Both"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   SizeChanged="AvatarImage_SizeChanged"/>
         </Grid>
         <ScrollViewer Grid.Row="1" Grid.Column="1"
                       Margin="0 20 0 0"

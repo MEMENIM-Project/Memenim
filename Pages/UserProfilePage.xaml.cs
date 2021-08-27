@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
@@ -34,6 +35,9 @@ namespace Memenim.Pages
         private int _profileUpdateWaitingCount;
         private bool _loadingGridShowing;
 
+        public readonly Brush AvatarBorderBackground;
+        public readonly Brush AvatarBorderDefaultBackground;
+
         public UserProfileViewModel ViewModel
         {
             get
@@ -58,6 +62,10 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new UserProfileViewModel();
+
+            AvatarBorderDefaultBackground = (Brush)FindResource(
+                "MahApps.Brushes.Window.Background");
+            AvatarBorderBackground = AvatarBorder.Background;
 
             LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
@@ -730,6 +738,18 @@ namespace Memenim.Pages
         {
             if (!ViewModel.EditAllowed)
                 e.Handled = true;
+        }
+
+        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                AvatarBorder.Background = AvatarBorderDefaultBackground;
+
+                return;
+            }
+
+            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

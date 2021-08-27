@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
@@ -49,6 +50,9 @@ namespace Memenim.Widgets
                 RemoveHandler(OnAccountDeleted, value);
             }
         }
+
+        public readonly Brush AvatarBorderBackground;
+        public readonly Brush AvatarBorderDefaultBackground;
 
         public User Account
         {
@@ -99,6 +103,10 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+
+            AvatarBorderDefaultBackground = (Brush)FindResource(
+                "MahApps.Brushes.Gray10");
+            AvatarBorderBackground = AvatarBorder.Background;
         }
 
         public async Task UpdateAccount()
@@ -160,6 +168,18 @@ namespace Memenim.Widgets
             RaiseEvent(new RoutedEventArgs(OnAccountDeleted));
 
             btnDelete.IsEnabled = true;
+        }
+
+        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                AvatarBorder.Background = AvatarBorderDefaultBackground;
+
+                return;
+            }
+
+            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

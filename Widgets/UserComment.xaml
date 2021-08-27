@@ -36,16 +36,19 @@
                   VerticalAlignment="Top"
                   MouseLeftButtonUp="Avatar_MouseLeftButtonUp">
                 <Grid.OpacityMask>
-                    <VisualBrush Visual="{Binding ElementName=ImageBorder}" />
+                    <VisualBrush Visual="{Binding ElementName=AvatarBorder}" />
                 </Grid.OpacityMask>
 
-                <Border Name="ImageBorder" CornerRadius="0" SnapsToDevicePixels="True"
-                        Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
+                <Border x:Name="AvatarBorder"
+                        Background="{StaticResource MahApps.Brushes.Window.Background}"
+                        CornerRadius="0"
+                        SnapsToDevicePixels="True"/>
                 <Image MinHeight="50" MinWidth="50"
-                       x:Name="img"
+                       x:Name="AvatarImage"
                        gif:ImageBehavior.AnimatedSource="{Binding Path=CurrentCommentData.User.PhotoUrl, Converter={StaticResource UserAvatarImageSourceConverter}}"
                        Stretch="UniformToFill" StretchDirection="Both"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       SizeChanged="AvatarImage_SizeChanged"/>
             </Grid>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">

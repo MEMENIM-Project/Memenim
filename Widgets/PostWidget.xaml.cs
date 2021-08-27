@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Memenim.Utils;
@@ -11,6 +12,7 @@ using Memenim.Navigation;
 using Memenim.Settings;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
+using RIS.Localization;
 
 namespace Memenim.Widgets
 {
@@ -67,11 +69,13 @@ namespace Memenim.Widgets
             InitializeComponent();
             DataContext = this;
 
+            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~PostWidget()
         {
+            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
@@ -162,7 +166,9 @@ namespace Memenim.Widgets
 
             if (TextSizeLimit)
             {
-                txtContent.FontSize = 13.0;
+                txtPostCategory.FontSize = 13;
+
+                txtContent.FontSize = 13;
 
                 stViews.StatValueFontSize = 9;
                 stViews.ButtonSize = 20;
@@ -184,6 +190,13 @@ namespace Memenim.Widgets
                 stViews.IsEnabled = false;
                 stShares.IsEnabled = false;
             }
+        }
+
+        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
+        {
+            txtPostCategory
+                .GetBindingExpression(TextBlock.TextProperty)?
+                .UpdateTarget();
         }
 
         private void OnCurrentUserChanged(object sender, UserChangedEventArgs e)

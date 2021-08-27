@@ -27,7 +27,7 @@
                   d:DataContext="{d:DesignInstance local:PostWidget}"
                   MouseLeftButtonUp="Post_Click">
                 <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="70" Height="70"/>
+                    <RowDefinition MinHeight="95" Height="95"/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition MinHeight="50" Height="50"/>
@@ -59,25 +59,39 @@
                     </ContextMenu>
                 </Grid.ContextMenu>
 
-                <DockPanel Grid.Row="0" Grid.Column="0"
-                           Grid.ColumnSpan="3">
-                    <local:PosterBanner DockPanel.Dock="Left"
-                                        x:Name="wdgPoster"
-                                        Margin="5 5 5 0"
-                                        UserId="{Binding Path=CurrentPostData.OwnerId, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                        UserName="{Binding Path=CurrentPostData.OwnerNickname, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                        UserAvatarSource="{Binding Path=CurrentPostData.OwnerPhotoUrl, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                        IsAnonymous="{Binding Path=CurrentPostData.IsAnonymous, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                        UtcDate="{Binding Path=CurrentPostData.UtcDate, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
-                                        PostStatus="{Binding Path=CurrentPostData.Status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-                    <local:StatButton DockPanel.Dock="Right"
-                                      x:Name="stViews" StatValueFontSize="11.5"
-                                      StatValueOnLeft="False" ButtonSize="25"
-                                      IconKind="Eye" BorderSize="0"
-                                      IsEnabled="False" Visibility="Visible"
-                                      HorizontalAlignment="Right" VerticalAlignment="Top"
-                                      StatValue="{Binding Path=CurrentPostData.Views.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
-                </DockPanel>
+                <Grid Grid.Row="0" Grid.Column="0"
+                      Grid.ColumnSpan="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition MinHeight="25" Height="25"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0">
+                        <local:PosterBanner DockPanel.Dock="Left"
+                                            x:Name="wdgPoster"
+                                            Margin="5 5 5 0"
+                                            UserId="{Binding Path=CurrentPostData.OwnerId, TargetNullValue=-1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                            UserName="{Binding Path=CurrentPostData.OwnerNickname, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                            UserAvatarSource="{Binding Path=CurrentPostData.OwnerPhotoUrl, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                            IsAnonymous="{Binding Path=CurrentPostData.IsAnonymous, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                            UtcDate="{Binding Path=CurrentPostData.UtcDate, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"
+                                            PostStatus="{Binding Path=CurrentPostData.Status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                        <local:StatButton DockPanel.Dock="Right"
+                                          x:Name="stViews" StatValueFontSize="11.5"
+                                          StatValueOnLeft="False" ButtonSize="25"
+                                          IconKind="Eye" BorderSize="0"
+                                          IsEnabled="False" Visibility="Visible"
+                                          HorizontalAlignment="Right" VerticalAlignment="Top"
+                                          StatValue="{Binding Path=CurrentPostData.Views.TotalCount, Converter={StaticResource IntToStringConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"/>
+                    </DockPanel>
+                    <TextBlock Grid.Row="1"
+                               x:Name="txtPostCategory"
+                               Text="{Binding Path=CurrentPostData.CategoryId, Converter={StaticResource PostCategorySchemaToStringConverter}}"
+                               FontSize="16"
+                               Foreground="{StaticResource MahApps.Brushes.Gray7}"
+                               TextAlignment="Center"
+                               Margin="0 0 0 5"/>
+                </Grid>
                 <emoji:TextBlock Grid.Row="1" Grid.Column="0"
                                  Grid.ColumnSpan="3"
                                  Grid.RowSpan="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceToRowSpanConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostWidget}}"

@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Memenim"
              xmlns:convertersLocal="clr-namespace:Memenim.Converters"
              xmlns:convertersRis="clr-namespace:RIS.Graphics.WPF.Xaml.Converters;assembly=RIS.Graphics"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -23,36 +23,41 @@
             <SolidColorBrush x:Key="Overlay.Background" Color="#E54D4D4D"/>
 
             <Style x:Key="DescriptionHeader"
-                   BasedOn="{StaticResource {x:Type Label}}"
-                   TargetType="{x:Type Label}">
+                   TargetType="Label">
                 <Setter Property="FontSize" Value="22" />
             </Style>
-            <Style TargetType="TextBlock" x:Key="AccentHeader">
+            <Style x:Key="AccentHeader"
+                   TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Accent}"/>
                 <Setter Property="FontSize" Value="22"/>
                 <Setter Property="FontWeight" Value="DemiBold"/>
-                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Accent}"/>
             </Style>
-            <Style TargetType="TextBlock" x:Key="Header1">
-                <Setter Property="FontSize" Value="22" />
+            <Style x:Key="Header1"
+                   TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
+                <Setter Property="FontSize" Value="22"/>
             </Style>
-            <Style TargetType="TextBlock" x:Key="Header2">
+            <Style x:Key="Header2"
+                   TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
                 <Setter Property="FontSize" Value="20"/>
             </Style>
-            <Style TargetType="TextBlock" x:Key="Header3">
+            <Style x:Key="Header3"
+                   TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
                 <Setter Property="FontSize" Value="16"/>
             </Style>
-            <Style TargetType="TextBlock" x:Key="Paragraph">
+            <Style x:Key="Paragraph"
+                   TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
             </Style>
 
-            <Style x:Key="DefaultDialog" TargetType="{x:Type mah:CustomDialog}"
+            <Style x:Key="DefaultDialog"
+                   TargetType="{x:Type controls:CustomDialog}"
                    BasedOn="{StaticResource MahApps.Styles.BaseMetroDialog}">
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type mah:CustomDialog}">
+                        <ControlTemplate TargetType="{x:Type controls:CustomDialog}">
                             <ControlTemplate.Resources>
                                 <Storyboard x:Key="DialogShownStoryboard">
                                     <DoubleAnimation AccelerationRatio=".9"
@@ -142,6 +147,7 @@
             <convertersLocal:PostImageSourceToRowSpanConverter x:Key="PostImageSourceToRowSpanConverter"/>
             <convertersLocal:PostStatusTypeConverter x:Key="PostStatusTypeConverter"/>
             <convertersLocal:PostStatusTypeToVisibilityConverter x:Key="PostStatusTypeToVisibilityConverter"/>
+            <convertersLocal:PostCategorySchemaToStringConverter x:Key="PostCategorySchemaToStringConverter"/>
             <convertersLocal:PreviewImageSourceConverter x:Key="PreviewImageSourceConverter"/>
             <convertersLocal:WriteCommentTextConverter x:Key="WriteCommentTextConverter"/>
             <convertersLocal:BgmVolumeConverter x:Key="BgmVolumeConverter"/>

@@ -31,8 +31,8 @@ namespace Memenim.Pages
 
         private readonly Timer _autoUpdateCountTimer;
 
-        public readonly Storyboard LoadingMoreEnterAnimation;
-        public readonly Storyboard LoadingMoreExitAnimation;
+        public readonly Storyboard LoadingMoreShowAnimation;
+        public readonly Storyboard LoadingMoreHideAnimation;
 
         public bool IsEmpty
         {
@@ -60,10 +60,10 @@ namespace Memenim.Pages
             InitializeComponent();
             DataContext = new FeedViewModel();
 
-            LoadingMoreEnterAnimation = (Storyboard)FindResource(
-                nameof(LoadingMoreEnterAnimation));
-            LoadingMoreExitAnimation = (Storyboard)FindResource(
-                nameof(LoadingMoreExitAnimation));
+            LoadingMoreShowAnimation = (Storyboard)FindResource(
+                nameof(LoadingMoreShowAnimation));
+            LoadingMoreHideAnimation = (Storyboard)FindResource(
+                nameof(LoadingMoreHideAnimation));
 
             _autoUpdateCountTimer = new Timer(TimeSpan.FromSeconds(60).TotalMilliseconds);
             _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimerCallback;
@@ -466,8 +466,8 @@ namespace Memenim.Pages
                 loadingMoreIndicator.IsActive = true;
                 loadingMoreGrid.IsHitTestVisible = true;
 
-                //LoadingPostEnterAnimation.Begin();
-                loadingMoreGrid.BeginStoryboard(LoadingMoreEnterAnimation);
+                LoadingMoreShowAnimation.Begin();
+                //loadingMoreGrid.BeginStoryboard(LoadingMoreShowAnimation);
 
                 return;
             }
@@ -475,8 +475,8 @@ namespace Memenim.Pages
             loadingMoreIndicator.IsActive = false;
             loadingMoreGrid.IsHitTestVisible = false;
 
-            //LoadingPostExitAnimation.Begin();
-            loadingMoreGrid.BeginStoryboard(LoadingMoreExitAnimation);
+            LoadingMoreHideAnimation.Begin();
+            //loadingMoreGrid.BeginStoryboard(LoadingMoreHideAnimation);
         }
 
         protected override void OnEnter(object sender, RoutedEventArgs e)

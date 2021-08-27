@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Settings;
@@ -38,6 +39,9 @@ namespace Memenim.Widgets
         }
 
         private string _realUserAvatarSource;
+
+        public readonly Brush AvatarBorderBackground;
+        public readonly Brush AvatarBorderDefaultBackground;
 
         public string CommentText
         {
@@ -94,6 +98,10 @@ namespace Memenim.Widgets
         {
             InitializeComponent();
             DataContext = this;
+
+            AvatarBorderDefaultBackground = (Brush)FindResource(
+                "MahApps.Brushes.Gray10");
+            AvatarBorderBackground = AvatarBorder.Background;
         }
 
         public void SetRealUserAvatarSource(string source)
@@ -191,6 +199,18 @@ namespace Memenim.Widgets
             }
 
             IsAnonymous = true;
+        }
+
+        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                AvatarBorder.Background = AvatarBorderDefaultBackground;
+
+                return;
+            }
+
+            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

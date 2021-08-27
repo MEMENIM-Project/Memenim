@@ -112,7 +112,7 @@ namespace Memenim.Widgets
                 if (userComment == null)
                     continue;
 
-                ImageBehavior.SetAnimatedSource(userComment.img, null);
+                ImageBehavior.SetAnimatedSource(userComment.AvatarImage, null);
             }
 
             lstComments.Children.Clear();
@@ -430,7 +430,7 @@ namespace Memenim.Widgets
                 if (userComment == null)
                     continue;
 
-                ImageBehavior.SetAnimatedSource(userComment.img, null);
+                ImageBehavior.SetAnimatedSource(userComment.AvatarImage, null);
             }
 
             lstComments.Children.Clear();
