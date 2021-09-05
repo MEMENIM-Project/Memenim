@@ -68,6 +68,14 @@
                                 </Storyboard>
                             </ControlTemplate.Resources>
 
+                            <ControlTemplate.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <EventTrigger.Actions>
+                                        <BeginStoryboard Storyboard="{StaticResource DialogShownStoryboard}"/>
+                                    </EventTrigger.Actions>
+                                </EventTrigger>
+                            </ControlTemplate.Triggers>
+
                             <Grid Background="{TemplateBinding Background}">
                                 <Border FocusVisualStyle="{x:Null}"
                                         Focusable="False">
@@ -109,13 +117,6 @@
                                     </Grid>
                                 </Border>
                             </Grid>
-                            <ControlTemplate.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <EventTrigger.Actions>
-                                        <BeginStoryboard Storyboard="{StaticResource DialogShownStoryboard}"/>
-                                    </EventTrigger.Actions>
-                                </EventTrigger>
-                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
