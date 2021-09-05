@@ -467,7 +467,6 @@ namespace Memenim.Pages
                 loadingMoreGrid.IsHitTestVisible = true;
 
                 LoadingMoreShowAnimation.Begin();
-                //loadingMoreGrid.BeginStoryboard(LoadingMoreShowAnimation);
 
                 return;
             }
@@ -476,7 +475,6 @@ namespace Memenim.Pages
             loadingMoreGrid.IsHitTestVisible = false;
 
             LoadingMoreHideAnimation.Begin();
-            //loadingMoreGrid.BeginStoryboard(LoadingMoreHideAnimation);
         }
 
         protected override void OnEnter(object sender, RoutedEventArgs e)
