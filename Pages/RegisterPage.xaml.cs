@@ -183,7 +183,11 @@ namespace Memenim.Pages
                     return;
                 }
 
-                NavigationController.Instance.RequestPage<FeedPage>();
+
+                if (NavigationController.Instance.HistoryIsEmpty())
+                    NavigationController.Instance.RequestPage<FeedPage>();
+                else
+                    NavigationController.Instance.GoBack();
 
                 txtLogin.Clear();
                 txtNickname.Clear();

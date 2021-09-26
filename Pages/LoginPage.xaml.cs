@@ -371,7 +371,6 @@ namespace Memenim.Pages
 
                 txtLogin.Clear();
                 chkRememberMe.IsChecked = false;
-
             }
             catch (Exception ex)
             {
