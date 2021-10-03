@@ -199,7 +199,9 @@ namespace Memenim.Pages
 
         public void Share()
         {
-            Clipboard.SetText($"memenim://app/user/id/{ViewModel.CurrentProfileData.Id}");
+            var link = $"memenim://app/user/id/{ViewModel.CurrentProfileData.Id}";
+
+            Clipboard.SetText(link);
         }
 
         public Task ShowLoadingGrid(bool status)
@@ -320,17 +322,45 @@ namespace Memenim.Pages
 
         private void CopyUserId_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(ViewModel.CurrentProfileData.Id.ToString());
+            var id = ViewModel.CurrentProfileData.Id.ToString();
+
+            Clipboard.SetText(id);
         }
 
-        private void CopyUserNickname_Click(object sender, RoutedEventArgs e)
+        private async void CopyUserNickname_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(ViewModel.CurrentProfileData.Nickname);
+            var nickname = ViewModel.CurrentProfileData.Nickname;
+
+            if (nickname == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(nickname);
         }
 
-        private void CopyUserLogin_Click(object sender, RoutedEventArgs e)
+        private async void CopyUserLogin_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(ViewModel.CurrentProfileData.Login);
+            var login = ViewModel.CurrentProfileData.Login;
+
+            if (login == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(login);
         }
 
         private void btnEditMode_Click(object sender, RoutedEventArgs e)

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Memenim.Dialogs;
+using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
@@ -69,9 +71,22 @@ namespace Memenim.Widgets
             DataContext = this;
         }
 
-        private void CopyProfileStatText_Click(object sender, RoutedEventArgs e)
+        private async void CopyProfileStatText_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(StatValue);
+            var text = StatValue;
+
+            if (text == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(text);
         }
 
         private void Edit_Click(object sender, RoutedEventArgs e)

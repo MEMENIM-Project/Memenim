@@ -2,8 +2,10 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Memenim.Dialogs;
 using Memenim.Downloads;
 using Memenim.Pages.ViewModel;
+using Memenim.Utils;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
@@ -109,9 +111,22 @@ namespace Memenim.Pages
             }
         }
 
-        private void CopyImageUrl_Click(object sender, RoutedEventArgs e)
+        private async void CopyImageUrl_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(ViewModel.ImageSource);
+            var imageSource = ViewModel.ImageSource;
+
+            if (imageSource == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(imageSource);
         }
 
         private void CopyImage_Click(object sender, RoutedEventArgs e)

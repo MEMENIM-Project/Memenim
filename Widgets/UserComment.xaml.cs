@@ -93,12 +93,27 @@ namespace Memenim.Widgets
 
         private void CopyCommentId_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentCommentData.Id.ToString());
+            var id = CurrentCommentData.Id.ToString();
+
+            Clipboard.SetText(id);
         }
 
-        private void CopyCommentText_Click(object sender, RoutedEventArgs e)
+        private async void CopyCommentText_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentCommentData.Text);
+            var text = CurrentCommentData.Text;
+
+            if (text == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(text);
         }
 
         private void Reply_Click(object sender, RoutedEventArgs e)

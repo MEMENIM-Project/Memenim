@@ -260,6 +260,7 @@ Have fun.</system:String>
     <system:String x:Key="RegisterErrorTitle">Register error</system:String>
 
     <system:String x:Key="LocalizationsNotFoundMessage">Localizations not found</system:String>
+    <system:String x:Key="CopyingToClipboardErrorMessage">Error copying to clipboard</system:String>
     <system:String x:Key="CouldNotLoadCommentsMessage">Couldn't load comments</system:String>
     <system:String x:Key="GettingProfileErrorMessage">Error getting a profile</system:String>
 

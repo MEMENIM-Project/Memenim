@@ -260,6 +260,7 @@
     <system:String x:Key="RegisterErrorTitle">Ошибка регистрации</system:String>
 
     <system:String x:Key="LocalizationsNotFoundMessage">Локализации не найдены</system:String>
+    <system:String x:Key="CopyingToClipboardErrorMessage">Ошибка копирования в буфер обмена</system:String>
     <system:String x:Key="CouldNotLoadCommentsMessage">Не удалось загрузить комментарии</system:String>
     <system:String x:Key="GettingProfileErrorMessage">Ошибка получения профиля</system:String>
 

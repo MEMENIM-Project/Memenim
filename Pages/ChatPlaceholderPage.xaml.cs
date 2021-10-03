@@ -6,6 +6,7 @@ using Memenim.Dialogs;
 using Memenim.Generating;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
+using Memenim.Utils;
 
 namespace Memenim.Pages
 {
@@ -38,12 +39,25 @@ namespace Memenim.Pages
             txtSmile.Text = GeneratingManager.GetRandomSmile();
         }
 
-        private void CopyLogin_Click(object sender, RoutedEventArgs e)
+        private async void CopyLogin_Click(object sender, RoutedEventArgs e)
         {
             btnCopyLogin.IsEnabled = false;
             btnCopyPassword.IsEnabled = false;
 
-            Clipboard.SetText(SettingsManager.PersistentSettings.CurrentUser.Login);
+            var login = SettingsManager.PersistentSettings.CurrentUser.Login;
+
+            if (login == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(login);
 
             btnCopyLogin.IsEnabled = true;
             btnCopyPassword.IsEnabled = true;
@@ -75,10 +89,23 @@ namespace Memenim.Pages
                     return;
                 }
 
-                SettingsManager.PersistentSettings.CurrentUser.SetRocketPassword(
-                    result.Data.Password);
+                var password = result.Data.Password;
 
-                Clipboard.SetText(result.Data.Password);
+                if (password == null)
+                {
+                    var message = LocalizationUtils
+                        .GetLocalized("CopyingToClipboardErrorMessage");
+
+                    await DialogManager.ShowErrorDialog(message)
+                        .ConfigureAwait(true);
+
+                    return;
+                }
+
+                SettingsManager.PersistentSettings.CurrentUser.SetRocketPassword(
+                    password);
+
+                Clipboard.SetText(password);
             }
             finally
             {

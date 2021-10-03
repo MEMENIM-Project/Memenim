@@ -116,11 +116,23 @@ namespace Memenim.Dialogs
 
             try
             {
-                string password = GeneratingManager.RandomStringGenerator
+                var password = GeneratingManager.RandomStringGenerator
                     .GenerateString(20);
+
+                if (password == null)
+                {
+                    var message = LocalizationUtils
+                        .GetLocalized("CopyingToClipboardErrorMessage");
+
+                    await DialogManager.ShowErrorDialog(message)
+                        .ConfigureAwait(true);
+
+                    return;
+                }
 
                 txtPassword.Password = password;
                 InputValue = password;
+
                 Clipboard.SetText(password);
             }
             catch (Exception ex)

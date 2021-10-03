@@ -132,7 +132,9 @@ namespace Memenim.Widgets
         {
             stShares.IsEnabled = false;
 
-            Clipboard.SetText($"memenim://app/post/id/{CurrentPostData.Id}");
+            var link = $"memenim://app/post/id/{CurrentPostData.Id}";
+
+            Clipboard.SetText(link);
 
             var result = await PostApi.AddRepost(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -217,12 +219,27 @@ namespace Memenim.Widgets
 
         private void CopyPostId_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentPostData.Id.ToString());
+            var id = CurrentPostData.Id.ToString();
+
+            Clipboard.SetText(id);
         }
 
-        private void CopyPostText_Click(object sender, RoutedEventArgs e)
+        private async void CopyPostText_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(CurrentPostData.Text);
+            var text = CurrentPostData.Text;
+
+            if (text == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetText(text);
         }
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
