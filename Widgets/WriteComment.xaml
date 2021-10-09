@@ -9,10 +9,11 @@
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="400"
-             MinHeight="50">
+             d:DesignHeight="54" d:DesignWidth="400"
+             MinHeight="54">
 
-    <Border Padding="5 0 5 0" BorderThickness="0">
+    <Border BorderBrush="#FF3F3F3F"
+            BorderThickness="0 1 0 1">
         <Grid Background="{StaticResource MahApps.Brushes.Gray10}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
@@ -21,8 +22,10 @@
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" Width="40" Height="40" Margin="0 5 0 5"
-                  VerticalAlignment="Top" HorizontalAlignment="Center">
+            <Grid Grid.Column="0"
+                  Width="40" Height="40"
+                  VerticalAlignment="Top" HorizontalAlignment="Center"
+                  Margin="0 5 0 5">
                 <Grid.OpacityMask>
                     <VisualBrush Visual="{Binding ElementName=AvatarBorder}" />
                 </Grid.OpacityMask>
@@ -38,21 +41,29 @@
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        SizeChanged="AvatarImage_SizeChanged"/>
             </Grid>
-            <TextBox Grid.Column="1" x:Name="txtContent" Margin="10 5 10 5"
+            <TextBox Grid.Column="1"
+                     x:Name="txtContent"
                      Text="{Binding Path=CommentText, Mode=TwoWay}"
                      controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString EnterCommentText}"
                      Style="{DynamicResource MahApps.Styles.TextBox}"
                      HorizontalScrollBarVisibility="Disabled"
                      VerticalScrollBarVisibility="Auto"
                      TextWrapping="Wrap" AcceptsReturn="True"
+                     Margin="10 5 10 5"
                      KeyUp="txtContent_KeyUp"/>
             <local:IconToggleButton Grid.Column="2"
-                                    x:Name="btnSendAnonymously" Height="40" IconKind="UserDelete"
-                                    Margin="0 5 0 5" VerticalAlignment="Top"
+                                    x:Name="btnSendAnonymously"
+                                    Height="40"
+                                    IconKind="UserDelete"
+                                    Margin="0 5 0 5"
+                                    VerticalAlignment="Top"
                                     IconToggleButtonClick="btnSendAnonymously_Click"/>
             <local:IconButton Grid.Column="3"
-                              x:Name="btnSend" Height="40" IconKind="MessageSend"
-                              Margin="0 5 0 5" VerticalAlignment="Top"
+                              x:Name="btnSend"
+                              Height="40"
+                              IconKind="MessageSend"
+                              Margin="0 5 0 5"
+                              VerticalAlignment="Top"
                               IconButtonClick="btnSend_Click"/>
         </Grid>
     </Border>

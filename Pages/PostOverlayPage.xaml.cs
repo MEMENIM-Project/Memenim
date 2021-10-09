@@ -12,6 +12,7 @@ using Memenim.Settings;
 using Memenim.Storage;
 using Memenim.Utils;
 using Memenim.Widgets;
+using RIS.Extensions;
 
 namespace Memenim.Pages
 {
@@ -34,7 +35,11 @@ namespace Memenim.Pages
             DataContext = new PostOverlayViewModel();
 
             _writeCommentMinHeight = PostGrid.RowDefinitions[1].MinHeight;
-            _writeCommentMaxHeight = ActualHeight * 0.3;
+
+            _writeCommentMaxHeight = (int)(ActualHeight * 0.3);
+            _writeCommentMaxHeight += 16 - (((int)_writeCommentMaxHeight - _writeCommentMinHeight) % 16);
+
+            wdgWriteComment.MaxHeight = _writeCommentMaxHeight;
 
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
             ProfileUtils.AvatarChanged += OnAvatarChanged;
@@ -451,46 +456,56 @@ namespace Memenim.Pages
 
         private void WriteComment_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double verticalOffset = svPost.VerticalOffset;
-            double scrollableHeight = svPost.ScrollableHeight;
-            double writeCommentHeight =
-                Math.Min(Math.Max(e.NewSize.Height, _writeCommentMinHeight),
-                    _writeCommentMaxHeight);
+            var actualHeight = ActualHeight;
+
+            var verticalOffset = svPost.VerticalOffset;
+            var scrollableHeight = svPost.ScrollableHeight;
+            var writeCommentHeight = Math.Clamp(
+                (int)e.NewSize.Height + (((int)e.NewSize.Height).IsEven() ? 0 : 1),
+                _writeCommentMinHeight, _writeCommentMaxHeight);
+            var scrollViewerHeight = actualHeight - writeCommentHeight;
+
+            writeCommentHeight = Math.Floor(writeCommentHeight);
+            scrollViewerHeight = Math.Ceiling(scrollViewerHeight);
+            scrollViewerHeight += actualHeight - writeCommentHeight - scrollViewerHeight;
 
             PostGrid.RowDefinitions[0].Height = new GridLength(
-                ActualHeight - writeCommentHeight);
+                scrollViewerHeight);
             PostGrid.RowDefinitions[1].Height = new GridLength(
                 writeCommentHeight);
 
-            //wdgWriteComment.MaxHeight = writeCommentHeight + 1;
+            pnlWriteComment.Height = writeCommentHeight;
 
             if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();
-
-            //svPost.ScrollToVerticalOffset(
-            //    svPost.VerticalOffset + (e.NewSize.Height - e.PreviousSize.Height));
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //if (!e.HeightChanged)
-            //    return;
+            var actualHeight = e.NewSize.Height;
 
-            _writeCommentMaxHeight = e.NewSize.Height * 0.3;
+            _writeCommentMaxHeight = (int)(actualHeight * 0.3);
+            _writeCommentMaxHeight += 16 - (((int)_writeCommentMaxHeight - _writeCommentMinHeight) % 16);
+
             wdgWriteComment.MaxHeight = _writeCommentMaxHeight;
 
-            double verticalOffset = svPost.VerticalOffset;
-            double scrollableHeight = svPost.ScrollableHeight;
-            double writeCommentHeight =
-                Math.Min(Math.Max(wdgWriteComment.ActualHeight, _writeCommentMinHeight),
-                    _writeCommentMaxHeight);
+            var verticalOffset = svPost.VerticalOffset;
+            var scrollableHeight = svPost.ScrollableHeight;
+            var writeCommentHeight = Math.Clamp(
+                (int)wdgWriteComment.ActualHeight + (((int)wdgWriteComment.ActualHeight).IsEven() ? 0 : 1),
+                _writeCommentMinHeight, _writeCommentMaxHeight);
+            var scrollViewerHeight = actualHeight - writeCommentHeight;
+
+            writeCommentHeight = Math.Floor(writeCommentHeight);
+            scrollViewerHeight = Math.Ceiling(scrollViewerHeight);
+            scrollViewerHeight += actualHeight - writeCommentHeight - scrollViewerHeight;
 
             PostGrid.RowDefinitions[0].Height = new GridLength(
-                e.NewSize.Height - writeCommentHeight);
+                scrollViewerHeight);
             PostGrid.RowDefinitions[1].Height = new GridLength(
                 writeCommentHeight);
 
-            //wdgWriteComment.MaxHeight = writeCommentHeight + 1;
+            pnlWriteComment.Height = writeCommentHeight;
 
             if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();

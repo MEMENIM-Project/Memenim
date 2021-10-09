@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.18.5.0</AssemblyVersion>
-    <FileVersion>0.18.5.0</FileVersion>
+    <AssemblyVersion>0.18.7.0</AssemblyVersion>
+    <FileVersion>0.18.7.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.18.5</Version>
+    <Version>0.18.7</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -27,7 +27,7 @@
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
     <PackageReference Include="MahApps.Metro" Version="2.4.7" />
-    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.9.0" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.10.0" />
     <PackageReference Include="Memenim.Core" Version="0.6.4" />
     <PackageReference Include="Memenim.Scripting" Version="0.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
@@ -49,7 +49,7 @@
     <PackageReference Include="RIS.Text" Version="4.2.2" />
     <PackageReference Include="TenorClient" Version="1.0.3" />
     <PackageReference Include="TinyIpc" Version="3.0.1" />
-    <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
