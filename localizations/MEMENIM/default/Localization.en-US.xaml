@@ -60,6 +60,7 @@ Have fun.</system:String>
     <system:String x:Key="LanguageSettingsTitle">Language</system:String>
     <system:String x:Key="CommentsSettingsTitle">Comments</system:String>
     <system:String x:Key="AccountSettingsTitle">Account</system:String>
+    <system:String x:Key="CurrentSpecialEventTitle">Current special event</system:String>
     <system:String x:Key="BgmVolumeTitle">BGM volume</system:String>
     <system:String x:Key="CommentReplyModeTitle">Replies mode</system:String>
     <system:String x:Key="ChangingPasswordTitle">Changing password</system:String>
@@ -69,6 +70,8 @@ Have fun.</system:String>
     <system:String x:Key="SignInToAnotherAccount">Sign In to another account</system:String>
     <system:String x:Key="SignOut">Sign Out account</system:String>
     <system:String x:Key="Version">Version</system:String>
+
+    <system:String x:Key="ChristmasEventName">Christmas</system:String>
 
     <system:String x:Key="ProfileStatTitle-Thoughts">Thoughts</system:String>
     <system:String x:Key="ProfileStatTitle-Purpose">Purpose</system:String>
@@ -242,6 +245,7 @@ Have fun.</system:String>
     <system:String x:Key="EnableTitle">Enable</system:String>
     <system:String x:Key="ErrorTitle">Error</system:String>
     <system:String x:Key="SuccessTitle">Success</system:String>
+    <system:String x:Key="NothingTitle">Nothing</system:String>
     <system:String x:Key="FileTitle">File</system:String>
     <system:String x:Key="LocalizationFileTitle">Localization file</system:String>
     <system:String x:Key="LocalizedCultureTitle">Localized culture</system:String>

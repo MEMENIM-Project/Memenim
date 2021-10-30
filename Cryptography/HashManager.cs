@@ -23,6 +23,7 @@ namespace Memenim.Cryptography
         {
             return Service.GetDirectoryHash(Environment.ExecAppDirectoryName,false, new[]
             {
+                "special_events",
                 "scripts",
                 "localizations",
                 "downloads",
@@ -37,7 +38,8 @@ namespace Memenim.Cryptography
                 //dev
                 "publish",
                 "win-x64",
-                "win-x86"
+                "win-x86",
+                Path.ChangeExtension(Path.GetFileName(Environment.ExecProcessFilePath), "runtimeconfig.dev.json")
             });
         }
 

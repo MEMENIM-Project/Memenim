@@ -15,6 +15,7 @@ using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Protocols;
 using Memenim.Settings;
+using Memenim.SpecialEvents;
 using Memenim.Storage;
 using Memenim.Utils;
 using RIS.Cryptography;
@@ -272,6 +273,8 @@ namespace Memenim
                 .ConfigureAwait(true);
 
             ProtocolManager.RegisterAll();
+
+            SpecialEventManager.UpdateEvent();
 
             await Task.Run(async () =>
             {

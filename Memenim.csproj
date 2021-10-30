@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.18.7.0</AssemblyVersion>
-    <FileVersion>0.18.7.0</FileVersion>
+    <AssemblyVersion>0.18.11.0</AssemblyVersion>
+    <FileVersion>0.18.11.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.18.7</Version>
+    <Version>0.18.11</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -26,19 +26,19 @@
     <PackageReference Include="Emoji.Wpf" Version="0.3.3">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="MahApps.Metro" Version="2.4.7" />
-    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.10.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
     <PackageReference Include="Memenim.Core" Version="0.6.4" />
     <PackageReference Include="Memenim.Scripting" Version="0.5.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.11">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RIS" Version="3.14.8" />
     <PackageReference Include="RIS.Collections" Version="4.9.2" />
-    <PackageReference Include="RIS.Cryptography" Version="3.6.2" />
+    <PackageReference Include="RIS.Cryptography" Version="3.8.0" />
     <PackageReference Include="RIS.Graphics" Version="2.9.0" />
     <PackageReference Include="RIS.Localization" Version="1.2.2" />
     <PackageReference Include="RIS.Localization.UI.WPF" Version="1.2.2" />
@@ -49,7 +49,7 @@
     <PackageReference Include="RIS.Text" Version="4.2.2" />
     <PackageReference Include="TenorClient" Version="1.0.3" />
     <PackageReference Include="TinyIpc" Version="3.0.1" />
-    <PackageReference Include="WpfAnimatedGif" Version="2.0.1" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -92,32 +92,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\SpecialEvent\padoru_nero.png" />
-    <Content Include="Resources\Music\SpecialEvent\christmasinnightopia.mp3">
+    <Resource Include="Resources\Images\ChristmasEvent\padoru_nero.png" />
+    <Content Include="Resources\Music\ChristmasEvent\christmasinnightopia.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\Gigawing_Xmas.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\Gigawing_Xmas.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\padoru.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\padoru.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\song1.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\song1.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\song2.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\song2.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\song3.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\song3.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\song4.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\song4.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\song5.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\song5.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\SpecialEvent\song6.mp3">
+    <Content Include="Resources\Music\ChristmasEvent\song6.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

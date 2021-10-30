@@ -13,17 +13,16 @@ using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Extensions;
-using Memenim.Misc;
 using Memenim.Native.Window;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Settings;
+using Memenim.SpecialEvents;
 using Memenim.Styles;
 using Memenim.Styles.Loading.Entities;
 using Memenim.Utils;
 using RIS;
 using RIS.Localization;
-using Environment = RIS.Environment;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim
@@ -96,6 +95,13 @@ namespace Memenim
 
         private LoadingStyle _loadingStyle;
 
+        public string SpecialEventLocalizedName
+        {
+            get
+            {
+                return SpecialEventManager.CurrentInstanceLocalizedName;
+            }
+        }
         private bool _specialEventEnabled;
         public bool SpecialEventEnabled
         {
@@ -105,7 +111,17 @@ namespace Memenim
             }
             set
             {
-                SpecialEventLayer.Instance.Activate(value);
+                if (value &&
+                    (SpecialEventManager.CurrentInstance == null
+                    || !SpecialEventManager.CurrentInstance.EventLoaded))
+                {
+                    tglSpecialEvent.IsOn = false;
+                    tglSpecialEvent.IsEnabled = false;
+
+                    return;
+                }
+
+                SpecialEventManager.Activate(value);
 
                 _specialEventEnabled = value;
             }
@@ -119,7 +135,7 @@ namespace Memenim
             }
             set
             {
-                SpecialEventLayer.Instance.SetVolume(value);
+                SpecialEventManager.SetVolume(value);
 
                 _bgmVolume = value;
             }
@@ -155,17 +171,18 @@ namespace Memenim
             _connectionFailedGridTask = Task.CompletedTask;
 
             ApplyLoadingStyle();
-            LoadSpecialEvent();
 
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
             LocalizationUtils.LocalizationsLoaded += OnLocalizationsLoaded;
             LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
+            SpecialEventManager.EventUpdated += OnSpecialEventUpdated;
         }
 
         ~MainWindow()
         {
             ApiRequestEngine.ConnectionStateChanged -= OnConnectionStateChanged;
             LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
+            SpecialEventManager.EventUpdated -= OnSpecialEventUpdated;
         }
 
         private void ReloadCommentReplyModes()
@@ -258,42 +275,12 @@ namespace Memenim
             connectionFailedIndicator.VerticalAlignment = _loadingStyle.LoadingIndicatorVerticalAlignment;
         }
 
-#pragma warning disable SS002 // DateTime.Now was referenced
-        private void LoadSpecialEvent()
+        internal void UpdateSpecialEventName()
         {
-            DateTime startupTime;
-
-            try
-            {
-                startupTime = Environment.Process.StartTime
-                    .ToLocalTime();
-            }
-            catch (Exception)
-            {
-                startupTime = DateTime.Now;
-            }
-
-            var eventStartTime = new DateTime(day: 20, month: 12, year: 1,
-                    hour: 0, minute: 0, second: 0)
-                .AddYears(startupTime.Year - 1);
-            var eventEndTime = new DateTime(day: 10, month: 1, year: 1,
-                    hour: 23, minute: 59, second: 59)
-                .AddYears(startupTime.Year - 1);
-
-            if (!(eventStartTime <= startupTime
-                  || startupTime <= eventEndTime))
-            {
-                return;
-            }
-
-            RootLayout.Children.Add(SpecialEventLayer.Instance);
-
-            SpecialEventPanel.Visibility = Visibility.Visible;
-
-            SpecialEventEnabled = SettingsManager.AppSettings.SpecialEventEnabled;
-            BgmVolume = SettingsManager.AppSettings.BgmVolume;
+            txtSpecialEventName
+                .GetBindingExpression(TextBlock.TextProperty)?
+                .UpdateTarget();
         }
-#pragma warning restore SS002 // DateTime.Now was referenced
 
         public void LinkOpenEnable(bool isEnabled)
         {
@@ -647,8 +634,22 @@ namespace Memenim
 
         private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
         {
+            UpdateSpecialEventName();
+
             ReloadCommentReplyModes();
         }
+
+        // ReSharper disable AccessToStaticMemberViaDerivedType
+        private void OnSpecialEventUpdated(object sender, EventArgs e)
+        {
+            tglSpecialEvent
+                .GetBindingExpression(ToggleSwitch.IsOnProperty)?
+                .UpdateTarget();
+            sldSpecialEventBgm
+                .GetBindingExpression(Slider.ValueProperty)?
+                .UpdateTarget();
+        }
+        // ReSharper enable AccessToStaticMemberViaDerivedType
 
         private async void OpenLink_Click(object sender, RoutedEventArgs e)
         {

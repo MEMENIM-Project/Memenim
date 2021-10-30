@@ -60,6 +60,7 @@
     <system:String x:Key="LanguageSettingsTitle">Язык</system:String>
     <system:String x:Key="CommentsSettingsTitle">Комментарии</system:String>
     <system:String x:Key="AccountSettingsTitle">Аккаунт</system:String>
+    <system:String x:Key="CurrentSpecialEventTitle">Текущий спец. ивент</system:String>
     <system:String x:Key="BgmVolumeTitle">Громкость фоновой музыки</system:String>
     <system:String x:Key="CommentReplyModeTitle">Режим ответов</system:String>
     <system:String x:Key="ChangingPasswordTitle">Изменение пароля</system:String>
@@ -69,6 +70,8 @@
     <system:String x:Key="SignInToAnotherAccount">Войти в другой аккаунт</system:String>
     <system:String x:Key="SignOut">Выйти из аккаунта</system:String>
     <system:String x:Key="Version">Версия</system:String>
+
+    <system:String x:Key="ChristmasEventName">Рождество</system:String>
 
     <system:String x:Key="ProfileStatTitle-Thoughts">Мысли</system:String>
     <system:String x:Key="ProfileStatTitle-Purpose">Цель</system:String>
@@ -242,6 +245,7 @@
     <system:String x:Key="EnableTitle">Включить</system:String>
     <system:String x:Key="ErrorTitle">Ошибка</system:String>
     <system:String x:Key="SuccessTitle">Успех</system:String>
+    <system:String x:Key="NothingTitle">Ничего</system:String>
     <system:String x:Key="FileTitle">Файл</system:String>
     <system:String x:Key="LocalizationFileTitle">Файл локализации</system:String>
     <system:String x:Key="LocalizedCultureTitle">Локализованная культура</system:String>

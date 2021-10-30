@@ -24,8 +24,8 @@ namespace Memenim.Settings
         public int PostsType { get; set; }
         [SettingCategory("Comments")]
         public int CommentReplyMode { get; set; }
-        [SettingCategory("Misc")]
-        public bool SpecialEventEnabled { get; set; }
+        [SettingCategory("SpecialEvents")]
+        public bool ChristmasEventEnabled { get; set; }
         public double BgmVolume { get; set; }
         [SettingCategory("Log")]
         public int LogRetentionDaysPeriod { get; set; }
@@ -41,7 +41,7 @@ namespace Memenim.Settings
             WindowHeight = MainWindow.Instance.Height;
             PostsType = (int)PostType.Popular;
             CommentReplyMode = (int)CommentReplyModeType.Legacy;
-            SpecialEventEnabled = true;
+            ChristmasEventEnabled = true;
             BgmVolume = 0.5;
             LogRetentionDaysPeriod = 7;
 

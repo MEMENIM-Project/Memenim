@@ -82,15 +82,32 @@
                                                Style="{StaticResource AccentHeader}"
                                                HorizontalAlignment="Left"
                                                Margin="5 0 5 10"/>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="5">
+                                        <TextBlock Text="{markupLocalization:LocalizedString CurrentSpecialEventTitle}"
+                                                   Style="{StaticResource Header3}"/>
+                                        <TextBlock Text=":  "
+                                                   Style="{StaticResource Header3}"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="txtSpecialEventName"
+                                               Text="{Binding Path=SpecialEventLocalizedName}"
+                                               Style="{StaticResource Header3}"
+                                               FontSize="15"
+                                               FontStyle="Italic"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Center"
+                                               Margin="5 0 5 5"/>
                                     <controls:ToggleSwitch x:Name="tglSpecialEvent"
                                                            Content="{markupLocalization:LocalizedString EnableTitle}"
                                                            IsOn="{Binding Path=SpecialEventEnabled, Mode=TwoWay}"
+                                                           IsEnabled="False"
                                                            Margin="5"/>
                                     <TextBlock Text="{markupLocalization:LocalizedString BgmVolumeTitle}"
                                                Style="{StaticResource Header3}"
                                                Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
                                                Margin="5"/>
-                                    <Slider Value="{Binding Path=BgmVolume, Converter={StaticResource BgmVolumeConverter}, Mode=TwoWay}"
+                                    <Slider x:Name="sldSpecialEventBgm"
+                                            Value="{Binding Path=BgmVolume, Converter={StaticResource BgmVolumeConverter}, Mode=TwoWay}"
                                             Minimum="0" Maximum="100"
                                             SmallChange="5" LargeChange="10"
                                             Orientation="Horizontal"
