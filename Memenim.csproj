@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.18.11.0</AssemblyVersion>
-    <FileVersion>0.18.11.0</FileVersion>
+    <AssemblyVersion>0.18.12.0</AssemblyVersion>
+    <FileVersion>0.18.12.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.18.11</Version>
+    <Version>0.18.12</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -36,8 +36,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RIS" Version="3.14.8" />
-    <PackageReference Include="RIS.Collections" Version="4.9.2" />
+    <PackageReference Include="RIS" Version="3.15.0" />
+    <PackageReference Include="RIS.Collections" Version="4.12.0" />
     <PackageReference Include="RIS.Cryptography" Version="3.8.0" />
     <PackageReference Include="RIS.Graphics" Version="2.9.0" />
     <PackageReference Include="RIS.Localization" Version="1.2.2" />
@@ -45,7 +45,7 @@
     <PackageReference Include="RIS.Localization.Xaml" Version="1.2.2" />
     <PackageReference Include="RIS.Logging" Version="3.3.1" />
     <PackageReference Include="RIS.Reflection" Version="4.1.5" />
-    <PackageReference Include="RIS.Settings" Version="1.4.2" />
+    <PackageReference Include="RIS.Settings" Version="1.5.0" />
     <PackageReference Include="RIS.Text" Version="4.2.2" />
     <PackageReference Include="TenorClient" Version="1.0.3" />
     <PackageReference Include="TinyIpc" Version="3.0.1" />
