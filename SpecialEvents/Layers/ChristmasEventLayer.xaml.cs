@@ -230,10 +230,12 @@ namespace Memenim.SpecialEvents.Layers
         internal override bool EventTimeSatisfied(
             DateTime currentTime)
         {
-            var eventStartTime = new DateTime(day: 20, month: 12, year: 1,
+            var eventStartTime = new DateTime(
+                    day: 20, month: 12, year: 1,
                     hour: 0, minute: 0, second: 0)
                 .AddYears(currentTime.Year - 1);
-            var eventEndTime = new DateTime(day: 10, month: 1, year: 1,
+            var eventEndTime = new DateTime(
+                    day: 10, month: 1, year: 1,
                     hour: 23, minute: 59, second: 59)
                 .AddYears(currentTime.Year - 1);
 

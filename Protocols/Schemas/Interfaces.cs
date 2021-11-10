@@ -6,6 +6,6 @@ namespace Memenim.Protocols.Schemas
     {
         string Name { get; }
 
-        bool ParseUri(string uriString);
+        bool ParseUri(Uri uri);
     }
 }

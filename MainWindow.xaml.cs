@@ -275,7 +275,7 @@ namespace Memenim
             connectionFailedIndicator.VerticalAlignment = _loadingStyle.LoadingIndicatorVerticalAlignment;
         }
 
-        internal void UpdateSpecialEventName()
+        private void UpdateSpecialEventName()
         {
             txtSpecialEventName
                 .GetBindingExpression(TextBlock.TextProperty)?
@@ -635,13 +635,14 @@ namespace Memenim
         private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
         {
             UpdateSpecialEventName();
-
             ReloadCommentReplyModes();
         }
 
         // ReSharper disable AccessToStaticMemberViaDerivedType
         private void OnSpecialEventUpdated(object sender, EventArgs e)
         {
+            UpdateSpecialEventName();
+
             tglSpecialEvent
                 .GetBindingExpression(ToggleSwitch.IsOnProperty)?
                 .UpdateTarget();
@@ -649,7 +650,7 @@ namespace Memenim
                 .GetBindingExpression(Slider.ValueProperty)?
                 .UpdateTarget();
         }
-        // ReSharper enable AccessToStaticMemberViaDerivedType
+        // ReSharper restore AccessToStaticMemberViaDerivedType
 
         private async void OpenLink_Click(object sender, RoutedEventArgs e)
         {

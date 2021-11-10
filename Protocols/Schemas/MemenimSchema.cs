@@ -2,275 +2,147 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Memenim.Core.Schema;
-using Memenim.Navigation;
-using Memenim.Pages;
-using Memenim.Pages.ViewModel;
-using Memenim.Settings;
-using Memenim.Utils;
-using Memenim.Widgets;
+using Memenim.Protocols.Schemas.Api;
 using RIS.Logging;
-using RIS.Reflection.Mapping;
 
 namespace Memenim.Protocols.Schemas
 {
-    public class MemenimSchema : IUserProtocolSchema
+    public sealed class MemenimSchema : IUserProtocolSchema
     {
-        private readonly MethodMap<MemenimSchema> _schemaMap;
-
-        public string Name { get; }
+        public const string StaticName = "memenim";
 
 
 
-        public MemenimSchema()
+        private static Dictionary<uint, IUserProtocolSchemaApi> UserApis { get; }
+
+        public static MemenimSchema Instance { get; }
+
+
+
+        public string Name
         {
-            _schemaMap = new MethodMap<MemenimSchema>(
-                this,
-                new[]
-                {
-                    typeof(string)
-                },
-                typeof(bool));
-            Name = "memenim";
+            get
+            {
+                return StaticName;
+            }
         }
 
 
 
-        public bool ParseUri(string uriString)
+        static MemenimSchema()
+        {
+            UserApis = new Dictionary<uint, IUserProtocolSchemaApi>();
+
+            foreach (var api in GetUserApis())
+            {
+                UserApis.Add(
+                    api.Version, api);
+            }
+
+            Instance = new MemenimSchema();
+        }
+
+        private MemenimSchema()
+        {
+
+        }
+
+
+
+        private static IUserProtocolSchemaApi[] GetUserApis()
         {
             try
             {
-                if (string.IsNullOrEmpty(uriString)
-                    || string.IsNullOrWhiteSpace(Name))
-                {
-                    return false;
-                }
-
-                if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri)
-                    || uri.Scheme != Name)
-                {
-                    return false;
-                }
-
-                var requestComponents = uri.Segments
-                    .Select(segment => segment.Trim(' ', '/'))
-                    .Where(segment => !string.IsNullOrEmpty(segment))
+                var types = Assembly
+                    .GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(type => type.IsClass
+                                   && typeof(IUserProtocolSchemaApi).IsAssignableFrom(type))
                     .ToArray();
+                var apis = new List<IUserProtocolSchemaApi>(types.Length);
 
-                LogManager.Debug.Info($"Request components - {string.Join(',', requestComponents)}");
-
-                if (requestComponents.Length >= 2)
+                foreach (var type in types)
                 {
-                    string methodName = string.Join('/',
-                        requestComponents[..^1]);
-                    string args = requestComponents[^1];
+                    var api = Activator.CreateInstance(
+                        type, true) as IUserProtocolSchemaApi;
 
-                    LogManager.Debug.Info($"Request method - Name={methodName},Args={args}");
+                    if (api == null)
+                        continue;
+                    if (api.SchemaName != StaticName)
+                        continue;
 
-                    return _schemaMap.Invoke<bool>(
-                        methodName, args);
+                    apis.Add(api);
                 }
 
-                return false;
+                return apis.ToArray();
             }
             catch (Exception ex)
             {
-                LogManager.Default.Error(ex, "Schema parse uri error");
+                LogManager.Default.Error(ex,
+                    "User protocol schema api's get error");
 
-                return false;
+                return Array.Empty<IUserProtocolSchemaApi>();
             }
         }
 
 
 
-        // ReSharper disable UnusedMember.Local
-
-        [MappedMethod("user/id")]
-        [MappedMethod("showuserid")]
-        private static bool ShowUserById(string args)
+        public bool ParseUri(Uri uri)
         {
             try
             {
-                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUser.Login))
-                    return false;
-
-                if (!int.TryParse(args, out var id))
-                    return false;
-
-                if (id < 0)
-                    return false;
-
-                MainWindow.Instance.Dispatcher.Invoke(() =>
+                if (uri == null
+                    || !uri.IsAbsoluteUri
+                    || uri.Scheme != Name
+                    || uri.Host != "app")
                 {
-                    NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
-                    {
-                        CurrentProfileData = new ProfileSchema
-                        {
-                            Id = id
-                        }
-                    });
-                });
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                var method = MethodBase.GetCurrentMethod();
-
-                ProtocolSchemaUtils.LogMethodError(
-                    ex, method, args);
-
-                return false;
-            }
-        }
-
-
-
-        [MappedMethod("post/id")]
-        [MappedMethod("showpostid")]
-        private static bool ShowPostById(string args)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(SettingsManager.PersistentSettings.CurrentUser.Login))
                     return false;
-
-                if (!int.TryParse(args, out var id))
-                    return false;
-
-                if (id < 0)
-                    return false;
-
-                var result = MainWindow.Instance.Dispatcher.Invoke(() =>
-                {
-                    if (!NavigationController.Instance.IsCurrentPage<FeedPage>())
-                    {
-                        NavigationController.Instance.RequestPage<FeedPage>(
-                            null, true);
-                    }
-
-                    PostWidget sourcePost = null;
-                    var page = (FeedPage)PageStorage.GetPage<FeedPage>();
-
-                    var slcPostTypes = page?.slcPostTypes;
-
-                    if (slcPostTypes?.SelectedItem == null)
-                        return false;
-
-                    var postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
-
-                    switch (postType)
-                    {
-                        case PostType.Popular:
-                            if (page.lstPosts.Children.Count == 0)
-                                break;
-
-                            foreach (var element in page.lstPosts.Children)
-                            {
-                                if (!(element is PostWidget post))
-                                    continue;
-
-                                if (post.CurrentPostData.Id != id)
-                                    continue;
-
-                                sourcePost = post;
-                                break;
-                            }
-
-                            break;
-                        case PostType.New:
-                        case PostType.My:
-                        case PostType.Favorite:
-                            if (page.lstPosts.Children.Count == 0)
-                                break;
-
-                            if (page.lstPosts.Children.Count > 2
-                                && (page.lstPosts.Children[0] is PostWidget startPost
-                                    && page.lstPosts.Children[^1] is PostWidget endPost)
-                                && !(startPost.CurrentPostData.Id >= id
-                                     && id >= endPost.CurrentPostData.Id))
-                            {
-                                break;
-                            }
-
-                            foreach (var element in page.lstPosts.Children)
-                            {
-                                if (!(element is PostWidget post))
-                                    continue;
-
-                                if (post.CurrentPostData.Id != id)
-                                    continue;
-
-                                sourcePost = post;
-                                break;
-                            }
-
-                            break;
-                        default:
-                            break;
-                    }
-
-                    NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
-                    {
-                        SourcePostWidget = sourcePost,
-                        CurrentPostData = new PostSchema
-                        {
-                            Id = id
-                        }
-                    });
-
-                    return true;
-                });
-
-                if (!result)
-                    return false;
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                var method = MethodBase.GetCurrentMethod();
-
-                ProtocolSchemaUtils.LogMethodError(
-                    ex, method, args);
-
-                return false;
-            }
-        }
-
-
-
-        [MappedMethod("hash/files")]
-        private static bool ManageHashFiles(string args)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(args))
-                    return false;
-
-                switch (args)
-                {
-                    case "create":
-                        App.CreateHashFiles();
-
-                        break;
-                    default:
-                        break;
                 }
 
-                return true;
+                var uriString = uri.OriginalString;
+                var pathStartIndex = Name.Length + 6;
+
+                if (uriString.Length < pathStartIndex + 2)
+                    return false;
+
+                var version = 1U;
+                var versionDivideIndex = uriString
+                    .IndexOf('/', pathStartIndex + 1);
+
+                if (versionDivideIndex != -1
+                    && uriString[pathStartIndex + 1] == 'v'
+                    && uriString.Length > pathStartIndex + 2)
+                {
+                    var versionString = uriString.Substring(
+                        pathStartIndex + 2,
+                        versionDivideIndex - pathStartIndex - 2);
+
+                    if (uint.TryParse(versionString, out version))
+                    {
+                        uriString = uriString.Remove(
+                            pathStartIndex,
+                            versionString.Length + 2);
+                        uri = new Uri(
+                            uriString, UriKind.Absolute);
+                    }
+                }
+
+                if (version == 0)
+                    version = 1;
+
+                if (!UserApis.TryGetValue(version, out var api))
+                    return false;
+
+                return api?
+                    .ParseUri(uri) ?? false;
             }
             catch (Exception ex)
             {
-                var method = MethodBase.GetCurrentMethod();
-
-                ProtocolSchemaUtils.LogMethodError(
-                    ex, method, args);
+                LogManager.Default.Error(ex,
+                    $"User protocol schema[Name = {Name}] parse uri error");
 
                 return false;
             }
         }
-
-        // ReSharper restore UnusedMember.Local
     }
 }

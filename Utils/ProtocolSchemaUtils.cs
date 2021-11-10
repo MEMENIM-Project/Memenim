@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Reflection;
 using RIS.Logging;
 using RIS.Reflection.Mapping;
@@ -7,12 +8,26 @@ namespace Memenim.Utils
 {
     public static class ProtocolSchemaUtils
     {
-        public static void LogMethodError(Exception exception,
-            MethodBase method, string args)
+        public static void LogApiMethodError(Exception exception,
+            MethodBase method, string schemaName,
+            uint apiVersion, NameValueCollection args)
+        {
+            var argsString = args
+                .ToString()?
+                .TrimStart('?');
+
+            LogApiMethodError(exception,
+                method, schemaName,
+                apiVersion, argsString);
+        }
+        public static void LogApiMethodError(Exception exception,
+            MethodBase method, string schemaName,
+            uint apiVersion, string args)
         {
             if (method == null)
             {
-                LogManager.Default.Error(exception, $"Schema mapped method with args [{args}] error");
+                LogManager.Default.Error(exception,
+                    $"User protocol schema api[SchemaName = {schemaName}, Version = {apiVersion}] mapped method invoked with args[{args}] error");
 
                 return;
             }
@@ -34,7 +49,8 @@ namespace Memenim.Utils
                     .Name;
             }
 
-            LogManager.Default.Error(exception, $"Schema {methodType} [{methodName}] with args [{args}] error");
+            LogManager.Default.Error(exception,
+                $"User protocol schema api[SchemaName = {schemaName}, Version = {apiVersion}] {methodType}[{methodName}] invoked with args[{args}] error");
         }
     }
 }

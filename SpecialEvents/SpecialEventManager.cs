@@ -26,16 +26,21 @@ namespace Memenim.SpecialEvents
         {
             get
             {
-                var value = LocalizationUtils.GetLocalized(
-                    GetEventLocalizationKey());
+                string value = null;
 
-                if (string.IsNullOrEmpty(value))
+                var key = GetEventLocalizationKey();
+
+                if (!string.IsNullOrEmpty(key))
                 {
-                    value = LocalizationUtils.GetLocalized(
-                        "NothingTitle");
+                    value = LocalizationUtils
+                        .GetLocalized(key);
                 }
 
-                return value;
+                if (!string.IsNullOrEmpty(value))
+                    return value;
+
+                return LocalizationUtils.GetLocalized(
+                    "NothingTitle");
             }
         }
         public static SpecialEventLayerContent CurrentInstance { get; private set; }
@@ -71,6 +76,9 @@ namespace Memenim.SpecialEvents
 
         private static string GetEventLocalizationKey()
         {
+            if (string.IsNullOrEmpty(CurrentInstanceName))
+                return null;
+
             return $"{CurrentInstanceName}Name";
         }
 
@@ -87,13 +95,13 @@ namespace Memenim.SpecialEvents
 
                 foreach (var type in types)
                 {
-                    var protocol =
+                    var specialEventLayer =
                         Activator.CreateInstance(type, true) as SpecialEventLayerContent;
 
-                    if (protocol == null)
+                    if (specialEventLayer == null)
                         continue;
 
-                    specialEventLayers.Add(protocol);
+                    specialEventLayers.Add(specialEventLayer);
                 }
 
                 return specialEventLayers.ToArray();
@@ -122,8 +130,6 @@ namespace Memenim.SpecialEvents
             CurrentInstance = specialEventLayer;
 
             MainWindow.Instance.RootLayout.Children.Add(CurrentInstance);
-
-            MainWindow.Instance.UpdateSpecialEventName();
 
             MainWindow.Instance.tglSpecialEvent.IsEnabled = true;
 
@@ -157,8 +163,6 @@ namespace Memenim.SpecialEvents
 
             CurrentInstanceName = null;
             CurrentInstance = null;
-
-            MainWindow.Instance.UpdateSpecialEventName();
 
             EventUpdated?.Invoke(null, EventArgs.Empty);
         }
@@ -194,6 +198,8 @@ namespace Memenim.SpecialEvents
             }
         }
 #pragma warning restore SS002 // DateTime.Now was referenced
+
+
 
         public static void Activate(
             bool state)

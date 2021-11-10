@@ -18,7 +18,8 @@ namespace Memenim.Protocols
 
             foreach (var protocol in GetUserProtocols())
             {
-                UserProtocols.Add(protocol.Schema.Name, protocol);
+                UserProtocols.Add(
+                    protocol.Schema.Name, protocol);
             }
         }
 
@@ -28,15 +29,18 @@ namespace Memenim.Protocols
         {
             try
             {
-                var types = Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(type => type.IsClass && typeof(IUserProtocol).IsAssignableFrom(type))
+                var types = Assembly
+                    .GetExecutingAssembly()
+                    .GetTypes()
+                    .Where(type => type.IsClass
+                                   && typeof(IUserProtocol).IsAssignableFrom(type))
                     .ToArray();
                 var protocols = new List<IUserProtocol>(types.Length);
 
                 foreach (var type in types)
                 {
-                    var protocol =
-                        Activator.CreateInstance(type, true) as IUserProtocol;
+                    var protocol = Activator.CreateInstance(
+                        type, true) as IUserProtocol;
 
                     if (protocol == null)
                         continue;
@@ -48,7 +52,8 @@ namespace Memenim.Protocols
             }
             catch (Exception ex)
             {
-                LogManager.Default.Error(ex, "User protocols get error");
+                LogManager.Default.Error(ex,
+                    "User protocols get error");
 
                 return Array.Empty<IUserProtocol>();
             }
@@ -64,18 +69,34 @@ namespace Memenim.Protocols
             }
         }
 
-        public static void ParseUri(string uriString)
+        public static bool ParseUri(string uriString)
         {
-            if (string.IsNullOrEmpty(uriString))
-                return;
-
-            if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri)
-                || !UserProtocols.ContainsKey(uri.Scheme))
+            try
             {
-                return;
-            }
+                if (string.IsNullOrEmpty(uriString))
+                    return false;
 
-            UserProtocols[uri.Scheme].Schema?.ParseUri(uriString);
+                if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri)
+                    || !UserProtocols.ContainsKey(uri.Scheme)
+                    || uri.Host != "app")
+                {
+                    return false;
+                }
+
+                if (!UserProtocols.TryGetValue(uri.Scheme, out var protocol))
+                    return false;
+
+                return protocol?
+                    .Schema?
+                    .ParseUri(uri) ?? false;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Default.Error(ex,
+                    "User protocol parse uri error");
+
+                return false;
+            }
         }
     }
 }

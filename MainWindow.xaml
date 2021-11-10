@@ -83,6 +83,7 @@
                                                HorizontalAlignment="Left"
                                                Margin="5 0 5 10"/>
                                     <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Center"
                                                 Margin="5">
                                         <TextBlock Text="{markupLocalization:LocalizedString CurrentSpecialEventTitle}"
                                                    Style="{StaticResource Header3}"/>
@@ -97,6 +98,10 @@
                                                TextWrapping="Wrap"
                                                HorizontalAlignment="Center"
                                                Margin="5 0 5 5"/>
+                                    <Border Height="1"
+                                            Background="#AF3F3F3F"
+                                            BorderThickness="0"
+                                            Margin="5"/>
                                     <controls:ToggleSwitch x:Name="tglSpecialEvent"
                                                            Content="{markupLocalization:LocalizedString EnableTitle}"
                                                            IsOn="{Binding Path=SpecialEventEnabled, Mode=TwoWay}"
@@ -105,6 +110,7 @@
                                     <TextBlock Text="{markupLocalization:LocalizedString BgmVolumeTitle}"
                                                Style="{StaticResource Header3}"
                                                Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
+                                               HorizontalAlignment="Center"
                                                Margin="5"/>
                                     <Slider x:Name="sldSpecialEventBgm"
                                             Value="{Binding Path=BgmVolume, Converter={StaticResource BgmVolumeConverter}, Mode=TwoWay}"
@@ -131,6 +137,7 @@
                                                Margin="5 0 5 10"/>
                                     <TextBlock Text="{markupLocalization:LocalizedString CommentReplyModeTitle}"
                                                Style="{StaticResource Header3}"
+                                               HorizontalAlignment="Center"
                                                Margin="5"/>
                                     <controls:SplitButton Name="slcCommentReplyMode"
                                                           ItemsSource="{Binding Path=CommentReplyModes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
@@ -169,44 +176,47 @@
                             </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
-                    <StackPanel Grid.Row="1"
-                                MinWidth="82"
-                                Width="{Binding Path=ViewportWidth, ElementName=svSettings}"
-                                Margin="10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom">
-                        <StackPanel VerticalAlignment="Bottom">
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0 5">
-                                <Button Width="35" Height="35"
-                                        Background="Transparent"
-                                        Foreground="Transparent"
-                                        BorderThickness="0"
-                                        Click="Discord_Click">
-                                    <iconPacks:PackIconFontAwesome Kind="DiscordBrands"
-                                                                   Width="20" Height="20"
-                                                                   Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
-                                </Button>
-                                <Button Width="35" Height="35"
-                                        Background="Transparent"
-                                        Foreground="Transparent"
-                                        BorderThickness="0"
-                                        Click="Telegram_Click">
-                                    <iconPacks:PackIconFontAwesome Kind="TelegramBrands"
-                                                                   Width="20" Height="20"
-                                                                   Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
-                                </Button>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{markupLocalization:LocalizedString Version}" FontSize="13.5"
-                                           Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                                <TextBlock Text=":  " FontSize="13.5"
-                                           Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                                <TextBlock Text="{Binding Path=AppVersion}" FontSize="13.5"
-                                           Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                    <Border Grid.Row="1"
+                            BorderBrush="#FF3F3F3F"
+                            BorderThickness="0 1 0 0">
+                        <StackPanel MinWidth="82"
+                                    Width="{Binding Path=ViewportWidth, ElementName=svSettings}"
+                                    Margin="10"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                            <StackPanel VerticalAlignment="Bottom">
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0 5">
+                                    <Button Width="35" Height="35"
+                                            Background="Transparent"
+                                            Foreground="Transparent"
+                                            BorderThickness="0"
+                                            Click="Discord_Click">
+                                        <iconPacks:PackIconFontAwesome Kind="DiscordBrands"
+                                                                       Width="20" Height="20"
+                                                                       Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
+                                    </Button>
+                                    <Button Width="35" Height="35"
+                                            Background="Transparent"
+                                            Foreground="Transparent"
+                                            BorderThickness="0"
+                                            Click="Telegram_Click">
+                                        <iconPacks:PackIconFontAwesome Kind="TelegramBrands"
+                                                                       Width="20" Height="20"
+                                                                       Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
+                                    </Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{markupLocalization:LocalizedString Version}" FontSize="13.5"
+                                               Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                                    <TextBlock Text=":  " FontSize="13.5"
+                                               Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                                    <TextBlock Text="{Binding Path=AppVersion}" FontSize="13.5"
+                                               Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
-                    </StackPanel>
+                    </Border>
                 </Grid>
             </controls:Flyout>
         </controls:FlyoutsControl>

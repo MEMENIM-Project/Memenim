@@ -6,7 +6,7 @@ using Environment = RIS.Environment;
 
 namespace Memenim.Protocols
 {
-    public class MemenimProtocol : IUserProtocol
+    public sealed class MemenimProtocol : IUserProtocol
     {
         public string Name { get; }
         public IUserProtocolSchema Schema { get; }
@@ -16,7 +16,7 @@ namespace Memenim.Protocols
         private MemenimProtocol()
         {
             Name = "MEMENIM App Protocol";
-            Schema = new MemenimSchema();
+            Schema = MemenimSchema.Instance;
         }
 
 
