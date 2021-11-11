@@ -132,7 +132,8 @@ namespace Memenim.Widgets
         {
             stShares.IsEnabled = false;
 
-            var link = $"memenim://app/post/id/{CurrentPostData.Id}";
+            var link = MemenimProtocolApiUtils.GetPostLink(
+                CurrentPostData.Id);
 
             Clipboard.SetText(link);
 

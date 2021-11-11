@@ -199,7 +199,8 @@ namespace Memenim.Pages
 
         public void Share()
         {
-            var link = $"memenim://app/user/id/{ViewModel.CurrentProfileData.Id}";
+            var link = MemenimProtocolApiUtils.GetUserLink(
+                ViewModel.CurrentProfileData.Id);
 
             Clipboard.SetText(link);
         }
