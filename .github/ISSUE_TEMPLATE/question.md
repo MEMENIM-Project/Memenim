@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: Question
 about: Ask any question
 title: "Question: [ISSUE NAME]"
 labels: question
