@@ -3,9 +3,9 @@
 ## <div align="center">[![CodeLines](https://tokei.rs/b1/github/MEMENIM-Project/Memenim?category=code)](https://github.com/MEMENIM-Project/Memenim) [![ClosedMilestones](https://img.shields.io/github/milestones/closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/milestones?state=closed) [![ClosedIssues](https://img.shields.io/github/issues-closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/issues?q=is%3Aissue+is%3Aclosed)</div>
 
 
-EN: Custom client for https://anonym.network/ social network
+EN: Custom client for [Anonym social network](https://anonym.network/).
 
-RU: Кастомный клиент для https://anonym.network/ социальной сети
+RU: Кастомный клиент для [Anonym social network](https://anonym.network/).
 
 
 ## Latest release / Актуальный релиз
@@ -27,14 +27,14 @@ RU: Кастомный клиент для https://anonym.network/ социал�
 
 ## Questions, bug reports or feature requests?
 
-Do you have any questions? [Create a issue](https://github.com/MEMENIM-Project/Memenim/issues/new/choose)
+Do you have any questions? [Create a issue](https://github.com/MEMENIM-Project/Memenim/issues/new/choose).
 
-Are you missing some features or have you found bugs? [Create a issue](https://github.com/MEMENIM-Project/Memenim/issues/new/choose) or even better, [contribute to MEMENIM](https://github.com/MEMENIM-Project/Memenim#contributing)!
+Are you missing some features or have you found bugs? [Create a issue](https://github.com/MEMENIM-Project/Memenim/issues/new/choose) or even better, [contribute to MEMENIM](https://github.com/MEMENIM-Project/Memenim#Contributing)!
 
 
 ## Frequently Asked Questions (FAQ)
 
-See [FAQ](https://github.com/MEMENIM-Project/Memenim/wiki/FAQ) on the Wiki
+See [FAQ](https://github.com/MEMENIM-Project/Memenim/wiki/FAQ) on the Wiki.
 
 
 ## Contributing
@@ -46,7 +46,7 @@ A good way to get started (flow):
 1. Fork the MEMENIM repository.
 2. Create a new branch in you current repository from the 'master' branch.
 3. 'Check out' the code with Git or [GitHub Desktop](https://desktop.github.com/).
-4. Push commits and create a Pull Request (PR) to MEMENIM
+4. Push commits and create a Pull Request (PR) to MEMENIM.
 
 
 ## License
