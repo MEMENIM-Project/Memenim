@@ -37,8 +37,8 @@ namespace Memenim.Settings
             WindowPositionX = SystemParameters.PrimaryScreenWidth / 2.0;
             WindowPositionY = SystemParameters.PrimaryScreenHeight / 2.0;
             WindowState = (int)System.Windows.WindowState.Normal;
-            WindowWidth = MainWindow.Instance.Width;
-            WindowHeight = MainWindow.Instance.Height;
+            WindowWidth = 800;
+            WindowHeight = 450;
             PostsType = (int)PostType.Popular;
             CommentReplyMode = (int)CommentReplyModeType.Legacy;
             ChristmasEventEnabled = true;

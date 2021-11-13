@@ -6,10 +6,10 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Memenim</RootNamespace>
     <AssemblyName>MEMENIM</AssemblyName>
-    <AssemblyVersion>0.18.19.0</AssemblyVersion>
-    <FileVersion>0.18.19.0</FileVersion>
+    <AssemblyVersion>0.18.20.0</AssemblyVersion>
+    <FileVersion>0.18.20.0</FileVersion>
     <Product>MEMENIM</Product>
-    <Version>0.18.19</Version>
+    <Version>0.18.20</Version>
     <Description>Custom client for https://anonym.network/ social network</Description>
     <Authors>D1ckWare, Dmitry Ponomarev</Authors>
     <Company>MEMENIM</Company>
@@ -41,7 +41,7 @@
     <PackageReference Include="RIS.Cryptography" Version="3.9.0" />
     <PackageReference Include="RIS.Graphics" Version="2.10.0" />
     <PackageReference Include="RIS.Localization" Version="1.3.0" />
-    <PackageReference Include="RIS.Localization.UI.WPF" Version="1.3.0" />
+    <PackageReference Include="RIS.Localization.UI.WPF" Version="1.3.2" />
     <PackageReference Include="RIS.Localization.Xaml" Version="1.3.0" />
     <PackageReference Include="RIS.Logging" Version="3.4.0" />
     <PackageReference Include="RIS.Reflection" Version="4.2.0" />
