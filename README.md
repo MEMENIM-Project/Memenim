@@ -57,6 +57,33 @@ See [LICENSE](LICENSE) for details.
 
 ## How to build
 
-Use Visual Studio 2019 (and newer) and open the solution 'Memenim.sln'.
+Visual Studio (2019 or newer):
+
+  - Open the solution 'Memenim.sln'.
+  - Change the configuration to 'Release'.
+  - Click on the 'Build' button.
+  - Go to the '\bin\Release\netcoreapp3.1' directory.
+
+Dotnet CLI tool:
+
+  - Open the terminal.
+  - Go to the solution directory.
+  - Enter the 'dotnet build -c "Release" "Memenim.sln"' command.
+  - Go to the '\bin\Release\netcoreapp3.1' directory.
+
+
+## How to publish
+
+Dotnet CLI tool:
+
+  - Go to the solution directory.
+  - Open the file 'Publish.bat'.
+  - Wait for the progress to be completed.
+  - Go to the '\bin\Release\netcoreapp3.1\publish' directory.
+  - Select a release by directory name *Platform*-*DeploymentType*{-*OptionalParameter*}, where:
+    - *Platform* - **win-x64** or **win-x86** (RID's - Runtime IDentifier's).
+    - *DeploymentType* - **FDD** (Framework-Dependent Deployment) or **SCD** (Self-Contained Deployment (Standalone)).
+    - *OptionalParameter* - extra options (multiple and optional), such as:
+      - **nosingle** - disables packing the app into a single file.
 
 
