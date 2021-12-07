@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Memenim.Pages
+namespace Memenim.Generic
 {
-    public enum PageStateType : byte
+    public enum ControlStateType : byte
     {
         Unknown = 0,
         Loaded = 1,

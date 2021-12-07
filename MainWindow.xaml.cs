@@ -1,28 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
-using Memenim.Extensions;
 using Memenim.Native.Window;
 using Memenim.Navigation;
-using Memenim.Pages;
 using Memenim.Settings;
-using Memenim.SpecialEvents;
 using Memenim.Styles;
 using Memenim.Styles.Loading.Entities;
 using Memenim.Utils;
-using RIS;
-using RIS.Localization;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim
@@ -48,8 +39,11 @@ namespace Memenim
             }
         }
 
+
+
         private HwndSource _hwndSource;
         private WindowState _previousState;
+
 
         private int _loadingGridStatus;
         public bool LoadingGridStatus
@@ -78,6 +72,7 @@ namespace Memenim
         }
         private Task _connectionFailedGridTask;
 
+
         private int _titleLockStatus;
         public bool TitleLockStatus
         {
@@ -93,56 +88,14 @@ namespace Memenim
         private bool _loadingGridTitleLockStatus;
         private bool _connectionFailedGridTitleLockStatus;
 
+
         private LoadingStyle _loadingStyle;
 
-        public string SpecialEventLocalizedName
-        {
-            get
-            {
-                return SpecialEventManager.CurrentInstanceLocalizedName;
-            }
-        }
-        private bool _specialEventEnabled;
-        public bool SpecialEventEnabled
-        {
-            get
-            {
-                return _specialEventEnabled;
-            }
-            set
-            {
-                if (value &&
-                    (SpecialEventManager.CurrentInstance == null
-                    || !SpecialEventManager.CurrentInstance.EventLoaded))
-                {
-                    tglSpecialEvent.IsOn = false;
-                    tglSpecialEvent.IsEnabled = false;
 
-                    return;
-                }
 
-                SpecialEventManager.Activate(value);
-
-                _specialEventEnabled = value;
-            }
-        }
-        private double _bgmVolume;
-        public double BgmVolume
-        {
-            get
-            {
-                return _bgmVolume;
-            }
-            set
-            {
-                SpecialEventManager.SetVolume(value);
-
-                _bgmVolume = value;
-            }
-        }
-        public ReadOnlyDictionary<CommentReplyModeType, string> CommentReplyModes { get; private set; }
-        public string AppVersion { get; private set; }
         public bool DuringRestoreToMaximized { get; private set; }
+
+
 
         private MainWindow()
         {
@@ -163,8 +116,6 @@ namespace Memenim
             _previousState = WindowState;
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
 
-            AppVersion = $"v{SettingsManager.AppSettings.AppVersion}";
-
             LoadingGridStatus = false;
             _loadingGridTask = Task.CompletedTask;
             ConnectionFailedGridStatus = false;
@@ -173,56 +124,14 @@ namespace Memenim
             ApplyLoadingStyle();
 
             ApiRequestEngine.ConnectionStateChanged += OnConnectionStateChanged;
-            LocalizationUtils.LocalizationsLoaded += OnLocalizationsLoaded;
-            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
-            SpecialEventManager.EventUpdated += OnSpecialEventUpdated;
         }
 
         ~MainWindow()
         {
             ApiRequestEngine.ConnectionStateChanged -= OnConnectionStateChanged;
-            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
-            SpecialEventManager.EventUpdated -= OnSpecialEventUpdated;
         }
 
-        private void ReloadCommentReplyModes()
-        {
-            var names = Enum.GetNames(typeof(CommentReplyModeType));
-            var localizedNames = CommentReplyModeType.Legacy.GetLocalizedNames();
-            var postTypes = new Dictionary<CommentReplyModeType, string>(names.Length);
 
-            for (var i = 0; i < names.Length; ++i)
-            {
-                postTypes.Add(
-                    Enum.Parse<CommentReplyModeType>(names[i], true),
-                    localizedNames[i]);
-            }
-
-            slcCommentReplyMode.SelectionChanged -= slcCommentReplyMode_SelectionChanged;
-
-            KeyValuePair<CommentReplyModeType, string> selectedItem =
-                new KeyValuePair<CommentReplyModeType, string>();
-
-            if (slcCommentReplyMode.SelectedItem != null)
-            {
-                selectedItem =
-                    (KeyValuePair<CommentReplyModeType, string>)slcCommentReplyMode.SelectedItem;
-            }
-
-            CommentReplyModes = new ReadOnlyDictionary<CommentReplyModeType, string>(postTypes);
-
-            slcCommentReplyMode
-                .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
-                .UpdateTarget();
-
-            if (selectedItem.Value != null)
-            {
-                slcCommentReplyMode.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(selectedItem.Key, postTypes[selectedItem.Key]);
-            }
-
-            slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
-        }
 
         private void ApplyLoadingStyle()
         {
@@ -231,91 +140,77 @@ namespace Memenim
             if (_loadingStyle.ForegroundImageUri != null)
             {
 
-                loadingForegroundImage.Source = new BitmapImage(
+                LoadingForegroundImage.Source = new BitmapImage(
                     _loadingStyle.ForegroundImageUri);
-                connectionFailedForegroundImage.Source = new BitmapImage(
+                ConnectionFailedForegroundImage.Source = new BitmapImage(
                     _loadingStyle.ForegroundImageUri);
 
-                loadingForegroundImage.Visibility = Visibility.Visible;
-                connectionFailedForegroundImage.Visibility = Visibility.Visible;
+                LoadingForegroundImage.Visibility = Visibility.Visible;
+                ConnectionFailedForegroundImage.Visibility = Visibility.Visible;
             }
             else
             {
-                loadingForegroundImage.Source = null;
-                connectionFailedForegroundImage.Source = null;
+                LoadingForegroundImage.Source = null;
+                ConnectionFailedForegroundImage.Source = null;
 
-                loadingForegroundImage.Visibility = Visibility.Hidden;
-                connectionFailedForegroundImage.Visibility = Visibility.Hidden;
+                LoadingForegroundImage.Visibility = Visibility.Hidden;
+                ConnectionFailedForegroundImage.Visibility = Visibility.Hidden;
             }
 
             if (_loadingStyle.BackgroundImageUri != null)
             {
 
-                loadingBackgroundImage.Source = new BitmapImage(
+                LoadingBackgroundImage.Source = new BitmapImage(
                     _loadingStyle.BackgroundImageUri);
-                connectionFailedBackgroundImage.Source = new BitmapImage(
+                ConnectionFailedBackgroundImage.Source = new BitmapImage(
                     _loadingStyle.BackgroundImageUri);
 
-                loadingBackgroundImage.Visibility = Visibility.Visible;
-                connectionFailedBackgroundImage.Visibility = Visibility.Visible;
+                LoadingBackgroundImage.Visibility = Visibility.Visible;
+                ConnectionFailedBackgroundImage.Visibility = Visibility.Visible;
             }
             else
             {
-                loadingBackgroundImage.Source = null;
-                connectionFailedBackgroundImage.Source = null;
+                LoadingBackgroundImage.Source = null;
+                ConnectionFailedBackgroundImage.Source = null;
 
-                loadingBackgroundImage.Visibility = Visibility.Hidden;
-                connectionFailedBackgroundImage.Visibility = Visibility.Hidden;
+                LoadingBackgroundImage.Visibility = Visibility.Hidden;
+                ConnectionFailedBackgroundImage.Visibility = Visibility.Hidden;
             }
 
-            loadingIndicator.HorizontalAlignment = _loadingStyle.LoadingIndicatorHorizontalAlignment;
-            loadingIndicator.VerticalAlignment= _loadingStyle.LoadingIndicatorVerticalAlignment;
+            LoadingIndicator.HorizontalAlignment = _loadingStyle.LoadingIndicatorHorizontalAlignment;
+            LoadingIndicator.VerticalAlignment= _loadingStyle.LoadingIndicatorVerticalAlignment;
 
-            connectionFailedIndicator.HorizontalAlignment = _loadingStyle.LoadingIndicatorHorizontalAlignment;
-            connectionFailedIndicator.VerticalAlignment = _loadingStyle.LoadingIndicatorVerticalAlignment;
+            ConnectionFailedIndicator.HorizontalAlignment = _loadingStyle.LoadingIndicatorHorizontalAlignment;
+            ConnectionFailedIndicator.VerticalAlignment = _loadingStyle.LoadingIndicatorVerticalAlignment;
         }
 
-        private void UpdateSpecialEventName()
-        {
-            txtSpecialEventName
-                .GetBindingExpression(TextBlock.TextProperty)?
-                .UpdateTarget();
-        }
 
-        public void LinkOpenEnable(bool isEnabled)
+
+        public void ActivateOpenLink()
         {
             if (NavigationController.Instance.RootLayout.DisplayMode == SplitViewDisplayMode.Inline
-                || loadingGrid.Visibility == Visibility.Visible
-                || connectionFailedGrid.Visibility == Visibility.Visible)
+                || LoadingGrid.Visibility == Visibility.Visible
+                || ConnectionFailedGrid.Visibility == Visibility.Visible)
             {
-                btnLinkOpen.IsEnabled = false;
                 return;
             }
 
-            btnLinkOpen.IsEnabled = isEnabled;
+            OpenLinkButton.IsEnabled = true;
         }
 
-        public bool IsOpenSettings()
+        public void DeactivateOpenLink()
         {
-            return SettingsFlyout.IsOpen;
+            OpenLinkButton.IsEnabled = false;
         }
 
-        public void ShowSettings()
-        {
-            SettingsFlyout.IsOpen = true;
-        }
 
-        public void HideSettings()
-        {
-            SettingsFlyout.IsOpen = false;
-        }
 
-        public async Task ShowLoadingGrid(bool status)
+        public async Task ShowLoadingGrid()
         {
             await _loadingGridTask
                 .ConfigureAwait(true);
 
-            var newStatus = status ? 1 : 0;
+            const int newStatus = 1;
             var oldStatus = Interlocked.Exchange(
                 ref _loadingGridStatus, newStatus);
 
@@ -336,32 +231,57 @@ namespace Memenim
                 changeStyleNeeded = false;
             }
 
-            if (status)
+            DeactivateOpenLink();
+
+            LoadingIndicator.IsActive = true;
+            LoadingGrid.Opacity = 1.0;
+            LoadingGrid.IsHitTestVisible = true;
+            LoadingGrid.Visibility = Visibility.Visible;
+
+            if (changeStyleNeeded)
             {
-                LinkOpenEnable(false);
-                loadingIndicator.IsActive = true;
-                loadingGrid.Opacity = 1.0;
-                loadingGrid.IsHitTestVisible = true;
-                loadingGrid.Visibility = Visibility.Visible;
-
-                if (changeStyleNeeded)
-                {
-                    Resources.MergedDictionaries
-                        .Add(_loadingStyle.Dictionary);
-                    Resources.MergedDictionaries
-                        .Add(_loadingStyle.MahAppsDictionary);
-                }
-
-                _loadingGridTask = Task.CompletedTask;
-                return;
+                Resources.MergedDictionaries
+                    .Add(_loadingStyle.Dictionary);
+                Resources.MergedDictionaries
+                    .Add(_loadingStyle.MahAppsDictionary);
             }
 
-            loadingIndicator.IsActive = false;
+            _loadingGridTask = Task.CompletedTask;
+        }
+
+        public async Task HideLoadingGrid()
+        {
+            await _loadingGridTask
+                .ConfigureAwait(true);
+
+            const int newStatus = 0;
+            var oldStatus = Interlocked.Exchange(
+                ref _loadingGridStatus, newStatus);
+
+            if (oldStatus == newStatus)
+                return;
+
+            bool changeStyleNeeded;
+
+            if (!TitleLockStatus)
+            {
+                TitleLockStatus = true;
+                _loadingGridTitleLockStatus = true;
+
+                changeStyleNeeded = true;
+            }
+            else
+            {
+                changeStyleNeeded = false;
+            }
+
+            LoadingIndicator.IsActive = false;
 
             if (_loadingGridTitleLockStatus)
                 changeStyleNeeded = true;
 
-            var color = ((SolidColorBrush)FindResource("Window.Main.TitleBackground")).Color;
+            var color = ((SolidColorBrush)FindResource("Window.Main.TitleBackground"))
+                .Color;
 
             _loadingGridTask = Task.Run(async () =>
             {
@@ -371,7 +291,7 @@ namespace Memenim
                 {
                     changeOpacityFunction = opacity =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
 
                         var brush = new SolidColorBrush(
                             Color.FromArgb((byte)(255 * opacity),
@@ -385,7 +305,7 @@ namespace Memenim
                 {
                     changeOpacityFunction = opacity =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
                     };
                 }
 
@@ -400,7 +320,7 @@ namespace Memenim
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            loadingGrid.IsHitTestVisible = false;
+                            LoadingGrid.IsHitTestVisible = false;
 
                             Resources.MergedDictionaries
                                 .Remove(_loadingStyle.MahAppsDictionary);
@@ -425,13 +345,16 @@ namespace Memenim
                         Resources.MergedDictionaries
                             .Remove(_loadingStyle.Dictionary);
 
-                        SetResourceReference(WindowTitleBrushProperty, "Window.Main.TitleBackground");
-                        SetResourceReference(NonActiveWindowTitleBrushProperty, "Window.Main.NonActiveTitleBackground");
+                        SetResourceReference(WindowTitleBrushProperty,
+                            "Window.Main.TitleBackground");
+                        SetResourceReference(NonActiveWindowTitleBrushProperty,
+                            "Window.Main.NonActiveTitleBackground");
                     }
 
-                    loadingGrid.IsHitTestVisible = false;
-                    loadingGrid.Visibility = Visibility.Collapsed;
-                    LinkOpenEnable(true);
+                    LoadingGrid.IsHitTestVisible = false;
+                    LoadingGrid.Visibility = Visibility.Collapsed;
+
+                    ActivateOpenLink();
 
                     if (changeStyleNeeded)
                     {
@@ -442,12 +365,12 @@ namespace Memenim
             });
         }
 
-        public async Task ShowConnectionFailedGrid(bool status)
+        public async Task ShowConnectionFailedGrid()
         {
             await _connectionFailedGridTask
                 .ConfigureAwait(true);
 
-            var newStatus = status ? 1 : 0;
+            const int newStatus = 1;
             var oldStatus = Interlocked.Exchange(
                 ref _connectionFailedGridStatus, newStatus);
 
@@ -468,32 +391,57 @@ namespace Memenim
                 changeStyleNeeded = false;
             }
 
-            if (status)
+            DeactivateOpenLink();
+
+            ConnectionFailedIndicator.IsActive = true;
+            ConnectionFailedGrid.Opacity = 1.0;
+            ConnectionFailedGrid.IsHitTestVisible = true;
+            ConnectionFailedGrid.Visibility = Visibility.Visible;
+
+            if (changeStyleNeeded)
             {
-                LinkOpenEnable(false);
-                connectionFailedIndicator.IsActive = true;
-                connectionFailedGrid.Opacity = 1.0;
-                connectionFailedGrid.IsHitTestVisible = true;
-                connectionFailedGrid.Visibility = Visibility.Visible;
-
-                if (changeStyleNeeded)
-                {
-                   Resources.MergedDictionaries
-                        .Add(_loadingStyle.Dictionary);
-                   Resources.MergedDictionaries
-                       .Add(_loadingStyle.MahAppsDictionary);
-                }
-
-                _connectionFailedGridTask = Task.CompletedTask;
-                return;
+                Resources.MergedDictionaries
+                    .Add(_loadingStyle.Dictionary);
+                Resources.MergedDictionaries
+                    .Add(_loadingStyle.MahAppsDictionary);
             }
 
-            connectionFailedIndicator.IsActive = false;
+            _connectionFailedGridTask = Task.CompletedTask;
+        }
+
+        public async Task HideConnectionFailedGrid()
+        {
+            await _connectionFailedGridTask
+                .ConfigureAwait(true);
+
+            const int newStatus = 0;
+            var oldStatus = Interlocked.Exchange(
+                ref _connectionFailedGridStatus, newStatus);
+
+            if (oldStatus == newStatus)
+                return;
+
+            bool changeStyleNeeded;
+
+            if (!TitleLockStatus)
+            {
+                TitleLockStatus = true;
+                _connectionFailedGridTitleLockStatus = true;
+
+                changeStyleNeeded = true;
+            }
+            else
+            {
+                changeStyleNeeded = false;
+            }
+
+            ConnectionFailedIndicator.IsActive = false;
 
             if (_connectionFailedGridTitleLockStatus)
                 changeStyleNeeded = true;
 
-            var color = ((SolidColorBrush)FindResource("Window.Main.TitleBackground")).Color;
+            var color = ((SolidColorBrush)FindResource("Window.Main.TitleBackground"))
+                .Color;
 
             _connectionFailedGridTask = Task.Run(async () =>
             {
@@ -503,7 +451,7 @@ namespace Memenim
                 {
                     changeOpacityFunction = opacity =>
                     {
-                        connectionFailedGrid.Opacity = opacity;
+                        ConnectionFailedGrid.Opacity = opacity;
 
                         var brush = new SolidColorBrush(
                             Color.FromArgb((byte)(255 * opacity),
@@ -517,7 +465,7 @@ namespace Memenim
                 {
                     changeOpacityFunction = opacity =>
                     {
-                        connectionFailedGrid.Opacity = opacity;
+                        ConnectionFailedGrid.Opacity = opacity;
                     };
                 }
 
@@ -532,7 +480,7 @@ namespace Memenim
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            connectionFailedGrid.IsHitTestVisible = false;
+                            ConnectionFailedGrid.IsHitTestVisible = false;
 
                             Resources.MergedDictionaries
                                 .Remove(_loadingStyle.MahAppsDictionary);
@@ -557,13 +505,16 @@ namespace Memenim
                         Resources.MergedDictionaries
                             .Remove(_loadingStyle.Dictionary);
 
-                        SetResourceReference(WindowTitleBrushProperty, "Window.Main.TitleBackground");
-                        SetResourceReference(NonActiveWindowTitleBrushProperty, "Window.Main.NonActiveTitleBackground");
+                        SetResourceReference(WindowTitleBrushProperty,
+                            "Window.Main.TitleBackground");
+                        SetResourceReference(NonActiveWindowTitleBrushProperty,
+                            "Window.Main.NonActiveTitleBackground");
                     }
 
-                    connectionFailedGrid.IsHitTestVisible = false;
-                    connectionFailedGrid.Visibility = Visibility.Collapsed;
-                    LinkOpenEnable(true);
+                    ConnectionFailedGrid.IsHitTestVisible = false;
+                    ConnectionFailedGrid.Visibility = Visibility.Collapsed;
+
+                    ActivateOpenLink();
 
                     if (changeStyleNeeded)
                     {
@@ -574,11 +525,14 @@ namespace Memenim
             });
         }
 
+
+
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
 
             _hwndSource = (HwndSource)PresentationSource.FromVisual(this);
+
             _hwndSource?.AddHook(WindowUtils.HwndSourceHook);
         }
 
@@ -594,233 +548,26 @@ namespace Memenim
             }
         }
 
-        private async void OnConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
+
+
+        private async void OnConnectionStateChanged(object sender,
+            ConnectionStateChangedEventArgs e)
         {
             await Dispatcher.Invoke(() =>
             {
                 return e.NewState switch
                 {
-                    ConnectionStateType.Connected => ShowConnectionFailedGrid(false),
-                    ConnectionStateType.Disconnected => ShowConnectionFailedGrid(true),
+                    ConnectionStateType.Connected => HideConnectionFailedGrid(),
+                    ConnectionStateType.Disconnected => ShowConnectionFailedGrid(),
                     _ => Task.CompletedTask,
                 };
             }).ConfigureAwait(true);
         }
 
-        private void OnLocalizationsLoaded(object sender, LocalizationLoadedEventArgs e)
-        {
-            LocalizationUtils.LocalizationsLoaded -= OnLocalizationsLoaded;
 
-            if (LocalizationUtils.Localizations.Count == 0)
-                return;
 
-            ReloadCommentReplyModes();
-
-            if (Enum.TryParse<CommentReplyModeType>(
-                Enum.GetName(typeof(CommentReplyModeType), SettingsManager.AppSettings.CommentReplyMode),
-                true, out var commentReplyModeType))
-            {
-                slcCommentReplyMode.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(
-                        commentReplyModeType, CommentReplyModes[commentReplyModeType]);
-            }
-            else
-            {
-                slcCommentReplyMode.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(
-                        CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
-            }
-        }
-
-        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
-        {
-            UpdateSpecialEventName();
-            ReloadCommentReplyModes();
-        }
-
-        // ReSharper disable AccessToStaticMemberViaDerivedType
-        private void OnSpecialEventUpdated(object sender, EventArgs e)
-        {
-            UpdateSpecialEventName();
-
-            tglSpecialEvent
-                .GetBindingExpression(ToggleSwitch.IsOnProperty)?
-                .UpdateTarget();
-            sldSpecialEventBgm
-                .GetBindingExpression(Slider.ValueProperty)?
-                .UpdateTarget();
-        }
-        // ReSharper restore AccessToStaticMemberViaDerivedType
-
-        private async void OpenLink_Click(object sender, RoutedEventArgs e)
-        {
-            if (!btnLinkOpen.IsEnabled)
-                return;
-
-            var title = LocalizationUtils.GetLocalized("LinkOpeningTitle");
-            var message = LocalizationUtils.GetLocalized("EnterURL");
-
-            var link = await DialogManager.ShowSinglelineTextDialog(
-                    title, message)
-                .ConfigureAwait(true);
-
-            if (string.IsNullOrWhiteSpace(link))
-                return;
-
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = link,
-                UseShellExecute = true
-            };
-
-            try
-            {
-                Process.Start(startInfo);
-            }
-            catch (Exception)
-            {
-                var exception = new Exception(
-                    $"An error occurred when opening the link '{link}'");
-                Events.OnError(new RErrorEventArgs(exception,
-                    exception.Message));
-            }
-        }
-
-        private async void slcCommentReplyMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var newReplyMode = ((KeyValuePair<CommentReplyModeType, string>)slcCommentReplyMode.SelectedItem).Key;
-
-            switch (newReplyMode)
-            {
-                case CommentReplyModeType.Experimental:
-                    var additionalMessage = LocalizationUtils
-                        .GetLocalized("YouMaybeBannedConfirmationMessage");
-                    var confirmResult = await DialogManager.ShowConfirmationDialog(
-                            additionalMessage)
-                        .ConfigureAwait(true);
-
-                    if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
-                    {
-                        slcCommentReplyMode.SelectionChanged -= slcCommentReplyMode_SelectionChanged;
-
-                        if (e.RemovedItems.Count == 0 || e.RemovedItems[0] == null)
-                        {
-                            slcCommentReplyMode.SelectedItem =
-                                new KeyValuePair<CommentReplyModeType, string>(
-                                    CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
-
-                            slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
-
-                            break;
-                        }
-
-                        var oldReplyMode = ((KeyValuePair<CommentReplyModeType, string>)e.RemovedItems[0]).Key;
-
-                        slcCommentReplyMode.SelectedItem =
-                            new KeyValuePair<CommentReplyModeType, string>(
-                                oldReplyMode, CommentReplyModes[oldReplyMode]);
-
-                        slcCommentReplyMode.SelectionChanged += slcCommentReplyMode_SelectionChanged;
-                    }
-
-                    break;
-                case CommentReplyModeType.Legacy:
-                default:
-                    break;
-            }
-
-            SettingsManager.AppSettings.CommentReplyMode =
-                (int)((KeyValuePair<CommentReplyModeType, string>)slcCommentReplyMode.SelectedItem).Key;
-
-            SettingsManager.AppSettings.Save();
-        }
-
-        private async void btnChangePassword_Click(object sender, RoutedEventArgs e)
-        {
-            string title = LocalizationUtils.GetLocalized("ChangingPasswordTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
-            string oldPasswordName = LocalizationUtils.GetLocalized("OldPassword");
-            string newPasswordName = LocalizationUtils.GetLocalized("NewPassword");
-
-            string oldPassword = await DialogManager.ShowPasswordDialog(title,
-                    $"{enterName} {oldPasswordName.ToLower()}",
-                    false)
-                .ConfigureAwait(true);
-
-            if (oldPassword == null)
-                return;
-
-            string newPassword = await DialogManager.ShowPasswordDialog(title,
-                    $"{enterName} {newPasswordName.ToLower()}",
-                    true)
-                .ConfigureAwait(true);
-
-            if (newPassword == null)
-                return;
-
-            var request = await UserApi.ChangePassword(
-                    SettingsManager.PersistentSettings.CurrentUser.Token,
-                    oldPassword, newPassword)
-                .ConfigureAwait(true);
-
-            if (request.IsError)
-            {
-                await DialogManager.ShowErrorDialog(request.Message)
-                    .ConfigureAwait(true);
-            }
-        }
-
-        private async void btnSignInToAnotherAccount_Click(object sender, RoutedEventArgs e)
-        {
-            if (SettingsManager.PersistentSettings.CurrentUser.IsTemporary())
-            {
-                var confirmResult = await DialogManager.ShowConfirmationDialog()
-                    .ConfigureAwait(true);
-
-                if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
-                {
-                    return;
-                }
-            }
-
-            SettingsManager.PersistentSettings.ResetCurrentUser();
-
-            HideSettings();
-
-            NavigationController.Instance.RequestPage<LoginPage>();
-        }
-
-        private async void btnSignOutAccount_Click(object sender, RoutedEventArgs e)
-        {
-            var confirmResult = await DialogManager.ShowConfirmationDialog()
-                .ConfigureAwait(true);
-
-            if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
-            {
-                return;
-            }
-
-            SettingsManager.PersistentSettings.RemoveUser(
-                SettingsManager.PersistentSettings.CurrentUser.Login);
-
-            NavigationController.Instance.RequestPage<LoginPage>();
-        }
-
-        private void Discord_Click(object sender, RoutedEventArgs e)
-        {
-            const string link = "https://discord.gg/yhATVBWxZG";
-
-            LinkUtils.OpenLink(link);
-        }
-
-        private void Telegram_Click(object sender, RoutedEventArgs e)
-        {
-            const string link = "https://t.me/joinchat/Vf9B3XM5SM-zUbkf";
-
-            LinkUtils.OpenLink(link);
-        }
-
-        private void MainWindow_Closed(object sender, EventArgs e)
+        private void MainWindow_Closed(object sender,
+            EventArgs e)
         {
             SettingsManager.AppSettings.WindowWidth = Width;
             SettingsManager.AppSettings.WindowHeight = Height;
@@ -829,6 +576,29 @@ namespace Memenim
             SettingsManager.AppSettings.WindowState = (int)WindowState;
 
             SettingsManager.AppSettings.Save();
+        }
+
+        private async void OpenLinkButton_Click(object sender,
+            RoutedEventArgs e)
+        {
+            if (!OpenLinkButton.IsEnabled)
+                return;
+
+            var title = LocalizationUtils
+                .GetLocalized("LinkOpeningTitle");
+            var message = LocalizationUtils
+                .GetLocalized("EnterURL");
+
+            var link = await DialogManager.ShowSinglelineTextDialog(
+                    title, message)
+                .ConfigureAwait(true);
+
+            if (string.IsNullOrWhiteSpace(link))
+                return;
+
+
+
+            LinkUtils.OpenLink(link);
         }
     }
 }

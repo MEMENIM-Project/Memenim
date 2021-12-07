@@ -10,6 +10,8 @@ namespace Memenim.Storage
     {
         public DbSet<PostCommentDraft> PostCommentDrafts { get; set; }
 
+
+
         public StorageContext()
             : base()
         {
@@ -19,6 +21,8 @@ namespace Memenim.Storage
             if (!File.Exists(StorageManager.StorageFilePath))
                 File.Create(StorageManager.StorageFilePath).Close();
         }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

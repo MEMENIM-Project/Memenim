@@ -6,7 +6,7 @@
                                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                                 xmlns:local="clr-namespace:Memenim.SpecialEvents.Layers"
                                 mc:Ignorable="d"
-                                d:DesignHeight="450" d:DesignWidth="800">
+                                d:DesignWidth="800" d:DesignHeight="450">
 
     <Grid SizeChanged="Grid_SizeChanged">
         <MediaElement Name="MusicPlayer"
@@ -18,13 +18,14 @@
                       Visibility="Collapsed"
                       MediaEnded="PadoruPlayer_MediaEnded"/>
         <Canvas IsHitTestVisible="False">
-            <Image x:Name="PadoruImage"
-                   MaxHeight="400"
-                   Canvas.Bottom="-10" Canvas.Left="50"
+            <Image MaxHeight="400"
+                   x:Name="PadoruImage"
+                   Canvas.Left="50"
+                   Canvas.Bottom="-10"
                    Source="pack://application:,,,/Resources/Images/ChristmasEvent/padoru_nero.png"
-                   Stretch="Uniform"
+                   IsHitTestVisible="False"
                    Visibility="Collapsed"
-                   IsHitTestVisible="False"/>
+                   Stretch="Uniform"/>
         </Canvas>
     </Grid>
 </local:SpecialEventLayerContent>

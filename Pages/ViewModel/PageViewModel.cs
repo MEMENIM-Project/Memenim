@@ -9,7 +9,11 @@ namespace Memenim.Pages.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+
+
         public Type PageType { get; }
+
+
 
         protected PageViewModel(Type pageType)
         {
@@ -24,9 +28,13 @@ namespace Memenim.Pages.ViewModel
             PageType = pageType;
         }
 
-        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+
+
+        public virtual void OnPropertyChanged(
+            [CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(propertyName));
         }
     }
 }

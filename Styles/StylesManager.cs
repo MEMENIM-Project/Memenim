@@ -11,6 +11,8 @@ namespace Memenim.Styles
     {
         private static ReadOnlyCollection<LoadingStyle> LoadingStyles { get; }
 
+
+
         static StylesManager()
         {
             LoadingStyles = GetLoadingStyles();
@@ -21,8 +23,10 @@ namespace Memenim.Styles
         private static string GetStyleXamlFilePath(
             string categoryName, string styleName)
         {
-            string styleXamlFileName = $"{styleName}.xaml";
-            categoryName = categoryName.Replace('\\', '/');
+            var styleXamlFileName = $"{styleName}.xaml";
+
+            categoryName = categoryName
+                .Replace('\\', '/');
 
             return $"pack://application:,,,/Styles/{categoryName}/{styleXamlFileName}";
         }
@@ -33,7 +37,7 @@ namespace Memenim.Styles
             if (!Uri.TryCreate(resourceFilePath, UriKind.RelativeOrAbsolute, out _))
                 return null;
 
-            ResourceDictionary styleDictionary = new ResourceDictionary
+            var styleDictionary = new ResourceDictionary
             {
                 Source = new Uri(resourceFilePath)
             };
@@ -56,7 +60,6 @@ namespace Memenim.Styles
             AddStyle("SmileWithTear");
             AddStyle("Marina");
             AddStyle("Kurtka");
-
 
             return new ReadOnlyCollection<LoadingStyle>(
                 loadingStyles);

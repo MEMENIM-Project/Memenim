@@ -8,8 +8,12 @@ namespace Memenim.Widgets
 {
     public partial class StatButton : WidgetContent
     {
-        public static readonly RoutedEvent OnButtonClicked =
-            EventManager.RegisterRoutedEvent(nameof(ButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StatButton));
+        public static readonly RoutedEvent ClickEvent =
+            EventManager.RegisterRoutedEvent(nameof(Click), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(StatButton));
+
+
+
         public static readonly DependencyProperty StatValueProperty =
             DependencyProperty.Register(nameof(StatValue), typeof(string), typeof(StatButton),
                 new PropertyMetadata("0"));
@@ -20,8 +24,8 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(StatValueFontSize), typeof(double), typeof(StatButton),
                 new PropertyMetadata((double) TextBlock.FontSizeProperty.DefaultMetadata.DefaultValue));
         public static readonly DependencyProperty ButtonSizeProperty =
-            DependencyProperty.Register(nameof(ButtonSize), typeof(int), typeof(StatButton),
-                new PropertyMetadata(48));
+            DependencyProperty.Register(nameof(ButtonSize), typeof(double), typeof(StatButton),
+                new PropertyMetadata(48D));
         public static readonly DependencyProperty BorderSizeProperty =
             DependencyProperty.Register(nameof(BorderSize), typeof(double), typeof(StatButton),
                 new PropertyMetadata(1.5));
@@ -35,20 +39,24 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(IconForeground), typeof(Brush), typeof(StatButton),
                 new PropertyMetadata(Brushes.Transparent));
         public static readonly DependencyProperty IconKindProperty =
-            DependencyProperty.Register(nameof(IconKind), typeof(PackIconModernKind), typeof(StatButton),
-                new PropertyMetadata(PackIconModernKind.Xbox));
+            DependencyProperty.Register(nameof(IconKind), typeof(Enum), typeof(StatButton),
+                new PropertyMetadata((Enum)PackIconModernKind.Xbox));
 
-        public event EventHandler<RoutedEventArgs> ButtonClick
+
+
+        public event EventHandler<RoutedEventArgs> Click
         {
             add
             {
-                AddHandler(OnButtonClicked, value);
+                AddHandler(ClickEvent, value);
             }
             remove
             {
-                RemoveHandler(OnButtonClicked, value);
+                RemoveHandler(ClickEvent, value);
             }
         }
+
+
 
         public string StatValue
         {
@@ -83,11 +91,11 @@ namespace Memenim.Widgets
                 SetValue(StatValueFontSizeProperty, value);
             }
         }
-        public int ButtonSize
+        public double ButtonSize
         {
             get
             {
-                return (int)GetValue(ButtonSizeProperty);
+                return (double)GetValue(ButtonSizeProperty);
             }
             set
             {
@@ -138,17 +146,19 @@ namespace Memenim.Widgets
                 SetValue(IconForegroundProperty, value);
             }
         }
-        public PackIconModernKind IconKind
+        public Enum IconKind
         {
             get
             {
-                return (PackIconModernKind)GetValue(IconKindProperty);
+                return (Enum)GetValue(IconKindProperty);
             }
             set
             {
                 SetValue(IconKindProperty, value);
             }
         }
+
+
 
         public StatButton()
         {
@@ -159,9 +169,12 @@ namespace Memenim.Widgets
             SetResourceReference(IconForegroundProperty, "MahApps.Brushes.Accent");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+
+        private void Button_Click(object sender,
+            RoutedEventArgs e)
         {
-            RaiseEvent(new RoutedEventArgs(OnButtonClicked));
+            RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
     }
 }

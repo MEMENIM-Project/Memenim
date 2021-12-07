@@ -1,162 +1,24 @@
 ﻿<Application x:Class="Memenim.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Memenim"
-             xmlns:convertersLocal="clr-namespace:Memenim.Converters"
-             xmlns:convertersRis="clr-namespace:RIS.Graphics.WPF.Xaml.Converters;assembly=RIS.Graphics"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+                <!-- MahApps.Metro resource dictionaries -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml"/>
-                <!-- Theme setting -->
+                <!-- MahApps.Metro theme resource dictionary -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml"/>
+                <!-- Memenim generic resource dictionaries -->
+                <ResourceDictionary Source="pack://application:,,,/Styles/Generic/Converters.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Generic/Colors.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Generic/Brushes.xaml"/>
+                <!-- Memenim controls resource dictionaries -->
+                <ResourceDictionary Source="pack://application:,,,/Styles/Controls/CustomDialog.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Controls/Label.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Controls/TextBlock.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <SolidColorBrush x:Key="Window.Main.TitleBackground" Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
-            <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground" Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
-            <SolidColorBrush x:Key="Window.Main.Background" Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
-
-            <SolidColorBrush x:Key="Overlay.Background" Color="#E54D4D4D"/>
-
-            <Style x:Key="DescriptionHeader"
-                   TargetType="Label">
-                <Setter Property="FontSize" Value="22" />
-            </Style>
-            <Style x:Key="AccentHeader"
-                   TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Accent}"/>
-                <Setter Property="FontSize" Value="22"/>
-                <Setter Property="FontWeight" Value="DemiBold"/>
-            </Style>
-            <Style x:Key="Header1"
-                   TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
-                <Setter Property="FontSize" Value="22"/>
-            </Style>
-            <Style x:Key="Header2"
-                   TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
-                <Setter Property="FontSize" Value="20"/>
-            </Style>
-            <Style x:Key="Header3"
-                   TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
-                <Setter Property="FontSize" Value="16"/>
-            </Style>
-            <Style x:Key="Paragraph"
-                   TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Text}"/>
-            </Style>
-
-            <Style x:Key="DefaultDialog"
-                   TargetType="{x:Type controls:CustomDialog}"
-                   BasedOn="{StaticResource MahApps.Styles.BaseMetroDialog}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type controls:CustomDialog}">
-                            <ControlTemplate.Resources>
-                                <Storyboard x:Key="DialogShownStoryboard">
-                                    <DoubleAnimation AccelerationRatio=".9"
-                                                     BeginTime="0:0:0"
-                                                     Duration="0:0:0.2"
-                                                     Storyboard.TargetProperty="Opacity"
-                                                     To="1"/>
-                                </Storyboard>
-                            </ControlTemplate.Resources>
-
-                            <ControlTemplate.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <EventTrigger.Actions>
-                                        <BeginStoryboard Storyboard="{StaticResource DialogShownStoryboard}"/>
-                                    </EventTrigger.Actions>
-                                </EventTrigger>
-                            </ControlTemplate.Triggers>
-
-                            <Grid Background="{TemplateBinding Background}">
-                                <Border FocusVisualStyle="{x:Null}"
-                                        Focusable="False">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <ContentPresenter Grid.Row="0"
-                                                          Content="{TemplateBinding DialogTop}"/>
-                                        <Grid Grid.Row="1">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="10*"/>
-                                                <ColumnDefinition Width="80*"/>
-                                                <ColumnDefinition Width="10*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Grid Grid.Column="1"
-                                                  Margin="0 10 0 0">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="*"/>
-                                                </Grid.RowDefinitions>
-
-                                                <TextBlock Grid.Row="0"
-                                                           FontSize="{DynamicResource DialogTitleFontSize}"
-                                                           Style="{DynamicResource Header2}"
-                                                           Foreground="{TemplateBinding Foreground}"
-                                                           Text="{TemplateBinding Title}"
-                                                           TextWrapping="Wrap"/>
-                                                <ContentPresenter Grid.Row="1"
-                                                                  Content="{TemplateBinding Content}"/>
-                                            </Grid>
-                                        </Grid>
-                                        <ContentPresenter Grid.Row="2"
-                                                          Content="{TemplateBinding DialogBottom}"/>
-                                    </Grid>
-                                </Border>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <convertersLocal:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <convertersLocal:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
-            <convertersLocal:IntToStringConverter x:Key="IntToStringConverter"/>
-            <convertersLocal:NewPostsCountConverter x:Key="NewPostsCountConverter"/>
-            <convertersLocal:NewPostsCountToVisibilityConverter x:Key="NewPostsCountToVisibilityConverter"/>
-            <convertersLocal:StatIntToBorderBackgroundConverter x:Key="StatIntToBorderBackgroundConverter"/>
-            <convertersLocal:ProfileStatStringToVisibilityConverter x:Key="ProfileStatStringToVisibilityConverter"/>
-            <convertersLocal:ProfileStatIntToVisibilityConverter x:Key="ProfileStatIntToVisibilityConverter"/>
-            <convertersLocal:ProfileStatCollectionToVisibilityConverter x:Key="ProfileStatCollectionToVisibilityConverter"/>
-            <convertersLocal:ProfileStatVisibilityMultiConverter x:Key="ProfileStatVisibilityMultiConverter"/>
-            <convertersLocal:ProfileStatBlockVisibilityMultiConverter x:Key="ProfileStatBlockVisibilityMultiConverter"/>
-            <convertersLocal:UserPurposeTypeToStringConverter x:Key="UserPurposeTypeToStringConverter"/>
-            <convertersLocal:UserPurposeTypeToVisibilityConverter x:Key="UserPurposeTypeToVisibilityConverter"/>
-            <convertersLocal:UserSexTypeToStringConverter x:Key="UserSexTypeToStringConverter"/>
-            <convertersLocal:UserSexTypeToVisibilityConverter x:Key="UserSexTypeToVisibilityConverter"/>
-            <convertersLocal:UserNameConverter x:Key="UserNameConverter"/>
-            <convertersLocal:UserStatusTypeConverter x:Key="UserStatusTypeConverter"/>
-            <convertersLocal:UserStatusTypeToVisibilityConverter x:Key="UserStatusTypeToVisibilityConverter"/>
-            <convertersLocal:UserAvatarImageSourceConverter x:Key="UserAvatarImageSourceConverter"/>
-            <convertersLocal:UserBannerImageSourceConverter x:Key="UserBannerImageSourceConverter"/>
-            <convertersLocal:OwnerIdToVisibilityConverter x:Key="OwnerIdToVisibilityConverter"/>
-            <convertersLocal:PostImageSourceConverter x:Key="PostImageSourceConverter"/>
-            <convertersLocal:PostImageSourceToVisibilityConverter x:Key="PostImageSourceToVisibilityConverter"/>
-            <convertersLocal:PostImageSourceToRowSpanConverter x:Key="PostImageSourceToRowSpanConverter"/>
-            <convertersLocal:PostStatusTypeConverter x:Key="PostStatusTypeConverter"/>
-            <convertersLocal:PostStatusTypeToVisibilityConverter x:Key="PostStatusTypeToVisibilityConverter"/>
-            <convertersLocal:PostCategorySchemaToStringConverter x:Key="PostCategorySchemaToStringConverter"/>
-            <convertersLocal:PreviewImageSourceConverter x:Key="PreviewImageSourceConverter"/>
-            <convertersLocal:WriteCommentTextConverter x:Key="WriteCommentTextConverter"/>
-            <convertersLocal:BgmVolumeConverter x:Key="BgmVolumeConverter"/>
-            <convertersLocal:UnixTimeToStringConverter x:Key="UnixTimeToStringConverter"/>
-            <convertersLocal:BirthDateToAgeStringConverter x:Key="BirthDateToAgeStringConverter"/>
-
-            <convertersRis:SimpleArithmeticConverter x:Key="SimpleArithmeticConverter"/>
-            <convertersRis:ScriptEvaluatorConverter x:Key="ScriptEvaluatorConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

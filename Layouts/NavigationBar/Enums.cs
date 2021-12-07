@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Memenim.TabLayouts.NavigationBar
+namespace Memenim.Layouts.NavigationBar
 {
     public enum NavBarLayoutType : byte
     {

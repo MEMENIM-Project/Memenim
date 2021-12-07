@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Memenim.Layouts.NavigationBar"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
+
+    <system:String x:Key="ResourceDictionaryName">layout-NavigationBar-NavBarDefault</system:String>
+
+    <x:Array x:Key="TriggeredOnPages"
+             Type="system:String">
+        <system:String>FeedPage</system:String>
+        <system:String>SubmitPostPage</system:String>
+        <system:String>PlaceholderPage</system:String>
+        <system:String>ChatPlaceholderPage</system:String>
+        <system:String>UserProfilePage</system:String>
+        <system:String>PostOverlayPage</system:String>
+    </x:Array>
+
+    <x:Array x:Key="TopNavButtons"
+             Type="local:NavRedirectButtonNode">
+        <local:NavRedirectButtonNode PageName="Back"
+                                     IconKind="{x:Static iconPacks:PackIconModernKind.ArrowLeft}"/>
+    </x:Array>
+    <x:Array x:Key="CentralNavButtons"
+             Type="local:NavRedirectButtonNode">
+        <local:NavRedirectButtonNode PageName="PlaceholderPage"
+                                     IconKind="{x:Static iconPacks:PackIconModernKind.Magnify}"/>
+        <local:NavRedirectButtonNode PageName="FeedPage"
+                                     IconKind="{x:Static iconPacks:PackIconModernKind.Newspaper}"/>
+        <local:NavRedirectButtonNode PageName="ChatPlaceholderPage"
+                                     IconKind="{x:Static iconPacks:PackIconModernKind.Chat}"/>
+    </x:Array>
+    <x:Array x:Key="BottomNavButtons"
+             Type="local:NavRedirectButtonNode">
+        <local:NavRedirectButtonNode PageName="UserProfilePage"
+                                     IconKind="{x:Static iconPacks:PackIconModernKind.PeopleProfile}"/>
+        <local:NavRedirectButtonNode PageName="SettingsFlyout"
+                                     IconKind="{x:Static iconPacks:PackIconModernKind.Settings}"/>
+    </x:Array>
+</ResourceDictionary>

@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
+using Memenim.Layouts;
+using Memenim.Layouts.NavigationBar;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
-using Memenim.TabLayouts;
-using Memenim.TabLayouts.NavigationBar;
 using RIS;
+using RIS.Collections.Chunked;
+using RIS.Collections.Extensions;
 
 namespace Memenim.Navigation
 {
@@ -33,28 +35,47 @@ namespace Memenim.Navigation
             }
         }
 
-        private readonly Dictionary<Type, NavBarLayoutType> _navBarPagesLayouts =
-            new Dictionary<Type, NavBarLayoutType>();
-        private readonly Stack<NavigationHistoryNode> _navigationHistory =
-            new Stack<NavigationHistoryNode>();
-        private PageContentType _currentPageContentType = PageContentType.Page;
-        private bool _currentPageSkipWhenGoBack = false;
+
+
+        private readonly Dictionary<Type, NavBarLayoutType> _navBarPagesLayouts;
+        private readonly ChunkedArrayL<NavigationHistoryNode> _navigationHistory;
+
+        private PageContentType _currentPageContentType;
+        private bool _currentPageSkipWhenGoBack;
+
+
+
+        public bool IsCreated { get; private set; }
+
+
 
         private NavigationController()
         {
+            Initialized += OnCreated;
+            Initialized += OnInitialized;
+            Loaded += OnEnter;
+            Unloaded += OnExit;
+
+            IsCreated = false;
+
+            _navBarPagesLayouts = new Dictionary<Type, NavBarLayoutType>();
+            _navigationHistory = new ChunkedArrayL<NavigationHistoryNode>();
+
+            _currentPageContentType = PageContentType.Page;
+            _currentPageSkipWhenGoBack = false;
+
             InitializeComponent();
             DataContext = this;
-
-            LoadNavBarLayouts().Wait();
-
-            HideOverlay();
         }
+
+
 
         private async Task LoadNavBarLayouts()
         {
             foreach (var layoutType in (NavBarLayoutType[])Enum.GetValues(typeof(NavBarLayoutType)))
             {
-                ResourceDictionary dictionary = await TabLayoutsManager.GetLayout(NavBar, layoutType.ToString())
+                var dictionary = await LayoutsManager
+                    .GetLayout(NavBar, layoutType.ToString())
                     .ConfigureAwait(true);
 
                 if (dictionary == null)
@@ -62,7 +83,8 @@ namespace Memenim.Navigation
 
                 foreach (var pageName in (string[])dictionary["TriggeredOnPages"])
                 {
-                    Type pageType = Type.GetType($"Memenim.Pages.{pageName}");
+                    var pageType = Type.GetType(
+                        $"Memenim.Pages.{pageName}");
 
                     if (pageType == null)
                         continue;
@@ -73,9 +95,10 @@ namespace Memenim.Navigation
             }
         }
 
-        private NavBarLayoutType? GetNavBarLayoutType(PageContent page)
+        private NavBarLayoutType? GetNavBarLayoutType(
+            PageContent page)
         {
-            Type pageType = page.GetType();
+            var pageType = page.GetType();
 
             if (!_navBarPagesLayouts.ContainsKey(pageType))
                 return null;
@@ -83,14 +106,16 @@ namespace Memenim.Navigation
             return _navBarPagesLayouts[pageType];
         }
 
-        private async Task SwitchNavBarLayout(NavBarLayoutType type)
+        private async Task SwitchNavBarLayout(
+            NavBarLayoutType type)
         {
             if (type == NavBarLayoutType.NavBarNone)
             {
-                MainWindow.Instance.LinkOpenEnable(false);
+                MainWindow.Instance.DeactivateOpenLink();
+
                 RootLayout.DisplayMode = SplitViewDisplayMode.Inline;
 
-                MainWindow.Instance.HideSettings();
+                MainWindow.Instance.SettingsFlyout.Hide();
 
                 await NavBar.SwitchLayout(type)
                     .ConfigureAwait(true);
@@ -101,11 +126,13 @@ namespace Memenim.Navigation
                     .ConfigureAwait(true);
 
                 RootLayout.DisplayMode = SplitViewDisplayMode.CompactInline;
-                MainWindow.Instance.LinkOpenEnable(true);
+
+                MainWindow.Instance.ActivateOpenLink();
             }
         }
 
-        private async Task SwitchNavBarLayout(PageContent page)
+        private async Task SwitchNavBarLayout(
+            PageContent page)
         {
             var layoutType = GetNavBarLayoutType(page);
 
@@ -116,10 +143,85 @@ namespace Memenim.Navigation
                 .ConfigureAwait(true);
         }
 
-        private void SetPage(PageContent page, PageViewModel dataContext = null,
+
+
+        private ContentControl GetCurrentContentControl()
+        {
+            return _currentPageContentType switch
+            {
+                PageContentType.Page => PageContent,
+                PageContentType.Overlay => OverlayContent,
+                _ => throw new ArgumentException(
+                    "Invalid page content type",
+                    nameof(_currentPageContentType))
+            };
+        }
+
+        private PageContent GetCurrentContent()
+        {
+            return GetCurrentContentControl()
+                .Content as PageContent;
+        }
+
+        private void ActivateContentEvents()
+        {
+            var content = GetCurrentContent();
+
+            if (content == null)
+                return;
+
+            content.IsOnEnterActive = true;
+            content.IsOnExitActive = true;
+        }
+
+        private void DeactivateContentEvents()
+        {
+            var content = GetCurrentContent();
+
+            if (content == null)
+                return;
+
+            content.IsOnEnterActive = false;
+            content.IsOnExitActive = false;
+        }
+
+
+
+        private bool IsOpenOverlay()
+        {
+            return _currentPageContentType == PageContentType.Overlay;
+        }
+
+        private void ShowOverlay()
+        {
+            OverlayLayout.Visibility = Visibility.Visible;
+        }
+
+        private void HideOverlay()
+        {
+            OverlayLayout.Visibility = Visibility.Collapsed;
+        }
+
+        private void ClearOverlay()
+        {
+            OverlayContent.Content = null;
+        }
+
+
+
+        private bool IsOpenPage()
+        {
+            return _currentPageContentType == PageContentType.Page;
+        }
+
+
+
+        private void SetPage(
+            PageContent page,
+            PageViewModel dataContext = null,
             bool skipWhenGoBack = false)
         {
-            if (!OverlayIsOpen()
+            if (!IsOpenOverlay()
                 && ReferenceEquals(PageContent.Content, page)
                 && (dataContext == null
                     || ReferenceEquals((PageContent.Content as PageContent)?.DataContext, dataContext)))
@@ -131,7 +233,7 @@ namespace Memenim.Navigation
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            IsContentEventsActive(false);
+            DeactivateContentEvents();
 
             SaveContentToHistory();
 
@@ -157,10 +259,12 @@ namespace Memenim.Navigation
             HideOverlay();
             ClearOverlay();
 
-            IsContentEventsActive(true);
+            ActivateContentEvents();
         }
 
-        private void SetOverlay(PageContent page, PageViewModel dataContext = null,
+        private void SetOverlay(
+            PageContent page,
+            PageViewModel dataContext = null,
             bool skipWhenGoBack = false)
         {
             if (ReferenceEquals(OverlayContent.Content, page)
@@ -174,7 +278,7 @@ namespace Memenim.Navigation
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            IsContentEventsActive(false);
+            DeactivateContentEvents();
 
             SaveContentToHistory();
 
@@ -199,15 +303,18 @@ namespace Memenim.Navigation
 
             ShowOverlay();
 
-            IsContentEventsActive(true);
+            ActivateContentEvents();
         }
 
-        private void LoadContentFromHistory(bool autoSkip = false)
+
+
+        private void LoadContentFromHistory(
+            bool autoSkip = false)
         {
-            if (_navigationHistory.Count == 0)
+            if (_navigationHistory.Length == 0)
                 return;
 
-            IsContentEventsActive(false);
+            DeactivateContentEvents();
 
             NavigationHistoryNode node;
 
@@ -216,7 +323,7 @@ namespace Memenim.Navigation
                 node = _navigationHistory.Pop();
             } while (autoSkip
                      && node.SkipWhenGoBack
-                     && _navigationHistory.Count != 0);
+                     && _navigationHistory.Length != 0);
 
             switch (node.Type)
             {
@@ -260,148 +367,96 @@ namespace Memenim.Navigation
 
         private void SaveContentToHistory()
         {
-            IsContentEventsActive(false);
+            DeactivateContentEvents();
 
-            var contentControl = _currentPageContentType switch
-            {
-                PageContentType.Page => PageContent,
-                PageContentType.Overlay => OverlayContent,
-                _ => throw new ArgumentException(
-                    "Invalid page content type for current page",
-                    nameof(_currentPageContentType))
-            };
+            var contentControl = GetCurrentContentControl();
 
-            if (contentControl.Content != null)
-            {
-                var layoutType = GetNavBarLayoutType((PageContent)contentControl.Content);
-
-                if (!layoutType.HasValue
-                    || layoutType.Value == NavBarLayoutType.NavBarNone)
-                {
-                    return;
-                }
-
-                _navigationHistory.Push(new NavigationHistoryNode
-                {
-                    Content = contentControl.Content as PageContent,
-                    SubContent = _currentPageContentType switch
-                    {
-                        PageContentType.Page => null,
-                        PageContentType.Overlay => PageContent.Content as PageContent,
-                        _ => throw new ArgumentException(
-                            "Invalid page content type for current page",
-                            nameof(_currentPageContentType))
-                    },
-                    DataContext = (contentControl.Content as PageContent)?.DataContext as PageViewModel,
-                    SubDataContext = _currentPageContentType switch
-                    {
-                        PageContentType.Page => null,
-                        PageContentType.Overlay => (PageContent.Content as PageContent)?.DataContext as PageViewModel,
-                        _ => throw new ArgumentException(
-                            "Invalid page content type for current page",
-                            nameof(_currentPageContentType))
-                    },
-                    Type = _currentPageContentType,
-                    SkipWhenGoBack = _currentPageSkipWhenGoBack
-                });
-            }
-        }
-
-        private void IsContentEventsActive(bool isActive)
-        {
-            IsContentEventsActive(_currentPageContentType, isActive);
-        }
-        private void IsContentEventsActive(PageContentType type, bool isActive)
-        {
-            var contentControl = type switch
-            {
-                PageContentType.Page => PageContent,
-                PageContentType.Overlay => OverlayContent,
-                _ => throw new ArgumentException(
-                    "Invalid page content type for type parameter",
-                    nameof(type))
-            };
-
-            PageContent content = contentControl.Content as PageContent;
-
-            if (content == null)
+            if (contentControl.Content == null)
                 return;
 
-            content.IsOnEnterActive = isActive;
-            content.IsOnExitActive = isActive;
-        }
+            var layoutType = GetNavBarLayoutType(
+                (PageContent)contentControl.Content);
 
-        private bool OverlayIsOpen()
-        {
-            return OverlayLayout.Visibility == Visibility.Visible;
-        }
-
-        private void ShowOverlay()
-        {
-            OverlayLayout.Visibility = Visibility.Visible;
-        }
-
-        private void HideOverlay()
-        {
-            OverlayLayout.Visibility = Visibility.Collapsed;
-        }
-
-        private void ClearOverlay()
-        {
-            OverlayContent.Content = null;
-        }
-
-        public void RequestPage<T>(PageViewModel dataContext = null,
-            bool skipWhenGoBack = false)
-            where T : PageContent
-        {
-            PageContent page = PageStorage.GetPage<T>();
-
-            SetPage(page, dataContext,
-                skipWhenGoBack);
-        }
-        public void RequestPage(Type type, PageViewModel dataContext = null,
-            bool skipWhenGoBack = false)
-        {
-            PageContent page = PageStorage.GetPage(type);
-
-            SetPage(page, dataContext,
-                skipWhenGoBack);
-        }
-
-        public void RequestOverlay<T>(PageViewModel dataContext = null,
-            bool skipWhenGoBack = false)
-            where T : PageContent
-        {
-            PageContent page = PageStorage.GetPage<T>();
-
-            SetOverlay(page, dataContext,
-                skipWhenGoBack);
-        }
-        public void RequestOverlay(Type type, PageViewModel dataContext = null,
-            bool skipWhenGoBack = false)
-        {
-            PageContent page = PageStorage.GetPage(type);
-
-            SetOverlay(page, dataContext,
-                skipWhenGoBack);
-        }
-
-        public bool IsCurrentPage<T>()
-            where T : PageContent
-        {
-            var contentControl = _currentPageContentType switch
+            if (!layoutType.HasValue
+                || layoutType.Value == NavBarLayoutType.NavBarNone)
             {
-                PageContentType.Page => PageContent,
-                PageContentType.Overlay => OverlayContent,
-                _ => throw new ArgumentException(
-                    "Invalid page content type for current page",
-                    nameof(_currentPageContentType))
-            };
+                return;
+            }
 
-            return contentControl.Content.GetType() == typeof(T);
+            _navigationHistory.Push(new NavigationHistoryNode
+            {
+                Content = contentControl.Content as PageContent,
+                SubContent = _currentPageContentType switch
+                {
+                    PageContentType.Page => null,
+                    PageContentType.Overlay => PageContent.Content as PageContent,
+                    _ => throw new ArgumentException(
+                        "Invalid page content type for current page",
+                        nameof(_currentPageContentType))
+                },
+                DataContext = (contentControl.Content as PageContent)?.DataContext as PageViewModel,
+                SubDataContext = _currentPageContentType switch
+                {
+                    PageContentType.Page => null,
+                    PageContentType.Overlay => (PageContent.Content as PageContent)?.DataContext as PageViewModel,
+                    _ => throw new ArgumentException(
+                        "Invalid page content type for current page",
+                        nameof(_currentPageContentType))
+                },
+                Type = _currentPageContentType,
+                SkipWhenGoBack = _currentPageSkipWhenGoBack
+            });
         }
-        public bool IsCurrentPage(Type type)
+
+
+
+        public void RequestPage<T>(
+            PageViewModel dataContext = null,
+            bool skipWhenGoBack = false)
+            where T : PageContent
+        {
+            var page = PageStorage.GetPage<T>();
+
+            SetPage(page, dataContext,
+                skipWhenGoBack);
+        }
+        public void RequestPage(Type type,
+            PageViewModel dataContext = null,
+            bool skipWhenGoBack = false)
+        {
+            var page = PageStorage.GetPage(type);
+
+            SetPage(page, dataContext,
+                skipWhenGoBack);
+        }
+
+        public void RequestOverlay<T>(
+            PageViewModel dataContext = null,
+            bool skipWhenGoBack = false)
+            where T : PageContent
+        {
+            var page = PageStorage.GetPage<T>();
+
+            SetOverlay(page, dataContext,
+                skipWhenGoBack);
+        }
+        public void RequestOverlay(Type type,
+            PageViewModel dataContext = null,
+            bool skipWhenGoBack = false)
+        {
+            var page = PageStorage.GetPage(type);
+
+            SetOverlay(page, dataContext,
+                skipWhenGoBack);
+        }
+
+        public bool IsCurrentContent<T>()
+            where T : PageContent
+        {
+            return GetCurrentContent()?
+                .GetType() == typeof(T);
+        }
+        public bool IsCurrentContent(Type type)
         {
             if (!typeof(PageContent).IsAssignableFrom(type))
             {
@@ -411,23 +466,17 @@ namespace Memenim.Navigation
                 throw exception;
             }
 
-            var contentControl = _currentPageContentType switch
-            {
-                PageContentType.Page => PageContent,
-                PageContentType.Overlay => OverlayContent,
-                _ => throw new ArgumentException(
-                    "Invalid page content type for current page",
-                    nameof(_currentPageContentType))
-            };
-
-            return contentControl.Content.GetType() == type;
+            return GetCurrentContent()?
+                .GetType() == type;
         }
 
-        public void GoBack(bool autoSkip = false)
+        public void GoBack(
+            bool autoSkip = false)
         {
             LoadContentFromHistory(autoSkip);
         }
-        public void GoBack(int count, bool autoSkip = false)
+        public void GoBack(int count,
+            bool autoSkip = false)
         {
             if (count < 0)
                 count = 0;
@@ -438,9 +487,23 @@ namespace Memenim.Navigation
             }
         }
 
-        public bool HistoryIsEmpty()
+
+
+        public void ActivateNavigation()
         {
-            return _navigationHistory.Count == 0;
+            NavBar.IsEnabled = true;
+        }
+
+        public void DeactivateNavigation()
+        {
+            NavBar.IsEnabled = false;
+        }
+
+
+
+        public bool IsEmptyHistory()
+        {
+            return _navigationHistory.Length == 0;
         }
 
         public void ClearHistory()
@@ -448,47 +511,74 @@ namespace Memenim.Navigation
             _navigationHistory.Clear();
         }
 
-        public void LockNavigation(bool state)
+
+
+        private async void OnCreated(object sender,
+            EventArgs e)
         {
-            if (state)
-            {
-                NavBar.IsEnabled = false;
-
+            if (IsCreated)
                 return;
-            }
 
-            NavBar.IsEnabled = true;
+            Initialized -= OnCreated;
+
+            IsCreated = true;
+
+            await LoadNavBarLayouts()
+                .ConfigureAwait(true);
+
+            HideOverlay();
         }
 
-        private void OverlayBackground_Click(object sender, RoutedEventArgs e)
+        private void OnInitialized(object sender,
+            EventArgs e)
         {
-            IsContentEventsActive(false);
+
+        }
+
+        private void OnEnter(object sender,
+            RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnExit(object sender,
+            RoutedEventArgs e)
+        {
+
+        }
+
+
+
+        private void OverlayBackground_Click(object sender,
+            RoutedEventArgs e)
+        {
+            DeactivateContentEvents();
 
             if (OverlayContent.Content != null)
             {
-                var layoutType = GetNavBarLayoutType((PageContent)OverlayContent.Content);
+                var layoutType = GetNavBarLayoutType(
+                    (PageContent)OverlayContent.Content);
 
                 if (!layoutType.HasValue
                     || layoutType.Value == NavBarLayoutType.NavBarNone
                     || layoutType.Value == NavBarLayoutType.NavBarBackOnly)
                 {
                     GoBack();
-                    IsContentEventsActive(true);
+
+                    ActivateContentEvents();
 
                     return;
                 }
-                else
+
+                _navigationHistory.Push(new NavigationHistoryNode
                 {
-                    _navigationHistory.Push(new NavigationHistoryNode
-                    {
-                        Content = OverlayContent.Content as PageContent,
-                        SubContent = PageContent.Content as PageContent,
-                        DataContext = (OverlayContent.Content as PageContent)?.DataContext as PageViewModel,
-                        SubDataContext = (PageContent.Content as PageContent)?.DataContext as PageViewModel,
-                        Type = PageContentType.Overlay,
-                        SkipWhenGoBack = _currentPageSkipWhenGoBack
-                    });
-                }
+                    Content = OverlayContent.Content as PageContent,
+                    SubContent = PageContent.Content as PageContent,
+                    DataContext = (OverlayContent.Content as PageContent)?.DataContext as PageViewModel,
+                    SubDataContext = (PageContent.Content as PageContent)?.DataContext as PageViewModel,
+                    Type = PageContentType.Overlay,
+                    SkipWhenGoBack = _currentPageSkipWhenGoBack
+                });
             }
 
             _currentPageContentType = PageContentType.Page;
@@ -497,7 +587,7 @@ namespace Memenim.Navigation
             HideOverlay();
             ClearOverlay();
 
-            IsContentEventsActive(true);
+            ActivateContentEvents();
         }
     }
 }

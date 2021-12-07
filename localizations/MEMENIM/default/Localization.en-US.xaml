@@ -243,9 +243,11 @@ Have fun.</system:String>
     <system:String x:Key="CancelTitle">Cancel</system:String>
     <system:String x:Key="EnterTitle">Enter</system:String>
     <system:String x:Key="EnableTitle">Enable</system:String>
+    <system:String x:Key="DisableTitle">Disable</system:String>
     <system:String x:Key="ErrorTitle">Error</system:String>
     <system:String x:Key="SuccessTitle">Success</system:String>
     <system:String x:Key="NothingTitle">Nothing</system:String>
+    <system:String x:Key="AnonymouslyTitle">Anonymously</system:String>
     <system:String x:Key="FileTitle">File</system:String>
     <system:String x:Key="LocalizationFileTitle">Localization file</system:String>
     <system:String x:Key="LocalizedCultureTitle">Localized culture</system:String>

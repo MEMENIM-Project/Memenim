@@ -19,11 +19,17 @@ namespace Memenim.Utils
 
 
 
+        public static LocalizationFactory CurrentFactory { get; private set; }
+
+        public static bool IsInitialized { get; private set; }
+
+
+
         public static AsyncLock SyncRoot
         {
             get
             {
-                return App.LocalizationFactory
+                return CurrentFactory
                     .SyncRoot;
             }
         }
@@ -31,7 +37,7 @@ namespace Memenim.Utils
         {
             get
             {
-                return App.LocalizationFactory
+                return CurrentFactory
                     .CurrentDefaultLocalization;
             }
         }
@@ -39,7 +45,7 @@ namespace Memenim.Utils
         {
             get
             {
-                return App.LocalizationFactory
+                return CurrentFactory
                     .CurrentLocalization;
             }
         }
@@ -47,7 +53,7 @@ namespace Memenim.Utils
         {
             get
             {
-                return App.LocalizationFactory
+                return CurrentFactory
                     .Localizations;
             }
         }
@@ -56,7 +62,7 @@ namespace Memenim.Utils
         {
             get
             {
-                return App.LocalizationFactory
+                return CurrentFactory
                     .DefaultCulture;
             }
         }
@@ -65,21 +71,7 @@ namespace Memenim.Utils
 
         static LocalizationUtils()
         {
-            App.LocalizationFactory
-                .DefaultLocalizationChanged += OnDefaultLocalizationChanged;
-            App.LocalizationFactory
-                .LocalizationChanged += OnLocalizationChanged;
-            App.LocalizationFactory
-                .LocalizationsLoaded += OnLocalizationsLoaded;
-            App.LocalizationFactory
-                .LocalizationFileNotFound += OnLocalizationFileNotFound;
-            App.LocalizationFactory
-                .LocalizedCultureNotFound += OnLocalizedCultureNotFound;
-            App.LocalizationFactory
-                .LocalizationsNotFound += OnLocalizationsNotFound;
-
-            App.LocalizationFactory
-                .LocalizationUpdated += OnLocalizationUpdated;
+            Initialize();
         }
 
 
@@ -137,13 +129,50 @@ namespace Memenim.Utils
         public static void OnLocalizationUpdated(
             ILocalizationModule localization)
         {
-            App.LocalizationFactory
+            CurrentFactory
                 .OnLocalizationUpdated(localization);
         }
         public static void OnLocalizationUpdated()
         {
-            App.LocalizationFactory
+            CurrentFactory
                 .OnLocalizationUpdated();
+        }
+
+
+
+        public static void Initialize()
+        {
+            if (IsInitialized)
+                return;
+
+            var assemblyName = typeof(App)
+                .Assembly
+                .GetName()
+                .Name;
+
+            CurrentFactory = LocalizationFactory
+                .Create(assemblyName, "MEMENIM");
+
+            LocalizationManager.SetCurrentFactory(
+                assemblyName, CurrentFactory);
+
+            CurrentFactory
+                .DefaultLocalizationChanged += OnDefaultLocalizationChanged;
+            CurrentFactory
+                .LocalizationChanged += OnLocalizationChanged;
+            CurrentFactory
+                .LocalizationsLoaded += OnLocalizationsLoaded;
+            CurrentFactory
+                .LocalizationFileNotFound += OnLocalizationFileNotFound;
+            CurrentFactory
+                .LocalizedCultureNotFound += OnLocalizedCultureNotFound;
+            CurrentFactory
+                .LocalizationsNotFound += OnLocalizationsNotFound;
+
+            CurrentFactory
+                .LocalizationUpdated += OnLocalizationUpdated;
+
+            IsInitialized = true;
         }
 
 
@@ -151,13 +180,13 @@ namespace Memenim.Utils
         public static void SetDefaultCulture(
             string cultureName)
         {
-            App.LocalizationFactory
+            CurrentFactory
                 .SetDefaultCulture(cultureName);
         }
         public static void SetDefaultCulture(
             CultureInfo culture)
         {
-            App.LocalizationFactory
+            CurrentFactory
                 .SetDefaultCulture(culture);
         }
 
@@ -166,13 +195,13 @@ namespace Memenim.Utils
         public static void ReloadLocalizations<T>()
             where T : ILocalizationProvider
         {
-            App.LocalizationFactory
+            CurrentFactory
                 .ReloadLocalizations<T>();
         }
 
         public static string GetDefaultCultureName()
         {
-            return App.LocalizationFactory
+            return CurrentFactory
                 .GetDefaultCultureName();
         }
 
@@ -180,14 +209,14 @@ namespace Memenim.Utils
         public static bool SwitchDefaultLocalization(
             string cultureName)
         {
-            return App.LocalizationFactory
+            return CurrentFactory
                 .SwitchDefaultLocalization(cultureName);
         }
 
         public static bool SwitchLocalization(
             string cultureName)
         {
-            return App.LocalizationFactory
+            return CurrentFactory
                 .SwitchLocalization(cultureName);
         }
 
@@ -195,14 +224,14 @@ namespace Memenim.Utils
         public static string GetLocalized(
             string key)
         {
-            return App.LocalizationFactory
+            return CurrentFactory
                 .GetLocalized(key);
         }
 
         public static bool TryGetLocalized(
             string key, out string value)
         {
-            return App.LocalizationFactory
+            return CurrentFactory
                 .TryGetLocalized(key, out value);
         }
     }

@@ -6,17 +6,17 @@ namespace Memenim.Pages.ViewModel
 {
     public class PostOverlayViewModel : PageViewModel
     {
-        private PostWidget _sourcePostWidget;
-        public PostWidget SourcePostWidget
+        private Post _sourcePost;
+        public Post SourcePost
         {
             get
             {
-                return _sourcePostWidget;
+                return _sourcePost;
             }
             set
             {
-                _sourcePostWidget = value;
-                OnPropertyChanged(nameof(SourcePostWidget));
+                _sourcePost = value;
+                OnPropertyChanged(nameof(SourcePost));
             }
         }
         private PostSchema _currentPostData = new PostSchema();

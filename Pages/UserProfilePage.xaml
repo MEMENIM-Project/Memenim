@@ -8,10 +8,10 @@
                    xmlns:viewModel="clr-namespace:Memenim.Pages.ViewModel"
                    xmlns:widgets ="clr-namespace:Memenim.Widgets"
                    xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
-                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                   xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
-                   xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
+                   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                   xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    mc:Ignorable="d" 
                    d:DesignHeight="450" d:DesignWidth="800">
 
@@ -28,7 +28,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="40" Height="40"/>
-            <RowDefinition/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <Grid.ContextMenu>
@@ -54,12 +54,13 @@
                            Text="{Binding Path=CurrentProfileData.Nickname, Converter={StaticResource UserNameConverter}}"
                            Margin="20 0 0 0"
                            HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-                <widgets:IconButton DockPanel.Dock="Right" IconKind="Edit"
+                <widgets:IconButton DockPanel.Dock="Right"
+                                    IconKind="{x:Static iconPacks:PackIconModernKind.Edit}"
                                     Width="40"
                                     Margin="2 0 -3 0"
                                     HorizontalAlignment="Right"
                                     Visibility="{Binding Path=IsEditMode, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
-                                    IconButtonClick="EditName_Click"/>
+                                    Click="EditName_Click"/>
                 <TextBlock Style="{DynamicResource Header3}"
                            Foreground="Gray"
                            Text="("
@@ -80,29 +81,31 @@
                                     StatusValue="{Binding Path=DataContext.CurrentProfileData.Status, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                     Visibility="{Binding Path=DataContext.CurrentProfileData.Status, Converter={StaticResource UserStatusTypeToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"/>
             </StackPanel>
-            <widgets:IconToggleButton x:Name="btnEditMode" IconKind="EditBox" Width="40" HorizontalAlignment="Right"
+            <widgets:IconToggleButton x:Name="btnEditMode"
+                                      IconKind="{x:Static iconPacks:PackIconModernKind.EditBox}"
+                                      Width="40" HorizontalAlignment="Right"
                                       Visibility="{Binding Path=DataContext.EditAllowed, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                                       IsChecked="{Binding Path=IsEditMode, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
-                                      IconToggleButtonClick="btnEditMode_Click"/>
+                                      Click="btnEditMode_Click"/>
         </Grid>
-        <Grid Grid.Row="1" Grid.Column="0"
-              MinWidth="200" MinHeight="200"
-              Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
-              MaxHeight="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
-              Margin="20 20 20 20"
-              VerticalAlignment="Top" HorizontalAlignment="Stretch"
-              DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
-              d:DataContext="{d:DesignInstance local:UserProfilePage}"
-              MouseLeftButtonUp="Avatar_MouseLeftButtonUp"
-              MouseRightButtonUp="Avatar_MouseRightButtonUp">
-            <Grid.OpacityMask>
-                <VisualBrush Visual="{Binding ElementName=AvatarBorder}"/>
-            </Grid.OpacityMask>
-
-            <Grid.ContextMenu>
-                <ContextMenu IsHitTestVisible="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), RelativeSource={RelativeSource Mode=Self}}"
-                             DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
-                             d:DataContext="{d:DesignInstance Grid}">
+        <widgets:UserAvatar Grid.Row="1" Grid.Column="0"
+                            x:Name="Avatar"
+                            DataContext="{Binding Path=DataContext, Source={StaticResource ProxyElement}}"
+                            d:DataContext="{d:DesignInstance local:UserProfilePage}"
+                            MinSize="200"
+                            Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+                            MaxHeight="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+                            ImageUrl="{Binding Path=DataContext.CurrentProfileData.PhotoUrl, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
+                            ImageLoadedBackground="Transparent"
+                            ImageUnloadedBackground="{StaticResource MahApps.Brushes.Gray10}"
+                            VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            Margin="20"
+                            MouseLeftButtonUp="Avatar_MouseLeftButtonUp"
+                            MouseRightButtonUp="Avatar_MouseRightButtonUp">
+            <widgets:UserAvatar.ContextMenu>
+                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Mode=Self}}"
+                             d:DataContext="{d:DesignInstance widgets:UserAvatar}"
+                             IsHitTestVisible="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), RelativeSource={RelativeSource Mode=Self}}">
                     <MenuItem Header="{markupLocalization:LocalizedString MenuItem-SelectImageFromUrl}"
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="SelectAvatarFromUrl_Click"/>
@@ -116,25 +119,13 @@
                               Visibility="{Binding Path=DataContext.DataContext.(viewModel:UserProfileViewModel.EditAllowed), Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
                               Click="RemoveAvatar_Click"/>
                 </ContextMenu>
-            </Grid.ContextMenu>
-
-            <!--CornerRadius="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"-->
-            <Border x:Name="AvatarBorder"
-                    Background="{StaticResource MahApps.Brushes.Gray10}"
-                    CornerRadius="0"
-                    SnapsToDevicePixels="True"/>
-            <Image MinHeight="200" MinWidth="200"
-                   x:Name="AvatarImage"
-                   gif:ImageBehavior.AnimatedSource="{Binding Path=DataContext.CurrentProfileData.PhotoUrl, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
-                   Stretch="UniformToFill" StretchDirection="Both"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                   SizeChanged="AvatarImage_SizeChanged"/>
-        </Grid>
+            </widgets:UserAvatar.ContextMenu>
+        </widgets:UserAvatar>
         <ScrollViewer Grid.Row="1" Grid.Column="1"
                       Margin="0 20 0 0"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <StackPanel x:Name="wpStatBlock1"
+                <StackPanel x:Name="StatBlock1"
                             Background="{StaticResource MahApps.Brushes.Gray10}">
                     <StackPanel.Visibility>
                         <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
@@ -157,7 +148,7 @@
                     <Border Height="10"
                             Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 </StackPanel>
-                <StackPanel x:Name="wpStatBlock2"
+                <StackPanel x:Name="StatBlock2"
                             Background="{StaticResource MahApps.Brushes.Gray10}">
                     <StackPanel.Visibility>
                         <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
@@ -203,7 +194,7 @@
                     <Border Height="10"
                             Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 </StackPanel>
-                <StackPanel x:Name="wpStatBlock3"
+                <StackPanel x:Name="StatBlock3"
                             Background="{StaticResource MahApps.Brushes.Gray10}">
                     <StackPanel.Visibility>
                         <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">
@@ -259,7 +250,7 @@
                     <Border Height="10"
                             Background="{DynamicResource MahApps.Brushes.Window.Background}"/>
                 </StackPanel>
-                <StackPanel x:Name="wpStatBlock4"
+                <StackPanel x:Name="StatBlock4"
                             Background="{StaticResource MahApps.Brushes.Gray10}">
                     <StackPanel.Visibility>
                         <MultiBinding Converter="{StaticResource ProfileStatBlockVisibilityMultiConverter}">

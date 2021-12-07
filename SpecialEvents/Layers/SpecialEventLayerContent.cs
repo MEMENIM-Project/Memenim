@@ -1,15 +1,24 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Generic;
 
 namespace Memenim.SpecialEvents.Layers
 {
-    public abstract class SpecialEventLayerContent : UserControl
+    public abstract class SpecialEventLayerContent : UserControl, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+
         public bool IsCreated { get; private set; }
         public bool IsOnEnterActive { get; set; }
         public bool IsOnExitActive { get; set; }
-        public SpecialEventLayerStateType State { get; set; }
+        public ControlStateType State { get; private set; }
+
+
 
         public abstract string DefaultMusicDirectoryPath { get; }
         public abstract string CustomMusicDirectoryPath { get; }
@@ -28,27 +37,29 @@ namespace Memenim.SpecialEvents.Layers
             IsCreated = false;
             IsOnEnterActive = true;
             IsOnExitActive = true;
-            State = SpecialEventLayerStateType.Unknown;
+            State = ControlStateType.Unknown;
         }
 
 
 
-        internal abstract bool EventTimeSatisfied(
+        public abstract bool EventTimeSatisfied(
             DateTime currentTime);
 
-        internal abstract bool LoadEvent();
+        public abstract bool LoadEvent();
 
-        internal abstract void UnloadEvent();
+        public abstract void UnloadEvent();
 
-        public abstract void Activate(
-            bool state);
+        public abstract void Activate();
+
+        public abstract void Deactivate();
 
         public abstract void SetVolume(
             double value);
 
 
 
-        protected virtual void OnCreated(object sender, EventArgs e)
+        protected virtual void OnCreated(object sender,
+            EventArgs e)
         {
             if (IsCreated)
                 return;
@@ -58,14 +69,16 @@ namespace Memenim.SpecialEvents.Layers
             IsCreated = true;
         }
 
-        protected virtual void OnInitialized(object sender, EventArgs e)
+        protected virtual void OnInitialized(object sender,
+            EventArgs e)
         {
 
         }
 
-        protected virtual void OnEnter(object sender, RoutedEventArgs e)
+        protected virtual void OnEnter(object sender,
+            RoutedEventArgs e)
         {
-            State = SpecialEventLayerStateType.Loaded;
+            State = ControlStateType.Loaded;
 
             if (!IsOnEnterActive)
             {
@@ -74,15 +87,25 @@ namespace Memenim.SpecialEvents.Layers
             }
         }
 
-        protected virtual void OnExit(object sender, RoutedEventArgs e)
+        protected virtual void OnExit(object sender,
+            RoutedEventArgs e)
         {
-            State = SpecialEventLayerStateType.Unloaded;
+            State = ControlStateType.Unloaded;
 
             if (!IsOnExitActive)
             {
                 e.Handled = true;
                 return;
             }
+        }
+
+
+
+        public virtual void OnPropertyChanged(
+            [CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(propertyName));
         }
     }
 }

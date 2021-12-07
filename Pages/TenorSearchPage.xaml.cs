@@ -68,7 +68,7 @@ namespace Memenim.Pages
                 ImagePreviewButton previewButton = new ImagePreviewButton
                 {
                     ButtonSize = 150,
-                    ButtonPressAction = ViewModel.OnPicSelect
+                    ClickFunction = ViewModel.OnPicSelect
                 };
 
                 foreach (var media in data.Media)
@@ -182,7 +182,7 @@ namespace Memenim.Pages
                 if (imageButton == null)
                     continue;
 
-                ImageBehavior.SetAnimatedSource(imageButton.img, null);
+                ImageBehavior.SetAnimatedSource(imageButton.Image, null);
             }
 
             lstImages.Children.Clear();

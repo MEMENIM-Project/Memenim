@@ -10,6 +10,7 @@ using Memenim.Commands;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Extensions;
+using Memenim.Generic;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
@@ -153,12 +154,12 @@ namespace Memenim.Pages
 
             foreach (var post in lstPosts.Children)
             {
-                PostWidget postWidget = post as PostWidget;
+                Post postWidget = post as Post;
 
                 if (postWidget == null)
                     continue;
 
-                ImageBehavior.SetAnimatedSource(postWidget.PostImage, null);
+                ImageBehavior.SetAnimatedSource(postWidget.Image, null);
             }
 
             lstPosts.Children.Clear();
@@ -181,7 +182,7 @@ namespace Memenim.Pages
             }
             else
             {
-                ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as PostWidget)?
+                ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as Post)?
                     .CurrentPostData.Id ?? -1;
 
                 IsEmpty = false;
@@ -253,13 +254,13 @@ namespace Memenim.Pages
                 {
                     await Dispatcher.InvokeAsync(() =>
                     {
-                        PostWidget widget = new PostWidget
+                        Post widget = new Post
                         {
                             CurrentPostData = post,
                             TextSizeLimit = true
                         };
-                        widget.PostClick += OnPost_Click;
-                        widget.PostDelete += OnPost_Deleted;
+                        widget.Click += Post_Click;
+                        widget.PostDelete += Post_Delete;
 
                         lstPosts.Children.Add(widget);
                     }).Task.ConfigureAwait(false);
@@ -554,7 +555,7 @@ namespace Memenim.Pages
 
                     foreach (var post in lstPosts.Children)
                     {
-                        if (!(post is PostWidget postWidget))
+                        if (!(post is Post postWidget))
                             continue;
 
                         tasks.Add(postWidget.UpdatePost());
@@ -596,7 +597,7 @@ namespace Memenim.Pages
             if (!_autoUpdateCountTimer.Enabled)
                 return;
 
-            if (State != PageStateType.Loaded)
+            if (State != ControlStateType.Loaded)
                 return;
 
             _autoUpdateCountTimer.Stop();
@@ -636,23 +637,23 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
         }
 
-        private void OnPost_Click(object sender, RoutedEventArgs e)
+        private void Post_Click(object sender, RoutedEventArgs e)
         {
-            if (!(sender is PostWidget post))
+            if (!(sender is Post post))
                 return;
 
             NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
             {
-                SourcePostWidget = post,
+                SourcePost = post,
                 CurrentPostData = post.CurrentPostData
             });
         }
 
-        private async void OnPost_Deleted(object sender, RoutedEventArgs e)
+        private async void Post_Delete(object sender, RoutedEventArgs e)
         {
             _autoUpdateCountTimer.Stop();
 
-            PostWidget post = sender as PostWidget;
+            Post post = sender as Post;
 
             if (post == null)
             {

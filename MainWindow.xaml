@@ -5,50 +5,48 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:local="clr-namespace:Memenim"
+                      xmlns:flyouts="clr-namespace:Memenim.Flyouts"
                       xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
-                      xmlns:controlsLocalization="clr-namespace:RIS.Localization.UI.WPF.Controls;assembly=RIS.Localization.UI.WPF"
                       xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
-                      xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       mc:Ignorable="d"
-                      ShowTitleBar="True"
-                      ShowIconOnTitleBar="False"
+                      MinWidth="900" MinHeight="550"
+                      Width="900" Height="550"
                       WindowTitleBrush="{DynamicResource Window.Main.TitleBackground}"
                       NonActiveWindowTitleBrush="{DynamicResource Window.Main.NonActiveTitleBackground}"
                       GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
-                      dialogs:DialogParticipation.Register="{Binding}"
                       Title="MEMENIM Desktop"
                       TitleForeground="Transparent"
-                      MinHeight="450" MinWidth="800"
-                      Height="450" Width="800"
+                      ShowTitleBar="True"
+                      ShowIconOnTitleBar="False"
+                      dialogs:DialogParticipation.Register="{Binding}"
                       Closed="MainWindow_Closed">
 
     <controls:MetroWindow.LeftWindowCommands>
         <controls:WindowCommands>
             <controls:WindowCommandsItem>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="MEMENIM DESKTOP"
-                               FontSize="16" FontWeight="Thin"
+                    <TextBlock Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                               Text="MEMENIM DESKTOP"
+                               FontSize="16"
+                               FontWeight="Thin"
                                TextAlignment="Center"
-                               Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                               Margin="5 0 10 0"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"/>
+                               HorizontalAlignment="Left" VerticalAlignment="Center"
+                               Margin="5 0 10 0"/>
                 </StackPanel>
             </controls:WindowCommandsItem>
             <controls:WindowCommandsItem IsSeparatorVisible="False">
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="btnLinkOpen"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Click="OpenLink_Click">
+                    <Button x:Name="OpenLinkButton"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="OpenLinkButton_Click">
                         <iconPacks:PackIconModern Width="15" Height="15"
                                                   Kind="Link"
                                                   Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                                                  Margin="3 0 3 0"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  Margin="3 0 3 0"/>
                     </Button>
                 </StackPanel>
             </controls:WindowCommandsItem>
@@ -57,216 +55,69 @@
 
     <controls:MetroWindow.Flyouts>
         <controls:FlyoutsControl>
-            <controls:Flyout x:Name="SettingsFlyout"
-                             Header="{markupLocalization:LocalizedString SettingsTitle}"
-                             MinWidth="300" MaxWidth="300"
-                             IsOpen="False" Position="Right"
-                             Theme="Adapt">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20*"/>
-                        <RowDefinition MinHeight="82" Height="82"/>
-                    </Grid.RowDefinitions>
-
-                    <ScrollViewer Grid.Row="0"
-                                  x:Name="svSettings"
-                                  VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  VerticalAlignment="Top">
-                        <StackPanel Margin="10">
-                            <StackPanel VerticalAlignment="Top">
-                                <StackPanel x:Name="SpecialEventPanel"
-                                            Visibility="Collapsed"
-                                            Margin="0 0 0 20">
-                                    <TextBlock Text="{markupLocalization:LocalizedString SpecialEventSettingsTitle}"
-                                               Style="{StaticResource AccentHeader}"
-                                               HorizontalAlignment="Left"
-                                               Margin="5 0 5 10"/>
-                                    <StackPanel Orientation="Horizontal"
-                                                HorizontalAlignment="Center"
-                                                Margin="5">
-                                        <TextBlock Text="{markupLocalization:LocalizedString CurrentSpecialEventTitle}"
-                                                   Style="{StaticResource Header3}"/>
-                                        <TextBlock Text=":  "
-                                                   Style="{StaticResource Header3}"/>
-                                    </StackPanel>
-                                    <TextBlock x:Name="txtSpecialEventName"
-                                               Text="{Binding Path=SpecialEventLocalizedName}"
-                                               Style="{StaticResource Header3}"
-                                               FontSize="15"
-                                               FontStyle="Italic"
-                                               TextWrapping="Wrap"
-                                               HorizontalAlignment="Center"
-                                               Margin="5 0 5 5"/>
-                                    <Border Height="1"
-                                            Background="#AF3F3F3F"
-                                            BorderThickness="0"
-                                            Margin="5"/>
-                                    <controls:ToggleSwitch x:Name="tglSpecialEvent"
-                                                           Content="{markupLocalization:LocalizedString EnableTitle}"
-                                                           IsOn="{Binding Path=SpecialEventEnabled, Mode=TwoWay}"
-                                                           IsEnabled="False"
-                                                           Margin="5"/>
-                                    <TextBlock Text="{markupLocalization:LocalizedString BgmVolumeTitle}"
-                                               Style="{StaticResource Header3}"
-                                               Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
-                                               HorizontalAlignment="Center"
-                                               Margin="5"/>
-                                    <Slider x:Name="sldSpecialEventBgm"
-                                            Value="{Binding Path=BgmVolume, Converter={StaticResource BgmVolumeConverter}, Mode=TwoWay}"
-                                            Minimum="0" Maximum="100"
-                                            SmallChange="5" LargeChange="10"
-                                            Orientation="Horizontal"
-                                            controls:SliderHelper.EnableMouseWheel="MouseHover"
-                                            AutoToolTipPlacement="TopLeft"
-                                            Style="{StaticResource MahApps.Styles.Slider.Win10}"
-                                            Visibility="{Binding Path=IsOn, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=tglSpecialEvent}"
-                                            Margin="5"/>
-                                </StackPanel>
-                                <StackPanel Margin="0 0 0 20">
-                                    <TextBlock Text="{markupLocalization:LocalizedString LanguageSettingsTitle}"
-                                               Style="{StaticResource AccentHeader}"
-                                               HorizontalAlignment="Left"
-                                               Margin="5 0 5 10"/>
-                                    <controlsLocalization:MetroLocalizationButton Margin="5"/>
-                                </StackPanel>
-                                <StackPanel Margin="0 0 0 20">
-                                    <TextBlock Text="{markupLocalization:LocalizedString CommentsSettingsTitle}"
-                                               Style="{StaticResource AccentHeader}"
-                                               HorizontalAlignment="Left"
-                                               Margin="5 0 5 10"/>
-                                    <TextBlock Text="{markupLocalization:LocalizedString CommentReplyModeTitle}"
-                                               Style="{StaticResource Header3}"
-                                               HorizontalAlignment="Center"
-                                               Margin="5"/>
-                                    <controls:SplitButton Name="slcCommentReplyMode"
-                                                          ItemsSource="{Binding Path=CommentReplyModes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}"
-                                                          DisplayMemberPath="Value"
-                                                          Margin="5"
-                                                          SelectionChanged="slcCommentReplyMode_SelectionChanged"/>
-                                </StackPanel>
-                                <StackPanel Margin="0 0 0 20">
-                                    <TextBlock Text="{markupLocalization:LocalizedString AccountSettingsTitle}"
-                                               Style="{StaticResource AccentHeader}"
-                                               HorizontalAlignment="Left"
-                                               Margin="5 0 5 10"/>
-                                    <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                            Margin="5" Click="btnChangePassword_Click">
-                                        <TextBlock Text="{markupLocalization:LocalizedString ChangePassword}"
-                                                   MinHeight="15" FontSize="12"
-                                                   TextAlignment="Center" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </Button>
-                                    <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                            Margin="5" Click="btnSignInToAnotherAccount_Click">
-                                        <TextBlock Text="{markupLocalization:LocalizedString SignInToAnotherAccount}"
-                                                   MinHeight="15" FontSize="12"
-                                                   TextAlignment="Center" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </Button>
-                                    <Button Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                            Background="#FF9F0000"
-                                            Margin="5" Click="btnSignOutAccount_Click">
-                                        <TextBlock Text="{markupLocalization:LocalizedString SignOut}"
-                                                   MinHeight="15" FontSize="12"
-                                                   TextAlignment="Center" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </Button>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </ScrollViewer>
-                    <Border Grid.Row="1"
-                            BorderBrush="#FF3F3F3F"
-                            BorderThickness="0 1 0 0">
-                        <StackPanel MinWidth="82"
-                                    Width="{Binding Path=ViewportWidth, ElementName=svSettings}"
-                                    Margin="10"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Bottom">
-                            <StackPanel VerticalAlignment="Bottom">
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="0 5">
-                                    <Button Width="35" Height="35"
-                                            Background="Transparent"
-                                            Foreground="Transparent"
-                                            BorderThickness="0"
-                                            Click="Discord_Click">
-                                        <iconPacks:PackIconFontAwesome Kind="DiscordBrands"
-                                                                       Width="20" Height="20"
-                                                                       Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
-                                    </Button>
-                                    <Button Width="35" Height="35"
-                                            Background="Transparent"
-                                            Foreground="Transparent"
-                                            BorderThickness="0"
-                                            Click="Telegram_Click">
-                                        <iconPacks:PackIconFontAwesome Kind="TelegramBrands"
-                                                                       Width="20" Height="20"
-                                                                       Foreground="{DynamicResource MahApps.Brushes.Accent}"/>
-                                    </Button>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{markupLocalization:LocalizedString Version}" FontSize="13.5"
-                                               Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                                    <TextBlock Text=":  " FontSize="13.5"
-                                               Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                                    <TextBlock Text="{Binding Path=AppVersion}" FontSize="13.5"
-                                               Foreground="{DynamicResource MahApps.Brushes.Gray7}"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </controls:Flyout>
+            <flyouts:SettingsFlyout x:Name="SettingsFlyout"
+                                    MinWidth="300" MaxWidth="300"
+                                    Position="Right"
+                                    Theme="Adapt"/>
         </controls:FlyoutsControl>
     </controls:MetroWindow.Flyouts>
 
     <Grid x:Name="RootLayout">
-        <Grid Grid.Row="0" Grid.Column="0" x:Name="loadingGrid"
-              Visibility="Collapsed" ZIndex="2147483646"
-              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+        <Grid Grid.Row="0" Grid.Column="0"
+              x:Name="LoadingGrid"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}"
+              ZIndex="2147483646"
+              Visibility="Collapsed">
             <Rectangle Fill="{DynamicResource Window.Main.Background}"
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <Image x:Name="loadingBackgroundImage"
+            <Image x:Name="LoadingBackgroundImage"
                    Stretch="Uniform"
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <Image x:Name="loadingForegroundImage"
+            <Image x:Name="LoadingForegroundImage"
                    Width="256" Height="256"
                    Stretch="Uniform"
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="False" Visibility="Visible"
+            <indicatorsLoading:LoadingIndicator x:Name="LoadingIndicator"
+                                                Mode="Arcs"
+                                                SpeedRatio="2"
+                                                IsActive="False"
+                                                Visibility="Visible"
                                                 Margin="30"/>
         </Grid>
-        <Grid Grid.Row="0" Grid.Column="0" x:Name="connectionFailedGrid"
-              Visibility="Collapsed" ZIndex="2147483647"
-              Background="{DynamicResource MahApps.Brushes.Window.Background}">
+        <Grid Grid.Row="0" Grid.Column="0"
+              x:Name="ConnectionFailedGrid"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}"
+              ZIndex="2147483647"
+              Visibility="Collapsed">
             <Rectangle Fill="{DynamicResource Window.Main.Background}"
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <Image x:Name="connectionFailedBackgroundImage"
+            <Image x:Name="ConnectionFailedBackgroundImage"
                    Stretch="Uniform"
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <Image x:Name="connectionFailedForegroundImage"
+            <Image x:Name="ConnectionFailedForegroundImage"
                    Width="256" Height="256"
                    Stretch="Uniform"
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Top">
-                <controls:MetroProgressBar MinHeight="4" Height="4"
+                <controls:MetroProgressBar MinHeight="4"
+                                           Height="4"
                                            Style="{DynamicResource MahApps.Styles.ProgressBar}"
                                            IsIndeterminate="True"
                                            BorderThickness="0"/>
                 <TextBlock MinHeight="20"
+                           Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
                            Text="{markupLocalization:LocalizedString AttemptingRestoreConnection}"
                            FontSize="15"
-                           TextAlignment="Center"
                            TextWrapping="Wrap"
-                           Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                           TextAlignment="Center"
                            Margin="10 5 10 5"/>
             </StackPanel>
-            <indicatorsLoading:LoadingIndicator x:Name="connectionFailedIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="False" Visibility="Visible"
+            <indicatorsLoading:LoadingIndicator x:Name="ConnectionFailedIndicator"
+                                                Mode="Arcs"
+                                                SpeedRatio="2"
+                                                IsActive="False"
+                                                Visibility="Visible"
                                                 Margin="30"/>
         </Grid>
     </Grid>

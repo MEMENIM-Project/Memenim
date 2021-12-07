@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
@@ -35,9 +34,6 @@ namespace Memenim.Pages
         private int _profileUpdateWaitingCount;
         private bool _loadingGridShowing;
 
-        public readonly Brush AvatarBorderBackground;
-        public readonly Brush AvatarBorderDefaultBackground;
-
         public UserProfileViewModel ViewModel
         {
             get
@@ -62,10 +58,6 @@ namespace Memenim.Pages
         {
             InitializeComponent();
             DataContext = new UserProfileViewModel();
-
-            AvatarBorderDefaultBackground = (Brush)FindResource(
-                "MahApps.Brushes.Window.Background");
-            AvatarBorderBackground = AvatarBorder.Background;
 
             LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
@@ -104,7 +96,7 @@ namespace Memenim.Pages
 
                 if (id < 0)
                 {
-                    if (!NavigationController.Instance.IsCurrentPage<UserProfilePage>())
+                    if (!NavigationController.Instance.IsCurrentContent<UserProfilePage>())
                         return;
 
                     NavigationController.Instance.GoBack(true);
@@ -122,7 +114,7 @@ namespace Memenim.Pages
 
                 if (result.IsError)
                 {
-                    if (!NavigationController.Instance.IsCurrentPage<UserProfilePage>())
+                    if (!NavigationController.Instance.IsCurrentContent<UserProfilePage>())
                         return;
 
                     NavigationController.Instance.GoBack(true);
@@ -135,7 +127,7 @@ namespace Memenim.Pages
 
                 if (result.Data == null)
                 {
-                    if (!NavigationController.Instance.IsCurrentPage<UserProfilePage>())
+                    if (!NavigationController.Instance.IsCurrentContent<UserProfilePage>())
                         return;
 
                     NavigationController.Instance.GoBack(true);
@@ -150,8 +142,8 @@ namespace Memenim.Pages
 
                 ViewModel.CurrentProfileData = result.Data;
 
-                UpdateStatBlock(wpStatBlock1, wpStatBlock2,
-                    wpStatBlock3, wpStatBlock4);
+                UpdateStatBlock(StatBlock1, StatBlock2,
+                    StatBlock3, StatBlock4);
             }
             finally
             {
@@ -199,6 +191,9 @@ namespace Memenim.Pages
 
         public void Share()
         {
+            if (ViewModel.CurrentProfileData.Id == -1)
+                return;
+
             var link = MemenimProtocolApiUtils.GetUserLink(
                 ViewModel.CurrentProfileData.Id);
 
@@ -282,7 +277,7 @@ namespace Memenim.Pages
                 return;
             }
 
-            ImageBehavior.SetAnimatedSource(AvatarImage, null);
+            ImageBehavior.SetAnimatedSource(Avatar.Image, null);
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();
@@ -366,8 +361,8 @@ namespace Memenim.Pages
 
         private void btnEditMode_Click(object sender, RoutedEventArgs e)
         {
-            UpdateStatBlock(wpStatBlock1, wpStatBlock2,
-                wpStatBlock3, wpStatBlock4);
+            UpdateStatBlock(StatBlock1, StatBlock2,
+                StatBlock3, StatBlock4);
         }
 
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
@@ -769,18 +764,6 @@ namespace Memenim.Pages
         {
             if (!ViewModel.EditAllowed)
                 e.Handled = true;
-        }
-
-        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
-            {
-                AvatarBorder.Background = AvatarBorderDefaultBackground;
-
-                return;
-            }
-
-            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

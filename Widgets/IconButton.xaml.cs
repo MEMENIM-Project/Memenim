@@ -7,38 +7,46 @@ namespace Memenim.Widgets
 {
     public partial class IconButton : WidgetContent
     {
-        public static readonly RoutedEvent OnIconButtonClicked =
-            EventManager.RegisterRoutedEvent(nameof(IconButtonClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));
+        public static readonly RoutedEvent ClickEvent =
+            EventManager.RegisterRoutedEvent(nameof(Click), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(IconButton));
+        
+
+
         public static readonly DependencyProperty IconSizeProperty =
-            DependencyProperty.Register(nameof(IconSize), typeof(int), typeof(IconButton),
-                new PropertyMetadata(16));
+            DependencyProperty.Register(nameof(IconSize), typeof(double), typeof(IconButton),
+                new PropertyMetadata(16D));
         public static readonly DependencyProperty IconForegroundProperty =
             DependencyProperty.Register(nameof(IconForeground), typeof(Brush), typeof(IconButton),
                 new PropertyMetadata(Brushes.Transparent));
         public static readonly DependencyProperty IconKindProperty =
-            DependencyProperty.Register(nameof(IconKind), typeof(PackIconModernKind), typeof(IconButton),
-                new PropertyMetadata(PackIconModernKind.Xbox));
+            DependencyProperty.Register(nameof(IconKind), typeof(Enum), typeof(IconButton),
+                new PropertyMetadata((Enum)PackIconModernKind.Xbox));
         public static readonly DependencyProperty InformationProperty =
             DependencyProperty.Register(nameof(Information), typeof(string), typeof(IconButton),
                 new PropertyMetadata(string.Empty));
 
-        public event EventHandler<RoutedEventArgs> IconButtonClick
+
+
+        public event EventHandler<RoutedEventArgs> Click
         {
             add
             {
-                AddHandler(OnIconButtonClicked, value);
+                AddHandler(ClickEvent, value);
             }
             remove
             {
-                RemoveHandler(OnIconButtonClicked, value);
+                RemoveHandler(ClickEvent, value);
             }
         }
 
-        public int IconSize
+
+
+        public double IconSize
         {
             get
             {
-                return (int)GetValue(IconSizeProperty);
+                return (double)GetValue(IconSizeProperty);
             }
             set
             {
@@ -56,11 +64,11 @@ namespace Memenim.Widgets
                 SetValue(IconForegroundProperty, value);
             }
         }
-        public PackIconModernKind IconKind
+        public Enum IconKind
         {
             get
             {
-                return (PackIconModernKind)GetValue(IconKindProperty);
+                return (Enum)GetValue(IconKindProperty);
             }
             set
             {
@@ -79,17 +87,23 @@ namespace Memenim.Widgets
             }
         }
 
+
+
         public IconButton()
         {
             InitializeComponent();
             DataContext = this;
 
-            SetResourceReference(IconForegroundProperty, "MahApps.Brushes.IdealForeground");
+            SetResourceReference(IconForegroundProperty,
+                "MahApps.Brushes.IdealForeground");
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+
+        private void Button_Click(object sender,
+            RoutedEventArgs e)
         {
-            RaiseEvent(new RoutedEventArgs(OnIconButtonClicked));
+            RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
     }
 }

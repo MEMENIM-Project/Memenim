@@ -8,13 +8,32 @@ namespace Memenim.Widgets
     public partial class ImagePreviewButton : WidgetContent
     {
         public static readonly DependencyProperty ImageSourceProperty =
-            DependencyProperty.Register(nameof(ImageSource), typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
+            DependencyProperty.Register(nameof(ImageSource), typeof(string), typeof(ImagePreviewButton),
+                new PropertyMetadata((string)null));
         public static readonly DependencyProperty SmallImageSourceProperty =
-            DependencyProperty.Register(nameof(SmallImageSource), typeof(string), typeof(ImagePreviewButton), new PropertyMetadata((string)null));
+            DependencyProperty.Register(nameof(SmallImageSource), typeof(string), typeof(ImagePreviewButton),
+                new PropertyMetadata((string)null));
         public static readonly DependencyProperty ButtonSizeProperty =
-            DependencyProperty.Register(nameof(ButtonSize), typeof(int), typeof(ImagePreviewButton), new PropertyMetadata(100));
+            DependencyProperty.Register(nameof(ButtonSize), typeof(double), typeof(ImagePreviewButton),
+                new PropertyMetadata(100D));
 
-        public Func<string, Task> ButtonPressAction;
+
+
+        private Func<string, Task> _clickFunction;
+        public Func<string, Task> ClickFunction
+        {
+            get
+            {
+                return _clickFunction;
+            }
+            set
+            {
+                _clickFunction = value;
+                OnPropertyChanged(nameof(ClickFunction));
+            }
+        }
+
+
 
         public string ImageSource
         {
@@ -38,11 +57,11 @@ namespace Memenim.Widgets
                 SetValue(SmallImageSourceProperty, value);
             }
         }
-        public int ButtonSize
+        public double ButtonSize
         {
             get
             {
-                return (int)GetValue(ButtonSizeProperty);
+                return (double)GetValue(ButtonSizeProperty);
             }
             set
             {
@@ -50,16 +69,24 @@ namespace Memenim.Widgets
             }
         }
 
+
+
         public ImagePreviewButton()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        private async void Preview_Click(object sender, RoutedEventArgs e)
+
+
+        private async void Button_Click(object sender,
+            RoutedEventArgs e)
         {
-            await ButtonPressAction(ImageSource)
-                .ConfigureAwait(true);
+            if (ClickFunction != null)
+            {
+                await ClickFunction(ImageSource)
+                    .ConfigureAwait(true);
+            }
 
             NavigationController.Instance.GoBack();
         }

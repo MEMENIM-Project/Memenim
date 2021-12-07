@@ -1,40 +1,42 @@
 ﻿<local:WidgetContent x:Class="Memenim.Widgets.StatButton"
-             d:DataContext="{d:DesignInstance local:StatButton}"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Memenim.Widgets"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             mc:Ignorable="d" 
-             d:DesignHeight="48" d:DesignWidth="48">
+                     d:DataContext="{d:DesignInstance local:StatButton}"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:local="clr-namespace:Memenim.Widgets"
+                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                     mc:Ignorable="d"
+                     d:DesignWidth="48" d:DesignHeight="48">
 
     <Border Padding="5">
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Path=StatValue}"
+            <TextBlock Foreground="{StaticResource MahApps.Brushes.Text}"
+                       Text="{Binding Path=StatValue}"
                        FontSize="{Binding Path=StatValueFontSize}"
-                       Foreground="{StaticResource MahApps.Brushes.Text}"
-                       VerticalAlignment="Center" Margin="3 0 3 0"
-                       Visibility="{Binding Path=StatValueOnLeft, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            <Button x:Name="button"
-                    Width="{Binding Path=ButtonSize}"
+                       Visibility="{Binding Path=StatValueOnLeft, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       VerticalAlignment="Center"
+                       Margin="3 0 3 0"/>
+            <Button Width="{Binding Path=ButtonSize}"
                     Height="{Binding Path=ButtonSize}"
                     Style="{StaticResource MahApps.Styles.Button.Circle}"
                     Background="{Binding Path=ButtonBackground}"
                     Foreground="{DynamicResource MahApps.Brushes.Accent}"
-                    BorderThickness="{Binding Path=BorderSize}"
                     BorderBrush="{Binding Path=BorderBackground}"
-                    Margin="1" Click="Button_Click">
-                <iconPacks:PackIconModern Kind="{Binding Path=IconKind}"
-                                          Foreground="{Binding Path=IconForeground}"
-                                          Width="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"
-                                          Height="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"/>
+                    BorderThickness="{Binding Path=BorderSize}"
+                    Margin="1"
+                    Click="Button_Click">
+                <iconPacks:PackIconControl Width="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"
+                                           Height="{Binding Path=ButtonSize, Converter={StaticResource ScriptEvaluatorConverter}, ConverterParameter=[values{0}]-10}"
+                                           Kind="{Binding Path=IconKind}"
+                                           Foreground="{Binding Path=IconForeground}"/>
             </Button>
-            <TextBlock Text="{Binding Path=StatValue}"
+            <TextBlock Foreground="{StaticResource MahApps.Brushes.Text}"
+                       Text="{Binding Path=StatValue}"
                        FontSize="{Binding Path=StatValueFontSize}"
-                       Foreground="{StaticResource MahApps.Brushes.Text}"
-                       VerticalAlignment="Center" Margin="3 0 3 0"
-                       Visibility="{Binding Path=StatValueOnLeft, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
+                       Visibility="{Binding Path=StatValueOnLeft, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"
+                       VerticalAlignment="Center"
+                       Margin="3 0 3 0"/>
         </StackPanel>
     </Border>
 </local:WidgetContent>

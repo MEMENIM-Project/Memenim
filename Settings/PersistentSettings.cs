@@ -8,19 +8,22 @@ using System.Threading.Tasks;
 using Memenim.Core.Api;
 using Memenim.Cryptography.Windows;
 using Memenim.Settings.Entities;
-using Memenim.Utils;
 using RIS.Extensions;
 using RIS.Settings.Ini;
 using Environment = RIS.Environment;
 
 namespace Memenim.Settings
 {
-    public class PersistentSettings
+    public sealed class PersistentSettings
     {
         public const string SettingsFileName = "PersistentSettings.store";
 
+
+
         public event EventHandler<AvailableUsersChangedEventArgs> AvailableUsersChanged;
         public event EventHandler<UserChangedEventArgs> CurrentUserChanged;
+
+
 
         public object SyncRoot { get; }
         public string SettingsFilePath { get; }
@@ -29,6 +32,8 @@ namespace Memenim.Settings
         public object AvailableUsersSyncRoot { get; }
         public ReadOnlyDictionary<string, User> AvailableUsers { get; private set; }
         public User CurrentUser { get; private set; }
+
+
 
         public PersistentSettings()
         {
@@ -50,19 +55,26 @@ namespace Memenim.Settings
 
             Load();
 
+            // To encrypt the TenorAPIKey
+            // when initializing the persistent settings
+            // (at startup)
+            _ = GetTenorAPIKey();
+
             UpdateAvailableUsers();
 
-            if (string.IsNullOrEmpty(
-                GetCurrentUserLogin()))
+            var currentUserLogin =
+                GetCurrentUserLogin();
+
+            if (string.IsNullOrEmpty(currentUserLogin))
             {
                 ResetCurrentUserLogin();
 
                 return;
             }
 
-            if (!SetCurrentUser(GetCurrentUserLogin()))
+            if (!SetCurrentUser(currentUserLogin))
             {
-                RemoveUser(GetCurrentUserLogin());
+                RemoveUser(currentUserLogin);
             }
         }
 
@@ -86,6 +98,8 @@ namespace Memenim.Settings
                 }
             });
         }
+
+
 
         public IniSection GetSection(string sectionName)
         {
@@ -111,6 +125,8 @@ namespace Memenim.Settings
                 Save();
             }
         }
+
+
 
         public string GetDefault(string settingName, string defaultValue = null)
         {
@@ -256,6 +272,7 @@ namespace Memenim.Settings
             return AvailableUsers.ContainsKey(login);
         }
 
+
         public bool SetCurrentUser(string login)
         {
             if (!IsExistUser(login))
@@ -294,6 +311,7 @@ namespace Memenim.Settings
             return true;
         }
 
+
         public void ResetCurrentUser()
         {
             ResetCurrentUserLogin();
@@ -314,7 +332,36 @@ namespace Memenim.Settings
 
         public string GetTenorAPIKey()
         {
-            return GetDefault("TenorAPIKey", "TKAGGYAX27OJ");
+            var tenorApiKey =
+                GetDefault("TenorAPIKey");
+
+            if (string.IsNullOrEmpty(tenorApiKey))
+                return "TKAGGYAX27OJ";
+
+            try
+            {
+                return WindowsCipherManager.Decrypt(
+                    tenorApiKey,
+                    "TenorAPIKey");
+            }
+            catch (CryptographicException)
+            {
+                SetTenorAPIKey(
+                    tenorApiKey);
+
+                return WindowsCipherManager.Decrypt(
+                    GetDefault("TenorAPIKey"),
+                    "TenorAPIKey");
+            }
+            catch (FormatException)
+            {
+                SetTenorAPIKey(
+                    tenorApiKey);
+
+                return WindowsCipherManager.Decrypt(
+                    GetDefault("TenorAPIKey"),
+                    "TenorAPIKey");
+            }
         }
 
         public string GetCurrentUserLogin()
@@ -322,16 +369,19 @@ namespace Memenim.Settings
             if (CurrentUser.IsTemporary())
                 return CurrentUser.Login;
 
+            var currentUserLogin =
+                GetDefault("CurrentUserLogin");
+
             try
             {
                 return WindowsCipherManager.Decrypt(
-                    GetDefault("CurrentUserLogin"),
+                    currentUserLogin,
                     "CurrentUserLogin");
             }
             catch (CryptographicException)
             {
                 SetCurrentUserLogin(
-                    GetDefault("CurrentUserLogin"));
+                    currentUserLogin);
 
                 return WindowsCipherManager.Decrypt(
                     GetDefault("CurrentUserLogin"),
@@ -340,7 +390,7 @@ namespace Memenim.Settings
             catch (FormatException)
             {
                 SetCurrentUserLogin(
-                    GetDefault("CurrentUserLogin"));
+                    currentUserLogin);
 
                 return WindowsCipherManager.Decrypt(
                     GetDefault("CurrentUserLogin"),
@@ -351,7 +401,10 @@ namespace Memenim.Settings
 
         public void SetTenorAPIKey(string apiKey)
         {
-            SetDefault("TenorAPIKey", apiKey);
+            SetDefault("TenorAPIKey",
+                WindowsCipherManager.Encrypt(
+                    apiKey,
+                    "TenorAPIKey"));
         }
 
         public void SetCurrentUserLogin(string login)

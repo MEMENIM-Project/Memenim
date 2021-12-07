@@ -159,13 +159,13 @@ namespace Memenim.Protocols.Schemas.Api
 
                 var result = MainWindow.Instance.Dispatcher.Invoke(() =>
                 {
-                    if (!NavigationController.Instance.IsCurrentPage<FeedPage>())
+                    if (!NavigationController.Instance.IsCurrentContent<FeedPage>())
                     {
                         NavigationController.Instance.RequestPage<FeedPage>(
                             null, true);
                     }
 
-                    PostWidget sourcePost = null;
+                    Post sourcePost = null;
                     var page = (FeedPage)PageStorage.GetPage<FeedPage>();
 
                     var slcPostTypes = page?.slcPostTypes;
@@ -183,7 +183,7 @@ namespace Memenim.Protocols.Schemas.Api
 
                             foreach (var element in page.lstPosts.Children)
                             {
-                                if (!(element is PostWidget post))
+                                if (!(element is Post post))
                                     continue;
 
                                 if (post.CurrentPostData.Id != id)
@@ -201,8 +201,8 @@ namespace Memenim.Protocols.Schemas.Api
                                 break;
 
                             if (page.lstPosts.Children.Count > 2
-                                && (page.lstPosts.Children[0] is PostWidget startPost
-                                    && page.lstPosts.Children[^1] is PostWidget endPost)
+                                && (page.lstPosts.Children[0] is Post startPost
+                                    && page.lstPosts.Children[^1] is Post endPost)
                                 && !(startPost.CurrentPostData.Id >= id
                                      && id >= endPost.CurrentPostData.Id))
                             {
@@ -211,7 +211,7 @@ namespace Memenim.Protocols.Schemas.Api
 
                             foreach (var element in page.lstPosts.Children)
                             {
-                                if (!(element is PostWidget post))
+                                if (!(element is Post post))
                                     continue;
 
                                 if (post.CurrentPostData.Id != id)
@@ -228,7 +228,7 @@ namespace Memenim.Protocols.Schemas.Api
 
                     NavigationController.Instance.RequestOverlay<PostOverlayPage>(new PostOverlayViewModel
                     {
-                        SourcePostWidget = sourcePost,
+                        SourcePost = sourcePost,
                         CurrentPostData = new PostSchema
                         {
                             Id = id

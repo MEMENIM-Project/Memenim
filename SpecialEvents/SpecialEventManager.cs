@@ -21,6 +21,8 @@ namespace Memenim.SpecialEvents
         private static KeyValuePair<string, SpecialEventLayerContent>[] SpecialEventLayersArray { get; }
         private static Timer UpdateSpecialEventTimer { get; }
 
+
+
         public static string CurrentInstanceName { get; private set; }
         public static string CurrentInstanceLocalizedName
         {
@@ -131,12 +133,12 @@ namespace Memenim.SpecialEvents
 
             MainWindow.Instance.RootLayout.Children.Add(CurrentInstance);
 
-            MainWindow.Instance.tglSpecialEvent.IsEnabled = true;
+            MainWindow.Instance.SettingsFlyout.SpecialEventToggle.IsEnabled = true;
 
-            MainWindow.Instance.SpecialEventEnabled = CurrentInstance.EventEnabled;
-            MainWindow.Instance.BgmVolume = SettingsManager.AppSettings.BgmVolume;
+            MainWindow.Instance.SettingsFlyout.SpecialEventEnabled = CurrentInstance.EventEnabled;
+            MainWindow.Instance.SettingsFlyout.BgmVolume = SettingsManager.AppSettings.BgmVolume;
 
-            MainWindow.Instance.SpecialEventPanel.Visibility = Visibility.Visible;
+            MainWindow.Instance.SettingsFlyout.SpecialEventPanel.Visibility = Visibility.Visible;
 
             EventUpdated?.Invoke(null, EventArgs.Empty);
 
@@ -146,9 +148,9 @@ namespace Memenim.SpecialEvents
 
         private static void UnloadEvent()
         {
-            MainWindow.Instance.SpecialEventPanel.Visibility = Visibility.Collapsed;
+            MainWindow.Instance.SettingsFlyout.SpecialEventPanel.Visibility = Visibility.Collapsed;
 
-            MainWindow.Instance.tglSpecialEvent.IsEnabled = false;
+            MainWindow.Instance.SettingsFlyout.SpecialEventToggle.IsEnabled = false;
 
             if (CurrentInstance == null)
             {
@@ -201,10 +203,14 @@ namespace Memenim.SpecialEvents
 
 
 
-        public static void Activate(
-            bool state)
+        public static void Activate()
         {
-            CurrentInstance?.Activate(state);
+            CurrentInstance?.Activate();
+        }
+
+        public static void Deactivate()
+        {
+            CurrentInstance?.Deactivate();
         }
 
         public static void SetVolume(
@@ -215,7 +221,8 @@ namespace Memenim.SpecialEvents
 
 
 
-        private static void UpdateSpecialEventTimer_Tick(object sender, EventArgs e)
+        private static void UpdateSpecialEventTimer_Tick(object sender,
+            EventArgs e)
         {
             MainWindow.Instance.Dispatcher.Invoke(() =>
             {

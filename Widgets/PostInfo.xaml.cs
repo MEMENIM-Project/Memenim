@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using Memenim.Core.Schema;
 using Memenim.Navigation;
 using Memenim.Pages;
@@ -9,29 +8,28 @@ using Memenim.Pages.ViewModel;
 
 namespace Memenim.Widgets
 {
-    public partial class PosterBanner : WidgetContent
+    public partial class PostInfo : WidgetContent
     {
         public static readonly DependencyProperty UserIdProperty =
-            DependencyProperty.Register(nameof(UserId), typeof(int), typeof(PosterBanner),
+            DependencyProperty.Register(nameof(UserId), typeof(int), typeof(PostInfo),
                 new PropertyMetadata(-1));
         public static readonly DependencyProperty UserNameProperty =
-            DependencyProperty.Register(nameof(UserName), typeof(string), typeof(PosterBanner),
+            DependencyProperty.Register(nameof(UserName), typeof(string), typeof(PostInfo),
                 new PropertyMetadata("Unknown"));
         public static readonly DependencyProperty UserAvatarSourceProperty =
-            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(PosterBanner),
-                new PropertyMetadata((string) null));
+            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(PostInfo),
+                new PropertyMetadata((string)null));
         public static readonly DependencyProperty UtcDateProperty =
-            DependencyProperty.Register(nameof(UtcDate), typeof(ulong), typeof(PosterBanner),
+            DependencyProperty.Register(nameof(UtcDate), typeof(ulong), typeof(PostInfo),
                 new PropertyMetadata(0UL));
         public static readonly DependencyProperty PostStatusProperty =
-            DependencyProperty.Register(nameof(PostStatus), typeof(PostStatusType), typeof(PosterBanner),
+            DependencyProperty.Register(nameof(PostStatus), typeof(PostStatusType), typeof(PostInfo),
                 new PropertyMetadata(PostStatusType.Published));
         public static readonly DependencyProperty IsAnonymousProperty =
-            DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PosterBanner),
+            DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PostInfo),
                 new PropertyMetadata(false));
 
-        public readonly Brush AvatarBorderBackground;
-        public readonly Brush AvatarBorderDefaultBackground;
+
 
         public int UserId
         {
@@ -100,17 +98,18 @@ namespace Memenim.Widgets
             }
         }
 
-        public PosterBanner()
+
+
+        public PostInfo()
         {
             InitializeComponent();
             DataContext = this;
-
-            AvatarBorderDefaultBackground = (Brush)FindResource(
-                "MahApps.Brushes.Gray10");
-            AvatarBorderBackground = AvatarBorder.Background;
         }
 
-        private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+
+
+        private void Avatar_MouseLeftButtonUp(object sender,
+            MouseButtonEventArgs e)
         {
             if (UserId == -1)
                 return;
@@ -124,18 +123,6 @@ namespace Memenim.Widgets
             });
 
             e.Handled = true;
-        }
-
-        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
-            {
-                AvatarBorder.Background = AvatarBorderDefaultBackground;
-
-                return;
-            }
-
-            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

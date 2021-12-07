@@ -7,6 +7,7 @@ using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Generic;
 using Memenim.Pages;
 using Memenim.Settings;
 using Memenim.Utils;
@@ -16,12 +17,18 @@ namespace Memenim.Widgets
 {
     public partial class CommentsList : WidgetContent
     {
-        public static readonly RoutedEvent OnCommentsUpdated =
-            EventManager.RegisterRoutedEvent(nameof(CommentsUpdate), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
-        public static readonly RoutedEvent OnCommentReplied =
-            EventManager.RegisterRoutedEvent(nameof(CommentReply), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
-        public static readonly RoutedEvent OnCommentDeleted =
-            EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
+        public static readonly RoutedEvent CommentsUpdatedEvent =
+            EventManager.RegisterRoutedEvent(nameof(CommentsUpdated), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
+        public static readonly RoutedEvent CommentReplyEvent =
+            EventManager.RegisterRoutedEvent(nameof(CommentReply), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
+        public static readonly RoutedEvent CommentDeleteEvent =
+            EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(CommentsList));
+        
+
+        
         public static readonly DependencyProperty PostIdProperty =
             DependencyProperty.Register(nameof(PostId), typeof(int), typeof(CommentsList),
                 new PropertyMetadata(-1, PostIdChangedCallback));
@@ -29,46 +36,53 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(CommentsCount), typeof(StatisticSchema), typeof(CommentsList),
                 new PropertyMetadata(new StatisticSchema(), CommentsCountChangedCallback));
 
-        public event EventHandler<RoutedEventArgs> CommentsUpdate
+
+
+        public event EventHandler<RoutedEventArgs> CommentsUpdated
         {
             add
             {
-                AddHandler(OnCommentsUpdated, value);
+                AddHandler(CommentsUpdatedEvent, value);
             }
             remove
             {
-                RemoveHandler(OnCommentsUpdated, value);
+                RemoveHandler(CommentsUpdatedEvent, value);
             }
         }
         public event EventHandler<RoutedEventArgs> CommentReply
         {
             add
             {
-                AddHandler(OnCommentReplied, value);
+                AddHandler(CommentReplyEvent, value);
             }
             remove
             {
-                RemoveHandler(OnCommentReplied, value);
+                RemoveHandler(CommentReplyEvent, value);
             }
         }
         public event EventHandler<RoutedEventArgs> CommentDelete
         {
             add
             {
-                AddHandler(OnCommentDeleted, value);
+                AddHandler(CommentDeleteEvent, value);
             }
             remove
             {
-                RemoveHandler(OnCommentDeleted, value);
+                RemoveHandler(CommentDeleteEvent, value);
             }
         }
 
+
+
         private const int OffsetPerTime = 20;
+
+
 
         private readonly Timer _autoUpdateTimer;
         private bool _postIdChangedUpdate;
 
-        public PageStateType PageState { get; set; }
+
+
         public int PostId
         {
             get
@@ -93,32 +107,81 @@ namespace Memenim.Widgets
         }
         public int Offset { get; set; }
 
+
+
         public CommentsList()
         {
             InitializeComponent();
             DataContext = this;
 
-            _autoUpdateTimer = new Timer(TimeSpan.FromSeconds(15).TotalMilliseconds);
-            _autoUpdateTimer.Elapsed += AutoUpdateTimerCallback;
-            _autoUpdateTimer.Stop();
+            _autoUpdateTimer = new Timer
+            {
+                Interval = TimeSpan
+                    .FromSeconds(15).TotalMilliseconds
+            };
+            _autoUpdateTimer.Elapsed += AutoUpdateTimer_Tick;
         }
 
-        public Task UpdateComments(bool resetScroll = true)
-        {
-            foreach (var comment in lstComments.Children)
-            {
-                UserComment userComment = comment as UserComment;
 
-                if (userComment == null)
+
+        private static void PostIdChangedCallback(DependencyObject sender,
+            DependencyPropertyChangedEventArgs e)
+        {
+            var target = sender as CommentsList;
+
+            target?.OnPostIdChanged(e);
+        }
+
+        private static void CommentsCountChangedCallback(DependencyObject sender,
+            DependencyPropertyChangedEventArgs e)
+        {
+            var target = sender as CommentsList;
+
+            target?.OnCommentsCountChanged(e);
+        }
+
+
+
+#pragma warning disable SS001 // Async methods should return a Task to make them awaitable
+        private async void OnPostIdChanged(
+            DependencyPropertyChangedEventArgs e)
+        {
+            _postIdChangedUpdate = true;
+
+            await UpdateComments()
+                .ConfigureAwait(true);
+
+            _postIdChangedUpdate = false;
+        }
+#pragma warning restore SS001 // Async methods should return a Task to make them awaitable
+
+        private void OnCommentsCountChanged(
+            DependencyPropertyChangedEventArgs e)
+        {
+            LoadMoreButton.Visibility =
+                CommentsWrapPanel.Children.Count >= ((StatisticSchema)e.NewValue).TotalCount
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
+        }
+
+
+
+        public Task UpdateComments(
+            bool resetScroll = true)
+        {
+            foreach (var comment in CommentsWrapPanel.Children)
+            {
+                if (!(comment is UserComment userComment))
                     continue;
 
-                ImageBehavior.SetAnimatedSource(userComment.AvatarImage, null);
+                ImageBehavior.SetAnimatedSource(
+                    userComment.Avatar.Image, null);
             }
 
-            lstComments.Children.Clear();
+            CommentsWrapPanel.Children.Clear();
 
             Offset = 0;
-            btnLoadMore.Visibility = Visibility.Collapsed;
+            LoadMoreButton.Visibility = Visibility.Collapsed;
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();
@@ -126,17 +189,18 @@ namespace Memenim.Widgets
 
             if (resetScroll)
             {
-                PostOverlayPage page = this.TryFindParent<PostOverlayPage>();
+                var page = this.TryFindParent<PostOverlayPage>();
 
-                page?.svPost?.ScrollToVerticalOffset(0.0);
+                page?.svPost.ScrollToVerticalOffset(0.0);
             }
 
             return LoadMoreComments();
         }
 
+
         public async Task LoadMoreComments()
         {
-            if (lstComments.Children.Count != 0)
+            if (CommentsWrapPanel.Children.Count != 0)
             {
                 _autoUpdateTimer.Stop();
 
@@ -149,11 +213,14 @@ namespace Memenim.Widgets
             await LoadMoreComments(Offset)
                 .ConfigureAwait(true);
         }
-        public Task LoadMoreComments(int offset)
+        public Task LoadMoreComments(
+            int offset)
         {
-            return LoadMoreComments(OffsetPerTime, offset);
+            return LoadMoreComments(
+                OffsetPerTime, offset);
         }
-        public async Task LoadMoreComments(int count, int offset)
+        public async Task LoadMoreComments(
+            int count, int offset)
         {
             var result = await PostApi.GetComments(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -162,20 +229,23 @@ namespace Memenim.Widgets
 
             if (result.IsError)
             {
-                var message = LocalizationUtils.GetLocalized("CouldNotLoadCommentsMessage");
+                var message = LocalizationUtils
+                    .GetLocalized("CouldNotLoadCommentsMessage");
 
                 await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
+
                 return;
             }
 
             await AddMoreComments(result.Data)
                 .ConfigureAwait(true);
 
-            RaiseEvent(new RoutedEventArgs(OnCommentsUpdated));
+            RaiseEvent(new RoutedEventArgs(CommentsUpdatedEvent));
         }
 
-        public Task AddMoreComments(List<CommentSchema> comments)
+        public Task AddMoreComments(
+            List<CommentSchema> comments)
         {
             return Task.Run(() =>
             {
@@ -183,21 +253,21 @@ namespace Memenim.Widgets
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        UserComment commentWidget = new UserComment
+                        var commentWidget = new UserComment
                         {
                             CurrentCommentData = comment
                         };
-                        commentWidget.CommentReply += Comment_CommentReply;
-                        commentWidget.CommentDelete += Comment_CommentDelete;
+                        commentWidget.CommentReply += Comment_Reply;
+                        commentWidget.CommentDelete += Comment_Delete;
 
-                        lstComments.Children.Insert(0, commentWidget);
+                        CommentsWrapPanel.Children.Insert(0, commentWidget);
                     });
                 }
 
                 Dispatcher.Invoke(() =>
                 {
-                    btnLoadMore.Visibility =
-                        lstComments.Children.Count >= CommentsCount.TotalCount
+                    LoadMoreButton.Visibility =
+                        CommentsWrapPanel.Children.Count >= CommentsCount.TotalCount
                             ? Visibility.Collapsed
                             : Visibility.Visible;
 
@@ -206,17 +276,22 @@ namespace Memenim.Widgets
             });
         }
 
-        public Task<int> GetNewCommentsCount(int offset = 0)
+
+
+        public Task<int> GetNewCommentsCount(
+            int offset = 0)
         {
-            return GetNewCommentsCount(OffsetPerTime, offset);
+            return GetNewCommentsCount(
+                OffsetPerTime, offset);
         }
-        public async Task<int> GetNewCommentsCount(int countPerTime, int offset)
+        public async Task<int> GetNewCommentsCount(
+            int countPerTime, int offset)
         {
-            int commentsCount = 0;
+            var commentsCount = 0;
 
             Dispatcher.Invoke(() =>
             {
-                commentsCount = lstComments.Children.Count;
+                commentsCount = CommentsWrapPanel.Children.Count;
             });
 
             if (commentsCount == 0)
@@ -229,18 +304,18 @@ namespace Memenim.Widgets
                 return 0;
             }
 
-            int headOldId = -1;
+            var headOldId = -1;
 
             Dispatcher.Invoke(() =>
             {
-                headOldId = (lstComments.Children[^1] as UserComment)?
+                headOldId = (CommentsWrapPanel.Children[^1] as UserComment)?
                     .CurrentCommentData.Id ?? -1;
             });
 
             if (headOldId == -1)
                 return 0;
 
-            int postId = -1;
+            var postId = -1;
 
             Dispatcher.Invoke(() =>
             {
@@ -252,8 +327,8 @@ namespace Memenim.Widgets
 
             return await Task.Run(async () =>
             {
-                int countNew = 0;
-                bool headOldIsFound = false;
+                var countNew = 0;
+                var headOldIsFound = false;
 
                 while (!headOldIsFound)
                 {
@@ -303,11 +378,13 @@ namespace Memenim.Widgets
             }).ConfigureAwait(true);
         }
 
-        public async Task LoadNewComments(int offset = 0)
+
+        public async Task LoadNewComments(
+            int offset = 0)
         {
             _autoUpdateTimer.Stop();
 
-            int count = await GetNewCommentsCount(offset)
+            var count = await GetNewCommentsCount(offset)
                 .ConfigureAwait(true);
 
             if (count == 0)
@@ -316,7 +393,7 @@ namespace Memenim.Widgets
                 return;
             }
 
-            int postId = -1;
+            var postId = -1;
 
             Dispatcher.Invoke(() =>
             {
@@ -335,24 +412,26 @@ namespace Memenim.Widgets
             {
                 await Dispatcher.Invoke(() =>
                 {
-                    var message = LocalizationUtils.GetLocalized("CouldNotLoadCommentsMessage");
+                    var message = LocalizationUtils
+                        .GetLocalized("CouldNotLoadCommentsMessage");
 
                     return DialogManager.ShowErrorDialog(message);
                 }).ConfigureAwait(true);
 
                 _autoUpdateTimer.Start();
+
                 return;
             }
 
             PostOverlayPage page = null;
-            double verticalOffset = 0.0;
-            double scrollableHeight = 21.0;
+            var verticalOffset = 0.0;
+            var scrollableHeight = 21.0;
 
             Dispatcher.Invoke(() =>
             {
                 page = this.TryFindParent<PostOverlayPage>();
-                verticalOffset = page?.svPost?.VerticalOffset ?? verticalOffset;
-                scrollableHeight = page?.svPost?.ScrollableHeight ?? scrollableHeight;
+                verticalOffset = page?.svPost.VerticalOffset ?? verticalOffset;
+                scrollableHeight = page?.svPost.ScrollableHeight ?? scrollableHeight;
             });
 
             await AddNewComments(result.Data)
@@ -361,15 +440,16 @@ namespace Memenim.Widgets
             Dispatcher.Invoke(() =>
             {
                 if (verticalOffset >= scrollableHeight - 20)
-                    page?.svPost?.ScrollToEnd();
+                    page?.svPost.ScrollToEnd();
             });
 
-            RaiseEvent(new RoutedEventArgs(OnCommentsUpdated));
+            RaiseEvent(new RoutedEventArgs(CommentsUpdatedEvent));
 
             _autoUpdateTimer.Start();
         }
 
-        public Task AddNewComments(List<CommentSchema> comments)
+        public Task AddNewComments(
+            List<CommentSchema> comments)
         {
             return Task.Run(() =>
             {
@@ -379,14 +459,14 @@ namespace Memenim.Widgets
 
                     Dispatcher.Invoke(() =>
                     {
-                        UserComment commentWidget = new UserComment
+                        var commentWidget = new UserComment
                         {
                             CurrentCommentData = comment
                         };
-                        commentWidget.CommentReply += Comment_CommentReply;
-                        commentWidget.CommentDelete += Comment_CommentDelete;
+                        commentWidget.CommentReply += Comment_Reply;
+                        commentWidget.CommentDelete += Comment_Delete;
 
-                        lstComments.Children.Add(commentWidget);
+                        CommentsWrapPanel.Children.Add(commentWidget);
                     });
                 }
 
@@ -397,17 +477,27 @@ namespace Memenim.Widgets
             });
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
-            PageState = PageStateType.Loaded;
 
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
+        {
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
+            base.OnEnter(sender, e);
+
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (_postIdChangedUpdate)
             {
                 _autoUpdateTimer.Start();
+
                 return;
             }
 
@@ -417,84 +507,89 @@ namespace Memenim.Widgets
             _autoUpdateTimer.Start();
         }
 
-        private void Grid_Unloaded(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
-            PageState = PageStateType.Unloaded;
-
             _autoUpdateTimer.Stop();
 
-            foreach (var comment in lstComments.Children)
+            foreach (var comment in CommentsWrapPanel.Children)
             {
-                UserComment userComment = comment as UserComment;
-
-                if (userComment == null)
+                if (!(comment is UserComment userComment))
                     continue;
 
-                ImageBehavior.SetAnimatedSource(userComment.AvatarImage, null);
+                ImageBehavior.SetAnimatedSource(
+                    userComment.Avatar.Image, null);
             }
 
-            lstComments.Children.Clear();
+            CommentsWrapPanel.Children.Clear();
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
+
+            base.OnExit(sender, e);
+
+            if (!IsOnExitActive)
+            {
+                e.Handled = true;
+                return;
+            }
         }
 
-#pragma warning disable SS001 // Async methods should return a Task to make them awaitable
-        private static async void PostIdChangedCallback(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
-        {
-            CommentsList commentsList = d as CommentsList;
 
-            if (commentsList == null)
+
+        private void Comment_Reply(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is UserComment))
                 return;
 
-            commentsList._postIdChangedUpdate = true;
-
-            await commentsList.UpdateComments()
-                .ConfigureAwait(true);
-
-            commentsList._postIdChangedUpdate = false;
+            RaiseEvent(new RoutedEventArgs(CommentReplyEvent, sender));
         }
-#pragma warning restore SS001 // Async methods should return a Task to make them awaitable
 
-        private static void CommentsCountChangedCallback(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
+        private void Comment_Delete(object sender, RoutedEventArgs e)
         {
-            CommentsList commentsList = d as CommentsList;
+            _autoUpdateTimer.Stop();
 
-            if (commentsList == null)
+            if (!(sender is UserComment comment))
+            {
+                _autoUpdateTimer.Start();
+
                 return;
+            }
 
-            commentsList.btnLoadMore.Visibility =
-                commentsList.lstComments.Children.Count >= ((StatisticSchema)e.NewValue).TotalCount
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
+            CommentsWrapPanel.Children.Remove(
+                comment);
+
+            --Offset;
+
+            RaiseEvent(new RoutedEventArgs(CommentDeleteEvent, sender));
+
+            _autoUpdateTimer.Start();
         }
 
-        private async void AutoUpdateTimerCallback(object sender, ElapsedEventArgs e)
+        private async void AutoUpdateTimer_Tick(object sender, ElapsedEventArgs e)
         {
             if (!_autoUpdateTimer.Enabled)
                 return;
 
-            if (PageState != PageStateType.Loaded)
+            if (State != ControlStateType.Loaded)
                 return;
 
             await LoadNewComments()
                 .ConfigureAwait(true);
         }
 
-        private async void btnLoadMore_Click(object sender, RoutedEventArgs e)
+        private async void LoadMoreButton_Click(object sender, RoutedEventArgs e)
         {
-            btnLoadMore.IsEnabled = false;
+            LoadMoreButton.IsEnabled = false;
 
             PostOverlayPage page = null;
-            double scrollableHeight = 0.0;
+            var scrollableHeight = 0.0;
 
             Dispatcher.Invoke(() =>
             {
                 page = this.TryFindParent<PostOverlayPage>();
-                scrollableHeight = page?.svPost?.ScrollableHeight ?? scrollableHeight;
+                scrollableHeight = page?.svPost.ScrollableHeight ?? scrollableHeight;
             });
 
             await LoadMoreComments()
@@ -502,44 +597,14 @@ namespace Memenim.Widgets
 
             UpdateLayout();
 
-            if (page?.svPost?.VerticalOffset > page?.wdgPost?.ActualHeight - (page?.svPost?.ActualHeight / 100 * 50))
+            if (page?.svPost != null
+                && page.svPost.VerticalOffset > page.wdgPost.ActualHeight - (page.svPost.ActualHeight / 100 * 50))
             {
-                page?.svPost?.ScrollToVerticalOffset(
+                page.svPost.ScrollToVerticalOffset(
                     page.svPost.VerticalOffset + (page.svPost.ScrollableHeight - scrollableHeight));
             }
 
-            btnLoadMore.IsEnabled = true;
-        }
-
-        private void Comment_CommentReply(object sender, RoutedEventArgs e)
-        {
-            UserComment comment = sender as UserComment;
-
-            if (comment == null)
-                return;
-
-            RaiseEvent(new RoutedEventArgs(OnCommentReplied, sender));
-        }
-
-        private void Comment_CommentDelete(object sender, RoutedEventArgs e)
-        {
-            _autoUpdateTimer.Stop();
-
-            UserComment comment = sender as UserComment;
-
-            if (comment == null)
-            {
-                _autoUpdateTimer.Start();
-                return;
-            }
-
-            lstComments.Children.Remove(comment);
-
-            --Offset;
-
-            RaiseEvent(new RoutedEventArgs(OnCommentDeleted));
-
-            _autoUpdateTimer.Start();
+            LoadMoreButton.IsEnabled = true;
         }
     }
 }

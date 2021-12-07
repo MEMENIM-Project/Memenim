@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Generic;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
@@ -85,9 +86,9 @@ namespace Memenim.Pages
                     {
                         var storedAccountWidget = new StoredAccount
                         {
-                            Account = user
+                            UserAccount = user
                         };
-                        storedAccountWidget.AccountClick += StoredAccount_AccountClick;
+                        storedAccountWidget.Click += StoredAccount_Click;
                         storedAccountWidget.AccountDelete += StoredAccount_AccountDelete;
 
                         lstStoredAccounts.Items.Add(storedAccountWidget);
@@ -301,7 +302,7 @@ namespace Memenim.Pages
             if (!_autoUpdateStatusTimer.Enabled)
                 return;
 
-            if (State != PageStateType.Loaded)
+            if (State != ControlStateType.Loaded)
                 return;
 
             await UpdateStatusAccounts()
@@ -364,7 +365,7 @@ namespace Memenim.Pages
                     }
                 }
 
-                if (NavigationController.Instance.HistoryIsEmpty())
+                if (NavigationController.Instance.IsEmptyHistory())
                     NavigationController.Instance.RequestPage<FeedPage>();
                 else
                     NavigationController.Instance.GoBack();
@@ -395,7 +396,7 @@ namespace Memenim.Pages
             NavigationController.Instance.RequestPage<RegisterPage>();
         }
 
-        private async void StoredAccount_AccountClick(object sender, RoutedEventArgs e)
+        private async void StoredAccount_Click(object sender, RoutedEventArgs e)
         {
             lstStoredAccounts.IsEnabled = false;
             btnOpenStoredAccounts.IsEnabled = false;
@@ -408,12 +409,12 @@ namespace Memenim.Pages
             try
             {
                 if (!SettingsManager.PersistentSettings.SetCurrentUser(
-                    storedAccount.Account.Login))
+                    storedAccount.UserAccount.Login))
                 {
                     return;
                 }
 
-                if (NavigationController.Instance.HistoryIsEmpty())
+                if (NavigationController.Instance.IsEmptyHistory())
                     NavigationController.Instance.RequestPage<FeedPage>();
                 else
                     NavigationController.Instance.GoBack();
@@ -442,7 +443,7 @@ namespace Memenim.Pages
             lstStoredAccounts.Items.Remove(storedAccount);
 
             SettingsManager.PersistentSettings.RemoveUser(
-                    storedAccount.Account.Login);
+                    storedAccount.UserAccount.Login);
         }
 
         private void txtLogin_KeyUp(object sender, KeyEventArgs e)

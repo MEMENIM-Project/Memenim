@@ -8,9 +8,11 @@ using Environment = RIS.Environment;
 
 namespace Memenim.Settings
 {
-    public class AppSettings : IniSettings
+    public sealed class AppSettings : IniSettings
     {
         public const string SettingsFileName = "AppSettings.config";
+
+
 
         [SettingCategory("Localization")]
         public string Language { get; set; }
@@ -30,6 +32,8 @@ namespace Memenim.Settings
         [SettingCategory("Log")]
         public int LogRetentionDaysPeriod { get; set; }
 
+
+
         public AppSettings()
             : base(Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName))
         {
@@ -37,8 +41,8 @@ namespace Memenim.Settings
             WindowPositionX = SystemParameters.PrimaryScreenWidth / 2.0;
             WindowPositionY = SystemParameters.PrimaryScreenHeight / 2.0;
             WindowState = (int)System.Windows.WindowState.Normal;
-            WindowWidth = 800;
-            WindowHeight = 450;
+            WindowWidth = 900;
+            WindowHeight = 550;
             PostsType = (int)PostType.Popular;
             CommentReplyMode = (int)CommentReplyModeType.Legacy;
             ChristmasEventEnabled = true;

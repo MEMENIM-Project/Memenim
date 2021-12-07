@@ -56,10 +56,10 @@
                                   SelectionChanged="slcPostTypes_SelectionChanged"/>
             <widgets:IconButton x:Name="btnRefresh"
                                 Width="30" Height="30"
-                                IconKind="Refresh"
+                                IconKind="{x:Static iconPacks:PackIconModernKind.Refresh}"
                                 DockPanel.Dock="Left"
                                 Margin="0 0 2 0"
-                                IconButtonClick="btnRefreshPosts_Click"/>
+                                Click="btnRefreshPosts_Click"/>
             <Button Style="{StaticResource MahApps.Styles.Button.Square}"
                     DockPanel.Dock="Right" HorizontalAlignment="Right"
                     Margin="5 10 0 10" BorderThickness="0"

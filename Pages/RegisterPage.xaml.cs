@@ -196,7 +196,7 @@ namespace Memenim.Pages
                 }
 
 
-                if (NavigationController.Instance.HistoryIsEmpty())
+                if (NavigationController.Instance.IsEmptyHistory())
                     NavigationController.Instance.RequestPage<FeedPage>();
                 else
                     NavigationController.Instance.GoBack();

@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="Window.Main.TitleBackground"
+                     Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
+    <SolidColorBrush x:Key="Window.Main.NonActiveTitleBackground"
+                     Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
+    <SolidColorBrush x:Key="Window.Main.Background"
+                     Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
+
+    <SolidColorBrush x:Key="Overlay.Background"
+                     Color="{StaticResource Overlay.Background.Color}"/>
+</ResourceDictionary>

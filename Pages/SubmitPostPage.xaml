@@ -9,14 +9,13 @@
                    xmlns:widgets="clr-namespace:Memenim.Widgets"
                    xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                   xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                    mc:Ignorable="d"
                    d:DesignHeight="450" d:DesignWidth="800">
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="45" Height="45"/>
-            <RowDefinition/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
@@ -80,8 +79,6 @@
                                                   Margin="0 5"
                                                   SelectionChanged="slcPostCategories_SelectionChanged"/>
                         </StackPanel>
-                        <!--<CheckBox IsChecked="{Binding Path=CurrentPostData.hidden, Mode=TwoWay}"
-                                  Margin="0 5">Show post</CheckBox>-->
                         <CheckBox Content="{markupLocalization:LocalizedString OpenComments}"
                                   IsChecked="{Binding Path=CurrentPostData.IsCommentsOpen, Mode=TwoWay}"
                                   Margin="0 5"/>
@@ -99,9 +96,9 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="{markupLocalization:LocalizedString PreviewTitle}">
-                <widgets:PostWidget PreviewMode="True"
-                                    ImageSizeLimit="True"
-                                    CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
+                <widgets:Post PreviewMode="True"
+                              ImageSizeLimit="True"
+                              CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>

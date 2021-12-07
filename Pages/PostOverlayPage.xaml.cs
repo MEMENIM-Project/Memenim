@@ -42,13 +42,11 @@ namespace Memenim.Pages
             wdgWriteComment.MaxHeight = _writeCommentMaxHeight;
 
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
-            ProfileUtils.AvatarChanged += OnAvatarChanged;
         }
 
         ~PostOverlayPage()
         {
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
-            ProfileUtils.AvatarChanged -= OnAvatarChanged;
         }
 
         public Task UpdatePost()
@@ -59,7 +57,7 @@ namespace Memenim.Pages
         {
             if (id < 1)
             {
-                if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
+                if (!NavigationController.Instance.IsCurrentContent<PostOverlayPage>())
                     return;
 
                 NavigationController.Instance.GoBack(true);
@@ -81,7 +79,7 @@ namespace Memenim.Pages
 
             if (result.IsError)
             {
-                if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
+                if (!NavigationController.Instance.IsCurrentContent<PostOverlayPage>())
                     return;
 
                 NavigationController.Instance.GoBack(true);
@@ -94,7 +92,7 @@ namespace Memenim.Pages
 
             if (result.Data == null)
             {
-                if (!NavigationController.Instance.IsCurrentPage<PostOverlayPage>())
+                if (!NavigationController.Instance.IsCurrentContent<PostOverlayPage>())
                     return;
 
                 NavigationController.Instance.GoBack(true);
@@ -111,10 +109,10 @@ namespace Memenim.Pages
 
             wdgPost.UpdateContextMenus();
 
-            if (ViewModel.SourcePostWidget?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
+            if (ViewModel.SourcePost?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
             {
-                ViewModel.SourcePostWidget?.SetValue(
-                    PostWidget.CurrentPostDataProperty,
+                ViewModel.SourcePost?.SetValue(
+                    Post.CurrentPostDataProperty,
                     ViewModel.CurrentPostData);
             }
         }
@@ -161,13 +159,6 @@ namespace Memenim.Pages
             await UpdatePost()
                 .ConfigureAwait(true);
 
-            var result = await UserApi.GetProfileById(
-                    SettingsManager.PersistentSettings.CurrentUser.Id)
-                .ConfigureAwait(true);
-
-            if (result.Data != null)
-                wdgWriteComment.SetRealUserAvatarSource(result.Data.PhotoUrl);
-
             var draft = await StorageManager.GetPostCommentDraft(
                     SettingsManager.PersistentSettings.CurrentUser.Id,
                     ViewModel.CurrentPostData.Id)
@@ -176,9 +167,9 @@ namespace Memenim.Pages
             wdgWriteComment.CommentText = draft.CommentText;
             wdgWriteComment.IsAnonymous = draft.IsAnonymous;
 
-            wdgWriteComment.txtContent.ScrollToEnd();
-            wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
-            wdgWriteComment.txtContent.Focus();
+            wdgWriteComment.ContentTextBox.ScrollToEnd();
+            wdgWriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
+            wdgWriteComment.ContentTextBox.Focus();
 
             if (svPost.VerticalOffset >= svPost.ScrollableHeight - 20)
                 svPost.ScrollToVerticalOffset(0.0);
@@ -195,7 +186,7 @@ namespace Memenim.Pages
                     wdgWriteComment.IsAnonymous)
                 .ConfigureAwait(true);
 
-            wdgCommentsList.lstComments.Children.Clear();
+            wdgCommentsList.CommentsWrapPanel.Children.Clear();
 
             wdgCommentsList.UpdateLayout();
             UpdateLayout();
@@ -214,10 +205,10 @@ namespace Memenim.Pages
         {
             if (e.OldValue is PostOverlayViewModel oldViewModel)
             {
-                if (oldViewModel.SourcePostWidget?.CurrentPostData.Id == oldViewModel.CurrentPostData.Id)
+                if (oldViewModel.SourcePost?.CurrentPostData.Id == oldViewModel.CurrentPostData.Id)
                 {
-                    oldViewModel.SourcePostWidget?.SetValue(
-                        PostWidget.CurrentPostDataProperty,
+                    oldViewModel.SourcePost?.SetValue(
+                        Post.CurrentPostDataProperty,
                         oldViewModel.CurrentPostData);
                 }
 
@@ -234,10 +225,10 @@ namespace Memenim.Pages
 
             if (e.NewValue is PostOverlayViewModel newViewModel)
             {
-                if (newViewModel.SourcePostWidget?.CurrentPostData.Id == newViewModel.CurrentPostData.Id)
+                if (newViewModel.SourcePost?.CurrentPostData.Id == newViewModel.CurrentPostData.Id)
                 {
-                    newViewModel.SourcePostWidget?.SetValue(
-                        PostWidget.CurrentPostDataProperty,
+                    newViewModel.SourcePost?.SetValue(
+                        Post.CurrentPostDataProperty,
                         newViewModel.CurrentPostData);
                 }
 
@@ -249,9 +240,9 @@ namespace Memenim.Pages
                 wdgWriteComment.CommentText = draft.CommentText;
                 wdgWriteComment.IsAnonymous = draft.IsAnonymous;
 
-                wdgWriteComment.txtContent.ScrollToEnd();
-                wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
-                wdgWriteComment.txtContent.Focus();
+                wdgWriteComment.ContentTextBox.ScrollToEnd();
+                wdgWriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
+                wdgWriteComment.ContentTextBox.Focus();
             }
 
             base.OnDataContextChanged(sender, e);
@@ -269,10 +260,10 @@ namespace Memenim.Pages
             }
             else if (e.PropertyName == nameof(ViewModel.CurrentPostData))
             {
-                if (ViewModel.SourcePostWidget?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
+                if (ViewModel.SourcePost?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
                 {
-                    ViewModel.SourcePostWidget?.SetValue(
-                        PostWidget.CurrentPostDataProperty,
+                    ViewModel.SourcePost?.SetValue(
+                        Post.CurrentPostDataProperty,
                         ViewModel.CurrentPostData);
                 }
             }
@@ -285,16 +276,6 @@ namespace Memenim.Pages
 
             await UpdatePost()
                 .ConfigureAwait(true);
-
-            var result = await UserApi.GetProfileById(
-                    SettingsManager.PersistentSettings.CurrentUser.Id)
-                .ConfigureAwait(true);
-
-            if (!result.IsError
-                && result.Data != null)
-            {
-                wdgWriteComment.SetRealUserAvatarSource(result.Data.PhotoUrl);
-            }
 
             await StorageManager.SetPostCommentDraft(
                     e.OldUser.Id,
@@ -313,15 +294,10 @@ namespace Memenim.Pages
                 wdgWriteComment.CommentText = draft.CommentText;
                 wdgWriteComment.IsAnonymous = draft.IsAnonymous;
 
-                wdgWriteComment.txtContent.ScrollToEnd();
-                wdgWriteComment.txtContent.CaretIndex = draft.CommentText.Length;
-                wdgWriteComment.txtContent.Focus();
+                wdgWriteComment.ContentTextBox.ScrollToEnd();
+                wdgWriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
+                wdgWriteComment.ContentTextBox.Focus();
             }
-        }
-
-        private void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
-        {
-            wdgWriteComment.SetRealUserAvatarSource(e.NewPhoto);
         }
 
         private void SvPost_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -379,12 +355,12 @@ namespace Memenim.Pages
                     break;
             }
 
-            int oldCaretIndex = wdgWriteComment.txtContent.CaretIndex;
+            int oldCaretIndex = wdgWriteComment.ContentTextBox.CaretIndex;
 
             wdgWriteComment.CommentText = replyText + wdgWriteComment.CommentText;
-            wdgWriteComment.txtContent.CaretIndex = replyText.Length + oldCaretIndex;
-            wdgWriteComment.txtContent.ScrollToEnd();
-            wdgWriteComment.txtContent.Focus();
+            wdgWriteComment.ContentTextBox.CaretIndex = replyText.Length + oldCaretIndex;
+            wdgWriteComment.ContentTextBox.ScrollToEnd();
+            wdgWriteComment.ContentTextBox.Focus();
 
             if (verticalOffset >= scrollableHeight - 20)
                 svPost.ScrollToEnd();

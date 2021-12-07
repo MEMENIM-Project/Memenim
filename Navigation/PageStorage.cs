@@ -7,14 +7,21 @@ namespace Memenim.Navigation
 {
     public static class PageStorage
     {
-        private static Dictionary<Type, PageContent> _pagesInstances = new Dictionary<Type, PageContent>();
+        private static readonly Dictionary<Type, PageContent> Storage;
+
+
 
         static PageStorage()
         {
+            Storage = new Dictionary<Type, PageContent>();
+
             CreatePage(typeof(LoginPage));
         }
 
-        private static PageContent FindPage(Type type)
+
+
+        private static PageContent FindPage(
+            Type type)
         {
             if (!typeof(PageContent).IsAssignableFrom(type))
             {
@@ -24,12 +31,13 @@ namespace Memenim.Navigation
                 throw exception;
             }
 
-            _pagesInstances.TryGetValue(type, out PageContent page);
+            Storage.TryGetValue(type, out var page);
 
             return page ?? CreatePage(type);
         }
 
-        private static PageContent CreatePage(Type type)
+        private static PageContent CreatePage(
+            Type type)
         {
             if (!typeof(PageContent).IsAssignableFrom(type))
             {
@@ -55,10 +63,12 @@ namespace Memenim.Navigation
                 throw exception;
             }
 
-            _pagesInstances.Add(type, page);
+            Storage.Add(type, page);
 
             return page;
         }
+
+
 
         public static PageContent GetPage<T>()
             where T : PageContent

@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Settings;
@@ -11,14 +11,15 @@ namespace Memenim.Widgets
 {
     public partial class WriteComment : WidgetContent
     {
-        public static readonly RoutedEvent OnCommentAdded =
-            EventManager.RegisterRoutedEvent(nameof(CommentAdd), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(WriteComment));
+        public static readonly RoutedEvent CommentAddEvent =
+            EventManager.RegisterRoutedEvent(nameof(CommentAdd), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(WriteComment));
+        
+        
+        
         public static readonly DependencyProperty CommentTextProperty =
             DependencyProperty.Register(nameof(CommentText), typeof(string), typeof(WriteComment),
                 new PropertyMetadata(string.Empty));
-        public static readonly DependencyProperty UserAvatarSourceProperty =
-            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(WriteComment),
-                new PropertyMetadata((string) null));
         public static readonly DependencyProperty PostIdProperty =
             DependencyProperty.Register(nameof(PostId), typeof(int), typeof(WriteComment),
                 new PropertyMetadata(-1));
@@ -26,22 +27,21 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(WriteComment),
                 new PropertyMetadata(false, IsAnonymousChangedCallback));
 
+
+
         public event EventHandler<RoutedEventArgs> CommentAdd
         {
             add
             {
-                AddHandler(OnCommentAdded, value);
+                AddHandler(CommentAddEvent, value);
             }
             remove
             {
-                RemoveHandler(OnCommentAdded, value);
+                RemoveHandler(CommentAddEvent, value);
             }
         }
 
-        private string _realUserAvatarSource;
 
-        public readonly Brush AvatarBorderBackground;
-        public readonly Brush AvatarBorderDefaultBackground;
 
         public string CommentText
         {
@@ -49,26 +49,16 @@ namespace Memenim.Widgets
             {
                 Focus();
 
-                string commentText = (string)GetValue(CommentTextProperty);
+                var commentText =
+                    (string)GetValue(CommentTextProperty);
 
-                txtContent.Focus();
+                ContentTextBox.Focus();
 
                 return commentText;
             }
             set
             {
                 SetValue(CommentTextProperty, value);
-            }
-        }
-        public string UserAvatarSource
-        {
-            get
-            {
-                return (string)GetValue(UserAvatarSourceProperty);
-            }
-            set
-            {
-                SetValue(UserAvatarSourceProperty, value);
             }
         }
         public int PostId
@@ -93,67 +83,152 @@ namespace Memenim.Widgets
                 SetValue(IsAnonymousProperty, value);
             }
         }
+        private string _userAvatarSource;
+        public string UserAvatarSource
+        {
+            get
+            {
+                return _userAvatarSource;
+            }
+            set
+            {
+                _userAvatarSource = value;
+                OnPropertyChanged(nameof(UserAvatarSource));
+
+                UpdateDisplayedAvatar();
+            }
+        }
+        private string _displayedUserAvatarSource;
+        public string DisplayedUserAvatarSource
+        {
+            get
+            {
+                return _displayedUserAvatarSource;
+            }
+            set
+            {
+                _displayedUserAvatarSource = value;
+                OnPropertyChanged(nameof(DisplayedUserAvatarSource));
+            }
+        }
+
+
 
         public WriteComment()
         {
             InitializeComponent();
             DataContext = this;
 
-            AvatarBorderDefaultBackground = (Brush)FindResource(
-                "MahApps.Brushes.Gray10");
-            AvatarBorderBackground = AvatarBorder.Background;
+            SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
+            ProfileUtils.AvatarChanged += OnAvatarChanged;
         }
 
-        public void SetRealUserAvatarSource(string source)
+        ~WriteComment()
         {
-            _realUserAvatarSource = source;
-
-            if (!IsAnonymous)
-                UserAvatarSource = source;
+            SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
+            ProfileUtils.AvatarChanged -= OnAvatarChanged;
         }
 
-        private static void IsAnonymousChangedCallback(DependencyObject d,
+
+
+        private static void IsAnonymousChangedCallback(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
-            WriteComment writeComment = d as WriteComment;
+            var target = sender as WriteComment;
 
-            if (writeComment == null)
-                return;
-
-            writeComment.btnSendAnonymously.IsChecked = writeComment.IsAnonymous;
-
-            if (!writeComment.IsAnonymous)
-            {
-                writeComment.UserAvatarSource = writeComment._realUserAvatarSource;
-            }
-            else
-            {
-                writeComment._realUserAvatarSource = writeComment.UserAvatarSource;
-                writeComment.UserAvatarSource = null;
-            }
+            target?.OnIsAnonymousChanged(e);
         }
 
-        private void txtContent_KeyUp(object sender, KeyEventArgs e)
+
+
+        private void OnIsAnonymousChanged(
+            DependencyPropertyChangedEventArgs e)
+        {
+            SendAnonymouslyButton.IsChecked =
+                (bool)e.NewValue;
+
+            UpdateDisplayedAvatar();
+        }
+
+
+
+        private async Task UpdateAvatarSource(
+            int userId)
+        {
+            var result = await UserApi.GetProfileById(
+                    userId)
+                .ConfigureAwait(true);
+
+            if (result.IsError
+                || result.Data == null)
+            {
+                UserAvatarSource = null;
+
+                return;
+            }
+
+            UserAvatarSource = result.Data
+                .PhotoUrl;
+        }
+
+        private void UpdateDisplayedAvatar()
+        {
+            DisplayedUserAvatarSource = !IsAnonymous
+                ? UserAvatarSource
+                : null;
+        }
+
+
+
+        protected override async void OnCreated(object sender,
+            EventArgs e)
+        {
+            await UpdateAvatarSource(
+                    SettingsManager.PersistentSettings.CurrentUser.Id)
+                .ConfigureAwait(false);
+        }
+
+
+
+        private async void OnCurrentUserChanged(object sender,
+            UserChangedEventArgs e)
+        {
+            await UpdateAvatarSource(
+                    e.NewUser.Id)
+                .ConfigureAwait(false);
+        }
+
+        private void OnAvatarChanged(object sender,
+            UserPhotoChangedEventArgs e)
+        {
+            UserAvatarSource = e.NewPhoto;
+        }
+
+
+
+        private void ContentTextBox_KeyUp(object sender,
+            KeyEventArgs e)
         {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.Enter)
             {
-                if (btnSend.IsEnabled)
+                if (SendButton.IsEnabled)
                 {
-                    btnSend.Focus();
-                    btnSend_Click(this, new RoutedEventArgs());
+                    SendButton.Focus();
+                    SendButton_Click(this, new RoutedEventArgs());
                 }
             }
         }
 
-        private async void btnSend_Click(object sender, RoutedEventArgs e)
+        private async void SendButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnSend.IsEnabled = false;
+            SendButton.IsEnabled = false;
 
-            btnSend.Focus();
+            SendButton.Focus();
 
             var result = await PostApi.AddComment(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
-                    PostId, txtContent.Text, IsAnonymous)
+                    PostId, ContentTextBox.Text, IsAnonymous)
                 .ConfigureAwait(true);
 
             if (result.IsError)
@@ -161,22 +236,23 @@ namespace Memenim.Widgets
                 await DialogManager.ShowErrorDialog(result.Message)
                     .ConfigureAwait(true);
 
-                btnSend.IsEnabled = true;
+                SendButton.IsEnabled = true;
                 return;
             }
 
-            txtContent.Text = string.Empty;
+            ContentTextBox.Text = string.Empty;
 
-            RaiseEvent(new RoutedEventArgs(OnCommentAdded));
+            RaiseEvent(new RoutedEventArgs(CommentAddEvent));
 
-            txtContent.Focus();
+            ContentTextBox.Focus();
 
-            btnSend.IsEnabled = true;
+            SendButton.IsEnabled = true;
         }
 
-        private async void btnSendAnonymously_Click(object sender, RoutedEventArgs e)
+        private async void SendAnonymouslyButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            if (!btnSendAnonymously.IsChecked)
+            if (!SendAnonymouslyButton.IsChecked)
             {
                 IsAnonymous = false;
 
@@ -191,7 +267,7 @@ namespace Memenim.Widgets
 
             if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
             {
-                btnSendAnonymously.IsChecked = false;
+                SendAnonymouslyButton.IsChecked = false;
 
                 Keyboard.ClearFocus();
 
@@ -199,18 +275,6 @@ namespace Memenim.Widgets
             }
 
             IsAnonymous = true;
-        }
-
-        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
-            {
-                AvatarBorder.Background = AvatarBorderDefaultBackground;
-
-                return;
-            }
-
-            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

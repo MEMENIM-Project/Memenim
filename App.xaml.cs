@@ -33,6 +33,8 @@ namespace Memenim
     {
         private const string UniqueName = "App+MEMENIM+{54FB655C-3F5F-4EE7-823B-10409FD10C7D}";
 
+
+
         private static readonly object InstanceSyncRoot = new object();
         private static volatile SingleInstanceApp _instance;
         internal static SingleInstanceApp Instance
@@ -55,11 +57,13 @@ namespace Memenim
         }
 
 
+
         private static string AppStartupUri { get; set; }
         private static bool AppCreateHashFiles { get; set; }
 
 
-        public static LocalizationFactory LocalizationFactory { get; private set; }
+
+        
 
 
 
@@ -92,7 +96,7 @@ namespace Memenim
 
         private static void SingleInstanceMain()
         {
-            App app = new App();
+            var app = new App();
 
             ApiRequestEngine.Information += app.OnCoreInformation;
             ApiRequestEngine.Warning += app.OnCoreWarning;
@@ -102,16 +106,10 @@ namespace Memenim
 
             LogManager.LoggingShutdown += app.LogManager_LoggingShutdown;
 
-            var assemblyName = typeof(App).Assembly
-                .GetName().Name;
-
-            LocalizationFactory = LocalizationFactory
-                .Create(assemblyName, "MEMENIM");
-
-            LocalizationManager.SetCurrentFactory(
-                assemblyName, LocalizationFactory);
+            LocalizationUtils.Initialize();
 
             LocalizationUtils.LocalizationChanged += app.LocalizationUtils_LocalizationChanged;
+            LocalizationUtils.LocalizationsLoaded += app.LocalizationUtils_LocalizationsLoaded;
             LocalizationUtils.LocalizationsNotFound += app.LocalizationUtils_LocalizationsNotFound;
             LocalizationUtils.LocalizationFileNotFound += app.LocalizationUtils_LocalizationFileNotFound;
             LocalizationUtils.LocalizedCultureNotFound += app.LocalizationUtils_LocalizedCultureNotFound;
@@ -119,6 +117,7 @@ namespace Memenim
             app.InitializeComponent();
             app.Run(Memenim.MainWindow.Instance);
         }
+
 
 
         private static void ParseArgs(string[] args)
@@ -175,6 +174,7 @@ namespace Memenim
                 file.WriteLine(hash);
             }
         }
+
 
 
 
@@ -246,63 +246,69 @@ namespace Memenim
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await Memenim.MainWindow.Instance.ShowLoadingGrid(true)
+            await Memenim.MainWindow.Instance
+                .ShowLoadingGrid()
                 .ConfigureAwait(true);
 
             MainWindow = Memenim.MainWindow.Instance;
 
-            await Task.Delay(TimeSpan.FromMilliseconds(200))
+            await Task.Delay(
+                    TimeSpan.FromSeconds(0.2))
                 .ConfigureAwait(true);
 
             Memenim.MainWindow.Instance.Show();
 
             base.OnStartup(e);
 
-            await Task.Delay(TimeSpan.FromMilliseconds(500))
+            await Task.Delay(
+                    TimeSpan.FromSeconds(0.5))
                 .ConfigureAwait(true);
 
             LocalizationUtils.ReloadLocalizations<XamlLocalizationProvider>();
-            LocalizationUtils.SwitchLocalization(
-                SettingsManager.AppSettings.Language);
-            LocalizationUtils.SetDefaultCulture("en-US");
 
             if (LocalizationUtils.Localizations.Count == 0)
                 return;
 
-            await StorageManager.Initialize()
-                .ConfigureAwait(true);
-
-            ProtocolManager.RegisterAll();
-
-            SpecialEventManager.UpdateEvent();
+            LocalizationUtils.SwitchLocalization(
+                SettingsManager.AppSettings.Language);
+            LocalizationUtils.SetDefaultCulture(
+                "en-US");
 
             await Task.Run(async () =>
             {
+                ProtocolManager.RegisterAll();
+
+                await StorageManager.Initialize()
+                    .ConfigureAwait(false);
+
                 LogManager.DeleteLogs(SettingsManager.AppSettings
                     .LogRetentionDaysPeriod);
 
                 try
                 {
-                    if (string.IsNullOrEmpty(
-                        SettingsManager.PersistentSettings.GetCurrentUserLogin()))
+                    var currentUserLogin =
+                        SettingsManager.PersistentSettings.GetCurrentUserLogin();
+
+                    if (string.IsNullOrEmpty(currentUserLogin))
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            NavigationController.Instance.RequestPage<LoginPage>();
+                            NavigationController.Instance
+                                .RequestPage<LoginPage>();
                         });
 
                         return;
                     }
 
-                    if (!SettingsManager.PersistentSettings.SetCurrentUser(
-                        SettingsManager.PersistentSettings.GetCurrentUserLogin()))
+                    if (!SettingsManager.PersistentSettings.SetCurrentUser(currentUserLogin))
                     {
                         SettingsManager.PersistentSettings.RemoveUser(
-                            SettingsManager.PersistentSettings.GetCurrentUserLogin());
+                            currentUserLogin);
 
                         Dispatcher.Invoke(() =>
                         {
-                            NavigationController.Instance.RequestPage<LoginPage>();
+                            NavigationController.Instance
+                                .RequestPage<LoginPage>();
                         });
 
                         return;
@@ -321,7 +327,8 @@ namespace Memenim
 
                         Dispatcher.Invoke(() =>
                         {
-                            NavigationController.Instance.RequestPage<LoginPage>();
+                            NavigationController.Instance
+                                .RequestPage<LoginPage>();
                         });
 
                         return;
@@ -329,7 +336,8 @@ namespace Memenim
 
                     Dispatcher.Invoke(() =>
                     {
-                        NavigationController.Instance.RequestPage<FeedPage>();
+                        NavigationController.Instance
+                            .RequestPage<FeedPage>();
                     });
 
                     if (!string.IsNullOrEmpty(AppStartupUri))
@@ -339,15 +347,20 @@ namespace Memenim
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        NavigationController.Instance.RequestPage<LoginPage>();
+                        NavigationController.Instance
+                            .RequestPage<LoginPage>();
                     });
                 }
             }).ConfigureAwait(true);
 
-            await Task.Delay(TimeSpan.FromSeconds(1.5))
+            SpecialEventManager.UpdateEvent();
+
+            await Task.Delay(
+                    TimeSpan.FromSeconds(1.5))
                 .ConfigureAwait(true);
 
-            await Memenim.MainWindow.Instance.ShowLoadingGrid(false)
+            await Memenim.MainWindow.Instance
+                .HideLoadingGrid()
                 .ConfigureAwait(true);
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
@@ -363,29 +376,41 @@ namespace Memenim
 
         private void OnCoreInformation(object sender, CoreInformationEventArgs e)
         {
-            //LogManager.Debug.Info($"{e.Message}");
+            //LogManager.Debug.Info(
+            //    $"{e.Message}");
         }
 
         private void OnCoreWarning(object sender, CoreWarningEventArgs e)
         {
-            LogManager.Default.Warn($"{e.Message}");
+            LogManager.Default.Warn(
+                $"{e.Message}");
         }
 
         private void OnCoreError(object sender, CoreErrorEventArgs e)
         {
-            LogManager.Default.Error($"{e.SourceException?.GetType().Name ?? "Unknown"} - Message={e.Message ?? "Unknown"},HResult={e.SourceException?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.SourceException?.StackTrace ?? "Unknown"}");
+            LogManager.Default.Error(
+                $"{e.SourceException?.GetType().Name ?? "Unknown"} - " +
+                $"Message={e.Message ?? "Unknown"}," +
+                $"HResult={e.SourceException?.HResult.ToString() ?? "Unknown"}," +
+                $"StackTrace=\n{e.SourceException?.StackTrace ?? "Unknown"}");
         }
 
 
 
-        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private void OnDispatcherUnhandledException(object sender,
+            DispatcherUnhandledExceptionEventArgs e)
         {
-            LogManager.Default.Fatal($"{e.Exception?.GetType().Name ?? "Unknown"} - Message={e.Exception?.Message ?? "Unknown"},HResult={e.Exception?.HResult.ToString() ?? "Unknown"},StackTrace=\n{e.Exception?.StackTrace ?? "Unknown"}");
+            LogManager.Default.Fatal(
+                $"{e.Exception?.GetType().Name ?? "Unknown"} - " +
+                $"Message={e.Exception?.Message ?? "Unknown"}," +
+                $"HResult={e.Exception?.HResult.ToString() ?? "Unknown"}," +
+                $"StackTrace=\n{e.Exception?.StackTrace ?? "Unknown"}");
         }
 
 
 
-        private void LogManager_LoggingShutdown(object sender, EventArgs e)
+        private void LogManager_LoggingShutdown(object sender,
+            EventArgs e)
         {
             ApiRequestEngine.Information -= OnCoreInformation;
             ApiRequestEngine.Warning -= OnCoreWarning;
@@ -396,12 +421,15 @@ namespace Memenim
 
 
 
-        private void LocalizationUtils_LocalizationChanged(object sender, LocalizationChangedEventArgs e)
+        private void LocalizationUtils_LocalizationChanged(object sender,
+            LocalizationChangedEventArgs e)
         {
             Current?.Dispatcher?.Invoke(() =>
             {
-                Thread.CurrentThread.CurrentCulture = e.NewLocalization?.Culture ?? LocalizationUtils.DefaultCulture;
-                Thread.CurrentThread.CurrentUICulture = e.NewLocalization?.Culture ?? LocalizationUtils.DefaultCulture;
+                Thread.CurrentThread.CurrentCulture = e.NewLocalization?.Culture
+                                                      ?? LocalizationUtils.DefaultCulture;
+                Thread.CurrentThread.CurrentUICulture = e.NewLocalization?.Culture
+                                                        ?? LocalizationUtils.DefaultCulture;
             });
 
             SettingsManager.AppSettings.Language = e.NewLocalization.CultureName;
@@ -409,9 +437,14 @@ namespace Memenim
             SettingsManager.AppSettings.Save();
         }
 
-        private async void LocalizationUtils_LocalizationsNotFound(object sender, EventArgs e)
+        private async void LocalizationUtils_LocalizationsLoaded(object sender,
+            EventArgs e)
         {
-            LocalizationUtils.TryGetLocalized("LocalizationsNotFoundMessage", out var message);
+            if (LocalizationUtils.Localizations.Count > 0)
+                return;
+
+            LocalizationUtils.TryGetLocalized(
+                "LocalizationsNotFoundMessage", out var message);
 
             if (string.IsNullOrEmpty(message))
                 message = "Localizations not found";
@@ -422,14 +455,32 @@ namespace Memenim
             Current.Shutdown(0x1);
         }
 
-        private async void LocalizationUtils_LocalizationFileNotFound(object sender, LocalizationFileNotFoundEventArgs e)
+        private async void LocalizationUtils_LocalizationsNotFound(object sender,
+            EventArgs e)
         {
-            LocalizationUtils.TryGetLocalized("LocalizationFileTitle", out var localizationFileTitle);
+            LocalizationUtils.TryGetLocalized(
+                "LocalizationsNotFoundMessage", out var message);
+
+            if (string.IsNullOrEmpty(message))
+                message = "Localizations not found";
+
+            await DialogManager.ShowErrorDialog(message)
+                .ConfigureAwait(true);
+
+            Current.Shutdown(0x1);
+        }
+
+        private async void LocalizationUtils_LocalizationFileNotFound(object sender,
+            LocalizationFileNotFoundEventArgs e)
+        {
+            LocalizationUtils.TryGetLocalized(
+                "LocalizationFileTitle", out var localizationFileTitle);
 
             if (string.IsNullOrEmpty(localizationFileTitle))
                 localizationFileTitle = "Localization file";
 
-            LocalizationUtils.TryGetLocalized("NotFoundTitle1", out var notFoundTitle);
+            LocalizationUtils.TryGetLocalized(
+                "NotFoundTitle1", out var notFoundTitle);
 
             if (string.IsNullOrEmpty(notFoundTitle))
                 notFoundTitle = "Not found";
@@ -439,14 +490,17 @@ namespace Memenim
                 .ConfigureAwait(true);
         }
 
-        private async void LocalizationUtils_LocalizedCultureNotFound(object sender, LocalizedCultureNotFoundEventArgs e)
+        private async void LocalizationUtils_LocalizedCultureNotFound(object sender,
+            LocalizedCultureNotFoundEventArgs e)
         {
-            LocalizationUtils.TryGetLocalized("LocalizedCultureTitle", out var localizedCultureTitle);
+            LocalizationUtils.TryGetLocalized(
+                "LocalizedCultureTitle", out var localizedCultureTitle);
 
             if (string.IsNullOrEmpty(localizedCultureTitle))
                 localizedCultureTitle = "Localized culture";
 
-            LocalizationUtils.TryGetLocalized("NotFoundTitle2", out var notFoundTitle);
+            LocalizationUtils.TryGetLocalized(
+                "NotFoundTitle2", out var notFoundTitle);
 
             if (string.IsNullOrEmpty(notFoundTitle))
                 notFoundTitle = "Not found";

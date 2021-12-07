@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using Memenim.Core.Api;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
@@ -11,12 +10,17 @@ namespace Memenim.Widgets
 {
     public partial class StoredAccount : WidgetContent
     {
-        public static readonly RoutedEvent OnAccountClicked =
-            EventManager.RegisterRoutedEvent(nameof(AccountClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
-        public static readonly RoutedEvent OnAccountDeleted =
-            EventManager.RegisterRoutedEvent(nameof(AccountDelete), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
+        public static readonly RoutedEvent ClickEvent =
+            EventManager.RegisterRoutedEvent(nameof(Click), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
+        public static readonly RoutedEvent AccountDeleteEvent =
+            EventManager.RegisterRoutedEvent(nameof(AccountDelete), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(StoredAccount));
+        
+
+        
         public static readonly DependencyProperty AccountProperty =
-            DependencyProperty.Register(nameof(Account), typeof(User), typeof(StoredAccount),
+            DependencyProperty.Register(nameof(UserAccount), typeof(User), typeof(StoredAccount),
                 new PropertyMetadata(new User(null, null, -1, null, UserStoreType.Unknown)));
         public static readonly DependencyProperty UserNameProperty =
             DependencyProperty.Register(nameof(UserName), typeof(string), typeof(StoredAccount),
@@ -28,33 +32,34 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(UserStatus), typeof(UserStatusType), typeof(StoredAccount),
                 new PropertyMetadata(UserStatusType.Active));
 
-        public event EventHandler<RoutedEventArgs> AccountClick
+
+
+        public event EventHandler<RoutedEventArgs> Click
         {
             add
             {
-                AddHandler(OnAccountClicked, value);
+                AddHandler(ClickEvent, value);
             }
             remove
             {
-                RemoveHandler(OnAccountClicked, value);
+                RemoveHandler(ClickEvent, value);
             }
         }
         public event EventHandler<RoutedEventArgs> AccountDelete
         {
             add
             {
-                AddHandler(OnAccountDeleted, value);
+                AddHandler(AccountDeleteEvent, value);
             }
             remove
             {
-                RemoveHandler(OnAccountDeleted, value);
+                RemoveHandler(AccountDeleteEvent, value);
             }
         }
 
-        public readonly Brush AvatarBorderBackground;
-        public readonly Brush AvatarBorderDefaultBackground;
 
-        public User Account
+
+        public User UserAccount
         {
             get
             {
@@ -99,22 +104,23 @@ namespace Memenim.Widgets
             }
         }
 
+
+
         public StoredAccount()
         {
             InitializeComponent();
             DataContext = this;
-
-            AvatarBorderDefaultBackground = (Brush)FindResource(
-                "MahApps.Brushes.Gray10");
-            AvatarBorderBackground = AvatarBorder.Background;
         }
+
+
 
         public async Task UpdateAccount()
         {
-            if (Account.Id == -1)
+            if (UserAccount.Id == -1)
                 return;
 
-            var result = await UserApi.GetProfileById(Account.Id)
+            var result = await UserApi.GetProfileById(
+                    UserAccount.Id)
                 .ConfigureAwait(true);
 
             if (result.IsError || result.Data == null)
@@ -122,64 +128,70 @@ namespace Memenim.Widgets
 
             UserName = result.Data.Nickname;
             UserAvatarSource = result.Data.PhotoUrl;
-            UserStatus = (UserStatusType)((byte)result.Data.Status);
+            UserStatus = result.Data.Status;
         }
 
         public async Task UpdateStatus()
         {
-            if (Account.Id == -1)
+            if (UserAccount.Id == -1)
                 return;
 
-            var result = await UserApi.GetProfileById(Account.Id)
+            var result = await UserApi.GetProfileById(
+                    UserAccount.Id)
                 .ConfigureAwait(true);
 
             if (result.IsError || result.Data == null)
                 return;
 
-            UserStatus = (UserStatusType)((byte)result.Data.Status);
+            UserStatus = result.Data.Status;
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
         {
+            base.OnEnter(sender, e);
+
+            if (!IsOnEnterActive)
+            {
+                e.Handled = true;
+                return;
+            }
+
             await UpdateAccount()
                 .ConfigureAwait(true);
         }
 
-        private void Account_Click(object sender, RoutedEventArgs e)
+
+
+        private void Account_Click(object sender,
+            RoutedEventArgs e)
         {
-            RaiseEvent(new RoutedEventArgs(OnAccountClicked));
+            RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
 
-        private async void Delete_Click(object sender, RoutedEventArgs e)
+        private async void Delete_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnDelete.IsEnabled = false;
+            DeleteButton.IsEnabled = false;
 
-            var confirmResult = await DialogManager.ShowConfirmationDialog()
-                .ConfigureAwait(true);
-
-            if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+            try
             {
-                btnDelete.IsEnabled = true;
-                return;
+                var confirmResult = await DialogManager.ShowConfirmationDialog()
+                    .ConfigureAwait(true);
+
+                if (confirmResult != MahApps.Metro.Controls.Dialogs.MessageDialogResult.Affirmative)
+                    return;
+
+                Visibility = Visibility.Collapsed;
+
+                RaiseEvent(new RoutedEventArgs(AccountDeleteEvent));
             }
-
-            Visibility = Visibility.Collapsed;
-
-            RaiseEvent(new RoutedEventArgs(OnAccountDeleted));
-
-            btnDelete.IsEnabled = true;
-        }
-
-        private void AvatarImage_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            finally
             {
-                AvatarBorder.Background = AvatarBorderDefaultBackground;
-
-                return;
+                DeleteButton.IsEnabled = true;
             }
-
-            AvatarBorder.Background = AvatarBorderBackground;
         }
     }
 }

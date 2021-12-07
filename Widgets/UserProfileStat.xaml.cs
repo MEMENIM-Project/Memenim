@@ -7,8 +7,12 @@ namespace Memenim.Widgets
 {
     public partial class UserProfileStat : WidgetContent
     {
-        public static readonly RoutedEvent OnEditClicked =
-            EventManager.RegisterRoutedEvent(nameof(EditClick), RoutingStrategy.Direct, typeof(EventHandler<RoutedEventArgs>), typeof(UserProfileStat));
+        public static readonly RoutedEvent EditClickEvent =
+            EventManager.RegisterRoutedEvent(nameof(EditClick), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(UserProfileStat));
+        
+
+
         public static readonly DependencyProperty StatTitleProperty =
             DependencyProperty.Register(nameof(StatTitle), typeof(string), typeof(UserProfileStat),
                 new PropertyMetadata(string.Empty));
@@ -19,17 +23,21 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(EditAllowed), typeof(bool), typeof(UserProfileStat),
                 new PropertyMetadata(false));
 
+
+
         public event EventHandler<RoutedEventArgs> EditClick
         {
             add
             {
-                AddHandler(OnEditClicked, value);
+                AddHandler(EditClickEvent, value);
             }
             remove
             {
-                RemoveHandler(OnEditClicked, value);
+                RemoveHandler(EditClickEvent, value);
             }
         }
+
+
 
         public string StatTitle
         {
@@ -65,13 +73,18 @@ namespace Memenim.Widgets
             }
         }
 
+
+
         public UserProfileStat()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        private async void CopyProfileStatText_Click(object sender, RoutedEventArgs e)
+
+
+        private async void CopyProfileStatText_Click(object sender,
+            RoutedEventArgs e)
         {
             var text = StatValue;
 
@@ -89,9 +102,12 @@ namespace Memenim.Widgets
             Clipboard.SetText(text);
         }
 
-        private void Edit_Click(object sender, RoutedEventArgs e)
+
+
+        private void Edit_Click(object sender,
+            RoutedEventArgs e)
         {
-            RaiseEvent(new RoutedEventArgs(OnEditClicked));
+            RaiseEvent(new RoutedEventArgs(EditClickEvent));
         }
     }
 }

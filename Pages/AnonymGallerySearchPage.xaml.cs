@@ -50,7 +50,7 @@ namespace Memenim.Pages
                 ImagePreviewButton previewButton = new ImagePreviewButton()
                 {
                     ButtonSize = 200,
-                    ButtonPressAction = arg =>
+                    ClickFunction = arg =>
                     {
                         Dispatcher.Invoke(() =>
                         {
@@ -145,7 +145,7 @@ namespace Memenim.Pages
                 if (imageButton == null)
                     continue;
 
-                imageButton.img.Source = null;
+                imageButton.Image.Source = null;
             }
 
             lstImages.Children.Clear();

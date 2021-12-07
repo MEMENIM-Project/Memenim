@@ -18,6 +18,8 @@ namespace Memenim.SpecialEvents.Layers
     {
         private const double FadeAnimationSeconds = 3;
 
+
+
         private string _padoruSongPath;
         private string[] _songsPaths;
         private string _currentSongPath;
@@ -25,6 +27,8 @@ namespace Memenim.SpecialEvents.Layers
         private DoubleAnimation _fadeInAnimation;
         private DoubleAnimation _fadeOutAnimation;
         private Timer _padoruTimer;
+
+
 
         public override string DefaultMusicDirectoryPath { get; }
         public override string CustomMusicDirectoryPath { get; }
@@ -92,8 +96,6 @@ namespace Memenim.SpecialEvents.Layers
 
                 if (extension == null || extension != ".mp3")
                     continue;
-                if (filePath == _padoruSongPath)
-                    continue;
 
                 songsPaths.Add(filePath);
             }
@@ -108,6 +110,9 @@ namespace Memenim.SpecialEvents.Layers
             foreach (var songPath in GetSongsPaths(
                 DefaultMusicDirectoryPath))
             {
+                if (songPath == _padoruSongPath)
+                    continue;
+
                 songsPaths.Add(songPath);
             }
 
@@ -136,6 +141,7 @@ namespace Memenim.SpecialEvents.Layers
             if (songPath != _currentSongPath)
             {
                 _currentSongPath = songPath;
+
                 return songPath;
             }
 
@@ -158,21 +164,8 @@ namespace Memenim.SpecialEvents.Layers
             songPath = _songsPaths[songIndex];
 
             _currentSongPath = songPath;
+
             return songPath;
-        }
-
-        private void SetRandomNextPadoruInterval()
-        {
-            const int biasZone =
-                int.MaxValue - (int.MaxValue % 420) - 1;
-            int randomSeconds =
-                (int)GeneratingManager.CachedRandomGenerator
-                    .GetUInt32((uint)biasZone) % 420;
-            int seconds = 180 + randomSeconds;
-
-            LogManager.Default.Info($"Next padoru in {seconds} seconds");
-
-            _padoruTimer.Interval = seconds * 1000;
         }
 
         private void PlayRandomSong()
@@ -184,6 +177,22 @@ namespace Memenim.SpecialEvents.Layers
 
             MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
             MusicPlayer.Play();
+        }
+
+        private void SetRandomNextPadoruInterval()
+        {
+            const int biasZone =
+                int.MaxValue - (int.MaxValue % 420) - 1;
+
+            var randomSeconds =
+                (int)GeneratingManager.CachedRandomGenerator
+                    .GetUInt32((uint)biasZone) % 420;
+            var seconds = 180 + randomSeconds;
+
+            LogManager.Default.Info($"Next padoru in {seconds} seconds");
+
+            _padoruTimer.Interval = TimeSpan
+                .FromSeconds(seconds).TotalMilliseconds;
         }
 
         private void PlayPadoru()
@@ -227,7 +236,7 @@ namespace Memenim.SpecialEvents.Layers
 
 
 
-        internal override bool EventTimeSatisfied(
+        public override bool EventTimeSatisfied(
             DateTime currentTime)
         {
             var eventStartTime = new DateTime(
@@ -248,12 +257,13 @@ namespace Memenim.SpecialEvents.Layers
             return true;
         }
 
-        internal override bool LoadEvent()
+        public override bool LoadEvent()
         {
             if (EventLoaded)
                 return true;
 
-            _padoruSongPath = GetDefaultSongPath("padoru.mp3");
+            _padoruSongPath = GetDefaultSongPath(
+                "padoru.mp3");
             _songsPaths = GetSongsPaths();
             _currentSongPath = string.Empty;
 
@@ -261,7 +271,7 @@ namespace Memenim.SpecialEvents.Layers
             {
                 From = -550,
                 To = ActualWidth + 250,
-                Duration = new Duration(TimeSpan.FromSeconds(13))
+                Duration = new Duration(TimeSpan.FromSeconds(13.5))
             };
             _fadeInAnimation = new DoubleAnimation
             {
@@ -286,17 +296,22 @@ namespace Memenim.SpecialEvents.Layers
             MusicPlayer.Source = new Uri(GetRandomSong());
             PadoruPlayer.Source = new Uri(_padoruSongPath);
 
-            _padoruTimer.Start();
+            MusicPlayer.IsEnabled = false;
+            PadoruPlayer.IsEnabled = false;
 
-            Activate(EventEnabled);
             SetVolume(SettingsManager.AppSettings.BgmVolume);
+
+            if (EventEnabled)
+                Activate();
+            else
+                Deactivate();
 
             EventLoaded = true;
 
             return true;
         }
 
-        internal override void UnloadEvent()
+        public override void UnloadEvent()
         {
             if (!EventLoaded)
                 return;
@@ -317,40 +332,45 @@ namespace Memenim.SpecialEvents.Layers
             EventLoaded = false;
         }
 
-        public override void Activate(
-            bool state)
+        public override void Activate()
         {
-            if (state)
-            {
-                MusicPlayer.IsEnabled = true;
-                PadoruPlayer.IsEnabled = true;
+            if (MusicPlayer.IsEnabled)
+                return;
 
-                MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
-                MusicPlayer.Play();
+            MusicPlayer.IsEnabled = true;
+            PadoruPlayer.IsEnabled = true;
 
-                _padoruTimer.Start();
+            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeInAnimation);
+            MusicPlayer.Play();
 
-                LogManager.Default.Info("Christmas event - On");
-            }
-            else
-            {
-                MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
-                MusicPlayer.Pause();
+            _padoruTimer.Start();
 
-                _padoruTimer.Stop();
+            LogManager.Default.Info("Christmas event - Enable");
 
-                PadoruImage.Visibility = Visibility.Collapsed;
+            EventEnabled = true;
+        }
 
-                PadoruPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
-                PadoruPlayer.Stop();
+        public override void Deactivate()
+        {
+            if (!MusicPlayer.IsEnabled)
+                return;
 
-                MusicPlayer.IsEnabled = false;
-                PadoruPlayer.IsEnabled = false;
+            MusicPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
+            MusicPlayer.Pause();
 
-                LogManager.Default.Info("Christmas event - Off");
-            }
+            _padoruTimer.Stop();
 
-            EventEnabled = state;
+            PadoruImage.Visibility = Visibility.Collapsed;
+
+            PadoruPlayer.BeginAnimation(MediaElement.VolumeProperty, _fadeOutAnimation);
+            PadoruPlayer.Stop();
+
+            MusicPlayer.IsEnabled = false;
+            PadoruPlayer.IsEnabled = false;
+
+            LogManager.Default.Info("Christmas event - Disable");
+
+            EventEnabled = false;
         }
 
         public override void SetVolume(
@@ -418,7 +438,7 @@ namespace Memenim.SpecialEvents.Layers
             {
                 From = -550,
                 To = e.NewSize.Width + 250,
-                Duration = new Duration(TimeSpan.FromSeconds(13))
+                Duration = new Duration(TimeSpan.FromSeconds(13.5))
             };
         }
 

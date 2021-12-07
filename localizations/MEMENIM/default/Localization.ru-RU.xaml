@@ -243,9 +243,11 @@
     <system:String x:Key="CancelTitle">Отмена</system:String>
     <system:String x:Key="EnterTitle">Введите</system:String>
     <system:String x:Key="EnableTitle">Включить</system:String>
+    <system:String x:Key="DisableTitle">Выключить</system:String>
     <system:String x:Key="ErrorTitle">Ошибка</system:String>
     <system:String x:Key="SuccessTitle">Успех</system:String>
     <system:String x:Key="NothingTitle">Ничего</system:String>
+    <system:String x:Key="AnonymouslyTitle">Анонимно</system:String>
     <system:String x:Key="FileTitle">Файл</system:String>
     <system:String x:Key="LocalizationFileTitle">Файл локализации</system:String>
     <system:String x:Key="LocalizedCultureTitle">Локализованная культура</system:String>

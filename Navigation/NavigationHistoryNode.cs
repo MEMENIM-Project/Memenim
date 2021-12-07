@@ -4,7 +4,7 @@ using Memenim.Pages.ViewModel;
 
 namespace Memenim.Navigation
 {
-    public sealed class NavigationHistoryNode
+    public struct NavigationHistoryNode
     {
         public PageContent Content { get; set; }
         public PageContent SubContent { get; set; }

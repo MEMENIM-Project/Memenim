@@ -1,0 +1,29 @@
+﻿<local:WidgetContent x:Class="Memenim.Widgets.UserAvatar"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:local="clr-namespace:Memenim.Widgets"
+                     xmlns:gif="clr-namespace:WpfAnimatedGif;assembly=WpfAnimatedGif"
+                     mc:Ignorable="d"
+                     MinWidth="{Binding Path=MinSize, RelativeSource={RelativeSource Mode=Self}}"
+                     MinHeight="{Binding Path=MinSize, RelativeSource={RelativeSource Mode=Self}}"
+                     MaxWidth="{Binding Path=MaxSize, RelativeSource={RelativeSource Mode=Self}}"
+                     MaxHeight="{Binding Path=MaxSize, RelativeSource={RelativeSource Mode=Self}}"
+                     Width="{Binding Path=Size, RelativeSource={RelativeSource Mode=Self}}"
+                     Height="{Binding Path=Size, RelativeSource={RelativeSource Mode=Self}}"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     d:DesignWidth="200" d:DesignHeight="200">
+
+    <Grid>
+        <Border x:Name="ImageBackgroundBorder"
+                SnapsToDevicePixels="True"/>
+        <Image MinWidth="{Binding Path=MinSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserAvatar}}"
+               MinHeight="{Binding Path=MinSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserAvatar}}"
+               x:Name="Image"
+               gif:ImageBehavior.AnimatedSource="{Binding Path=ImageUrl, Converter={StaticResource UserAvatarImageSourceConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserAvatar}}"
+               Stretch="UniformToFill" StretchDirection="Both"
+               HorizontalAlignment="Center" VerticalAlignment="Center"
+               SizeChanged="Image_SizeChanged"/>
+    </Grid>
+</local:WidgetContent>

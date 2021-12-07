@@ -1,17 +1,25 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using Memenim.Generic;
 using Memenim.Pages.ViewModel;
 
 namespace Memenim.Pages
 {
-    public abstract class PageContent : UserControl
+    public abstract class PageContent : UserControl, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+
         public bool IsCreated { get; private set; }
         public bool IsOnEnterActive { get; set; }
         public bool IsOnExitActive { get; set; }
-        public PageStateType State { get; set; }
+        public ControlStateType State { get; private set; }
+
+
 
         protected PageContent()
         {
@@ -24,10 +32,13 @@ namespace Memenim.Pages
             IsCreated = false;
             IsOnEnterActive = true;
             IsOnExitActive = true;
-            State = PageStateType.Unknown;
+            State = ControlStateType.Unknown;
         }
 
-        protected virtual void OnCreated(object sender, EventArgs e)
+
+
+        protected virtual void OnCreated(object sender,
+            EventArgs e)
         {
             if (IsCreated)
                 return;
@@ -37,14 +48,16 @@ namespace Memenim.Pages
             IsCreated = true;
         }
 
-        protected virtual void OnInitialized(object sender, EventArgs e)
+        protected virtual void OnInitialized(object sender,
+            EventArgs e)
         {
 
         }
 
-        protected virtual void OnEnter(object sender, RoutedEventArgs e)
+        protected virtual void OnEnter(object sender,
+            RoutedEventArgs e)
         {
-            State = PageStateType.Loaded;
+            State = ControlStateType.Loaded;
 
             if (!IsOnEnterActive)
             {
@@ -53,9 +66,10 @@ namespace Memenim.Pages
             }
         }
 
-        protected virtual void OnExit(object sender, RoutedEventArgs e)
+        protected virtual void OnExit(object sender,
+            RoutedEventArgs e)
         {
-            State = PageStateType.Unloaded;
+            State = ControlStateType.Unloaded;
 
             if (!IsOnExitActive)
             {
@@ -64,7 +78,8 @@ namespace Memenim.Pages
             }
         }
 
-        protected virtual void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        protected virtual void OnDataContextChanged(object sender,
+            DependencyPropertyChangedEventArgs e)
         {
             try
             {
@@ -85,9 +100,19 @@ namespace Memenim.Pages
             }
         }
 
-        protected virtual void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected virtual void ViewModelPropertyChanged(object sender,
+            PropertyChangedEventArgs e)
         {
 
+        }
+
+
+
+        public virtual void OnPropertyChanged(
+            [CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(propertyName));
         }
     }
 }

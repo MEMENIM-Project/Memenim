@@ -10,6 +10,7 @@
                    xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                    mc:Ignorable="d"
                    Height="300" Width="300"
                    MinHeight="300" MinWidth="300">
@@ -155,10 +156,11 @@
                                    VerticalAlignment="Center" HorizontalAlignment="Center"
                                    TextAlignment="Center" TextWrapping="Wrap"/>
                     </Button>
+                    <!--IconKind="{x:Static iconPacks:PackIconModernKind.PeopleProfile}"-->
                     <widgets:IconToggleButton Grid.Column="2"
                                               x:Name="btnOpenStoredAccounts"
                                               Width="25" Height="25"
-                                              IconKind="PeopleProfile"
+                                              IconKind="{x:Static iconPacks:PackIconModernKind.PeopleProfile}"
                                               Margin="-5 0 -5 0"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>

@@ -1,40 +1,43 @@
 ﻿<local:WidgetContent x:Class="Memenim.Widgets.CommentsList"
-             d:DataContext="{d:DesignInstance local:CommentsList}"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Memenim.Widgets"
-             xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+                     d:DataContext="{d:DesignInstance local:CommentsList}"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:local="clr-namespace:Memenim.Widgets"
+                     xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
+                     mc:Ignorable="d"
+                     d:DesignWidth="800" d:DesignHeight="450">
 
-    <Border Padding="5" BorderThickness="0">
-        <Grid Background="{StaticResource MahApps.Brushes.Gray10}"
-              Loaded="Grid_Loaded" Unloaded="Grid_Unloaded">
+    <Border BorderThickness="0"
+            Padding="5">
+        <Grid Background="{StaticResource MahApps.Brushes.Gray10}">
             <Grid.RowDefinitions>
-                <RowDefinition MinHeight="35" Height="35"/>
-                <RowDefinition MinHeight="40" Height="40"/>
+                <RowDefinition MinHeight="35"
+                               Height="35"/>
+                <RowDefinition MinHeight="40"
+                               Height="40"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
-                       Text="{markupLocalization:LocalizedString CommentsTitle}"
                        Style="{DynamicResource Header2}"
+                       Text="{markupLocalization:LocalizedString CommentsTitle}"
                        Margin="16 5 16 5"/>
             <Button Grid.Row="1"
-                    x:Name="btnLoadMore"
-                    Content="{markupLocalization:LocalizedString LoadComments}"
+                    x:Name="LoadMoreButton"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
+                    Content="{markupLocalization:LocalizedString LoadComments}"
                     Visibility="Collapsed"
                     Margin="16 5 16 5"
-                    Click="btnLoadMore_Click"/>
+                    Click="LoadMoreButton_Click"/>
             <Grid Grid.Row="2"
-                  Margin="16 5 16 5"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <WrapPanel Name="lstComments"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                  Margin="16 5 16 5">
+                <WrapPanel Name="CommentsWrapPanel"
                            ItemWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
-                           Orientation="Vertical" HorizontalAlignment="Stretch"/>
+                           Orientation="Vertical"
+                           HorizontalAlignment="Stretch"/>
             </Grid>
         </Grid>
     </Border>

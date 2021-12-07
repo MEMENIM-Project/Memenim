@@ -10,6 +10,8 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(StatusValue), typeof(UserStatusType), typeof(UserStatus),
                 new PropertyMetadata(UserStatusType.Active));
 
+
+
         public UserStatusType StatusValue
         {
             get
@@ -21,6 +23,8 @@ namespace Memenim.Widgets
                 SetValue(StatusValueProperty, value);
             }
         }
+
+
 
         public UserStatus()
         {

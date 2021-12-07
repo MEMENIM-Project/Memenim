@@ -4,20 +4,27 @@ using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Core.Schema;
 using Memenim.Dialogs;
+using Memenim.Layouts;
+using Memenim.Layouts.NavigationBar;
 using Memenim.Navigation;
 using Memenim.Pages;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
-using Memenim.TabLayouts;
-using Memenim.TabLayouts.NavigationBar;
 using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
     public partial class NavigationBar : WidgetContent
     {
-        public static readonly RoutedEvent OnRedirectRequested =
-            EventManager.RegisterRoutedEvent(nameof(RedirectRequest), RoutingStrategy.Bubble, typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));
+        public static readonly RoutedEvent RedirectRequestedEvent =
+            EventManager.RegisterRoutedEvent(nameof(RedirectRequested), RoutingStrategy.Bubble,
+                typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));
+        public static readonly RoutedEvent RedirectOccurredEvent =
+            EventManager.RegisterRoutedEvent(nameof(RedirectOccurred), RoutingStrategy.Bubble,
+                typeof(EventHandler<RoutedEventArgs>), typeof(NavigationBar));
+
+
+
         public static readonly DependencyProperty TopNavButtonsProperty =
             DependencyProperty.Register(nameof(TopNavButtons), typeof(ObservableCollection<IconButton>), typeof(NavigationBar),
                 new PropertyMetadata(new ObservableCollection<IconButton>()));
@@ -28,17 +35,32 @@ namespace Memenim.Widgets
             DependencyProperty.Register(nameof(BottomNavButtons), typeof(ObservableCollection<IconButton>), typeof(NavigationBar),
                 new PropertyMetadata(new ObservableCollection<IconButton>()));
 
-        public event EventHandler<RoutedEventArgs> RedirectRequest
+
+
+        public event EventHandler<RoutedEventArgs> RedirectRequested
         {
             add
             {
-                AddHandler(OnRedirectRequested, value);
+                AddHandler(RedirectRequestedEvent, value);
             }
             remove
             {
-                RemoveHandler(OnRedirectRequested, value);
+                RemoveHandler(RedirectRequestedEvent, value);
             }
         }
+        public event EventHandler<RoutedEventArgs> RedirectOccurred
+        {
+            add
+            {
+                AddHandler(RedirectOccurredEvent, value);
+            }
+            remove
+            {
+                RemoveHandler(RedirectOccurredEvent, value);
+            }
+        }
+
+
 
         public ObservableCollection<IconButton> TopNavButtons
         {
@@ -74,88 +96,102 @@ namespace Memenim.Widgets
             }
         }
 
+
+
         public NavigationBar()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        private void ChangeButtons(ObservableCollection<IconButton> buttonsList,
+
+
+        private void ChangeButtons(
+            ObservableCollection<IconButton> buttonsList,
             NavRedirectButtonNode[] nodesList)
         {
             buttonsList.Clear();
 
             foreach (var node in nodesList)
             {
-                IconButton button = new IconButton
+                var button = new IconButton
                 {
                     IconKind = node.IconKind,
                     Information = node.PageName,
                     Height = 40
                 };
-                button.IconButtonClick += OnNavButtonClick;
+                button.Click += OnNavButtonClick;
 
                 buttonsList.Add(button);
             }
         }
 
-        public async Task SwitchLayout(NavBarLayoutType type)
+
+
+        public async Task SwitchLayout(
+            NavBarLayoutType type)
         {
-            ResourceDictionary dictionary = await TabLayoutsManager.GetLayout(this, type.ToString())
+            var dictionary = await LayoutsManager
+                .GetLayout(this, type.ToString())
                 .ConfigureAwait(true);
 
             if (dictionary == null)
                 return;
 
-            ChangeButtons(TopNavButtons, (NavRedirectButtonNode[])dictionary[nameof(TopNavButtons)]);
-            ChangeButtons(CentralNavButtons, (NavRedirectButtonNode[])dictionary[nameof(CentralNavButtons)]);
-            ChangeButtons(BottomNavButtons, (NavRedirectButtonNode[])dictionary[nameof(BottomNavButtons)]);
-
+            ChangeButtons(TopNavButtons,
+                (NavRedirectButtonNode[])dictionary[nameof(TopNavButtons)]);
+            ChangeButtons(CentralNavButtons,
+                (NavRedirectButtonNode[])dictionary[nameof(CentralNavButtons)]);
+            ChangeButtons(BottomNavButtons,
+                (NavRedirectButtonNode[])dictionary[nameof(BottomNavButtons)]);
         }
 
-        private async void OnNavButtonClick(object sender, RoutedEventArgs e)
+
+
+        private async void OnNavButtonClick(object sender,
+            RoutedEventArgs e)
         {
+            if (!(sender is IconButton button))
+                return;
+
+            RaiseEvent(new RoutedEventArgs(RedirectRequestedEvent));
+
             try
             {
-                if (sender is IconButton button)
+                if (button.Information == "Back")
                 {
-                    if (button.Information == "Back")
-                    {
-                        NavigationController.Instance.GoBack();
-                    }
-                    else if (button.Information == "SettingsFlyout")
-                    {
-                        if (!MainWindow.Instance.IsOpenSettings())
-                        {
-                            MainWindow.Instance.ShowSettings();
-                        }
-                        else
-                        {
-                            MainWindow.Instance.HideSettings();
-                        }
-                    }
-                    else if (button.Information == "UserProfilePage")
-                    {
-                        if (NavigationController.Instance.PageContent.Content is UserProfilePage page
-                            && page.DataContext is UserProfileViewModel viewModel
-                            && viewModel.CurrentProfileData.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
-                        {
-                            return;
-                        }
-
-                        NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
-                        {
-                            CurrentProfileData = new ProfileSchema
-                            {
-                                Id = SettingsManager.PersistentSettings.CurrentUser.Id
-                            }
-                        });
-                    }
-                    else
-                    {
-                        NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.Information}"));
-                    }
+                    NavigationController.Instance.GoBack();
                 }
+                else if (button.Information == "SettingsFlyout")
+                {
+                    if (!MainWindow.Instance.SettingsFlyout.IsOpen)
+                        MainWindow.Instance.SettingsFlyout.Show();
+                    else
+                        MainWindow.Instance.SettingsFlyout.Hide();
+                }
+                else if (button.Information == "UserProfilePage")
+                {
+                    if (NavigationController.Instance.PageContent.Content is UserProfilePage page
+                        && page.DataContext is UserProfileViewModel viewModel
+                        && viewModel.CurrentProfileData.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
+                    {
+                        return;
+                    }
+
+                    NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
+                    {
+                        CurrentProfileData = new ProfileSchema
+                        {
+                            Id = SettingsManager.PersistentSettings.CurrentUser.Id
+                        }
+                    });
+                }
+                else
+                {
+                    NavigationController.Instance.RequestPage(Type.GetType($"Memenim.Pages.{button.Information}"));
+                }
+
+                RaiseEvent(new RoutedEventArgs(RedirectOccurredEvent));
             }
             catch (Exception ex)
             {
@@ -164,8 +200,6 @@ namespace Memenim.Widgets
                 await DialogManager.ShowMessageDialog(title, ex.Message)
                     .ConfigureAwait(true);
             }
-
-            RaiseEvent(new RoutedEventArgs(OnRedirectRequested));
         }
     }
 }
