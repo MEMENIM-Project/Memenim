@@ -1,19 +1,16 @@
 # <div align="center">**M E M E N I M**</div>
 
 
-## <div align="center">[![LatestRelease](https://img.shields.io/github/v/release/MEMENIM-Project/Memenim?color=MEMENIM&label=latest%20release)](https://github.com/MEMENIM-Project/Memenim/releases/latest) [![CodeLines](https://tokei.rs/b1/github/MEMENIM-Project/Memenim?category=code)](https://github.com/MEMENIM-Project/Memenim) [![ClosedMilestones](https://img.shields.io/github/milestones/closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/milestones?state=closed) [![ClosedIssues](https://img.shields.io/github/issues-closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/issues?q=is%3Aissue+is%3Aclosed)</div>
+## <div align="center">[![LatestRelease](https://img.shields.io/github/v/release/MEMENIM-Project/Memenim?style=flat&color=MEMENIM&label=latest%20release)](https://github.com/MEMENIM-Project/Memenim/releases/latest) [![CodeLines](https://tokei.rs/b1/github/MEMENIM-Project/Memenim?category=code)](https://github.com/MEMENIM-Project/Memenim) [![ClosedMilestones](https://img.shields.io/github/milestones/closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/milestones?state=closed) [![ClosedIssues](https://img.shields.io/github/issues-closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/issues?q=is%3Aissue+is%3Aclosed)</div>
+
+
+## <div align="center">[![Discord](https://img.shields.io/discord/758775270861307946?style=flat&label=discord&logo=discord&logoColor=8099DF&color=5194f0)](https://discord.gg/yhATVBWxZG) [![Telegram](https://img.shields.io/badge/telegram-MEMENIM%20%20Ghetto-2A8?style=flat&label=telegram&logo=telegram&logoColor=white&color=5194f0)](https://t.me/joinchat/Vf9B3XM5SM-zUbkf)</div>
 
 
 ### <div align="center">Custom client for [Anonym social network](https://anonym.network/).</div>
 
 
 <br/>
-
-
-# <div align="center">**Links**</div>
-
-- [Discord](https://discord.gg/yhATVBWxZG)
-- [Telegram](https://t.me/joinchat/Vf9B3XM5SM-zUbkf)
 
 
 # <div align="center">**Information**</div>
