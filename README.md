@@ -1,7 +1,7 @@
 # <div align="center">**M E M E N I M**</div>
 
 
-## <div align="center">[![LatestRelease](https://img.shields.io/github/v/release/MEMENIM-Project/Memenim?color=%23MEMENIM&label=latest%20release)](https://github.com/MEMENIM-Project/Memenim/releases/latest) [![CodeLines](https://tokei.rs/b1/github/MEMENIM-Project/Memenim?category=code)](https://github.com/MEMENIM-Project/Memenim) [![ClosedMilestones](https://img.shields.io/github/milestones/closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/milestones?state=closed) [![ClosedIssues](https://img.shields.io/github/issues-closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/issues?q=is%3Aissue+is%3Aclosed)</div>
+## <div align="center">[![LatestRelease](https://img.shields.io/github/v/release/MEMENIM-Project/Memenim?color=MEMENIM&label=latest%20release)](https://github.com/MEMENIM-Project/Memenim/releases/latest) [![CodeLines](https://tokei.rs/b1/github/MEMENIM-Project/Memenim?category=code)](https://github.com/MEMENIM-Project/Memenim) [![ClosedMilestones](https://img.shields.io/github/milestones/closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/milestones?state=closed) [![ClosedIssues](https://img.shields.io/github/issues-closed/MEMENIM-Project/Memenim?style=flat)](https://github.com/MEMENIM-Project/Memenim/issues?q=is%3Aissue+is%3Aclosed)</div>
 
 
 ### <div align="center">Custom client for [Anonym social network](https://anonym.network/).</div>
