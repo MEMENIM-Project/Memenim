@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Memenim.Dialogs;
+using Memenim.Utils;
 using Environment = RIS.Environment;
 
 namespace Memenim.Downloads
@@ -10,88 +12,146 @@ namespace Memenim.Downloads
     {
         private static readonly HttpClient Client;
 
+
+
         public static readonly string DownloadsPath;
+
+
 
         static DownloadManager()
         {
             Client = new HttpClient();
-            DownloadsPath = Path.Combine(Environment.ExecProcessDirectoryName,
+
+            DownloadsPath = Path.Combine(
+                Environment.ExecProcessDirectoryName,
                 "downloads");
 
             if (!Directory.Exists(DownloadsPath))
                 Directory.CreateDirectory(DownloadsPath);
         }
 
-        private static string GetFileName(string fileName)
+
+
+        private static string GetRandomFileName(
+            string extension)
         {
-            string resultFileName = fileName;
-            string path = Path.Combine(DownloadsPath, fileName);
+            var resultFileName =
+                $"{Path.GetRandomFileName()}{extension}";
 
-            foreach (var file in Directory.GetFiles(DownloadsPath))
+            while (File.Exists(Path.Combine(DownloadsPath, resultFileName)))
             {
-                if (file != path)
-                    continue;
-
-                int counter = 1;
-
-                while (File.Exists(Path.Combine(DownloadsPath, resultFileName)))
-                {
-                    resultFileName = $"{Path.GetFileNameWithoutExtension(fileName)} ({counter}){Path.GetExtension(fileName)}";
-                    ++counter;
-                }
+                resultFileName =
+                    $"{Path.GetRandomFileName()}{extension}";
             }
 
             return resultFileName;
         }
 
-        public static Task SaveFile(string url)
+        private static string GetFileName(
+            string fileName)
         {
-            return SaveFile(new Uri(url));
-        }
-        public static async Task SaveFile(Uri uri)
-        {
-            string fileName = GetFileName(uri.Segments[^1]);
-            string path = Path.Combine(DownloadsPath, fileName);
+            var resultFileName = fileName;
+            var counter = 1;
 
-            HttpResponseMessage response = await Client.GetAsync(uri)
+            while (File.Exists(Path.Combine(DownloadsPath, resultFileName)))
+            {
+                resultFileName =
+                    $"{Path.GetFileNameWithoutExtension(fileName)} ({counter}){Path.GetExtension(fileName)}";
+
+                ++counter;
+            }
+
+            return resultFileName;
+        }
+
+
+
+        public static Task SaveFile(
+            string url, bool useRandomFileName = false,
+            bool overwrite = false)
+        {
+            return SaveFile(new Uri(url),
+                useRandomFileName, overwrite);
+        }
+        public static async Task SaveFile(
+            Uri uri, bool useRandomFileName = false,
+            bool overwrite = false)
+        {
+            var fileName = useRandomFileName
+                ? GetRandomFileName(
+                    Path.GetExtension(uri.Segments[^1]))
+                : !overwrite
+                    ? GetFileName(uri.Segments[^1])
+                    : uri.Segments[^1];
+
+            var path = Path.Combine(
+                DownloadsPath, fileName);
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await Client.GetAsync(uri)
+                    .ConfigureAwait(true);
+            }
+            catch (Exception)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("FailedToDownloadFileMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("FailedToDownloadFileMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            var stream = await response.Content.ReadAsStreamAsync()
                 .ConfigureAwait(true);
 
-            if (response.IsSuccessStatusCode)
-            {
-                Stream stream = await response.Content.ReadAsStreamAsync()
-                    .ConfigureAwait(true);
+            await using var file = File.Create(
+                path, 65536);
 
-                using (FileStream file = File.Create(path, (int)stream.Length))
-                {
-                    byte[] data = new byte[stream.Length];
-
-                    await stream.ReadAsync(data, 0, data.Length)
-                        .ConfigureAwait(true);
-
-                    await file.WriteAsync(data, 0, data.Length)
-                        .ConfigureAwait(true);
-                }
-            }
-            else
-            {
-                throw new FileNotFoundException();
-            }
+            await stream.CopyToAsync(
+                file, 65536);
         }
-        public static async Task SaveFile(string fileName, Stream stream)
+
+        public static Task SaveFile(
+            Stream stream)
         {
-            fileName = GetFileName(fileName);
-            string path = Path.Combine(DownloadsPath, fileName);
+            return SaveFile(stream,
+                GetRandomFileName(".file"), true);
+        }
+        public static async Task SaveFile(
+            Stream stream, string fileNameOrExtension,
+            bool useRandomFileName = false,
+            bool overwrite = false)
+        {
+            var fileName = useRandomFileName
+                ? GetRandomFileName(
+                    Path.GetExtension(fileNameOrExtension))
+                : !overwrite
+                    ? GetFileName(fileNameOrExtension)
+                    : fileNameOrExtension;
 
-            using (FileStream file = File.Create(path, (int)stream.Length))
-            {
-                byte[] data = new byte[stream.Length];
+            var path = Path.Combine(
+                DownloadsPath, fileName);
 
-                await stream.ReadAsync(data, 0, data.Length)
-                    .ConfigureAwait(true);
+            await using var file = File.Create(
+                path, 65536);
 
-                await file.WriteAsync(data, 0, data.Length)
-                    .ConfigureAwait(true);
-            }
+            await stream.CopyToAsync(
+                file, 65536);
         }
     }
 }

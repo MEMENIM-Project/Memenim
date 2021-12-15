@@ -267,9 +267,10 @@
 
     <system:String x:Key="LocalizationsNotFoundMessage">Локализации не найдены</system:String>
     <system:String x:Key="CopyingToClipboardErrorMessage">Ошибка копирования в буфер обмена</system:String>
-    <system:String x:Key="CouldNotLoadCommentsMessage">Не удалось загрузить комментарии</system:String>
+    <system:String x:Key="FailedToLoadCommentsMessage">Не удалось загрузить комментарии</system:String>
+    <system:String x:Key="FailedToDownloadFileMessage">Не удалось скачать файл</system:String>
     <system:String x:Key="GettingProfileErrorMessage">Ошибка получения профиля</system:String>
 
-    <system:String x:Key="YouMaybeBannedConfirmationMessage">Вы можете быть забанены в процессе использования этой функции</system:String>
+    <system:String x:Key="YouMayBeBannedConfirmationMessage">Вы можете быть забанены в процессе использования этой функции</system:String>
 
 </ResourceDictionary>

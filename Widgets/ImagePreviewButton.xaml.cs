@@ -7,6 +7,12 @@ namespace Memenim.Widgets
 {
     public partial class ImagePreviewButton : WidgetContent
     {
+        public static readonly RoutedEvent ClickEvent =
+            EventManager.RegisterRoutedEvent(nameof(Click), RoutingStrategy.Direct,
+                typeof(EventHandler<RoutedEventArgs>), typeof(ImagePreviewButton));
+
+
+
         public static readonly DependencyProperty ImageSourceProperty =
             DependencyProperty.Register(nameof(ImageSource), typeof(string), typeof(ImagePreviewButton),
                 new PropertyMetadata((string)null));
@@ -19,17 +25,15 @@ namespace Memenim.Widgets
 
 
 
-        private Func<string, Task> _clickFunction;
-        public Func<string, Task> ClickFunction
+        public event EventHandler<RoutedEventArgs> Click
         {
-            get
+            add
             {
-                return _clickFunction;
+                AddHandler(ClickEvent, value);
             }
-            set
+            remove
             {
-                _clickFunction = value;
-                OnPropertyChanged(nameof(ClickFunction));
+                RemoveHandler(ClickEvent, value);
             }
         }
 
@@ -79,16 +83,10 @@ namespace Memenim.Widgets
 
 
 
-        private async void Button_Click(object sender,
+        private void Button_Click(object sender,
             RoutedEventArgs e)
         {
-            if (ClickFunction != null)
-            {
-                await ClickFunction(ImageSource)
-                    .ConfigureAwait(true);
-            }
-
-            NavigationController.Instance.GoBack();
+            RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
     }
 }

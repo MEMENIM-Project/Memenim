@@ -8,9 +8,10 @@ namespace Memenim.Converters
 {
     public sealed class UserPurposeTypeToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            UserPurposeType result = UserPurposeType.Unknown;
+            var result = UserPurposeType.Unknown;
 
             if (value is int intValue)
                 result = (UserPurposeType)((byte)intValue);
@@ -20,12 +21,16 @@ namespace Memenim.Converters
             return result.GetLocalizedName();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            UserPurposeType result = UserPurposeType.Unknown;
+            var result = UserPurposeType.Unknown;
 
             if (value is string stringValue)
-                result = UserPurposeType.Unknown.ParseLocalizedName<UserPurposeType>(stringValue);
+            {
+                result = UserPurposeType.Unknown
+                    .ParseLocalizedName(stringValue);
+            }
 
             return result;
         }

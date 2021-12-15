@@ -7,17 +7,22 @@ namespace Memenim.Converters
 {
     public sealed class NewPostsCountConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {
-                int count = (int)((int)(value ?? 0) > 0
-                    ? value ?? 0
-                    : 0);
+                var result = 0;
 
-                return count > 99
-                    ? "+99"
-                    : $"+{count}";
+                if (value is int intValue)
+                    result = intValue;
+
+                if (result < 0)
+                    result = 0;
+                if (result > 99)
+                    result = 99;
+
+                return $"+{result}";
             }
             catch (Exception)
             {
@@ -25,13 +30,14 @@ namespace Memenim.Converters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {
-                return !string.IsNullOrEmpty(((string)value)?.TrimStart('+'))
-                    ? ((string)value).TrimStart('+').ToInt()
-                    : 0;
+                return ((string)value)?
+                    .TrimStart('+')
+                    .ToInt() ?? 0;
             }
             catch (Exception)
             {

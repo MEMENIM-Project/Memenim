@@ -8,9 +8,10 @@ namespace Memenim.Converters
 {
     public sealed class PostStatusTypeToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            PostStatusType result = PostStatusType.Premoderating;
+            var result = PostStatusType.Published;
 
             if (value is int intValue)
                 result = (PostStatusType)((byte)intValue);
@@ -22,7 +23,8 @@ namespace Memenim.Converters
                 : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             return Binding.DoNothing;
         }

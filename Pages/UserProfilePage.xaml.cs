@@ -69,6 +69,17 @@ namespace Memenim.Pages
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
+        private async Task SelectAvatarImage(string url)
+        {
+            if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                return;
+
+            await ProfileUtils.ChangeAvatar(url)
+                .ConfigureAwait(true);
+
+            ViewModel.CurrentProfileData.PhotoUrl = url;
+        }
+
         public Task UpdateProfile()
         {
             return UpdateProfile(ViewModel.CurrentProfileData.Id);
@@ -367,39 +378,24 @@ namespace Memenim.Pages
 
         private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
         {
-            string title = LocalizationUtils.GetLocalized("InsertingImageTitle");
-            string message = LocalizationUtils.GetLocalized("EnterURL");
+            var title = LocalizationUtils
+                .GetLocalized("InsertingImageTitle");
+            var message = LocalizationUtils
+                .GetLocalized("EnterURL");
 
-            string url = await DialogManager.ShowSinglelineTextDialog(
+            var url = await DialogManager.ShowSinglelineTextDialog(
                     title, message)
                 .ConfigureAwait(true);
 
-            if (string.IsNullOrWhiteSpace(url))
-                return;
-
-            await ProfileUtils.ChangeAvatar(url)
+            await SelectAvatarImage(url)
                 .ConfigureAwait(true);
-
-            ViewModel.CurrentProfileData.PhotoUrl = url;
         }
 
         private void SelectAvatarFromAnonymGallery_Click(object sender, RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
             {
-                OnPicSelect = async url =>
-                {
-                    if (string.IsNullOrWhiteSpace(url))
-                        return;
-
-                    await ProfileUtils.ChangeAvatar(url)
-                        .ConfigureAwait(true);
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        ViewModel.CurrentProfileData.PhotoUrl = url;
-                    });
-                }
+                ImageSelectionDelegate = SelectAvatarImage
             });
         }
 
@@ -407,19 +403,7 @@ namespace Memenim.Pages
         {
             NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
-                OnPicSelect = async url =>
-                {
-                    if (string.IsNullOrWhiteSpace(url))
-                        return;
-
-                    await ProfileUtils.ChangeAvatar(url)
-                        .ConfigureAwait(true);
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        ViewModel.CurrentProfileData.PhotoUrl = url;
-                    });
-                }
+                ImageSelectionDelegate = SelectAvatarImage
             });
         }
 
@@ -613,7 +597,7 @@ namespace Memenim.Pages
             if (valueName == null)
                 return;
 
-            UserPurposeType value = UserPurposeType.Unknown.ParseLocalizedName<UserPurposeType>(valueName);
+            UserPurposeType value = UserPurposeType.Unknown.ParseLocalizedName(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);
@@ -670,7 +654,7 @@ namespace Memenim.Pages
             if (valueName == null)
                 return;
 
-            UserSexType value = UserSexType.Unknown.ParseLocalizedName<UserSexType>(valueName);
+            UserSexType value = UserSexType.Unknown.ParseLocalizedName(valueName);
 
             //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
             sourceProperty.SetValue(sourceClass, value);

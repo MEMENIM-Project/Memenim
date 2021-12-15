@@ -8,44 +8,59 @@ namespace Memenim.Extensions
 {
     public static class PostCategorySchemaExtensions
     {
-        public static string GetResourceKey(this PostCategorySchema targetSchema)
+        private static readonly PostCategorySchema[] Categories;
+
+
+
+        static PostCategorySchemaExtensions()
         {
-            return $"Schema-{targetSchema.GetType().Name}-{targetSchema.Id}";
-        }
-        public static string GetResourceKey(this PostCategorySchema targetSchema, int id)
-        {
-            return $"Schema-{targetSchema.GetType().Name}-{id}";
+            Categories = PostApi.PostCategories
+                .Values.ToArray();
         }
 
-        public static string GetLocalizedName(this PostCategorySchema targetSchema)
+
+
+#pragma warning disable IDE0060 // Удалите неиспользуемый параметр
+        // ReSharper disable UnusedParameter.Global
+
+        public static string GetResourceKey(this PostCategorySchema source)
         {
-            string name =
-                targetSchema.Name;
-            string localizedName =
-                LocalizationUtils.GetLocalized(GetResourceKey(targetSchema));
+            return $"Schema-{source.GetType().Name}-{source.Id}";
+        }
+        public static string GetResourceKey(this PostCategorySchema source, int id)
+        {
+            return $"Schema-{source.GetType().Name}-{id}";
+        }
+
+        public static string GetLocalizedName(this PostCategorySchema source)
+        {
+            var name =
+                source.Name;
+            var localizedName = LocalizationUtils
+                .GetLocalized(GetResourceKey(source));
 
             return !string.IsNullOrEmpty(localizedName)
                 ? localizedName
                 : name;
         }
 
-        public static string[] GetLocalizedNames(this PostCategorySchema targetSchema)
+        public static string[] GetLocalizedNames(this PostCategorySchema source)
         {
             return GetLocalizedNames();
         }
         public static string[] GetLocalizedNames()
         {
-            var categories = PostApi.PostCategories.Values.ToArray();
-            var localizedNames = new string[categories.Length];
+            var localizedNames =
+                new string[Categories.Length];
 
-            for (var i = 0; i < categories.Length; ++i)
+            for (var i = 0; i < Categories.Length; ++i)
             {
-                ref var category = ref categories[i];
+                ref var category = ref Categories[i];
 
-                string name = category.Name;
-
-                string localizedName =
-                    LocalizationUtils.GetLocalized(GetResourceKey(category));
+                var name =
+                    category.Name;
+                var localizedName = LocalizationUtils
+                    .GetLocalized(GetResourceKey(category));
 
                 localizedNames[i] = !string.IsNullOrEmpty(localizedName)
                     ? localizedName
@@ -55,22 +70,21 @@ namespace Memenim.Extensions
             return localizedNames;
         }
 
-        public static PostCategorySchema ParseLocalizedName(this PostCategorySchema targetSchema,
+        public static PostCategorySchema ParseLocalizedName(this PostCategorySchema source,
             string localizedName)
         {
             return ParseLocalizedName(localizedName);
         }
         public static PostCategorySchema ParseLocalizedName(string localizedName)
         {
-            var categories = PostApi.PostCategories.Values.ToArray();
             var localizedNames = GetLocalizedNames();
 
-            for (int i = 0; i < localizedNames.Length; ++i)
+            for (var i = 0; i < localizedNames.Length; ++i)
             {
                 if (localizedNames[i] != localizedName)
                     continue;
 
-                return categories[i];
+                return Categories[i];
             }
 
             return new PostCategorySchema
@@ -79,5 +93,8 @@ namespace Memenim.Extensions
                 Name = null
             };
         }
+
+        // ReSharper restore UnusedParameter.Global
+#pragma warning restore IDE0060 // Удалите неиспользуемый параметр
     }
 }

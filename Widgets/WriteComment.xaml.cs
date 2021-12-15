@@ -260,7 +260,7 @@ namespace Memenim.Widgets
             }
 
             var additionalMessage = LocalizationUtils
-                .GetLocalized("YouMaybeBannedConfirmationMessage");
+                .GetLocalized("YouMayBeBannedConfirmationMessage");
             var confirmResult = await DialogManager.ShowConfirmationDialog(
                     additionalMessage)
                 .ConfigureAwait(true);

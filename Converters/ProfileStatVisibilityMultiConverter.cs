@@ -7,11 +7,12 @@ namespace Memenim.Converters
 {
     public sealed class ProfileStatVisibilityMultiConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType,
+            object parameter, CultureInfo culture)
         {
             foreach (var value in values)
             {
-                Visibility result = Visibility.Collapsed;
+                var result = Visibility.Collapsed;
 
                 if (value is Visibility visibilityValue)
                     result = visibilityValue;
@@ -23,12 +24,10 @@ namespace Memenim.Converters
             return Visibility.Collapsed;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes,
+            object parameter, CultureInfo culture)
         {
-            return new[]
-            {
-                Binding.DoNothing
-            };
+            return null;
         }
     }
 }

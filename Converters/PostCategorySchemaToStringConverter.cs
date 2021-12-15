@@ -8,7 +8,8 @@ namespace Memenim.Converters
 {
     public sealed class PostCategorySchemaToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             var result = -1;
 
@@ -18,10 +19,12 @@ namespace Memenim.Converters
             if (!PostApi.PostCategories.TryGetValue(result, out var category))
                 return string.Empty;
 
-            return category?.GetLocalizedName() ?? string.Empty;
+            return category?.GetLocalizedName()
+                   ?? string.Empty;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             string result = null;
 
@@ -31,7 +34,8 @@ namespace Memenim.Converters
             var category = PostCategorySchemaExtensions
                 .ParseLocalizedName(result);
 
-            return category?.Name ?? string.Empty;
+            return category?.Name
+                   ?? string.Empty;
         }
     }
 }

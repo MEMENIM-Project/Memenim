@@ -6,7 +6,7 @@ namespace Memenim.Pages.ViewModel
 {
     public class FeedViewModel : PageViewModel
     {
-        private ICommand _onPostScrollEnd = new BasicCommand(_ => false);
+        private ICommand _onPostScrollEnd;
         public ICommand OnPostScrollEnd
         {
             get
@@ -32,7 +32,7 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(Offset));
             }
         }
-        private int _lastNewHeadPostId = -1;
+        private int _lastNewHeadPostId;
         public int LastNewHeadPostId
         {
             get
@@ -72,10 +72,13 @@ namespace Memenim.Pages.ViewModel
             }
         }
 
+
+
         public FeedViewModel()
             : base(typeof(FeedPage))
         {
-
+            _onPostScrollEnd = new AsyncBasicCommand();
+            _lastNewHeadPostId = -1;
         }
     }
 }

@@ -22,6 +22,8 @@ namespace Memenim.Scripting
             }
         }
 
+
+
         public ScriptInformationEventArgs(
             MemenimScriptModule module, string message)
             : this(null, module, message)
@@ -55,6 +57,8 @@ namespace Memenim.Scripting
                 _message = value;
             }
         }
+
+
 
         public ScriptWarningEventArgs(
             MemenimScriptModule module, string message)
@@ -90,6 +94,8 @@ namespace Memenim.Scripting
             }
         }
 
+
+
         public ScriptErrorEventArgs(
             MemenimScriptModule module, string message)
             : this(null, module, message)
@@ -105,11 +111,15 @@ namespace Memenim.Scripting
         }
     }
 
+
     public class ScriptLoadedEventArgs : EventArgs
     {
         public MemenimScriptModule Module { get; }
 
-        public ScriptLoadedEventArgs(MemenimScriptModule module)
+
+
+        public ScriptLoadedEventArgs(
+            MemenimScriptModule module)
         {
             Module = module;
         }
@@ -120,13 +130,16 @@ namespace Memenim.Scripting
         public Exception SourceException { get; }
         public MemenimScriptModule Module { get; }
 
+
+
         public ScriptUnloadedEventArgs(
             MemenimScriptModule module)
             : this(null, module)
         {
 
         }
-        public ScriptUnloadedEventArgs(Exception sourceException,
+        public ScriptUnloadedEventArgs(
+            Exception sourceException,
             MemenimScriptModule module)
         {
             SourceException = sourceException;

@@ -21,12 +21,18 @@ namespace Memenim.Scripting.Entities
         public MemenimScriptBase Script { get; private set; }
         public string Name { get; private set; }
 
-        public MemenimScriptModule(string directoryPath)
+
+
+        public MemenimScriptModule(
+            string directoryPath)
         {
             Load(directoryPath);
         }
 
-        private void Load(string directoryPath)
+
+
+        private void Load(
+            string directoryPath)
         {
             var directorySeparators = new[]
             {
@@ -52,7 +58,7 @@ namespace Memenim.Scripting.Entities
             DirectoryPath = directoryPath;
             DirectoryName = directoryPath
                 .Substring(directoryPath
-                        .LastIndexOfAny(directorySeparators));
+                    .LastIndexOfAny(directorySeparators));
 
             var assemblyFiles = Directory
                 .GetFiles(directoryPath, "*.dll");
@@ -67,56 +73,71 @@ namespace Memenim.Scripting.Entities
                 throw exception;
             }
 
-            ContextName = $"script:[{DirectoryPath}]";
-            Context = new ScriptLoadContext(ContextName, DirectoryPath);
-
-            var depsFiles = Directory.GetFiles(directoryPath, "*.deps.json");
+            var depsFiles = Directory.GetFiles(
+                directoryPath, "*.deps.json");
 
             if (depsFiles.Length > 1 && !string.IsNullOrEmpty(depsFiles[0]))
             {
-                var mainAssemblyFileName = depsFiles[0].Substring(0, depsFiles[0].Length - ".deps.json".Length);
-                var mainAssemblyFile = Path.Combine(directoryPath, $"{mainAssemblyFileName}.dll");
+                var mainAssemblyFileName =
+                    depsFiles[0][..^".deps.json".Length];
+                var mainAssemblyFilePath = Path.Combine(
+                    directoryPath, $"{mainAssemblyFileName}.dll");
 
-                foreach (var assemblyFile in assemblyFiles)
+                ContextName = $"script:[{DirectoryPath}]";
+                Context = new ScriptLoadContext(
+                    ContextName, mainAssemblyFilePath);
+
+                Assembly mainAssembly;
+
+                try
                 {
-                    if (assemblyFile != mainAssemblyFile)
+                    var assemblyName = new AssemblyName(
+                        mainAssemblyFileName);
+
+                    mainAssembly = Context
+                        .LoadFromAssemblyName(assemblyName);
+                }
+                catch (Exception)
+                {
+                    var exception = new ArgumentException(
+                        $"Unable to load script main assembly['{mainAssemblyFilePath}']",
+                        nameof(directoryPath));
+                    Events.OnError(new RErrorEventArgs(exception,
+                        exception.Message));
+                    throw exception;
+                }
+
+                foreach (var assemblyType in mainAssembly.GetTypes())
+                {
+                    if (!typeof(MemenimScriptBase).IsAssignableFrom(assemblyType))
                         continue;
 
-                    Assembly assembly;
+                    AssemblyFile = mainAssembly;
+                    AssemblyPath = mainAssemblyFilePath;
+                    AssemblyName = Path.GetFileNameWithoutExtension(
+                        mainAssemblyFileName);
+                    AssemblyExtension = Path.GetExtension(
+                        mainAssemblyFileName);
 
-                    try
-                    {
-                        var assemblyName = new AssemblyName(
-                            Path.GetFileNameWithoutExtension(assemblyFile));
-                        assembly = Context
-                            .LoadFromAssemblyName(assemblyName);
-                    }
-                    catch (Exception)
-                    {
-                        continue;
-                    }
-
-                    foreach (var assemblyType in assembly.GetTypes())
-                    {
-                        if (!typeof(MemenimScriptBase).IsAssignableFrom(assemblyType))
-                            continue;
-
-                        AssemblyFile = assembly;
-                        AssemblyPath = assemblyFile;
-                        AssemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
-                        AssemblyExtension = Path.GetExtension(assemblyFile);
-
-                        Script = (MemenimScriptBase)Activator.CreateInstance(
-                            assemblyType, true);
-
-                        break;
-                    }
+                    Script = (MemenimScriptBase)Activator.CreateInstance(
+                        assemblyType, true);
 
                     break;
                 }
-            }
 
-            if (AssemblyFile == null)
+                if (AssemblyFile == null)
+                {
+                    Unload();
+
+                    var exception = new ArgumentException(
+                        $"Script main assembly['{mainAssemblyFilePath}'] does not contain an implementation of MemenimScriptBase class",
+                        nameof(directoryPath));
+                    Events.OnError(new RErrorEventArgs(exception,
+                        exception.Message));
+                    throw exception;
+                }
+            }
+            else
             {
                 var exception = new ArgumentException(
                     $"Directory['{directoryPath}'] does not contain script main assembly file (with implementation of MemenimScriptBase class)",
@@ -132,16 +153,20 @@ namespace Memenim.Scripting.Entities
                 this));
         }
 
-        public void Unload(Exception sourceException = null)
+
+
+        public void Unload(
+            Exception sourceException = null)
         {
-            if (!Context.IsCollectible)
-                return;
+            if (Context.IsCollectible)
+                Context?.Unload();
 
-            Context?.Unload();
-
-            ScriptManager.OnUnloaded(this, new ScriptUnloadedEventArgs(
-                sourceException, this));
+            ScriptManager.OnUnloaded(this,
+                new ScriptUnloadedEventArgs(
+                    sourceException, this));
         }
+
+
 
         public void Dispose()
         {

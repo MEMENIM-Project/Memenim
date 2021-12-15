@@ -35,29 +35,39 @@ namespace Memenim.Native.Window
             }
         }
 
-        public static WindowPlacement GetPlacement(IntPtr windowHandle, bool throwOnError)
+
+
+        public static WindowPlacement GetPlacement(
+            IntPtr windowHandle, bool throwOnError)
         {
-            WindowPlacement placement = new WindowPlacement();
+            var placement = new WindowPlacement();
 
             if (windowHandle == IntPtr.Zero)
                 return placement;
 
-            placement.Length = Marshal.SizeOf(typeof(WindowPlacement));
+            placement.Length = Marshal.SizeOf(
+                typeof(WindowPlacement));
 
-            if (!WindowNative.GetWindowPlacement(windowHandle, ref placement))
+            if (WindowNative.GetWindowPlacement(
+                    windowHandle, ref placement))
             {
-                if (throwOnError)
-                    throw new Win32Exception(Marshal.GetLastWin32Error());
-
-                return new WindowPlacement();
+                return placement;
             }
 
-            return placement;
+            if (throwOnError)
+            {
+                throw new Win32Exception(
+                    Marshal.GetLastWin32Error());
+            }
+
+            return new WindowPlacement();
         }
 
-        public void SetPlacement(IntPtr windowHandle)
+        public void SetPlacement(
+            IntPtr windowHandle)
         {
-            WindowNative.SetWindowPlacement(windowHandle, ref this);
+            WindowNative.SetWindowPlacement(
+                windowHandle, ref this);
         }
     }
 
@@ -72,54 +82,80 @@ namespace Memenim.Native.Window
         {
             get
             {
-                return Marshal.PtrToStringAnsi(LpData, LpDataSize);
+                return Marshal.PtrToStringAnsi(
+                    LpData, LpDataSize);
             }
         }
         public string AsUnicodeString
         {
             get
             {
-                return Marshal.PtrToStringUni(LpData);
+                return Marshal.PtrToStringUni(
+                    LpData);
             }
         }
 
-        public static CopyData CreateForString(int dwData, string value, bool unicode = true)
-        {
-            var result = new CopyData();
 
-            result.DwData = dwData;
-            result.LpData = unicode ? Marshal.StringToCoTaskMemUni(value) : Marshal.StringToCoTaskMemAnsi(value);
-            result.LpDataSize = unicode ? (value.Length + 1) * sizeof(char) : (value.Length + 1) * Marshal.SystemMaxDBCSCharSize;
+
+        public static CopyData CreateForString(
+            int dwData, string value,
+            bool unicode = true)
+        {
+            var result = new CopyData
+            {
+                DwData = dwData,
+                LpData = unicode
+                    ? Marshal.StringToCoTaskMemUni(value)
+                    : Marshal.StringToCoTaskMemAnsi(value),
+                LpDataSize = unicode
+                    ? (value.Length + 1) *
+                      sizeof(char)
+                    : (value.Length + 1) *
+                      Marshal.SystemMaxDBCSCharSize
+            };
 
             return result;
         }
 
-        public static bool SendString(IntPtr hwnd, uint msg, int dwData, string value, bool unicode = true)
+        public static bool SendString(IntPtr hwnd,
+            uint msg, int dwData, string value,
+            bool unicode = true)
         {
-            var data = CreateForString(dwData, value, unicode);
-            var dataSize = Environment.GetSize<CopyData>();
-            var dataPtr = Marshal.AllocCoTaskMem((int)dataSize);
+            var data = CreateForString(
+                dwData, value, unicode);
+            var dataSize = Environment
+                .GetSize<CopyData>();
+            var dataPtr = Marshal
+                .AllocCoTaskMem(dataSize);
 
-            Marshal.StructureToPtr(data, dataPtr, false);
+            Marshal.StructureToPtr(
+                data, dataPtr, false);
 
-            bool messageReceived =
-                WindowNative.SendMessage(hwnd, msg, IntPtr.Zero, dataPtr).ToInt32() != 0;
+            var messageReceived = WindowNative
+                .SendMessage(hwnd, msg,
+                    IntPtr.Zero, dataPtr)
+                .ToInt32() != 0;
 
             data.Dispose();
-            Marshal.FreeCoTaskMem(dataPtr);
+
+            Marshal.FreeCoTaskMem(
+                dataPtr);
 
             return messageReceived;
         }
 
+
+
         public void Dispose()
         {
-            if (LpData != IntPtr.Zero)
-            {
-                Marshal.FreeCoTaskMem(LpData);
+            if (LpData == IntPtr.Zero)
+                return;
 
-                LpData = IntPtr.Zero;
-                LpDataSize = 0;
-            }
+            Marshal.FreeCoTaskMem(
+                LpData);
+
+            LpData = IntPtr.Zero;
+            LpDataSize = 0;
         }
     }
 }

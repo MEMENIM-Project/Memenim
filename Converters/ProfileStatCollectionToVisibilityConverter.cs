@@ -9,10 +9,11 @@ namespace Memenim.Converters
 {
     public sealed class ProfileStatCollectionToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             UIElementCollection result = null;
-            int resultParameter = 0;
+            var resultParameter = 0;
 
             if (value is UIElementCollection collectionValue)
                 result = collectionValue;
@@ -23,11 +24,9 @@ namespace Memenim.Converters
             if (parameter is int intParameter)
                 resultParameter = intParameter;
 
-            for (int i = 0; i < result.Count - resultParameter; ++i)
+            for (var i = 0; i < result.Count - resultParameter; ++i)
             {
-                UserProfileStat element = result[i] as UserProfileStat;
-
-                if (element == null)
+                if (!(result[i] is UserProfileStat element))
                     continue;
 
                 if (element.Visibility == Visibility.Visible)
@@ -37,7 +36,8 @@ namespace Memenim.Converters
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             return Binding.DoNothing;
         }

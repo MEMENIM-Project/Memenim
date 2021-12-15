@@ -9,10 +9,9 @@
                        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                        xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
                        mc:Ignorable="d"
-                       d:DesignHeight="450" d:DesignWidth="800"
                        MinHeight="200" MinWidth="300"
-                       Title="{Binding Path=DialogTitle}"
                        Style="{StaticResource DefaultDialog}"
+                       Title="{Binding Path=DialogTitle}"
                        KeyUp="Dialog_KeyUp">
 
     <Grid>
@@ -22,27 +21,32 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <emoji:TextBlock Grid.Row="0" Text="{Binding Path=DialogMessage}"
+        <emoji:TextBlock Grid.Row="0"
                          Style="{DynamicResource Paragraph}"
-                         TextWrapping="Wrap" Margin="10"
-                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-        <TextBox Grid.Row="1" MinWidth="250" MinHeight="100"
-                 Text="{Binding Path=InputValue, Mode=TwoWay}"
-                 TextWrapping="Wrap" AcceptsReturn="True"
+                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                         Text="{Binding Path=DialogMessage}"
+                         TextWrapping="Wrap"
+                         Margin="10"/>
+        <TextBox Grid.Row="1"
+                 MinWidth="250" MinHeight="100"
                  Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                 Margin="10"
-                 HorizontalScrollBarVisibility="Disabled"
-                 VerticalScrollBarVisibility="Auto"/>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5"
-                    HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            <Button x:Name="btnOk"
-                    Content="{markupLocalization:LocalizedString OkTitle}"
+                 Text="{Binding Path=InputValue, Mode=TwoWay}"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                 Margin="10"/>
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    Margin="5">
+            <Button x:Name="OkButton"
                     Style="{DynamicResource MahApps.Styles.Button.Dialogs.Accent}"
+                    Content="{markupLocalization:LocalizedString OkTitle}"
                     Margin="0 0 10 0"
                     Click="Ok_Click"/>
-            <Button x:Name="btnCancel"
-                    Content="{markupLocalization:LocalizedString CancelTitle}"
+            <Button x:Name="CancelButton"
                     Style="{DynamicResource MahApps.Styles.Button.Dialogs}"
+                    Content="{markupLocalization:LocalizedString CancelTitle}"
                     Visibility="{Binding Path=IsCancellable, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="0 0 10 0"
                     Click="Cancel_Click"/>

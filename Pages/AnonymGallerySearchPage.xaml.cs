@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Memenim.Widgets;
 using Memenim.Core.Api;
+using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Math = RIS.Mathematics.Math;
 
@@ -50,18 +51,10 @@ namespace Memenim.Pages
                 ImagePreviewButton previewButton = new ImagePreviewButton()
                 {
                     ButtonSize = 200,
-                    ClickFunction = arg =>
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            lstImages.Children.Clear();
-                        });
-
-                        return ViewModel.OnPicSelect(arg);
-                    },
                     SmallImageSource = photo.SmallUrl,
                     ImageSource = photo.MediumUrl
                 };
+                previewButton.Click += ImagePreviewButton_Click;
 
                 lstImages.Children.Add(previewButton);
             }
@@ -159,6 +152,21 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
+        }
+
+        private async void ImagePreviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(e.OriginalSource is ImagePreviewButton target))
+                return;
+
+            if (ViewModel.ImageSelectionDelegate != null)
+            {
+                await ViewModel.ImageSelectionDelegate(
+                        target.ImageSource)
+                    .ConfigureAwait(true);
+            }
+
+            NavigationController.Instance.GoBack();
         }
     }
 }

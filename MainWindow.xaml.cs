@@ -9,6 +9,7 @@ using MahApps.Metro.Controls;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
 using Memenim.Native.Window;
+using Memenim.Native.Window.Utils;
 using Memenim.Navigation;
 using Memenim.Settings;
 using Memenim.Styles;
@@ -18,7 +19,7 @@ using Math = RIS.Mathematics.Math;
 
 namespace Memenim
 {
-    public sealed partial class MainWindow : MetroWindow, INativeRestorableWindow
+    public sealed partial class MainWindow : MetroWindow, INativelyRestorableWindow
     {
         private static readonly object InstanceSyncRoot = new object();
         private static volatile MainWindow _instance;
@@ -527,7 +528,8 @@ namespace Memenim
 
 
 
-        protected override void OnSourceInitialized(EventArgs e)
+        protected override void OnSourceInitialized(
+            EventArgs e)
         {
             base.OnSourceInitialized(e);
 
@@ -536,7 +538,8 @@ namespace Memenim
             _hwndSource?.AddHook(WindowUtils.HwndSourceHook);
         }
 
-        protected override void OnStateChanged(EventArgs e)
+        protected override void OnStateChanged(
+            EventArgs e)
         {
             _previousState = WindowState;
 

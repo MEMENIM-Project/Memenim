@@ -9,6 +9,8 @@ namespace Memenim.Settings
         public ReadOnlyDictionary<string, User> OldAvailableUsers { get; }
         public ReadOnlyDictionary<string, User> NewAvailableUsers { get; }
 
+
+
         public AvailableUsersChangedEventArgs(
             ReadOnlyDictionary<string, User> oldAvailableUsers,
             ReadOnlyDictionary<string, User> newAvailableUsers)
@@ -23,7 +25,10 @@ namespace Memenim.Settings
         public User OldUser { get; }
         public User NewUser { get; }
 
-        public UserChangedEventArgs(User oldUser, User newUser)
+
+
+        public UserChangedEventArgs(
+            User oldUser, User newUser)
         {
             OldUser = oldUser;
             NewUser = newUser;

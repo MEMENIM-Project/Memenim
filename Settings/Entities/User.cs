@@ -10,8 +10,11 @@ namespace Memenim.Settings.Entities
         public string RocketPassword { get; private set; }
         public UserStoreType StoreType { get; }
 
-        public User(string login, string token, int id,
-            string rocketPassword, UserStoreType storeType)
+
+
+        public User(string login, string token,
+            int id, string rocketPassword,
+            UserStoreType storeType)
         {
             Login = login;
             Token = token;
@@ -20,17 +23,21 @@ namespace Memenim.Settings.Entities
             StoreType = storeType;
         }
 
+
+
         public bool IsTemporary()
         {
             return StoreType == UserStoreType.Temporary;
         }
 
-        public bool HasStoredRocketPassword()
+
+        public bool HasRocketPassword()
         {
             return !string.IsNullOrEmpty(RocketPassword);
         }
 
-        public void SetRocketPassword(string rocketPassword)
+        public void SetRocketPassword(
+            string rocketPassword)
         {
             RocketPassword = rocketPassword;
 

@@ -371,7 +371,7 @@ namespace Memenim.Pages
                 return;
             }
 
-            for (int i = 0; i < 2; ++i)
+            for (var i = 0; i < 2; ++i)
             {
                 if (comment.CurrentCommentData.Likes.MyCount == 0)
                 {

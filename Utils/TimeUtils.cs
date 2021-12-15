@@ -4,20 +4,28 @@ namespace Memenim.Utils
 {
     public static class TimeUtils
     {
-        public static DateTime ToDateTime(ulong timeStamp)
+        public static DateTime ToDateTime(
+            ulong unixTimeStamp)
         {
-            DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            var time = new DateTime(
+                1970, 1, 1,
+                0, 0, 0, 0,
+                DateTimeKind.Utc);
 
             return time
-                .AddSeconds(timeStamp)
+                .AddSeconds(unixTimeStamp)
                 .ToLocalTime();
         }
 
-        public static ulong ToUnixTimeStamp(DateTime time)
+        public static ulong ToUnixTimeStamp(
+            DateTime time)
         {
             return (ulong)time
                 .ToUniversalTime()
-                .Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc))
+                .Subtract(new DateTime(
+                    1970, 1, 1,
+                    0, 0, 0, 0,
+                    DateTimeKind.Utc))
                 .TotalSeconds;
         }
     }

@@ -5,24 +5,26 @@ namespace Memenim.Pages.ViewModel
 {
     public class AnonymGallerySearchViewModel : PageViewModel
     {
-        private Func<string, Task> _onPicSelect = _ => Task.CompletedTask;
-        public Func<string, Task> OnPicSelect
+        private Func<string, Task> _imageSelectionDelegate;
+        public Func<string, Task> ImageSelectionDelegate
         {
             get
             {
-                return _onPicSelect;
+                return _imageSelectionDelegate;
             }
             set
             {
-                _onPicSelect = value;
-                OnPropertyChanged(nameof(OnPicSelect));
+                _imageSelectionDelegate = value;
+                OnPropertyChanged(nameof(ImageSelectionDelegate));
             }
         }
+
+
 
         public AnonymGallerySearchViewModel()
             : base(typeof(AnonymGallerySearchPage))
         {
-
+            _imageSelectionDelegate = _ => Task.CompletedTask;
         }
     }
 }

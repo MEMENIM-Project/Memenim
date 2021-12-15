@@ -108,7 +108,6 @@ namespace Memenim
 
             LocalizationUtils.Initialize();
 
-            LocalizationUtils.LocalizationChanged += app.LocalizationUtils_LocalizationChanged;
             LocalizationUtils.LocalizationsLoaded += app.LocalizationUtils_LocalizationsLoaded;
             LocalizationUtils.LocalizationsNotFound += app.LocalizationUtils_LocalizationsNotFound;
             LocalizationUtils.LocalizationFileNotFound += app.LocalizationUtils_LocalizationFileNotFound;
@@ -120,19 +119,22 @@ namespace Memenim
 
 
 
-        private static void ParseArgs(string[] args)
+        private static void ParseArgs(
+            string[] args)
         {
-            var wrapper = UnwrapArgs(args);
+            var wrapper = UnwrapArgs(
+                args);
 
-            foreach (var argEntry in wrapper.Enumerate())
+            foreach (var (key, value) in wrapper.Enumerate())
             {
-                switch (argEntry.Key)
+                switch (key)
                 {
                     case "startupUri":
-                        AppStartupUri = (string)argEntry.Value;
+                        AppStartupUri = (string)value;
+
                         break;
                     case "createHashFiles":
-                        var createHashFilesString = (string)argEntry.Value;
+                        var createHashFilesString = (string)value;
 
                         try
                         {
@@ -151,34 +153,41 @@ namespace Memenim
             }
         }
 
-        private static void CreateHashFile(string hash, string hashName, string hashType)
+        private static void CreateHashFile(
+            string hash, string hashName,
+            string hashType)
         {
-            string currentAppVersion = FileVersionInfo
+            var currentAppVersion = FileVersionInfo
                 .GetVersionInfo(Environment.ExecAppAssemblyFilePath)
                 .ProductVersion;
-            string hashFileNameWithoutExtension = $"{Environment.ExecAppAssemblyFileNameWithoutExtension.Replace('.', '_')}." +
+            var hashFileNameWithoutExtension = $"{Environment.ExecAppAssemblyFileNameWithoutExtension.Replace('.', '_')}." +
                                                   $"v{currentAppVersion.Replace('.', '_')}." +
                                                   $"{Environment.RuntimeIdentifier.Replace('.', '_')}." +
                                                   $"{(!Environment.IsStandalone ? "!" : string.Empty)}{nameof(Environment.IsStandalone)}." +
                                                   $"{(!Environment.IsSingleFile ? "!" : string.Empty)}{nameof(Environment.IsSingleFile)}";
-            string hashFileDirectoryName =
-                Path.Combine(Environment.ExecProcessDirectoryName ?? string.Empty, "hash", hashType);
+            var hashFileDirectoryName =
+                Path.Combine(
+                    Environment.ExecProcessDirectoryName ?? string.Empty,
+                    "hash",
+                    hashType);
 
             if (!Directory.Exists(hashFileDirectoryName))
                 Directory.CreateDirectory(hashFileDirectoryName);
 
-            using (var file = new StreamWriter(
-                Path.Combine(hashFileDirectoryName, $"{hashName}.{hashFileNameWithoutExtension}.{hashType}"),
-                false, SecureUtils.SecureUTF8))
-            {
-                file.WriteLine(hash);
-            }
+            using var file = new StreamWriter(
+                Path.Combine(
+                    hashFileDirectoryName,
+                    $"{hashName}.{hashFileNameWithoutExtension}.{hashType}"),
+                false, SecureUtils.SecureUTF8);
+
+            file.WriteLine(hash);
         }
 
 
 
 
-        public static ArgsKeyedWrapper UnwrapArgs(string[] args)
+        public static ArgsKeyedWrapper UnwrapArgs(
+            string[] args)
         {
             var argsEntries = new List<(string Key, object Value)>(args.Length);
 
@@ -187,7 +196,8 @@ namespace Memenim
                 if (string.IsNullOrWhiteSpace(arg))
                     continue;
 
-                int separatorPosition = arg.IndexOf(':');
+                var separatorPosition = arg
+                    .IndexOf(':');
 
                 if (separatorPosition == -1)
                 {
@@ -202,10 +212,10 @@ namespace Memenim
                 }
 
                 argsEntries.Add((
-                    arg.Substring(0, separatorPosition)
+                    arg[..separatorPosition]
                         .Trim(' ', '\'', '\"')
                         .TrimStart('-'),
-                    arg.Substring(separatorPosition + 1)
+                    arg[(separatorPosition + 1)..]
                         .Trim(' ', '\'', '\"')
                     ));
             }
@@ -232,11 +242,11 @@ namespace Memenim
 
             LogManager.Default.Info($"Hash file creation started - {hashType}");
 
-            var hashes = CalculateHashes();
+            var (librariesHash, exeHash, exePdbHash) = CalculateHashes();
 
-            CreateHashFile(hashes.LibrariesHash, "LibrariesHash", hashType);
-            CreateHashFile(hashes.ExeHash, "ExeHash", hashType);
-            CreateHashFile(hashes.ExePdbHash, "ExePdbHash", hashType);
+            CreateHashFile(librariesHash, "LibrariesHash", hashType);
+            CreateHashFile(exeHash, "ExeHash", hashType);
+            CreateHashFile(exePdbHash, "ExePdbHash", hashType);
 
             LogManager.Default.Info($"Hash files creation completed - {hashType}");
         }
@@ -244,7 +254,8 @@ namespace Memenim
 
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(
+            StartupEventArgs e)
         {
             await Memenim.MainWindow.Instance
                 .ShowLoadingGrid()
@@ -269,10 +280,12 @@ namespace Memenim
             if (LocalizationUtils.Localizations.Count == 0)
                 return;
 
-            LocalizationUtils.SwitchLocalization(
-                SettingsManager.AppSettings.Language);
             LocalizationUtils.SetDefaultCulture(
                 "en-US");
+            LocalizationUtils.SwitchLocalization(
+                SettingsManager.AppSettings.Language);
+
+            LocalizationUtils.LocalizationChanged += LocalizationUtils_LocalizationChanged;
 
             await Task.Run(async () =>
             {
@@ -365,7 +378,8 @@ namespace Memenim
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
 
-        protected override void OnExit(ExitEventArgs e)
+        protected override void OnExit(
+            ExitEventArgs e)
         {
             SettingsManager.AppSettings.Save();
 
@@ -374,19 +388,22 @@ namespace Memenim
 
 
 
-        private void OnCoreInformation(object sender, CoreInformationEventArgs e)
+        private void OnCoreInformation(object sender,
+            CoreInformationEventArgs e)
         {
             //LogManager.Debug.Info(
             //    $"{e.Message}");
         }
 
-        private void OnCoreWarning(object sender, CoreWarningEventArgs e)
+        private void OnCoreWarning(object sender,
+            CoreWarningEventArgs e)
         {
             LogManager.Default.Warn(
                 $"{e.Message}");
         }
 
-        private void OnCoreError(object sender, CoreErrorEventArgs e)
+        private void OnCoreError(object sender,
+            CoreErrorEventArgs e)
         {
             LogManager.Default.Error(
                 $"{e.SourceException?.GetType().Name ?? "Unknown"} - " +

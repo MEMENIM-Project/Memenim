@@ -7,7 +7,8 @@ namespace Memenim.Converters
 {
     public sealed class UnixTimeToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {
@@ -28,7 +29,8 @@ namespace Memenim.Converters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {

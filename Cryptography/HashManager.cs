@@ -11,13 +11,19 @@ namespace Memenim.Cryptography
     {
         private static SHA512iCSP SHA512Provider { get; }
 
+
+
         public static HashService Service { get; }
+
+
 
         static HashManager()
         {
             SHA512Provider = new SHA512iCSP();
             Service = new HashService(SHA512Provider);
         }
+
+
 
         public static string GetLibrariesHash()
         {
@@ -33,13 +39,16 @@ namespace Memenim.Cryptography
                 "hash",
                 AppSettings.SettingsFileName,
                 PersistentSettings.SettingsFileName,
-                Path.ChangeExtension(Path.GetFileName(Environment.ExecProcessFilePath), "exe"),
-                Path.ChangeExtension(Path.GetFileName(Environment.ExecProcessFilePath), "pdb"),
+                Path.ChangeExtension(Path.GetFileName(
+                    Environment.ExecProcessFilePath), "exe"),
+                Path.ChangeExtension(Path.GetFileName(
+                    Environment.ExecProcessFilePath), "pdb"),
                 //dev
                 "publish",
                 "win-x64",
                 "win-x86",
-                Path.ChangeExtension(Path.GetFileName(Environment.ExecProcessFilePath), "runtimeconfig.dev.json")
+                Path.ChangeExtension(Path.GetFileName(
+                    Environment.ExecProcessFilePath), "runtimeconfig.dev.json")
             });
         }
 

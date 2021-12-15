@@ -47,11 +47,11 @@
                                              Content="{markupLocalization:LocalizedString URLSelect}"
                                              IsChecked="True"
                                              Margin="0 5"/>
-                                <RadioButton Name="rbImageTenor" GroupName="ImageSource"
-                                             Content="{markupLocalization:LocalizedString TenorSelect}"
-                                             Margin="0 5"/>
                                 <RadioButton Name="rbImageGallery" GroupName="ImageSource"
                                              Content="{markupLocalization:LocalizedString GallerySelect}"
+                                             Margin="0 5"/>
+                                <RadioButton Name="rbImageTenor" GroupName="ImageSource"
+                                             Content="{markupLocalization:LocalizedString TenorSelect}"
                                              Margin="0 5"/>
                             </StackPanel>
                             <Image Height="100" Width="100"

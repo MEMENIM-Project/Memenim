@@ -18,13 +18,15 @@ namespace Memenim.Dialogs
                 new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty ValuesProperty =
             DependencyProperty.Register(nameof(Values), typeof(ReadOnlyCollection<string>), typeof(ComboBoxDialog),
-                new PropertyMetadata(new ReadOnlyCollection<string>(new List<string>())));
+                new PropertyMetadata(new ReadOnlyCollection<string>(Array.Empty<string>())));
         public static readonly DependencyProperty SelectedValueProperty =
             DependencyProperty.Register(nameof(SelectedValue), typeof(string), typeof(ComboBoxDialog),
                 new PropertyMetadata(string.Empty));
         public static readonly DependencyProperty IsCancellableProperty =
             DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(ComboBoxDialog),
                 new PropertyMetadata(true));
+
+
 
         public string DialogTitle
         {
@@ -83,9 +85,15 @@ namespace Memenim.Dialogs
         }
         public string DefaultValue { get; }
 
-        public ComboBoxDialog(string title = "Enter", string message = "Enter",
-            ReadOnlyCollection<string> values = null, string selectedValue = null,
-            string defaultValue = null, bool isCancellable = true)
+
+
+        public ComboBoxDialog(
+            string title = "Enter",
+            string message = "Enter",
+            ReadOnlyCollection<string> values = null,
+            string selectedValue = null,
+            string defaultValue = null,
+            bool isCancellable = true)
         {
             InitializeComponent();
             DataContext = this;
@@ -93,46 +101,53 @@ namespace Memenim.Dialogs
             DialogTitle = title;
             DialogMessage = message;
             Values = values;
+            SelectedValue = selectedValue;
             DefaultValue = defaultValue;
             IsCancellable = isCancellable;
 
-            if (selectedValue != null)
-                lstValues.SelectedItem = selectedValue;
-
             if (!LocalizationUtils.TryGetLocalized("OkTitle", out _))
-                btnOk.Content = "Ok";
+                OkButton.Content = "Ok";
             if (!LocalizationUtils.TryGetLocalized("CancelTitle", out _))
-                btnCancel.Content = "Cancel";
+                CancelButton.Content = "Cancel";
         }
 
-        private void Ok_Click(object sender, RoutedEventArgs e)
+
+
+        private void Dialog_KeyUp(object sender,
+            KeyEventArgs e)
         {
-            btnOk.Focus();
-
-            SelectedValue = (string)lstValues.SelectedItem;
-            MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            btnCancel.Focus();
-
-            SelectedValue = DefaultValue;
-            MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
-        }
-
-        private void Dialog_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter || e.Key == Key.Down)
+            if (e.Key == Key.Enter)
             {
-                if (btnOk.IsEnabled)
+                if (OkButton.IsEnabled)
                     Ok_Click(this, new RoutedEventArgs());
             }
-            else if (e.Key == Key.Escape || e.Key == Key.Up)
+            else if (e.Key == Key.Escape)
             {
-                if (btnCancel.IsEnabled)
+                if (CancelButton.IsEnabled)
                     Cancel_Click(this, new RoutedEventArgs());
             }
+        }
+
+
+
+        private void Ok_Click(object sender,
+            RoutedEventArgs e)
+        {
+            OkButton.Focus();
+
+            MainWindow.Instance.HideMetroDialogAsync(
+                this, DialogSettings);
+        }
+
+        private void Cancel_Click(object sender,
+            RoutedEventArgs e)
+        {
+            CancelButton.Focus();
+
+            SelectedValue = DefaultValue;
+
+            MainWindow.Instance.HideMetroDialogAsync(
+                this, DialogSettings);
         }
     }
 }

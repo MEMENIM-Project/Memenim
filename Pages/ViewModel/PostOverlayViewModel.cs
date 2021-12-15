@@ -19,7 +19,7 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(SourcePost));
             }
         }
-        private PostSchema _currentPostData = new PostSchema();
+        private PostSchema _currentPostData;
         public PostSchema CurrentPostData
         {
             get
@@ -46,10 +46,12 @@ namespace Memenim.Pages.ViewModel
             }
         }
 
+
+
         public PostOverlayViewModel()
             : base(typeof(PostOverlayPage))
         {
-
+            _currentPostData = new PostSchema();
         }
     }
 }

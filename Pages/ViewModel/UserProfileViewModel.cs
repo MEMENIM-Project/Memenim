@@ -7,10 +7,7 @@ namespace Memenim.Pages.ViewModel
 {
     public class UserProfileViewModel : PageViewModel
     {
-        private ProfileSchema _currentProfileData = new ProfileSchema
-        {
-            Id = -1
-        };
+        private ProfileSchema _currentProfileData;
         public ProfileSchema CurrentProfileData
         {
             get
@@ -31,24 +28,36 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(EditAllowed));
             }
         }
-
+        
         public bool EditAllowed
         {
             get
             {
-                return CurrentProfileData.Id == SettingsManager.PersistentSettings.CurrentUser.Id;
+                return CurrentProfileData.Id == SettingsManager
+                    .PersistentSettings.CurrentUser.Id;
             }
         }
+
+
 
         public UserProfileViewModel()
             : base(typeof(UserProfilePage))
         {
+            _currentProfileData = new ProfileSchema
+            {
+                Id = -1
+            };
+
             CurrentProfileData.PropertyChanged += CurrentProfileData_PropertyChanged;
         }
 
-        private void CurrentProfileData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+
+
+        private void CurrentProfileData_PropertyChanged(object sender,
+            PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == "id")
+            if (string.IsNullOrEmpty(e.PropertyName)
+                || e.PropertyName == "id")
             {
                 OnPropertyChanged(nameof(EditAllowed));
             }

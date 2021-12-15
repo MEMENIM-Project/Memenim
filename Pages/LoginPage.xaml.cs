@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Extensions;
 using Memenim.Generic;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;

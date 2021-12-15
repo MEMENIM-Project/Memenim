@@ -6,10 +6,7 @@ namespace Memenim.Pages.ViewModel
 {
     public class SubmitPostViewModel : PageViewModel
     {
-        private PostSchema _currentPostData = new PostSchema
-        {
-            OwnerId = SettingsManager.PersistentSettings.CurrentUser.Id
-        };
+        private PostSchema _currentPostData;
         public PostSchema CurrentPostData
         {
             get
@@ -23,10 +20,16 @@ namespace Memenim.Pages.ViewModel
             }
         }
 
+
+
         public SubmitPostViewModel()
             : base(typeof(SubmitPostPage))
         {
-
+            _currentPostData = new PostSchema
+            {
+                OwnerId = SettingsManager
+                    .PersistentSettings.CurrentUser.Id
+            };
         }
     }
 }

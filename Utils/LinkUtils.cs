@@ -6,7 +6,8 @@ namespace Memenim.Utils
 {
     public static class LinkUtils
     {
-        public static void OpenLink(string link)
+        public static void OpenLink(
+            string link)
         {
             var startInfo = new ProcessStartInfo
             {

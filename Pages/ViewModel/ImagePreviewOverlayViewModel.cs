@@ -18,6 +18,8 @@ namespace Memenim.Pages.ViewModel
             }
         }
 
+
+
         public ImagePreviewOverlayViewModel()
             : base(typeof(ImagePreviewOverlayPage))
         {

@@ -22,6 +22,7 @@ namespace Memenim.Settings
                 return _appSettings;
             }
         }
+
         private static readonly object PersistentSettingsSyncRoot = new object();
         private static volatile PersistentSettings _persistentSettings;
         public static PersistentSettings PersistentSettings

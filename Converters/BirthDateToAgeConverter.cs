@@ -8,7 +8,8 @@ namespace Memenim.Converters
     public sealed class BirthDateToAgeStringConverter : IValueConverter
     {
 #pragma warning disable SS002 // DateTime.Now was referenced
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {
@@ -20,8 +21,10 @@ namespace Memenim.Converters
                 if (result == 0)
                     return string.Empty;
 
-                var birthDateTime = TimeUtils.ToDateTime(result);
-                var age = DateTime.Now.Year - birthDateTime.Year;
+                var birthDateTime = TimeUtils
+                    .ToDateTime(result);
+                var age = DateTime.Now.Year -
+                          birthDateTime.Year;
 
                 return age.ToString();
 
@@ -33,7 +36,8 @@ namespace Memenim.Converters
         }
 #pragma warning restore SS002 // DateTime.Now was referenced
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             return Binding.DoNothing;
         }

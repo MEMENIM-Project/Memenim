@@ -5,38 +5,41 @@ namespace Memenim.Extensions
 {
     public static class EnumExtensions
     {
-        public static string GetResourceKey(this Enum targetEnum)
+        public static string GetResourceKey(this Enum source)
         {
-            return $"Enum-{targetEnum.GetType().Name}-{targetEnum}";
+            return $"Enum-{source.GetType().Name}-{source}";
         }
-        public static string GetResourceKey(this Enum targetEnum, string name)
+        public static string GetResourceKey(this Enum source,
+            string name)
         {
-            return $"Enum-{targetEnum.GetType().Name}-{name}";
+            return $"Enum-{source.GetType().Name}-{name}";
         }
 
-        public static string GetLocalizedName(this Enum targetEnum)
+        public static string GetLocalizedName(this Enum source)
         {
-            string name =
-                Enum.GetName(targetEnum.GetType(), targetEnum);
-            string localizedName =
-                LocalizationUtils.GetLocalized(GetResourceKey(targetEnum));
+            var name = Enum.GetName(
+                source.GetType(), source);
+            var localizedName = LocalizationUtils
+                .GetLocalized(GetResourceKey(source));
 
             return !string.IsNullOrEmpty(localizedName)
                 ? localizedName
                 : name;
         }
 
-        public static string[] GetLocalizedNames(this Enum targetEnum)
+        public static string[] GetLocalizedNames(this Enum source)
         {
-            var names = Enum.GetNames(targetEnum.GetType());
-            var localizedNames = new string[names.Length];
+            var names = Enum.GetNames(
+                source.GetType());
+            var localizedNames =
+                new string[names.Length];
 
             for (var i = 0; i < names.Length; ++i)
             {
                 ref var name = ref names[i];
 
-                string localizedName =
-                    LocalizationUtils.GetLocalized(GetResourceKey(targetEnum, name));
+                var localizedName = LocalizationUtils
+                    .GetLocalized(GetResourceKey(source, name));
 
                 localizedNames[i] = !string.IsNullOrEmpty(localizedName)
                     ? localizedName
@@ -46,25 +49,29 @@ namespace Memenim.Extensions
             return localizedNames;
         }
 
-        public static T ParseLocalizedName<T>(this Enum targetEnum, string localizedName)
-            where T: struct
+        public static T ParseLocalizedName<T>(this T source,
+            string localizedName)
+            where T: struct, Enum
         {
-            var names = Enum.GetNames(targetEnum.GetType());
-            var localizedNames = targetEnum.GetLocalizedNames();
+            var names = Enum.GetNames(
+                source.GetType());
+            var localizedNames =
+                source.GetLocalizedNames();
 
-            for (int i = 0; i < localizedNames.Length; ++i)
+            for (var i = 0; i < localizedNames.Length; ++i)
             {
                 if (localizedNames[i] != localizedName)
                     continue;
 
                 ref var name = ref names[i];
 
-                T value = Enum.Parse<T>(name);
+                var value = Enum.Parse<T>(
+                    name);
 
                 return value;
             }
 
-            return default(T);
+            return default;
         }
     }
 }

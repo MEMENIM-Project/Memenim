@@ -8,7 +8,10 @@ namespace Memenim.Utils
         public string NewName { get; }
         public int UserId { get; }
 
-        public UserNameChangedEventArgs(string oldName, string newName, int userId)
+
+
+        public UserNameChangedEventArgs(
+            string oldName, string newName, int userId)
         {
             OldName = oldName;
             NewName = newName;
@@ -22,7 +25,11 @@ namespace Memenim.Utils
         public string NewPhoto { get; }
         public int UserId { get; }
 
-        public UserPhotoChangedEventArgs(string oldPhoto, string newPhoto, int userId)
+
+
+
+        public UserPhotoChangedEventArgs(
+            string oldPhoto, string newPhoto, int userId)
         {
             OldPhoto = oldPhoto;
             NewPhoto = newPhoto;

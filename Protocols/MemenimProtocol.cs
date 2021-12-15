@@ -35,37 +35,37 @@ namespace Memenim.Protocols
                     return false;
                 }
 
-                using (var schemeKey =
-                    Registry.CurrentUser.CreateSubKey($@"SOFTWARE\Classes\{Schema.Name}"))
+                using var schemeKey = Registry.CurrentUser
+                    .CreateSubKey($@"SOFTWARE\Classes\{Schema.Name}");
+
+                if (schemeKey == null)
+                    return false;
+
+                var filePath = Environment.ExecProcessFilePath;
+
+                schemeKey.SetValue(string.Empty,
+                    "URL:" + Name);
+                schemeKey.SetValue("URL Protocol",
+                    string.Empty);
+
+                using (var defaultIconKey = schemeKey
+                           .CreateSubKey("DefaultIcon"))
                 {
-                    if (schemeKey == null)
+                    if (defaultIconKey == null)
                         return false;
 
-                    string filePath = Environment.ExecProcessFilePath;
+                    defaultIconKey.SetValue(string.Empty,
+                        $"\"{filePath}\"");
+                }
 
-                    schemeKey.SetValue(string.Empty,
-                        "URL:" + Name);
-                    schemeKey.SetValue("URL Protocol",
-                        string.Empty);
+                using (var commandKey = schemeKey
+                           .CreateSubKey(@"shell\open\command"))
+                {
+                    if (commandKey == null)
+                        return false;
 
-                    using (var defaultIconKey =
-                        schemeKey.CreateSubKey("DefaultIcon"))
-                    {
-                        if (defaultIconKey == null)
-                            return false;
-
-                        defaultIconKey.SetValue(string.Empty, $"\"{filePath}\"");
-                    }
-
-                    using (var commandKey =
-                        schemeKey.CreateSubKey(@"shell\open\command"))
-                    {
-                        if (commandKey == null)
-                            return false;
-
-                        commandKey.SetValue(string.Empty,
-                            $"\"{filePath}\" \"startupUri:%1\"");
-                    }
+                    commandKey.SetValue(string.Empty,
+                        $"\"{filePath}\" \"startupUri:%1\"");
                 }
 
                 return true;
@@ -77,7 +77,6 @@ namespace Memenim.Protocols
                 return false;
             }
         }
-
 
         public bool Exists()
         {
@@ -93,14 +92,10 @@ namespace Memenim.Protocols
                     return false;
                 }
 
-                using (var schemeKey =
-                    Registry.CurrentUser.OpenSubKey($@"SOFTWARE\Classes\{Schema.Name}"))
-                {
-                    if (schemeKey != null)
-                        return true;
-                }
+                using var schemeKey = Registry.CurrentUser
+                    .OpenSubKey($@"SOFTWARE\Classes\{Schema.Name}");
 
-                return false;
+                return schemeKey != null;
             }
             catch (Exception ex)
             {

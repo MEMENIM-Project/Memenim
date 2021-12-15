@@ -7,9 +7,10 @@ namespace Memenim.Converters
 {
     public sealed class PostStatusTypeConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            PostStatusType result = PostStatusType.Premoderating;
+            var result = PostStatusType.Published;
 
             if (value is int intValue)
                 result = (PostStatusType)((byte)intValue);
@@ -19,9 +20,10 @@ namespace Memenim.Converters
             return result;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            int result = 0;
+            var result = 0;
 
             if (value is int intValue)
                 result = intValue;

@@ -12,48 +12,76 @@ namespace Memenim.Native.Window
         public const int SwShowMaximized = 3;
         public const uint WmCopyData = 0x004A;
 
-        public delegate bool EnumChildrenCallback(IntPtr hwnd, IntPtr lParam);
+
+
+        public delegate bool EnumChildrenCallback(
+            IntPtr hwnd, IntPtr lParam);
+
+
 
         // user32
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hwnd, uint msg, IntPtr wparam, IntPtr lparam);
+        public static extern IntPtr SendMessage(
+            IntPtr hwnd, uint msg,
+            IntPtr wparam, IntPtr lparam);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hwnd, uint msg, IntPtr wparam, ref CopyData lparam);
+        public static extern IntPtr SendMessage(
+            IntPtr hwnd, uint msg,
+            IntPtr wparam, ref CopyData lparam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessageTimeout(IntPtr hwnd, uint msg, IntPtr wparam, IntPtr lparam,
-            SendMessageTimeoutFlags flags, uint timeout, out UIntPtr lpdwResult);
+        public static extern IntPtr SendMessageTimeout(
+            IntPtr hwnd, uint msg,
+            IntPtr wparam, IntPtr lparam,
+            SendMessageTimeoutFlags flags,
+            uint timeout, out UIntPtr lpdwResult);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessageTimeout(IntPtr hwnd, uint msg, IntPtr wparam, ref CopyData lparam,
-            SendMessageTimeoutFlags flags, uint timeout, out UIntPtr lpdwResult);
+        public static extern IntPtr SendMessageTimeout(
+            IntPtr hwnd, uint msg,
+            IntPtr wparam, ref CopyData lparam,
+            SendMessageTimeoutFlags flags,
+            uint timeout, out UIntPtr lpdwResult);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr wparam, IntPtr lparam);
+        public static extern bool PostMessage(
+            IntPtr hwnd, uint msg,
+            IntPtr wparam, IntPtr lparam);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern uint RegisterWindowMessage(string message);
+        public static extern uint RegisterWindowMessage(
+            string message);
 
         [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
+        public static extern bool SetForegroundWindow(
+            IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool SetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
+        public static extern bool SetWindowPlacement(
+            IntPtr hWnd, ref WindowPlacement lpwndpl);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
+        public static extern bool GetWindowPlacement(
+            IntPtr hWnd, ref WindowPlacement lpwndpl);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetWindow(IntPtr hWnd, int uCmd);
+        public static extern IntPtr GetWindow(
+            IntPtr hWnd, int uCmd);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr SetActiveWindow(IntPtr hWnd);
+        public static extern IntPtr SetActiveWindow(
+            IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        public static extern bool IsWindowVisible(IntPtr hWnd);
+        public static extern bool IsWindowVisible(
+            IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        public static extern bool EnumThreadWindows(int dwThreadId, EnumChildrenCallback lpEnumFunc, IntPtr lParam);
+        public static extern bool EnumThreadWindows(
+            int dwThreadId, EnumChildrenCallback lpEnumFunc,
+            IntPtr lParam);
+
+
 
         // kernel32
 

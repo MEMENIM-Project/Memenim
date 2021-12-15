@@ -21,6 +21,8 @@ namespace Memenim.Dialogs
             DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(MultilineTextDialog),
                 new PropertyMetadata(true));
 
+
+
         public string DialogTitle
         {
             get
@@ -67,8 +69,14 @@ namespace Memenim.Dialogs
         }
         public string DefaultValue { get; }
 
-        public MultilineTextDialog(string title = "Enter", string message = "Enter",
-            string inputValue = "", string defaultValue = null, bool isCancellable = true)
+
+
+        public MultilineTextDialog(
+            string title = "Enter",
+            string message = "Enter",
+            string inputValue = "",
+            string defaultValue = null,
+            bool isCancellable = true)
         {
             InitializeComponent();
             DataContext = this;
@@ -80,38 +88,49 @@ namespace Memenim.Dialogs
             IsCancellable = isCancellable;
 
             if (!LocalizationUtils.TryGetLocalized("OkTitle", out _))
-                btnOk.Content = "Ok";
+                OkButton.Content = "Ok";
             if (!LocalizationUtils.TryGetLocalized("CancelTitle", out _))
-                btnCancel.Content = "Cancel";
+                CancelButton.Content = "Cancel";
         }
 
-        private void Ok_Click(object sender, RoutedEventArgs e)
+
+
+        private void Dialog_KeyUp(object sender,
+            KeyEventArgs e)
         {
-            btnOk.Focus();
-
-            MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            btnCancel.Focus();
-
-            InputValue = DefaultValue;
-            MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
-        }
-
-        private void Dialog_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && e.Key == Key.Enter)
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)
+                && e.Key == Key.Enter)
             {
-                if (btnOk.IsEnabled)
+                if (OkButton.IsEnabled)
                     Ok_Click(this, new RoutedEventArgs());
             }
             else if (e.Key == Key.Escape)
             {
-                if (btnCancel.IsEnabled)
+                if (CancelButton.IsEnabled)
                     Cancel_Click(this, new RoutedEventArgs());
             }
+        }
+
+
+
+        private void Ok_Click(object sender,
+            RoutedEventArgs e)
+        {
+            OkButton.Focus();
+
+            MainWindow.Instance.HideMetroDialogAsync(
+                this, DialogSettings);
+        }
+
+        private void Cancel_Click(object sender,
+            RoutedEventArgs e)
+        {
+            CancelButton.Focus();
+
+            InputValue = DefaultValue;
+
+            MainWindow.Instance.HideMetroDialogAsync(
+                this, DialogSettings);
         }
     }
 }

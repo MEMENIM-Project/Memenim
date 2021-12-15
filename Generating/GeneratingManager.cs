@@ -7,40 +7,46 @@ namespace Memenim.Generating
 {
     public static class GeneratingManager
     {
-        private static readonly string[] Smiles =
-        {
-            "(ﾟдﾟ；)",
-            "(ó﹏ò｡)",
-            "(´ω｀*)",
-            "(┛ಠДಠ)┛彡┻━┻",
-            "(* _ω_)…",
-            "(ﾉ･д･)ﾉ",
-            "(⊃｡•́‿•̀｡)⊃",
-            "ლ(๏‿๏ ◝ლ)",
-            "ლ(*꒪ヮ꒪*)ლ",
-            "(ﾉ･ｪ･)ﾉ",
-            "(＾▽＾)",
-            "(•‿•)",
-            "(☉_☉)",
-            "(,,◕ ⋏ ◕,,)",
-            "(๑❛ꇳ❛๑)",
-            "(-, – )…zzzZZZ",
-            "┬─┬ノ( º _ ºノ)",
-            "(⌒‿⌒)",
-            "\\ (•◡•) /",
-            "⚆ _ ⚆",
-            "(づ￣ ³￣)づ",
-            "ಠ‿↼"
-        };
+        private static readonly string[] Smiles;
 
         private static string _previousSmile;
+
+
 
         public static readonly IUnbiasedRandom RandomGenerator;
         public static readonly IUnbiasedRandom CachedRandomGenerator;
         public static readonly StringGenerator RandomStringGenerator;
 
+
+
         static GeneratingManager()
         {
+            Smiles = new []
+            {
+                "(ﾟдﾟ；)",
+                "(ó﹏ò｡)",
+                "(´ω｀*)",
+                "(┛ಠДಠ)┛彡┻━┻",
+                "(* _ω_)…",
+                "(ﾉ･д･)ﾉ",
+                "(⊃｡•́‿•̀｡)⊃",
+                "ლ(๏‿๏ ◝ლ)",
+                "ლ(*꒪ヮ꒪*)ლ",
+                "(ﾉ･ｪ･)ﾉ",
+                "(＾▽＾)",
+                "(•‿•)",
+                "(☉_☉)",
+                "(,,◕ ⋏ ◕,,)",
+                "(๑❛ꇳ❛๑)",
+                "(-, – )…zzzZZZ",
+                "┬─┬ノ( º _ ºノ)",
+                "(⌒‿⌒)",
+                "\\ (•◡•) /",
+                "⚆ _ ⚆",
+                "(づ￣ ³￣)づ",
+                "ಠ‿↼"
+            };
+
             _previousSmile = string.Empty;
 
             RandomGenerator = new SecureRandom();
@@ -50,6 +56,8 @@ namespace Memenim.Generating
                 new SecureRandom());
         }
 
+
+
         public static string GetRandomSmile()
         {
             var smileIndex = (int)CachedRandomGenerator
@@ -58,6 +66,7 @@ namespace Memenim.Generating
             if (Smiles[smileIndex] != _previousSmile)
             {
                 _previousSmile = Smiles[smileIndex];
+
                 return Smiles[smileIndex];
             }
 
@@ -78,6 +87,7 @@ namespace Memenim.Generating
             }
 
             _previousSmile = Smiles[smileIndex];
+
             return Smiles[smileIndex];
         }
     }

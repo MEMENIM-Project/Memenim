@@ -81,25 +81,20 @@ namespace Memenim.Pages
 
         private Task SelectImage(string url)
         {
-            LoadImage(url);
+            if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
+                return Task.CompletedTask;
+
+            ViewModel.CurrentPostData.Attachments[0].Photo.MediumUrl = url;
 
             return Task.CompletedTask;
         }
 
-        public void LoadImage(string url)
-        {
-            if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
-                return;
-
-            ViewModel.CurrentPostData.Attachments[0].Photo.MediumUrl = url;
-        }
-
-        public void ClearImage()
+        private void ClearImage()
         {
             ViewModel.CurrentPostData.Attachments[0].Photo.MediumUrl = string.Empty;
         }
 
-        public void ClearText()
+        private void ClearText()
         {
             ViewModel.CurrentPostData.Text = string.Empty;
         }
@@ -200,18 +195,18 @@ namespace Memenim.Pages
                 await SelectImage(url)
                     .ConfigureAwait(true);
             }
-            else if (rbImageTenor.IsChecked == true)
-            {
-                NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
-                {
-                    OnPicSelect = SelectImage
-                });
-            }
             else if (rbImageGallery.IsChecked == true)
             {
                 NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
                 {
-                    OnPicSelect = SelectImage
+                    ImageSelectionDelegate = SelectImage
+                });
+            }
+            else if (rbImageTenor.IsChecked == true)
+            {
+                NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
+                {
+                    ImageSelectionDelegate = SelectImage
                 });
             }
         }

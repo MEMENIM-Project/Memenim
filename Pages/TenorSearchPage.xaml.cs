@@ -6,6 +6,7 @@ using System.Windows;
 using Tenor;
 using Tenor.Schema;
 using Memenim.Commands;
+using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
 using Memenim.Settings;
 using Memenim.Widgets;
@@ -67,9 +68,9 @@ namespace Memenim.Pages
             {
                 ImagePreviewButton previewButton = new ImagePreviewButton
                 {
-                    ButtonSize = 150,
-                    ClickFunction = ViewModel.OnPicSelect
+                    ButtonSize = 150
                 };
+                previewButton.Click += ImagePreviewButton_Click;
 
                 foreach (var media in data.Media)
                 {
@@ -149,7 +150,7 @@ namespace Memenim.Pages
             base.OnEnter(sender, e);
 
             ViewModel.SearchCommand = new AsyncBasicCommand(
-                _ => true, async query =>
+                async query =>
                 {
                     await ExecuteSearch((string)query)
                         .ConfigureAwait(true);
@@ -196,6 +197,21 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
+        }
+
+        private async void ImagePreviewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(e.OriginalSource is ImagePreviewButton target))
+                return;
+
+            if (ViewModel.ImageSelectionDelegate != null)
+            {
+                await ViewModel.ImageSelectionDelegate(
+                        target.ImageSource)
+                    .ConfigureAwait(true);
+            }
+
+            NavigationController.Instance.GoBack();
         }
     }
 }

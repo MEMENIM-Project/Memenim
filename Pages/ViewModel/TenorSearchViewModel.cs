@@ -7,7 +7,7 @@ namespace Memenim.Pages.ViewModel
 {
     public class TenorSearchViewModel : PageViewModel
     {
-        private ICommand _searchCommand = new BasicCommand(_ => false);
+        private ICommand _searchCommand;
         public ICommand SearchCommand
         {
             get
@@ -20,7 +20,7 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(SearchCommand));
             }
         }
-        private string _searchText = string.Empty;
+        private string _searchText;
         public string SearchText
         {
             get
@@ -33,24 +33,28 @@ namespace Memenim.Pages.ViewModel
                 OnPropertyChanged(nameof(SearchText));
             }
         }
-        private Func<string, Task> _onPicSelect = _ => Task.CompletedTask;
-        public Func<string, Task> OnPicSelect
+        private Func<string, Task> _imageSelectionDelegate;
+        public Func<string, Task> ImageSelectionDelegate
         {
             get
             {
-                return _onPicSelect;
+                return _imageSelectionDelegate;
             }
             set
             {
-                _onPicSelect = value;
-                OnPropertyChanged(nameof(OnPicSelect));
+                _imageSelectionDelegate = value;
+                OnPropertyChanged(nameof(ImageSelectionDelegate));
             }
         }
+
+
 
         public TenorSearchViewModel()
             : base(typeof(TenorSearchPage))
         {
-
+            _searchCommand = new AsyncBasicCommand();
+            _searchText = string.Empty;
+            _imageSelectionDelegate = _ => Task.CompletedTask;
         }
     }
 }

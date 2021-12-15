@@ -17,24 +17,32 @@ namespace Memenim.Commands
             }
         }
 
-        public Func<object, bool> CanExecuteDelegate { get; set; }
-        public Action<object> ExecuteDelegate { get; set; }
 
-        public BasicCommand(Func<object, bool> canExecute = null,
-            Action<object> execute = null)
+
+        private Func<object, bool> CanExecuteDelegate { get; set; }
+        private Action<object> ExecuteDelegate { get; set; }
+
+
+
+        public BasicCommand(
+            Action<object> executeDelegate = null,
+            Func<object, bool> canExecuteDelegate = null)
         {
-            CanExecuteDelegate = canExecute;
-            ExecuteDelegate = execute;
+            ExecuteDelegate = executeDelegate;
+            CanExecuteDelegate = canExecuteDelegate;
         }
 
-        public bool CanExecute(object parameter)
-        {
-            var canExecute = CanExecuteDelegate;
 
-            return canExecute == null || canExecute(parameter);
+
+        public bool CanExecute(
+            object parameter)
+        {
+            return CanExecuteDelegate == null
+                   || CanExecuteDelegate(parameter);
         }
 
-        public void Execute(object parameter)
+        public void Execute(
+            object parameter)
         {
             ExecuteDelegate?.Invoke(parameter);
         }

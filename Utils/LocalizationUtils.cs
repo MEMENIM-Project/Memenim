@@ -76,50 +76,50 @@ namespace Memenim.Utils
 
 
 
-        private static void OnDefaultLocalizationChanged(
-            object sender, LocalizationChangedEventArgs e)
+        private static void OnDefaultLocalizationChanged(object sender,
+            LocalizationChangedEventArgs e)
         {
             DefaultLocalizationChanged?.Invoke(
                 sender, e);
         }
 
-        private static void OnLocalizationChanged(
-            object sender, LocalizationChangedEventArgs e)
+        private static void OnLocalizationChanged(object sender,
+            LocalizationChangedEventArgs e)
         {
             LocalizationChanged?.Invoke(
                 sender, e);
         }
 
-        private static void OnLocalizationsLoaded(
-            object sender, LocalizationLoadedEventArgs e)
+        private static void OnLocalizationsLoaded(object sender,
+            LocalizationLoadedEventArgs e)
         {
             LocalizationsLoaded?.Invoke(
                 sender, e);
         }
 
-        private static void OnLocalizationFileNotFound(
-            object sender, LocalizationFileNotFoundEventArgs e)
+        private static void OnLocalizationFileNotFound(object sender,
+            LocalizationFileNotFoundEventArgs e)
         {
             LocalizationFileNotFound?.Invoke(
                 sender, e);
         }
 
-        private static void OnLocalizedCultureNotFound(
-            object sender, LocalizedCultureNotFoundEventArgs e)
+        private static void OnLocalizedCultureNotFound(object sender,
+            LocalizedCultureNotFoundEventArgs e)
         {
             LocalizedCultureNotFound?.Invoke(
                 sender, e);
         }
 
-        private static void OnLocalizationsNotFound(
-            object sender, LocalizationEventArgs e)
+        private static void OnLocalizationsNotFound(object sender,
+            LocalizationEventArgs e)
         {
             LocalizationsNotFound?.Invoke(
                 sender, e);
         }
 
-        private static void OnLocalizationUpdated(
-            object sender, LocalizationEventArgs e)
+        private static void OnLocalizationUpdated(object sender,
+            LocalizationEventArgs e)
         {
             LocalizationUpdated?.Invoke(
                 sender, e);

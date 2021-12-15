@@ -17,74 +17,94 @@ namespace Memenim.Scripting
         public static event EventHandler<ScriptLoadedEventArgs> Loaded;
         public static event EventHandler<ScriptUnloadedEventArgs> Unloaded;
 
+
+
+        public static readonly string CustomScriptsDirectoryPath;
+
+
+
         public static ReadOnlyDictionary<string, MemenimScriptModule> Scripts { get; private set; }
+
+
 
         static ScriptManager()
         {
-            var baseDirectory = Environment.ExecProcessDirectoryName;
+            var baseProcessDirectory = Environment.ExecProcessDirectoryName;
 
-            if (string.IsNullOrEmpty(baseDirectory) || baseDirectory == "Unknown")
-                return;
+            if (string.IsNullOrEmpty(baseProcessDirectory) || baseProcessDirectory == "Unknown")
+                baseProcessDirectory = string.Empty;
 
-            var directory = Path.Combine(baseDirectory,
-                "scripts");
+            CustomScriptsDirectoryPath = Path.Combine(
+                baseProcessDirectory, "scripts", "MEMENIM", "custom");
 
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            if (!Directory.Exists(CustomScriptsDirectoryPath))
+                Directory.CreateDirectory(CustomScriptsDirectoryPath);
         }
 
-        public static void OnInformation(ScriptInformationEventArgs e)
+
+
+        public static void OnInformation(
+            ScriptInformationEventArgs e)
         {
             OnInformation(null, e);
         }
-        public static void OnInformation(object sender, ScriptInformationEventArgs e)
+        public static void OnInformation(object sender,
+            ScriptInformationEventArgs e)
         {
             Information?.Invoke(sender, e);
         }
 
-        public static void OnWarning(ScriptWarningEventArgs e)
+        public static void OnWarning(
+            ScriptWarningEventArgs e)
         {
             OnWarning(null, e);
         }
-        public static void OnWarning(object sender, ScriptWarningEventArgs e)
+        public static void OnWarning(object sender,
+            ScriptWarningEventArgs e)
         {
             Warning?.Invoke(sender, e);
         }
 
-        public static void OnError(ScriptErrorEventArgs e)
+        public static void OnError(
+            ScriptErrorEventArgs e)
         {
             OnError(null, e);
         }
-        public static void OnError(object sender, ScriptErrorEventArgs e)
+        public static void OnError(object sender,
+            ScriptErrorEventArgs e)
         {
             Error?.Invoke(sender, e);
         }
 
 
-        public static void OnLoaded(ScriptLoadedEventArgs e)
+        public static void OnLoaded(
+            ScriptLoadedEventArgs e)
         {
             OnLoaded(null, e);
         }
-        public static void OnLoaded(object sender, ScriptLoadedEventArgs e)
+        public static void OnLoaded(object sender,
+            ScriptLoadedEventArgs e)
         {
             Loaded?.Invoke(sender, e);
         }
 
-        public static void OnUnloaded(ScriptUnloadedEventArgs e)
+        public static void OnUnloaded(
+            ScriptUnloadedEventArgs e)
         {
             OnUnloaded(null, e);
         }
-        public static void OnUnloaded(object sender, ScriptUnloadedEventArgs e)
+        public static void OnUnloaded(object sender,
+            ScriptUnloadedEventArgs e)
         {
             Unloaded?.Invoke(sender, e);
         }
 
 
 
-        private static Dictionary<string, MemenimScriptModule> GetScriptsPaths(
+        private static Dictionary<string, string> GetScriptsPaths(
             string directoryBasePath)
         {
-            var scriptsPaths = new Dictionary<string, MemenimScriptModule>(10);
+            var scriptsPaths = new Dictionary<string, string>(10);
             var directory = directoryBasePath;
 
             if (string.IsNullOrEmpty(directory)
@@ -101,10 +121,22 @@ namespace Memenim.Scripting
             {
                 try
                 {
-                    var module = new MemenimScriptModule(
-                        directoryPath);
+                    if (string.IsNullOrEmpty(directoryPath))
+                        continue;
 
-                    scriptsPaths[module.Name] = module;
+                    var directoryPathFixed = directoryPath
+                        .TrimEnd(
+                            Path.DirectorySeparatorChar,
+                            Path.AltDirectorySeparatorChar);
+                    directoryPathFixed = $"{directoryPathFixed}{Path.DirectorySeparatorChar}";
+
+                    var directoryName = Path
+                        .GetDirectoryName(directoryPathFixed);
+
+                    if (string.IsNullOrEmpty(directoryName))
+                        continue;
+
+                    scriptsPaths[directoryName] = directoryPath;
                 }
                 catch (Exception ex)
                 {
@@ -117,15 +149,32 @@ namespace Memenim.Scripting
 
         private static Dictionary<string, MemenimScriptModule> GetScripts()
         {
+            var scriptsPaths = new Dictionary<string, string>(10);
+
+            if (!string.IsNullOrEmpty(CustomScriptsDirectoryPath))
+            {
+                foreach (var (key, value) in GetScriptsPaths(
+                             CustomScriptsDirectoryPath))
+                {
+                    scriptsPaths[key] = value;
+                }
+            }
+
             var scripts = new Dictionary<string, MemenimScriptModule>(10);
 
-            var scriptsDirectoryName = Path.Combine(
-                Environment.ExecProcessDirectoryName, "scripts");
-
-            foreach (var script in GetScriptsPaths(
-                scriptsDirectoryName))
+            foreach (var (key, value) in scriptsPaths)
             {
-                scripts[script.Key] = script.Value;
+                try
+                {
+                    var script = new MemenimScriptModule(
+                        value);
+
+                    scripts[key] = script;
+                }
+                catch (Exception ex)
+                {
+                    Events.OnError(new RErrorEventArgs(ex, ex.Message));
+                }
             }
 
             return scripts;

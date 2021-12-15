@@ -487,7 +487,7 @@ namespace Memenim.Pages
             GC.Collect();
 
             ViewModel.OnPostScrollEnd = new AsyncBasicCommand(
-                _ => true, async _ =>
+                async _ =>
                 {
                     if (svPosts.HorizontalOffset == 0)
                         return;

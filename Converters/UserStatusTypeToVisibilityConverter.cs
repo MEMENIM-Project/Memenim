@@ -8,9 +8,10 @@ namespace Memenim.Converters
 {
     public sealed class UserStatusTypeToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            UserStatusType result = UserStatusType.Active;
+            var result = UserStatusType.Active;
 
             if (value is int intValue)
                 result = (UserStatusType)((byte)intValue);
@@ -22,7 +23,8 @@ namespace Memenim.Converters
                 : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             return Binding.DoNothing;
         }

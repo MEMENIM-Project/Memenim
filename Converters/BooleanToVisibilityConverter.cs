@@ -7,9 +7,10 @@ namespace Memenim.Converters
 {
     public sealed class BooleanToVisibilityConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
-            bool result = false;
+            var result = false;
 
             if (value is bool boolValue)
                 result = boolValue;
@@ -19,7 +20,8 @@ namespace Memenim.Converters
                 : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             if (value is Visibility visibilityValue)
                 return visibilityValue == Visibility.Visible;

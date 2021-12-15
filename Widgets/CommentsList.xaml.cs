@@ -230,7 +230,7 @@ namespace Memenim.Widgets
             if (result.IsError)
             {
                 var message = LocalizationUtils
-                    .GetLocalized("CouldNotLoadCommentsMessage");
+                    .GetLocalized("FailedToLoadCommentsMessage");
 
                 await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
@@ -413,7 +413,7 @@ namespace Memenim.Widgets
                 await Dispatcher.Invoke(() =>
                 {
                     var message = LocalizationUtils
-                        .GetLocalized("CouldNotLoadCommentsMessage");
+                        .GetLocalized("FailedToLoadCommentsMessage");
 
                     return DialogManager.ShowErrorDialog(message);
                 }).ConfigureAwait(true);

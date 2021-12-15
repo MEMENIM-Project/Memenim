@@ -8,13 +8,19 @@ namespace Memenim.Scripting
     {
         private readonly AssemblyDependencyResolver _dependencyResolver;
 
-        public ScriptLoadContext(string name, string path)
+
+
+        public ScriptLoadContext(
+            string name, string path)
             : base(name, true)
         {
             _dependencyResolver = new AssemblyDependencyResolver(path);
         }
 
-        protected override Assembly Load(AssemblyName assemblyName)
+
+
+        protected override Assembly Load(
+            AssemblyName assemblyName)
         {
             var assemblyPath = _dependencyResolver
                 .ResolveAssemblyToPath(assemblyName);
@@ -25,15 +31,16 @@ namespace Memenim.Scripting
             return LoadFromAssemblyPath(assemblyPath);
         }
 
-        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+        protected override IntPtr LoadUnmanagedDll(
+            string unmanagedDllPath)
         {
-            var libraryPath = _dependencyResolver.
-                ResolveUnmanagedDllToPath(unmanagedDllName);
+            var assemblyPath = _dependencyResolver.
+                ResolveUnmanagedDllToPath(unmanagedDllPath);
 
-            if (libraryPath == null)
+            if (assemblyPath == null)
                 return IntPtr.Zero;
 
-            return LoadUnmanagedDllFromPath(libraryPath);
+            return LoadUnmanagedDllFromPath(assemblyPath);
         }
     }
 }

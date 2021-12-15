@@ -481,7 +481,7 @@ namespace Memenim.Navigation
             if (count < 0)
                 count = 0;
 
-            for (int i = 0; i < count; ++i)
+            for (var i = 0; i < count; ++i)
             {
                 GoBack(autoSkip);
             }

@@ -2,19 +2,20 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace Memenim.Utils
+namespace Memenim.Extensions
 {
-    public static class VisualTreeUtils
+    public static class DependencyObjectExtensions
     {
-        public static T GetChildOfType<T>(this DependencyObject depObj)
+        public static T GetChildOfType<T>(this DependencyObject source)
             where T : DependencyObject
         {
-            if (depObj == null)
+            if (source == null)
                 return null;
 
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); ++i)
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(source); ++i)
             {
-                var child = VisualTreeHelper.GetChild(depObj, i);
+                var child = VisualTreeHelper
+                    .GetChild(source, i);
                 var result = (child as T) ?? GetChildOfType<T>(child);
 
                 if (result != null)

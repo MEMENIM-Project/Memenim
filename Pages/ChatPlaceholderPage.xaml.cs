@@ -70,7 +70,7 @@ namespace Memenim.Pages
 
             try
             {
-                if (SettingsManager.PersistentSettings.CurrentUser.HasStoredRocketPassword())
+                if (SettingsManager.PersistentSettings.CurrentUser.HasRocketPassword())
                 {
                     Clipboard.SetText(SettingsManager.PersistentSettings.CurrentUser.RocketPassword);
 

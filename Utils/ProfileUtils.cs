@@ -12,27 +12,34 @@ namespace Memenim.Utils
         public static event EventHandler<UserPhotoChangedEventArgs> BannerChanged;
         public static event EventHandler<UserNameChangedEventArgs> NameChanged;
 
-        public static void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
+
+
+        public static void OnAvatarChanged(object sender,
+            UserPhotoChangedEventArgs e)
         {
             AvatarChanged?.Invoke(sender, e);
         }
 
-        public static void OnBannerChanged(object sender, UserPhotoChangedEventArgs e)
+        public static void OnBannerChanged(object sender,
+            UserPhotoChangedEventArgs e)
         {
             BannerChanged?.Invoke(sender, e);
         }
 
-        public static void OnNameChanged(object sender, UserNameChangedEventArgs e)
+        public static void OnNameChanged(object sender,
+            UserNameChangedEventArgs e)
         {
             NameChanged?.Invoke(sender, e);
         }
 
+
+
         public static async Task ChangeAvatar(string url,
-            bool checkEmptyUrl = true)
+            bool ignoreEmptyUrl = true)
         {
             try
             {
-                if (checkEmptyUrl && string.IsNullOrWhiteSpace(url))
+                if (ignoreEmptyUrl && string.IsNullOrWhiteSpace(url))
                     return;
 
                 var result = await UserApi.GetProfileById(
@@ -86,12 +93,13 @@ namespace Memenim.Utils
             return ChangeAvatar(string.Empty, false);
         }
 
+
         public static async Task ChangeBanner(string url,
-            bool checkEmptyUrl = true)
+            bool ignoreEmptyUrl = true)
         {
             try
             {
-                if (checkEmptyUrl && string.IsNullOrWhiteSpace(url))
+                if (ignoreEmptyUrl && string.IsNullOrWhiteSpace(url))
                     return;
 
                 var result = await UserApi.GetProfileById(

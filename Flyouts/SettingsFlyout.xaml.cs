@@ -34,9 +34,8 @@ namespace Memenim.Flyouts
             }
             set
             {
-                if (value &&
-                    (SpecialEventManager.CurrentInstance == null
-                     || !SpecialEventManager.CurrentInstance.EventLoaded))
+                if (value
+                    && !(SpecialEventManager.CurrentInstance is { EventLoaded: true }))
                 {
                     SpecialEventToggle.IsOn = false;
                     SpecialEventToggle.IsEnabled = false;
@@ -208,7 +207,7 @@ namespace Memenim.Flyouts
             {
                 case CommentReplyModeType.Experimental:
                     var additionalMessage = LocalizationUtils
-                        .GetLocalized("YouMaybeBannedConfirmationMessage");
+                        .GetLocalized("YouMayBeBannedConfirmationMessage");
                     var confirmResult = await DialogManager.ShowConfirmationDialog(
                             additionalMessage)
                         .ConfigureAwait(true);
@@ -256,25 +255,29 @@ namespace Memenim.Flyouts
 
             try
             {
-                var title = LocalizationUtils.GetLocalized("ChangingPasswordTitle");
-                var enterName = LocalizationUtils.GetLocalized("EnterTitle");
-                var oldPasswordName = LocalizationUtils.GetLocalized("OldPassword");
-                var newPasswordName = LocalizationUtils.GetLocalized("NewPassword");
+                var title = LocalizationUtils
+                    .GetLocalized("ChangingPasswordTitle");
+                var enterName = LocalizationUtils
+                    .GetLocalized("EnterTitle");
+                var oldPasswordName = LocalizationUtils
+                    .GetLocalized("OldPassword");
+                var newPasswordName = LocalizationUtils
+                    .GetLocalized("NewPassword");
 
-                var oldPassword = await DialogManager.ShowPasswordDialog(title,
-                        $"{enterName} {oldPasswordName.ToLower()}",
+                var oldPassword = await DialogManager.ShowPasswordDialog(
+                        title, $"{enterName} {oldPasswordName.ToLower()}",
                         false)
                     .ConfigureAwait(true);
 
-                if (oldPassword == null)
+                if (string.IsNullOrEmpty(oldPassword))
                     return;
 
-                var newPassword = await DialogManager.ShowPasswordDialog(title,
-                        $"{enterName} {newPasswordName.ToLower()}",
+                var newPassword = await DialogManager.ShowPasswordDialog(
+                        title, $"{enterName} {newPasswordName.ToLower()}",
                         true)
                     .ConfigureAwait(true);
 
-                if (newPassword == null)
+                if (string.IsNullOrEmpty(newPassword))
                     return;
 
                 var request = await UserApi.ChangePassword(

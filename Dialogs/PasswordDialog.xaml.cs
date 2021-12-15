@@ -22,6 +22,8 @@ namespace Memenim.Dialogs
             DependencyProperty.Register(nameof(IsCancellable), typeof(bool), typeof(PasswordDialog),
                 new PropertyMetadata(true));
 
+
+
         public string DialogTitle
         {
             get
@@ -69,8 +71,13 @@ namespace Memenim.Dialogs
         public string DefaultValue { get; }
         public bool CanGeneratePassword { get; }
 
-        public PasswordDialog(string title = "Enter", string message = "Enter",
-            bool canGeneratePassword = false, string defaultValue = null,
+
+
+        public PasswordDialog(
+            string title = "Enter",
+            string message = "Enter",
+            bool canGeneratePassword = false,
+            string defaultValue = null,
             bool isCancellable = true)
         {
             InitializeComponent();
@@ -83,36 +90,62 @@ namespace Memenim.Dialogs
             IsCancellable = isCancellable;
 
             if (!LocalizationUtils.TryGetLocalized("OkTitle", out _))
-                btnOk.Content = "Ok";
+                OkButton.Content = "Ok";
             if (!LocalizationUtils.TryGetLocalized("CancelTitle", out _))
-                btnCancel.Content = "Cancel";
+                CancelButton.Content = "Cancel";
         }
 
-        private void Ok_Click(object sender, RoutedEventArgs e)
-        {
-            btnOk.Focus();
 
-            MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
+
+        private void Dialog_KeyUp(object sender,
+            KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (OkButton.IsEnabled)
+                    Ok_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key == Key.Escape)
+            {
+                if (CancelButton.IsEnabled)
+                    Cancel_Click(this, new RoutedEventArgs());
+            }
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+
+
+        private void Ok_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnCancel.Focus();
+            OkButton.Focus();
+
+            MainWindow.Instance.HideMetroDialogAsync(
+                this, DialogSettings);
+        }
+
+        private void Cancel_Click(object sender,
+            RoutedEventArgs e)
+        {
+            CancelButton.Focus();
 
             InputValue = DefaultValue;
-            MainWindow.Instance.HideMetroDialogAsync(this, DialogSettings);
+
+            MainWindow.Instance.HideMetroDialogAsync(
+                this, DialogSettings);
         }
 
-        private void txtPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
+        private void PasswordTextBox_OnPasswordChanged(object sender,
+            RoutedEventArgs e)
         {
-            InputValue = txtPassword.Password;
+            InputValue = PasswordTextBox.Password;
         }
 
-        private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
+        private async void GeneratePasswordButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnOk.IsEnabled = false;
-            btnCancel.IsEnabled = false;
-            txtPassword.IsEnabled = false;
+            OkButton.IsEnabled = false;
+            CancelButton.IsEnabled = false;
+            PasswordTextBox.IsEnabled = false;
 
             try
             {
@@ -130,10 +163,11 @@ namespace Memenim.Dialogs
                     return;
                 }
 
-                txtPassword.Password = password;
+                PasswordTextBox.Password = password;
                 InputValue = password;
 
-                Clipboard.SetText(password);
+                Clipboard.SetText(
+                    password);
             }
             catch (Exception ex)
             {
@@ -142,23 +176,9 @@ namespace Memenim.Dialogs
             }
             finally
             {
-                btnOk.IsEnabled = true;
-                btnCancel.IsEnabled = true;
-                txtPassword.IsEnabled = true;
-            }
-        }
-
-        private void Dialog_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter || e.Key == Key.Down)
-            {
-                if (btnOk.IsEnabled)
-                    Ok_Click(this, new RoutedEventArgs());
-            }
-            else if (e.Key == Key.Escape || e.Key == Key.Up)
-            {
-                if (btnCancel.IsEnabled)
-                    Cancel_Click(this, new RoutedEventArgs());
+                OkButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
+                PasswordTextBox.IsEnabled = true;
             }
         }
     }

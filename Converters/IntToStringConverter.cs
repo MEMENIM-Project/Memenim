@@ -7,11 +7,13 @@ namespace Memenim.Converters
 {
 	public sealed class IntToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {
-                return value?.ToString() ?? string.Empty;
+                return value?
+                    .ToString() ?? string.Empty;
             }
             catch (Exception)
             {
@@ -19,11 +21,13 @@ namespace Memenim.Converters
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
         {
             try
             {
-                return ((string)value)?.ToInt() ?? 0;
+                return ((string)value)?
+                    .ToInt() ?? 0;
             }
             catch (Exception)
             {
