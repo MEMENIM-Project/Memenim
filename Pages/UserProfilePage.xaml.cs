@@ -59,17 +59,18 @@ namespace Memenim.Pages
             InitializeComponent();
             DataContext = new UserProfileViewModel();
 
-            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~UserProfilePage()
         {
-            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated -= OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
-        private async Task SelectAvatarImage(string url)
+        private async Task SelectAvatarImage(
+            string url)
         {
             if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
                 return;
@@ -229,7 +230,7 @@ namespace Memenim.Pages
 
             return Task.Run(async () =>
             {
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -306,7 +307,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
+        private void OnLocalizationUpdated(object sender, LocalizationEventArgs e)
         {
             ProfileStatPurpose
                 .GetBindingExpression(UserProfileStat.StatValueProperty)?
@@ -381,7 +382,7 @@ namespace Memenim.Pages
             var title = LocalizationUtils
                 .GetLocalized("InsertingImageTitle");
             var message = LocalizationUtils
-                .GetLocalized("EnterURL");
+                .GetLocalized("EnterUrl");
 
             var url = await DialogManager.ShowSinglelineTextDialog(
                     title, message)

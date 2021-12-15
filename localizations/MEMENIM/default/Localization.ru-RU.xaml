@@ -44,15 +44,15 @@
     <system:String x:Key="EnterCommentText">Введите содержимое комментария</system:String>
 
     <system:String x:Key="PostContentTitle">Содержимое поста</system:String>
+    <system:String x:Key="ImageSelectionTitle">Выбор изображения</system:String>
     <system:String x:Key="AdditionalOptionsTitle">Дополнительные опции</system:String>
-    <system:String x:Key="ImageSourceTitle">Выберите изображение</system:String>
+    <system:String x:Key="UrlSelect">Вставить URL-адрес</system:String>
     <system:String x:Key="GallerySelect">Выбрать из галереи</system:String>
     <system:String x:Key="TenorSelect">Выбрать в Tenor</system:String>
-    <system:String x:Key="URLSelect">Вставить URL-адрес</system:String>
     <system:String x:Key="UploadImage">Загрузить изображение</system:String>
     <system:String x:Key="RemoveImage">Убрать изображение</system:String>
     <system:String x:Key="ImageSelection">Выбор изображения</system:String>
-    <system:String x:Key="GIFSelection">Выбор GIF-изображения</system:String>
+    <system:String x:Key="GifSelection">Выбор GIF-изображения</system:String>
     <system:String x:Key="EnterSearchQuery">Введите поисковый запрос</system:String>
     
     <system:String x:Key="SettingsTitle">Настройки</system:String>
@@ -128,7 +128,7 @@
     <system:String x:Key="Schema-PostCategorySchema-65">Давайте поговорим о...</system:String>
     <system:String x:Key="Schema-PostCategorySchema-66">Мысли вслух</system:String>
     <system:String x:Key="Schema-PostCategorySchema-67">Знакомства</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-68">Давай вместе</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-68">Давайте вместе</system:String>
     <system:String x:Key="Schema-PostCategorySchema-69">Любовь, Отношения</system:String>
     <system:String x:Key="Schema-PostCategorySchema-70">ЛГБТ</system:String>
     <system:String x:Key="Schema-PostCategorySchema-71">Помогите мне, пожалуйста</system:String>
@@ -140,7 +140,7 @@
     <system:String x:Key="Schema-PostCategorySchema-77">Одиночество</system:String>
     <system:String x:Key="Schema-PostCategorySchema-78">Друзья</system:String>
     <system:String x:Key="Schema-PostCategorySchema-79">Ну это просто пиз..ц</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-80">Стыдно</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-80">Стыд, Позор</system:String>
     <system:String x:Key="Schema-PostCategorySchema-81">Политика, Власть</system:String>
     <system:String x:Key="Schema-PostCategorySchema-82">Путешествие</system:String>
     <system:String x:Key="Schema-PostCategorySchema-83">Делимся, Предлагаем</system:String>
@@ -149,12 +149,12 @@
     <system:String x:Key="Schema-PostCategorySchema-86">Страшное</system:String>
     <system:String x:Key="Schema-PostCategorySchema-87">Для взрослых</system:String>
     <system:String x:Key="Schema-PostCategorySchema-88">Не для всех</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-89">Желания и сны</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-89">Желания, Сны</system:String>
     <system:String x:Key="Schema-PostCategorySchema-90">Закрытая комната</system:String>
     <system:String x:Key="Schema-PostCategorySchema-91">Записки сумасшедшего, Шиза</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-93">Мой секрет, Признания</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-93">Секреты</system:String>
     <system:String x:Key="Schema-PostCategorySchema-95">Бизнес</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-96">Коррупция</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-96">Разврат, Коррупция</system:String>
     <system:String x:Key="Schema-PostCategorySchema-97">Путешествия</system:String>
     <system:String x:Key="Schema-PostCategorySchema-98">Полезное</system:String>
     <system:String x:Key="Schema-PostCategorySchema-99">Челлендж</system:String>
@@ -163,10 +163,10 @@
     <system:String x:Key="Schema-PostCategorySchema-106">Разоблачение</system:String>
     <system:String x:Key="Schema-PostCategorySchema-107">Цитаты</system:String>
     <system:String x:Key="Schema-PostCategorySchema-108">Красота, Здоровье</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-109">IT-технологии</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-109">Информационные Технологии</system:String>
     <system:String x:Key="Schema-PostCategorySchema-110">Стартапы</system:String>
     <system:String x:Key="Schema-PostCategorySchema-111">Криптовалюта</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-112">Опрос</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-112">Интервью и опросы</system:String>
     <system:String x:Key="Schema-PostCategorySchema-113">Деньги</system:String>
     <system:String x:Key="Schema-PostCategorySchema-114">Красота</system:String>
     <system:String x:Key="Schema-PostCategorySchema-115">Шоу-бизнес</system:String>
@@ -184,7 +184,7 @@
     <system:String x:Key="Schema-PostCategorySchema-127">Мистика, Эзотерика</system:String>
     <system:String x:Key="Schema-PostCategorySchema-128">Еда, Кулинария</system:String>
     <system:String x:Key="Schema-PostCategorySchema-129">Спорт, Экстрим</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-130">События</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-130">Разработки, События</system:String>
     <system:String x:Key="Schema-PostCategorySchema-131">Кино</system:String>
     <system:String x:Key="Schema-PostCategorySchema-132">Музыка</system:String>
     <system:String x:Key="Schema-PostCategorySchema-133">Игры, Киберспорт</system:String>
@@ -192,8 +192,8 @@
     <system:String x:Key="Schema-PostCategorySchema-135">Наука</system:String>
     <system:String x:Key="Schema-PostCategorySchema-136">Неизданное, Авторское</system:String>
     <system:String x:Key="Schema-PostCategorySchema-137">Накипело</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-138">Наблюдение</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-139">Счастливый момент</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-138">Наблюдения</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-139">Счастливые моменты</system:String>
     <system:String x:Key="Schema-PostCategorySchema-140">Страхи</system:String>
     <system:String x:Key="Schema-PostCategorySchema-141">Книги</system:String>
     <system:String x:Key="Schema-PostCategorySchema-142">Счастливый конец</system:String>
@@ -237,7 +237,7 @@
     <system:String x:Key="EditingCommentTitle">Редактирование комментария</system:String>
     <system:String x:Key="EditingCommentMessage">Введите текст комментария</system:String>
 
-    <system:String x:Key="EnterURL">Введите URL-адрес</system:String>
+    <system:String x:Key="EnterUrl">Введите URL-адрес</system:String>
 
     <system:String x:Key="OkTitle">Ок</system:String>
     <system:String x:Key="CancelTitle">Отмена</system:String>

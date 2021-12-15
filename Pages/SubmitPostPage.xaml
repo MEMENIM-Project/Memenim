@@ -10,95 +10,123 @@
                    xmlns:markupLocalization="clr-namespace:RIS.Localization.UI.WPF.Markup;assembly=RIS.Localization.UI.WPF"
                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                    mc:Ignorable="d"
-                   d:DesignHeight="450" d:DesignWidth="800">
+                   d:DesignWidth="800" d:DesignHeight="450">
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition MinHeight="45" Height="45"/>
+            <RowDefinition MinHeight="45"
+                           Height="45"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="{markupLocalization:LocalizedString SubmitPostTitle}"
                    Style="{DynamicResource Header1}"
+                   Text="{markupLocalization:LocalizedString SubmitPostTitle}"
                    Margin="15 5"/>
         <controls:MetroAnimatedTabControl Grid.Row="1"
-                                          controls:TabControlHelper.Underlined="TabItems"
-                                          Margin="15 5">
+                                          controls:TabControlHelper.Underlined="TabItems">
             <TabItem Header="{markupLocalization:LocalizedString EditTitle}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
-                        <TextBlock Text="{markupLocalization:LocalizedString PostContentTitle}"
-                                   Style="{StaticResource AccentHeader}"
-                                   HorizontalAlignment="Left"
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="15 5">
+                        <TextBlock Style="{StaticResource AccentHeader}"
+                                   Text="{markupLocalization:LocalizedString PostContentTitle}"
+                                   HorizontalAlignment="Center"
                                    Margin="5 10 5 10"/>
-                        <TextBox MinHeight="200" AcceptsReturn="True"
-                                 TextWrapping="Wrap" Margin="0 5"
+                        <TextBox MinHeight="200"
                                  Text="{Binding Path=CurrentPostData.Text, Mode=TwoWay}"
-                                 controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString EnterPostContent}"/>
-                        <TextBlock Text="{markupLocalization:LocalizedString ImageSourceTitle}"
-                                   Style="{StaticResource AccentHeader}"
-                                   HorizontalAlignment="Left"
+                                 FontSize="16"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString EnterPostContent}"
+                                 Margin="0 5"/>
+                        <TextBlock Style="{StaticResource AccentHeader}"
+                                   Text="{markupLocalization:LocalizedString ImageSelectionTitle}"
+                                   HorizontalAlignment="Center"
                                    Margin="5 20 5 10"/>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel>
-                                <RadioButton Name="rbImageRaw" GroupName="ImageSource"
-                                             Content="{markupLocalization:LocalizedString URLSelect}"
-                                             IsChecked="True"
-                                             Margin="0 5"/>
-                                <RadioButton Name="rbImageGallery" GroupName="ImageSource"
-                                             Content="{markupLocalization:LocalizedString GallerySelect}"
-                                             Margin="0 5"/>
-                                <RadioButton Name="rbImageTenor" GroupName="ImageSource"
-                                             Content="{markupLocalization:LocalizedString TenorSelect}"
-                                             Margin="0 5"/>
-                            </StackPanel>
-                            <Image Height="100" Width="100"
-                                   Margin="10" Stretch="Uniform"
-                                   Source="{Binding Path=CurrentPostData.Attachments[0].Photo.MediumUrl, Converter={StaticResource PostImageSourceConverter}}"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <RadioButton x:Name="LoadImageFromUrlRadioButton"
+                                         GroupName="ImageSelectionMethod"
+                                         Content="{markupLocalization:LocalizedString UrlSelect}"
+                                         IsChecked="True"
+                                         Margin="0 5"/>
+                            <RadioButton x:Name="LoadImageFromGalleryRadioButton"
+                                         GroupName="ImageSelectionMethod"
+                                         Content="{markupLocalization:LocalizedString GallerySelect}"
+                                         Margin="0 5"/>
+                            <RadioButton x:Name="LoadImageFromTenorRadioButton"
+                                         GroupName="ImageSelectionMethod"
+                                         Content="{markupLocalization:LocalizedString TenorSelect}"
+                                         Margin="0 5"/>
                         </StackPanel>
-                        <Button Content="{markupLocalization:LocalizedString SelectImage}"
-                                Style="{StaticResource MahApps.Styles.Button.Square}"
-                                Margin="0 5" Click="SelectImage_Click"/>
-                        <Button Content="{markupLocalization:LocalizedString RemoveImage}"
-                                Style="{StaticResource MahApps.Styles.Button.Square}"
-                                Margin="0 5" Click="RemoveImage_Click"/>
+                        <StackPanel MinWidth="200"
+                                    Width="Auto"
+                                    HorizontalAlignment="Center"
+                                    Margin="0 5">
+                            <Button Style="{StaticResource MahApps.Styles.Button.Square}"
+                                    Margin="0 0 0 10"
+                                    Click="SelectImageButton_Click">
+                                <TextBlock Text="{markupLocalization:LocalizedString SelectImage}"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"/>
+                            </Button>
+                            <Button Style="{StaticResource MahApps.Styles.Button.Square}"
+                                    Margin="0 0 0 0"
+                                    Click="RemoveImageButton_Click">
+                                <TextBlock Text="{markupLocalization:LocalizedString RemoveImage}"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"/>
+                            </Button>
+                        </StackPanel>
                         <TextBlock Style="{StaticResource AccentHeader}"
                                    Text="{markupLocalization:LocalizedString AdditionalOptionsTitle}"
-                                   HorizontalAlignment="Left"
+                                   HorizontalAlignment="Center"
                                    Margin="5 20 5 10"/>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
                             <TextBlock Text="{markupLocalization:LocalizedString PostCategoryTitle}"
-                                       Margin="0 5 5 5"/>
+                                       Margin="0 5 0 5"/>
                             <TextBlock Text=": "
                                        Margin="0 5 5 5"/>
-                            <controls:SplitButton Name="slcPostCategories"
+                            <controls:SplitButton Name="PostCategoriesComboBox"
                                                   ItemsSource="{Binding Path=PostCategories, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"
                                                   DisplayMemberPath="Value"
                                                   Margin="0 5"
-                                                  SelectionChanged="slcPostCategories_SelectionChanged"/>
+                                                  SelectionChanged="PostCategoriesComboBox_SelectionChanged"/>
                         </StackPanel>
-                        <CheckBox Content="{markupLocalization:LocalizedString OpenComments}"
-                                  IsChecked="{Binding Path=CurrentPostData.IsCommentsOpen, Mode=TwoWay}"
-                                  Margin="0 5"/>
-                        <CheckBox Content="18+"
-                                  IsChecked="{Binding Path=CurrentPostData.IsAdult, Mode=TwoWay}"
-                                  Margin="0 5"/>
-                        <CheckBox Content="{markupLocalization:LocalizedString SubmitAnonymously}"
-                                  IsChecked="{Binding Path=CurrentPostData.IsAnonymous, Mode=TwoWay}"
-                                  Margin="0 5"/>
-                        <Button x:Name="btnSubmit"
-                                Content="{markupLocalization:LocalizedString SubmitPost}"
+                        <StackPanel HorizontalAlignment="Center">
+                            <CheckBox Content="{markupLocalization:LocalizedString OpenComments}"
+                                      IsChecked="{Binding Path=CurrentPostData.IsCommentsOpen, Mode=TwoWay}"
+                                      Margin="0 5"/>
+                            <CheckBox Content="18+"
+                                      IsChecked="{Binding Path=CurrentPostData.IsAdult, Mode=TwoWay}"
+                                      Margin="0 5"/>
+                            <CheckBox Content="{markupLocalization:LocalizedString SubmitAnonymously}"
+                                      IsChecked="{Binding Path=CurrentPostData.IsAnonymous, Mode=TwoWay}"
+                                      Margin="0 5"/>
+                        </StackPanel>
+                        <Button MinWidth="300"
+                                Width="Auto"
+                                x:Name="SubmitButton"
                                 Style="{StaticResource MahApps.Styles.Button.Square.Accent}"
-                                Margin="0 5" Click="Submit_Click"/> 
+                                HorizontalAlignment="Center"
+                                Margin=" 0 25 0 10"
+                                Click="SubmitButton_Click">
+                            <TextBlock Text="{markupLocalization:LocalizedString SubmitPost}"
+                                       FontSize="14"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"/>
+                        </Button>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="{markupLocalization:LocalizedString PreviewTitle}">
-                <widgets:Post PreviewMode="True"
+                <widgets:Post CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"
+                              PreviewMode="True"
                               ImageSizeLimit="True"
-                              CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"/>
+                              Margin="15 5"/>
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>

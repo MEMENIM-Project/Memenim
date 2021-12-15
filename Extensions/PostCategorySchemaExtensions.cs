@@ -8,7 +8,7 @@ namespace Memenim.Extensions
 {
     public static class PostCategorySchemaExtensions
     {
-        private static readonly PostCategorySchema[] Categories;
+        public static readonly PostCategorySchema[] Categories;
 
 
 

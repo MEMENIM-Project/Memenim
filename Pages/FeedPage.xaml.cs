@@ -85,13 +85,13 @@ namespace Memenim.Pages
                     new KeyValuePair<PostType, string>(PostType.Popular, PostTypes[PostType.Popular]);
             }
 
-            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~FeedPage()
         {
-            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated -= OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
@@ -432,7 +432,7 @@ namespace Memenim.Pages
 
             return Task.Run(async () =>
             {
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -522,7 +522,7 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
+        private void OnLocalizationUpdated(object sender, LocalizationEventArgs e)
         {
             ReloadPostTypes();
         }

@@ -10,7 +10,7 @@
              xmlns:indicatorsLoading="clr-namespace:RIS.Graphics.WPF.Controls.Indicators.Loading;assembly=RIS.Graphics"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignWidth="800" d:DesignHeight="450">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,32 +20,39 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0"
-               Content="{markupLocalization:LocalizedString GIFSelection}"
                Style="{DynamicResource DescriptionHeader}"
+               Content="{markupLocalization:LocalizedString GifSelection}"
                Margin="10 0 0 0"/>
-        <TextBox Grid.Row="1" x:Name="txtSearchQuery" Margin="5 5 5 5"
+        <TextBox Grid.Row="1"
+                 x:Name="SearchQueryTextBox"
+                 Style="{DynamicResource MahApps.Styles.TextBox.Search}"
                  Text="{Binding Path=SearchText, Mode=TwoWay}"
                  controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString EnterSearchQuery}"
-                 Style="{DynamicResource MahApps.Styles.TextBox.Search}"
                  controls:TextBoxHelper.ButtonCommand="{Binding Path=SearchCommand, Mode=OneWay}"
-                 controls:TextBoxHelper.ButtonCommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=Self}}">
+                 controls:TextBoxHelper.ButtonCommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=Self}}"
+                 Margin="5">
             <TextBox.InputBindings>
                 <KeyBinding Key="Return"
                             Command="{Binding Path=SearchCommand, Mode=OneWay}"
-                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox, AncestorLevel=1}}"/>
+                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}}"/>
                 <KeyBinding Key="Enter"
                             Command="{Binding Path=SearchCommand, Mode=OneWay}"
-                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox, AncestorLevel=1}}"/>
+                            CommandParameter="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}}"/>
             </TextBox.InputBindings>
         </TextBox>
         <ScrollViewer Grid.Row="2">
-            <WrapPanel x:Name="lstImages"/>
+            <WrapPanel x:Name="ImagesWrapPanel"/>
         </ScrollViewer>
-        <Grid Grid.Row="1" Grid.RowSpan="2" x:Name="loadingGrid"
-              Visibility="Collapsed" ZIndex="2147483647"
-              Background="{DynamicResource MahApps.Brushes.Window.Background}">
-            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+        <Grid Grid.Row="1" Grid.RowSpan="2"
+              x:Name="LoadingGrid"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}"
+              ZIndex="2147483647"
+              Visibility="Collapsed">
+            <indicatorsLoading:LoadingIndicator x:Name="LoadingIndicator"
+                                                Mode="Arcs"
+                                                SpeedRatio="2"
+                                                IsActive="False"
+                                                Visibility="Visible"/>
         </Grid>
     </Grid>
 </local:PageContent>

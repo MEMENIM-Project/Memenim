@@ -15,6 +15,8 @@ namespace Memenim.Pages
 
 
         public bool IsCreated { get; private set; }
+        public bool IsFirstEntered { get; private set; }
+        public bool IsFirstExited { get; private set; }
         public bool IsOnEnterActive { get; set; }
         public bool IsOnExitActive { get; set; }
         public ControlStateType State { get; private set; }
@@ -25,11 +27,15 @@ namespace Memenim.Pages
         {
             Initialized += OnCreated;
             Initialized += OnInitialized;
+            Loaded += OnFirstEnter;
             Loaded += OnEnter;
+            Unloaded += OnFirstExit;
             Unloaded += OnExit;
             DataContextChanged += OnDataContextChanged;
 
             IsCreated = false;
+            IsFirstEntered = false;
+            IsFirstExited = false;
             IsOnEnterActive = true;
             IsOnExitActive = true;
             State = ControlStateType.Unknown;
@@ -54,6 +60,17 @@ namespace Memenim.Pages
 
         }
 
+        protected virtual void OnFirstEnter(object sender,
+            RoutedEventArgs e)
+        {
+            if (IsFirstEntered)
+                return;
+
+            Loaded -= OnFirstEnter;
+
+            IsFirstEntered = true;
+        }
+
         protected virtual void OnEnter(object sender,
             RoutedEventArgs e)
         {
@@ -64,6 +81,17 @@ namespace Memenim.Pages
                 e.Handled = true;
                 return;
             }
+        }
+
+        protected virtual void OnFirstExit(object sender,
+            RoutedEventArgs e)
+        {
+            if (IsFirstExited)
+                return;
+
+            Unloaded -= OnFirstExit;
+
+            IsFirstExited = true;
         }
 
         protected virtual void OnExit(object sender,

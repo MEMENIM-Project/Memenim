@@ -80,13 +80,13 @@ namespace Memenim.Widgets
             InitializeComponent();
             DataContext = this;
 
-            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
 
         ~Post()
         {
-            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated -= OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
@@ -217,8 +217,8 @@ namespace Memenim.Widgets
 
 
 
-        private void OnLocalizationChanged(object sender,
-            LocalizationChangedEventArgs e)
+        private void OnLocalizationUpdated(object sender,
+            LocalizationEventArgs e)
         {
             PostCategoryTextBlock
                 .GetBindingExpression(TextBlock.TextProperty)?

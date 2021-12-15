@@ -14,13 +14,18 @@ namespace Memenim.Pages
             }
         }
 
+
+
         public ScriptPage()
         {
             InitializeComponent();
             DataContext = new ScriptViewModel();
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 

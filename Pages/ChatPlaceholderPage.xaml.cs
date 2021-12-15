@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
@@ -20,13 +19,18 @@ namespace Memenim.Pages
             }
         }
 
+
+
         public ChatPlaceholderPage()
         {
             InitializeComponent();
             DataContext = new ChatPlaceholderViewModel();
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -36,15 +40,20 @@ namespace Memenim.Pages
                 return;
             }
 
-            txtSmile.Text = GeneratingManager.GetRandomSmile();
+            SmileTextBox.Text = GeneratingManager
+                .GetRandomSmile();
         }
 
-        private async void CopyLogin_Click(object sender, RoutedEventArgs e)
-        {
-            btnCopyLogin.IsEnabled = false;
-            btnCopyPassword.IsEnabled = false;
 
-            var login = SettingsManager.PersistentSettings.CurrentUser.Login;
+
+        private async void CopyLoginButton_Click(object sender,
+            RoutedEventArgs e)
+        {
+            CopyLoginButton.IsEnabled = false;
+            CopyPasswordButton.IsEnabled = false;
+
+            var login = SettingsManager
+                .PersistentSettings.CurrentUser.Login;
 
             if (login == null)
             {
@@ -59,20 +68,22 @@ namespace Memenim.Pages
 
             Clipboard.SetText(login);
 
-            btnCopyLogin.IsEnabled = true;
-            btnCopyPassword.IsEnabled = true;
+            CopyLoginButton.IsEnabled = true;
+            CopyPasswordButton.IsEnabled = true;
         }
 
-        private async void CopyPassword_Click(object sender, RoutedEventArgs e)
+        private async void CopyPasswordButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnCopyLogin.IsEnabled = false;
-            btnCopyPassword.IsEnabled = false;
+            CopyLoginButton.IsEnabled = false;
+            CopyPasswordButton.IsEnabled = false;
 
             try
             {
                 if (SettingsManager.PersistentSettings.CurrentUser.HasRocketPassword())
                 {
-                    Clipboard.SetText(SettingsManager.PersistentSettings.CurrentUser.RocketPassword);
+                    Clipboard.SetText(SettingsManager
+                        .PersistentSettings.CurrentUser.RocketPassword);
 
                     return;
                 }
@@ -89,7 +100,8 @@ namespace Memenim.Pages
                     return;
                 }
 
-                var password = result.Data.Password;
+                var password =
+                    result.Data.Password;
 
                 if (password == null)
                 {
@@ -102,27 +114,25 @@ namespace Memenim.Pages
                     return;
                 }
 
-                SettingsManager.PersistentSettings.CurrentUser.SetRocketPassword(
-                    password);
+                SettingsManager.PersistentSettings.CurrentUser
+                    .SetRocketPassword(password);
 
-                Clipboard.SetText(password);
+                Clipboard.SetText(
+                    password);
             }
             finally
             {
-                btnCopyLogin.IsEnabled = true;
-                btnCopyPassword.IsEnabled = true;
+                CopyLoginButton.IsEnabled = true;
+                CopyPasswordButton.IsEnabled = true;
             }
         }
 
-        private void GoToChatWebPage_Click(object sender, RoutedEventArgs e)
+        private void GoToChatWebPageButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "https://chat.apianon.ru/",
-                UseShellExecute = true
-            };
+            const string link = "https://chat.apianon.ru/";
 
-            Process.Start(startInfo);
+            LinkUtils.OpenLink(link);
         }
     }
 }

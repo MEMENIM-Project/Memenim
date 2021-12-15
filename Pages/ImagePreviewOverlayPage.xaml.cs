@@ -20,29 +20,33 @@ namespace Memenim.Pages
             }
         }
 
+
+
         public ImagePreviewOverlayPage()
         {
             InitializeComponent();
             DataContext = new ImagePreviewOverlayViewModel();
         }
 
-        public Task ShowLoadingGrid(bool status)
+
+
+        public Task ShowLoadingGrid()
         {
-            if (status)
-            {
-                loadingIndicator.IsActive = true;
-                loadingGrid.Opacity = 1.0;
-                loadingGrid.IsHitTestVisible = true;
-                loadingGrid.Visibility = Visibility.Visible;
+            LoadingIndicator.IsActive = true;
+            LoadingGrid.Opacity = 1.0;
+            LoadingGrid.IsHitTestVisible = true;
+            LoadingGrid.Visibility = Visibility.Visible;
 
-                return Task.CompletedTask;
-            }
+            return Task.CompletedTask;
+        }
 
-            loadingIndicator.IsActive = false;
+        public Task HideLoadingGrid()
+        {
+            LoadingIndicator.IsActive = false;
 
             return Task.Run(async () =>
             {
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -50,13 +54,13 @@ namespace Memenim.Pages
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            loadingGrid.IsHitTestVisible = false;
+                            LoadingGrid.IsHitTestVisible = false;
                         });
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
                     });
 
                     await Task.Delay(4)
@@ -65,12 +69,15 @@ namespace Memenim.Pages
 
                 Dispatcher.Invoke(() =>
                 {
-                    loadingGrid.Visibility = Visibility.Collapsed;
+                    LoadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
         }
 
-        protected override async void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -84,17 +91,19 @@ namespace Memenim.Pages
                 return;
             }
 
-            await ShowLoadingGrid(true)
+            await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
-            await Task.Delay(TimeSpan.FromSeconds(1))
+            await Task.Delay(
+                    TimeSpan.FromSeconds(1))
                 .ConfigureAwait(true);
 
-            await ShowLoadingGrid(false)
+            await HideLoadingGrid()
                 .ConfigureAwait(true);
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
@@ -111,9 +120,13 @@ namespace Memenim.Pages
             }
         }
 
-        private async void CopyImageUrl_Click(object sender, RoutedEventArgs e)
+
+
+        private async void CopyImageUrl_Click(object sender,
+            RoutedEventArgs e)
         {
-            var imageSource = ViewModel.ImageSource;
+            var imageSource =
+                ViewModel.ImageSource;
 
             if (imageSource == null)
             {
@@ -126,17 +139,35 @@ namespace Memenim.Pages
                 return;
             }
 
-            Clipboard.SetText(imageSource);
+            Clipboard.SetText(
+                imageSource);
         }
 
-        private void CopyImage_Click(object sender, RoutedEventArgs e)
+        private async void CopyImage_Click(object sender,
+            RoutedEventArgs e)
         {
-            Clipboard.SetImage((BitmapSource)img.Source);
+            var image = Image.Source as BitmapSource;
+
+            if (image == null)
+            {
+                var message = LocalizationUtils
+                    .GetLocalized("CopyingToClipboardErrorMessage");
+
+                await DialogManager.ShowErrorDialog(message)
+                    .ConfigureAwait(true);
+
+                return;
+            }
+
+            Clipboard.SetImage(
+                image);
         }
 
-        private async void DownloadImage_Click(object sender, RoutedEventArgs e)
+        private async void DownloadImage_Click(object sender,
+            RoutedEventArgs e)
         {
-            await DownloadManager.SaveFile(ViewModel.ImageSource)
+            await DownloadManager.SaveFile(
+                    ViewModel.ImageSource)
                 .ConfigureAwait(true);
         }
     }

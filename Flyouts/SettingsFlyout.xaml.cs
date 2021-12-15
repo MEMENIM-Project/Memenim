@@ -79,13 +79,13 @@ namespace Memenim.Flyouts
 
             UpdateCommentReplyModes();
 
-            LocalizationManager.LocalizationChanged += OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SpecialEventManager.EventUpdated += OnSpecialEventUpdated;
         }
 
         ~SettingsFlyout()
         {
-            LocalizationManager.LocalizationChanged -= OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated -= OnLocalizationUpdated;
             SpecialEventManager.EventUpdated -= OnSpecialEventUpdated;
         }
 
@@ -174,8 +174,8 @@ namespace Memenim.Flyouts
 
 
 
-        private void OnLocalizationChanged(object sender,
-            LocalizationChangedEventArgs e)
+        private void OnLocalizationUpdated(object sender,
+            LocalizationEventArgs e)
         {
             UpdateSpecialEventName();
             UpdateCommentReplyModes();

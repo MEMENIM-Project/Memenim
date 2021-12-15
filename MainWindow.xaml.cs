@@ -11,6 +11,8 @@ using Memenim.Dialogs;
 using Memenim.Native.Window;
 using Memenim.Native.Window.Utils;
 using Memenim.Navigation;
+using Memenim.Protocols;
+using Memenim.Protocols.Schemas;
 using Memenim.Settings;
 using Memenim.Styles;
 using Memenim.Styles.Loading.Entities;
@@ -312,7 +314,7 @@ namespace Memenim
 
                 var isHitTestVisible = true;
 
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -472,7 +474,7 @@ namespace Memenim
 
                 var isHitTestVisible = true;
 
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -581,6 +583,8 @@ namespace Memenim
             SettingsManager.AppSettings.Save();
         }
 
+
+
         private async void OpenLinkButton_Click(object sender,
             RoutedEventArgs e)
         {
@@ -590,7 +594,7 @@ namespace Memenim
             var title = LocalizationUtils
                 .GetLocalized("LinkOpeningTitle");
             var message = LocalizationUtils
-                .GetLocalized("EnterURL");
+                .GetLocalized("EnterUrl");
 
             var link = await DialogManager.ShowSinglelineTextDialog(
                     title, message)
@@ -599,9 +603,17 @@ namespace Memenim
             if (string.IsNullOrWhiteSpace(link))
                 return;
 
+            if (Uri.TryCreate(link, UriKind.Absolute, out var uri)
+                && uri.Scheme == MemenimSchema.Instance.Name)
+            {
+                ProtocolManager.ParseUri(
+                    link);
 
+                return;
+            }
 
-            LinkUtils.OpenLink(link);
+            LinkUtils.OpenLink(
+                link);
         }
     }
 }

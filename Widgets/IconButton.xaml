@@ -28,12 +28,12 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Name="PART_Border"
+                        <Border x:Name="PART_Border"
                                 Background="{StaticResource IconButton.Static.Background}"
                                 BorderBrush="{StaticResource IconButton.Border}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 SnapsToDevicePixels="true">
-                            <ContentPresenter Name="PART_ContentPresenter"
+                            <ContentPresenter x:Name="PART_ContentPresenter"
                                               Focusable="False"
                                               RecognizesAccessKey="True"
                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Controls/CustomDialog.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/Controls/Label.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/Controls/TextBlock.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Controls/Button.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -27,10 +27,14 @@
             <Button Grid.Row="1"
                     x:Name="LoadMoreButton"
                     Style="{StaticResource MahApps.Styles.Button.Square}"
-                    Content="{markupLocalization:LocalizedString LoadComments}"
                     Visibility="Collapsed"
                     Margin="16 5 16 5"
-                    Click="LoadMoreButton_Click"/>
+                    Click="LoadMoreButton_Click">
+                <TextBlock Text="{markupLocalization:LocalizedString LoadComments}"
+                           FontSize="12"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"/>
+            </Button>
             <Grid Grid.Row="2"
                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                   Margin="16 5 16 5">

@@ -15,13 +15,18 @@ namespace Memenim.Pages
             }
         }
 
+
+
         public PlaceholderPage()
         {
             InitializeComponent();
             DataContext = new PlaceholderViewModel();
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -31,7 +36,8 @@ namespace Memenim.Pages
                 return;
             }
 
-            txtSmile.Text = GeneratingManager.GetRandomSmile();
+            SmileTextBox.Text = GeneratingManager
+                .GetRandomSmile();
         }
     }
 }

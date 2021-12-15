@@ -33,7 +33,8 @@
                  Text="{Binding Path=InputValue, Mode=TwoWay}"
                  TextWrapping="NoWrap"
                  AcceptsReturn="False"
-                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
+                 HorizontalScrollBarVisibility="Disabled"
+                 VerticalScrollBarVisibility="Disabled"
                  Margin="10"/>
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"

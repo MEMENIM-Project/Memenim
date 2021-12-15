@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
@@ -211,7 +212,7 @@ namespace Memenim.Pages
 
             return Task.Run(async () =>
             {
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -258,6 +259,14 @@ namespace Memenim.Pages
 
             await ReloadStoredAccounts()
                 .ConfigureAwait(true);
+        }
+
+        protected override void OnFirstEnter(object sender, RoutedEventArgs e)
+        {
+            var popup = LocalizationButton
+                .GetPopup();
+
+            popup.Placement = PlacementMode.Top;
         }
 
         protected override async void OnEnter(object sender, RoutedEventArgs e)

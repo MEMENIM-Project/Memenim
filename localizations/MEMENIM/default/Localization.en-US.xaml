@@ -44,15 +44,15 @@ Have fun.</system:String>
     <system:String x:Key="EnterCommentText">Enter comment content</system:String>
 
     <system:String x:Key="PostContentTitle">Post content</system:String>
+    <system:String x:Key="ImageSelectionTitle">Image selection</system:String>
     <system:String x:Key="AdditionalOptionsTitle">Additional options</system:String>
-    <system:String x:Key="ImageSourceTitle">Select an image</system:String>
+    <system:String x:Key="UrlSelect">Paste URL</system:String>
     <system:String x:Key="GallerySelect">Select from Anonym Gallery</system:String>
     <system:String x:Key="TenorSelect">Select from Tenor</system:String>
-    <system:String x:Key="URLSelect">Paste an URL</system:String>
     <system:String x:Key="UploadImage">Upload image</system:String>
     <system:String x:Key="RemoveImage">Remove image</system:String>
     <system:String x:Key="ImageSelection">Image selection</system:String>
-    <system:String x:Key="GIFSelection">GIF-image selection</system:String>
+    <system:String x:Key="GifSelection">GIF-image selection</system:String>
     <system:String x:Key="EnterSearchQuery">Enter search query</system:String>
 
     <system:String x:Key="SettingsTitle">Settings</system:String>
@@ -140,7 +140,7 @@ Have fun.</system:String>
     <system:String x:Key="Schema-PostCategorySchema-77">Loneliness</system:String>
     <system:String x:Key="Schema-PostCategorySchema-78">Friends</system:String>
     <system:String x:Key="Schema-PostCategorySchema-79">Well it's just fu..ked up</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-80">Shame on</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-80">Shame</system:String>
     <system:String x:Key="Schema-PostCategorySchema-81">Politics, Power</system:String>
     <system:String x:Key="Schema-PostCategorySchema-82">Journey</system:String>
     <system:String x:Key="Schema-PostCategorySchema-83">Share, Offer</system:String>
@@ -149,7 +149,7 @@ Have fun.</system:String>
     <system:String x:Key="Schema-PostCategorySchema-86">Scary</system:String>
     <system:String x:Key="Schema-PostCategorySchema-87">For adults</system:String>
     <system:String x:Key="Schema-PostCategorySchema-88">Not for all</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-89">Desires and dreams</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-89">Desires, Dreams</system:String>
     <system:String x:Key="Schema-PostCategorySchema-90">Closed room</system:String>
     <system:String x:Key="Schema-PostCategorySchema-91">Diary of a Madman</system:String>
     <system:String x:Key="Schema-PostCategorySchema-93">Secret</system:String>
@@ -163,7 +163,7 @@ Have fun.</system:String>
     <system:String x:Key="Schema-PostCategorySchema-106">Disclosure</system:String>
     <system:String x:Key="Schema-PostCategorySchema-107">Quotations</system:String>
     <system:String x:Key="Schema-PostCategorySchema-108">Beauty, Health</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-109">IT-technologies</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-109">Information Technologies</system:String>
     <system:String x:Key="Schema-PostCategorySchema-110">Startup companies</system:String>
     <system:String x:Key="Schema-PostCategorySchema-111">Cryptocurrency</system:String>
     <system:String x:Key="Schema-PostCategorySchema-112">Interview</system:String>
@@ -184,7 +184,7 @@ Have fun.</system:String>
     <system:String x:Key="Schema-PostCategorySchema-127">Mysticism, Esotericism</system:String>
     <system:String x:Key="Schema-PostCategorySchema-128">Food, Cooking</system:String>
     <system:String x:Key="Schema-PostCategorySchema-129">Sport, Extreme</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-130">Developments</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-130">Developments, Events</system:String>
     <system:String x:Key="Schema-PostCategorySchema-131">Cinema</system:String>
     <system:String x:Key="Schema-PostCategorySchema-132">Music</system:String>
     <system:String x:Key="Schema-PostCategorySchema-133">Games, eSports</system:String>
@@ -192,7 +192,7 @@ Have fun.</system:String>
     <system:String x:Key="Schema-PostCategorySchema-135">Science</system:String>
     <system:String x:Key="Schema-PostCategorySchema-136">Unreleased, Author</system:String>
     <system:String x:Key="Schema-PostCategorySchema-137">Enrages</system:String>
-    <system:String x:Key="Schema-PostCategorySchema-138">Observation</system:String>
+    <system:String x:Key="Schema-PostCategorySchema-138">Observations</system:String>
     <system:String x:Key="Schema-PostCategorySchema-139">Happy moments</system:String>
     <system:String x:Key="Schema-PostCategorySchema-140">Fears</system:String>
     <system:String x:Key="Schema-PostCategorySchema-141">Books</system:String>
@@ -216,7 +216,7 @@ Have fun.</system:String>
     <system:String x:Key="MenuItem-CopyUserId">Copy user id</system:String>
     <system:String x:Key="MenuItem-CopyUserNickname">Copy user nickname</system:String>
     <system:String x:Key="MenuItem-CopyUserLogin">Copy user login</system:String>
-    <system:String x:Key="MenuItem-SelectImageFromUrl">Paste the image URL</system:String>
+    <system:String x:Key="MenuItem-SelectImageFromUrl">Paste image URL</system:String>
     <system:String x:Key="MenuItem-SelectImageFromGallery">Select image from Anonym Gallery</system:String>
     <system:String x:Key="MenuItem-SelectImageFromTenor">Select GIF-image from Tenor</system:String>
     <system:String x:Key="MenuItem-RemoveImage">Remove image</system:String>
@@ -237,7 +237,7 @@ Have fun.</system:String>
     <system:String x:Key="EditingCommentTitle">Comment editing</system:String>
     <system:String x:Key="EditingCommentMessage">Enter comment text</system:String>
 
-    <system:String x:Key="EnterURL">Enter URL</system:String>
+    <system:String x:Key="EnterUrl">Enter URL</system:String>
 
     <system:String x:Key="OkTitle">Ok</system:String>
     <system:String x:Key="CancelTitle">Cancel</system:String>

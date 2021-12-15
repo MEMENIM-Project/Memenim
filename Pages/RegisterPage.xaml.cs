@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Memenim.Core.Api;
 using Memenim.Dialogs;
+using Memenim.Extensions;
 using Memenim.Generating;
 using Memenim.Navigation;
 using Memenim.Pages.ViewModel;
@@ -58,7 +60,7 @@ namespace Memenim.Pages
 
             return Task.Run(async () =>
             {
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -87,6 +89,14 @@ namespace Memenim.Pages
                     loadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
+        }
+
+        protected override void OnFirstEnter(object sender, RoutedEventArgs e)
+        {
+            var popup = LocalizationButton
+                .GetPopup();
+
+            popup.Placement = PlacementMode.Top;
         }
 
         protected override void OnExit(object sender, RoutedEventArgs e)

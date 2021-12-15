@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +27,8 @@ namespace Memenim.Pages
             }
         }
 
+
+
         public SubmitPostPage()
         {
             InitializeComponent();
@@ -35,9 +36,9 @@ namespace Memenim.Pages
 
             ReloadPostCategories();
 
-            slcPostCategories.SelectedIndex = 0;
+            PostCategoriesComboBox.SelectedIndex = 0;
 
-            LocalizationUtils.LocalizationChanged += OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
             ProfileUtils.AvatarChanged += OnAvatarChanged;
             ProfileUtils.NameChanged += OnNameChanged;
@@ -45,41 +46,47 @@ namespace Memenim.Pages
 
         ~SubmitPostPage()
         {
-            LocalizationUtils.LocalizationChanged -= OnLocalizationChanged;
+            LocalizationUtils.LocalizationUpdated -= OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
             ProfileUtils.AvatarChanged -= OnAvatarChanged;
             ProfileUtils.NameChanged -= OnNameChanged;
         }
 
+
+
         private void ReloadPostCategories()
         {
-            var categories = PostApi.PostCategories.Values.ToArray();
-            var localizedNames = PostCategorySchemaExtensions.GetLocalizedNames();
-            var postCategories = new Dictionary<int, string>(categories.Length);
+            var localizedNames = PostCategorySchemaExtensions
+                .GetLocalizedNames();
+            var postCategories = new Dictionary<int, string>(
+                PostCategorySchemaExtensions.Categories.Length);
 
-            for (var i = 0; i < categories.Length; ++i)
+            for (var i = 0; i < PostCategorySchemaExtensions.Categories.Length; ++i)
             {
                 postCategories.Add(
-                    categories[i].Id,
+                    PostCategorySchemaExtensions
+                        .Categories[i].Id,
                     localizedNames[i]);
             }
 
-            slcPostCategories.SelectionChanged -= slcPostCategories_SelectionChanged;
+            PostCategoriesComboBox.SelectionChanged -= PostCategoriesComboBox_SelectionChanged;
 
-            var selectedIndex = slcPostCategories.SelectedIndex;
+            var selectedIndex = PostCategoriesComboBox.SelectedIndex;
 
-            PostCategories = new ReadOnlyDictionary<int, string>(postCategories);
+            PostCategories = new ReadOnlyDictionary<int, string>(
+                postCategories);
 
-            slcPostCategories
+            PostCategoriesComboBox
                 .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
                 .UpdateTarget();
 
-            slcPostCategories.SelectedIndex = selectedIndex;
+            PostCategoriesComboBox.SelectedIndex = selectedIndex;
 
-            slcPostCategories.SelectionChanged += slcPostCategories_SelectionChanged;
+            PostCategoriesComboBox.SelectionChanged += PostCategoriesComboBox_SelectionChanged;
         }
 
-        private Task SelectImage(string url)
+        private Task SelectImage(
+            string url)
         {
             if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri _))
                 return Task.CompletedTask;
@@ -91,15 +98,20 @@ namespace Memenim.Pages
 
         private void ClearImage()
         {
-            ViewModel.CurrentPostData.Attachments[0].Photo.MediumUrl = string.Empty;
+            ViewModel.CurrentPostData
+                .Attachments[0].Photo.MediumUrl = string.Empty;
         }
 
         private void ClearText()
         {
-            ViewModel.CurrentPostData.Text = string.Empty;
+            ViewModel.CurrentPostData
+                .Text = string.Empty;
         }
 
-        protected override async void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -109,24 +121,28 @@ namespace Memenim.Pages
                 return;
             }
 
-            if (ViewModel.CurrentPostData?.OwnerId.HasValue == true)
+            if (ViewModel.CurrentPostData == null
+                || !ViewModel.CurrentPostData.OwnerId.HasValue
+                || ViewModel.CurrentPostData.OwnerId == -1)
             {
-                if (ViewModel.CurrentPostData.OwnerId == -1)
-                    return;
-
-                var result = await UserApi.GetProfileById(
-                        ViewModel.CurrentPostData.OwnerId.Value)
-                    .ConfigureAwait(true);
-
-                if (result.Data == null)
-                    return;
-
-                ViewModel.CurrentPostData.OwnerNickname = result.Data.Nickname;
-                ViewModel.CurrentPostData.OwnerPhotoUrl = result.Data.PhotoUrl;
+                return;
             }
+
+            var result = await UserApi.GetProfileById(
+                    ViewModel.CurrentPostData.OwnerId.Value)
+                .ConfigureAwait(true);
+
+            if (result.Data == null)
+                return;
+
+            ViewModel.CurrentPostData.OwnerNickname =
+                result.Data.Nickname;
+            ViewModel.CurrentPostData.OwnerPhotoUrl =
+                result.Data.PhotoUrl;
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
@@ -137,12 +153,16 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLocalizationChanged(object sender, LocalizationChangedEventArgs e)
+
+
+        private void OnLocalizationUpdated(object sender,
+            LocalizationEventArgs e)
         {
             ReloadPostCategories();
         }
 
-        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        private async void OnCurrentUserChanged(object sender,
+            UserChangedEventArgs e)
         {
             if (e.NewUser.Id == -1)
                 return;
@@ -162,47 +182,61 @@ namespace Memenim.Pages
             if (result.Data == null)
                 return;
 
-            ViewModel.CurrentPostData.OwnerNickname = result.Data.Nickname;
-            ViewModel.CurrentPostData.OwnerPhotoUrl = result.Data.PhotoUrl;
+            ViewModel.CurrentPostData.OwnerNickname =
+                result.Data.Nickname;
+            ViewModel.CurrentPostData.OwnerPhotoUrl =
+                result.Data.PhotoUrl;
         }
 
-        private void OnAvatarChanged(object sender, UserPhotoChangedEventArgs e)
+        private void OnAvatarChanged(object sender,
+            UserPhotoChangedEventArgs e)
         {
-            ViewModel.CurrentPostData.OwnerPhotoUrl = e.NewPhoto;
+            ViewModel.CurrentPostData.OwnerPhotoUrl =
+                e.NewPhoto;
         }
 
-        private void OnNameChanged(object sender, UserNameChangedEventArgs e)
+        private void OnNameChanged(object sender,
+            UserNameChangedEventArgs e)
         {
-            ViewModel.CurrentPostData.OwnerNickname = e.NewName;
+            ViewModel.CurrentPostData.OwnerNickname =
+                e.NewName;
         }
 
-        private void slcPostCategories_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+
+        private void PostCategoriesComboBox_SelectionChanged(object sender,
+            SelectionChangedEventArgs e)
         {
-            ViewModel.CurrentPostData.CategoryId = ((KeyValuePair<int, string>)slcPostCategories.SelectedItem).Key;
+            ViewModel.CurrentPostData.CategoryId =
+                ((KeyValuePair<int, string>)PostCategoriesComboBox.SelectedItem)
+                .Key;
         }
 
-        private async void SelectImage_Click(object sender, RoutedEventArgs e)
+        private async void SelectImageButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            if (rbImageRaw.IsChecked == true)
+            if (LoadImageFromUrlRadioButton.IsChecked == true)
             {
-                string title = LocalizationUtils.GetLocalized("InsertingImageTitle");
-                string message = LocalizationUtils.GetLocalized("EnterURL");
+                var title = LocalizationUtils
+                    .GetLocalized("InsertingImageTitle");
+                var message = LocalizationUtils
+                    .GetLocalized("EnterUrl");
 
-                string url = await DialogManager.ShowSinglelineTextDialog(
+                var url = await DialogManager.ShowSinglelineTextDialog(
                         title, message)
                     .ConfigureAwait(true);
 
                 await SelectImage(url)
                     .ConfigureAwait(true);
             }
-            else if (rbImageGallery.IsChecked == true)
+            else if (LoadImageFromGalleryRadioButton.IsChecked == true)
             {
                 NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
                 {
                     ImageSelectionDelegate = SelectImage
                 });
             }
-            else if (rbImageTenor.IsChecked == true)
+            else if (LoadImageFromTenorRadioButton.IsChecked == true)
             {
                 NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
                 {
@@ -211,16 +245,18 @@ namespace Memenim.Pages
             }
         }
 
-        private void RemoveImage_Click(object sender, RoutedEventArgs e)
+        private void RemoveImageButton_Click(object sender,
+            RoutedEventArgs e)
         {
             ClearImage();
         }
 
-        private async void Submit_Click(object sender, RoutedEventArgs e)
+        private async void SubmitButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnSubmit.IsEnabled = false;
+            SubmitButton.IsEnabled = false;
 
-            btnSubmit.Focus();
+            SubmitButton.Focus();
 
             try
             {
@@ -236,7 +272,8 @@ namespace Memenim.Pages
                 }
                 else
                 {
-                    var message = LocalizationUtils.GetLocalized("PostSubmittedMessage");
+                    var message = LocalizationUtils
+                        .GetLocalized("PostSubmittedMessage");
 
                     await DialogManager.ShowSuccessDialog(message)
                         .ConfigureAwait(true);
@@ -252,7 +289,7 @@ namespace Memenim.Pages
             }
             finally
             {
-                btnSubmit.IsEnabled = true;
+                SubmitButton.IsEnabled = true;
             }
         }
     }

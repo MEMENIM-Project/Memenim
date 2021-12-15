@@ -20,6 +20,8 @@ namespace Memenim.Pages
         private static TenorConfiguration TenorConfig { get; }
         private static TenorClient TenorClient { get; }
 
+
+
         public TenorSearchViewModel ViewModel
         {
             get
@@ -28,18 +30,21 @@ namespace Memenim.Pages
             }
         }
 
+
+
         static TenorSearchPage()
         {
             TenorConfig = new TenorConfiguration
             {
-                ApiKey = SettingsManager.PersistentSettings.GetTenorAPIKey(),
+                ApiKey = SettingsManager.PersistentSettings
+                    .GetTenorAPIKey(),
                 Locale = CultureInfo.CurrentCulture,
                 ContentFilter = ContentFilter.Medium,
                 MediaFilter = MediaFilter.Minimal,
                 AspectRatio = AspectRatio.All
             };
-
-            TenorClient = new TenorClient(TenorConfig);
+            TenorClient = new TenorClient(
+                TenorConfig);
         }
 
         public TenorSearchPage()
@@ -48,76 +53,82 @@ namespace Memenim.Pages
             DataContext = new TenorSearchViewModel();
         }
 
+
+
         public async Task ExecuteSearch(string query)
         {
-            await ShowLoadingGrid(true)
+            await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
-            IEnumerable<ImagePost> searchResults = !string.IsNullOrEmpty(query)
+            var searchResults = !string.IsNullOrEmpty(query)
                 ? (await TenorClient.SearchAsync(query, 40)
                     .ConfigureAwait(true)).Results
                 : (await TenorClient.GetTrendingPostsAsync(40)
                     .ConfigureAwait(true)).Results;
 
-            lstImages.Children.Clear();
+            ImagesWrapPanel.Children.Clear();
 
             if (searchResults == null)
                 return;
 
             foreach (var data in searchResults)
             {
-                ImagePreviewButton previewButton = new ImagePreviewButton
+                var imageButton = new ImagePreviewButton
                 {
                     ButtonSize = 150
                 };
-                previewButton.Click += ImagePreviewButton_Click;
+                imageButton.Click += ImagePreviewButton_Click;
 
                 foreach (var media in data.Media)
                 {
-                    if (!media.TryGetValue(MediaType.TinyGif, out MediaItem value))
+                    if (!media.TryGetValue(MediaType.Gif, out var value))
                         continue;
 
-                    previewButton.SmallImageSource = value?.Url;
+                    imageButton.ImageSource = value?.Url;
 
-                    if (!media.TryGetValue(MediaType.Gif, out value))
-                        continue;
+                    if (!media.TryGetValue(MediaType.TinyGif, out value))
+                        value = media[MediaType.Gif];
 
-                    previewButton.ImageSource = value?.Url;
+                    imageButton.SmallImageSource = value?.Url;
                 }
 
-                if (previewButton.SmallImageSource == null
-                    || previewButton.ImageSource == null)
+                if (imageButton.ImageSource == null
+                    || imageButton.SmallImageSource == null)
                 {
                     continue;
                 }
 
-                lstImages.Children.Add(previewButton);
+                ImagesWrapPanel.Children.Add(
+                    imageButton);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(2))
+            await Task.Delay(
+                    TimeSpan.FromSeconds(2))
                 .ConfigureAwait(true);
 
-            await ShowLoadingGrid(false)
+            await HideLoadingGrid()
                 .ConfigureAwait(true);
         }
 
-        public Task ShowLoadingGrid(bool status)
+
+
+        public Task ShowLoadingGrid()
         {
-            if (status)
-            {
-                loadingIndicator.IsActive = true;
-                loadingGrid.Opacity = 1.0;
-                loadingGrid.IsHitTestVisible = true;
-                loadingGrid.Visibility = Visibility.Visible;
+            LoadingIndicator.IsActive = true;
+            LoadingGrid.Opacity = 1.0;
+            LoadingGrid.IsHitTestVisible = true;
+            LoadingGrid.Visibility = Visibility.Visible;
 
-                return Task.CompletedTask;
-            }
+            return Task.CompletedTask;
+        }
 
-            loadingIndicator.IsActive = false;
+        public Task HideLoadingGrid()
+        {
+            LoadingIndicator.IsActive = false;
 
             return Task.Run(async () =>
             {
-                for (double i = 1.0; i > 0.0; i -= 0.025)
+                for (var i = 1.0; i > 0.0; i -= 0.025)
                 {
                     var opacity = i;
 
@@ -125,13 +136,13 @@ namespace Memenim.Pages
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            loadingGrid.IsHitTestVisible = false;
+                            LoadingGrid.IsHitTestVisible = false;
                         });
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
                     });
 
                     await Task.Delay(4)
@@ -140,19 +151,23 @@ namespace Memenim.Pages
 
                 Dispatcher.Invoke(() =>
                 {
-                    loadingGrid.Visibility = Visibility.Collapsed;
+                    LoadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
         }
 
-        protected override async void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
             ViewModel.SearchCommand = new AsyncBasicCommand(
                 async query =>
                 {
-                    await ExecuteSearch((string)query)
+                    await ExecuteSearch(
+                            (string)query)
                         .ConfigureAwait(true);
                 });
 
@@ -162,31 +177,32 @@ namespace Memenim.Pages
                 return;
             }
 
-            await ShowLoadingGrid(true)
+            await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
             await Task.Delay(TimeSpan.FromSeconds(1))
                 .ConfigureAwait(true);
 
-            await ExecuteSearch(txtSearchQuery.Text)
+            await ExecuteSearch(
+                    SearchQueryTextBox.Text)
                 .ConfigureAwait(true);
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
-            foreach (var button in lstImages.Children)
+            foreach (var button in ImagesWrapPanel.Children)
             {
-                ImagePreviewButton imageButton = button as ImagePreviewButton;
-
-                if (imageButton == null)
+                if (!(button is ImagePreviewButton imageButton))
                     continue;
 
-                ImageBehavior.SetAnimatedSource(imageButton.Image, null);
+                ImageBehavior.SetAnimatedSource(
+                    imageButton.Image, null);
             }
 
-            lstImages.Children.Clear();
+            ImagesWrapPanel.Children.Clear();
 
             UpdateLayout();
             GC.WaitForPendingFinalizers();
@@ -199,7 +215,10 @@ namespace Memenim.Pages
             }
         }
 
-        private async void ImagePreviewButton_Click(object sender, RoutedEventArgs e)
+
+
+        private async void ImagePreviewButton_Click(object sender,
+            RoutedEventArgs e)
         {
             if (!(e.OriginalSource is ImagePreviewButton target))
                 return;
