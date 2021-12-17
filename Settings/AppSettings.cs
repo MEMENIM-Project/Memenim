@@ -46,7 +46,7 @@ namespace Memenim.Settings
             }
             set
             {
-                WindowState = (int)WindowStateEnum;
+                WindowState = (int)value;
             }
         }
         [ExcludedSetting]
@@ -61,7 +61,7 @@ namespace Memenim.Settings
             }
             set
             {
-                PostsType = (int)PostsTypeEnum;
+                PostsType = (int)value;
             }
         }
         [ExcludedSetting]
@@ -76,7 +76,7 @@ namespace Memenim.Settings
             }
             set
             {
-                CommentReplyMode = (int)CommentReplyModeEnum;
+                CommentReplyMode = (int)value;
             }
         }
 
