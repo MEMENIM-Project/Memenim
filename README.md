@@ -55,7 +55,7 @@ Visual Studio (2019 or newer):
   - Click on the 'Build' button.
   - Go to the '\bin\Release\netcoreapp3.1' directory.
 
-Dotnet CLI tool:
+Dotnet CLI tool (SDK 5.0.0 or newer):
 
   - Open the terminal.
   - Go to the solution directory.
@@ -65,7 +65,7 @@ Dotnet CLI tool:
 
 ## How to publish
 
-Dotnet CLI tool:
+Dotnet CLI tool (SDK 5.0.0 or newer):
 
   - Go to the solution directory.
   - Open the file 'Publish.bat'.
