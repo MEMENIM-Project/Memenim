@@ -28,12 +28,20 @@ namespace Memenim.Pages
             DependencyProperty.Register(nameof(IsEmpty), typeof(bool), typeof(FeedPage),
                 new PropertyMetadata(true));
 
+
+
         private const int OffsetPerTime = 20;
+
+
+
+        // ReSharper disable InconsistentNaming
+        private readonly Storyboard LoadingMoreShowAnimation;
+        private readonly Storyboard LoadingMoreHideAnimation;
+        // ReSharper restore InconsistentNaming
 
         private readonly Timer _autoUpdateCountTimer;
 
-        public readonly Storyboard LoadingMoreShowAnimation;
-        public readonly Storyboard LoadingMoreHideAnimation;
+
 
         public bool IsEmpty
         {
@@ -48,6 +56,8 @@ namespace Memenim.Pages
         }
         public ReadOnlyDictionary<PostType, string> PostTypes { get; private set; }
 
+
+
         public FeedViewModel ViewModel
         {
             get
@@ -55,6 +65,8 @@ namespace Memenim.Pages
                 return DataContext as FeedViewModel;
             }
         }
+
+
 
         public FeedPage()
         {
@@ -72,16 +84,9 @@ namespace Memenim.Pages
                     .FromSeconds(60)
                     .TotalMilliseconds
             };
-            _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimerCallback;
+            _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimer_Tick;
 
-            ReloadPostsTypes();
-
-            var postsType = SettingsManager.AppSettings
-                .PostsTypeEnum;
-
-            slcPostsTypes.SelectedItem =
-                new KeyValuePair<PostType, string>(
-                    postsType, PostTypes[postsType]);
+            UpdatePostsTypes();
 
             LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
@@ -93,121 +98,164 @@ namespace Memenim.Pages
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
+
+
         private void ReloadPostsTypes()
         {
-            var names = Enum.GetNames(typeof(PostType));
-            var localizedNames = PostType.New.GetLocalizedNames();
-            var postsTypes = new Dictionary<PostType, string>(names.Length);
+            var names = Enum.GetNames(
+                typeof(PostType));
+            var localizedNames = PostType.New
+                .GetLocalizedNames();
+            var postsTypes = new Dictionary<PostType, string>(
+                names.Length);
 
             for (var i = 0; i < names.Length; ++i)
             {
                 postsTypes.Add(
-                        Enum.Parse<PostType>(names[i], true),
+                        Enum.Parse<PostType>(
+                            names[i], true),
                         localizedNames[i]);
             }
 
-            slcPostsTypes.SelectionChanged -= slcPostTypes_SelectionChanged;
+            PostsTypesComboBox.SelectionChanged -= PostsTypesComboBox_SelectionChanged;
 
-            KeyValuePair<PostType, string> selectedItem =
+            var selectedItem =
                 new KeyValuePair<PostType, string>();
 
-            if (slcPostsTypes.SelectedItem != null)
+            if (PostsTypesComboBox.SelectedItem != null)
             {
                 selectedItem =
-                    (KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem;
+                    (KeyValuePair<PostType, string>)PostsTypesComboBox.SelectedItem;
             }
 
-            PostTypes = new ReadOnlyDictionary<PostType, string>(postsTypes);
+            PostTypes =
+                new ReadOnlyDictionary<PostType, string>(
+                    postsTypes);
 
-            slcPostsTypes
+            PostsTypesComboBox
                 .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
                 .UpdateTarget();
 
             if (selectedItem.Value != null)
             {
-                slcPostsTypes.SelectedItem =
-                    new KeyValuePair<PostType, string>(selectedItem.Key, postsTypes[selectedItem.Key]);
+                PostsTypesComboBox.SelectedItem =
+                    new KeyValuePair<PostType, string>(
+                        selectedItem.Key, postsTypes[selectedItem.Key]);
             }
 
-            slcPostsTypes.SelectionChanged += slcPostTypes_SelectionChanged;
+            PostsTypesComboBox.SelectionChanged += PostsTypesComboBox_SelectionChanged;
         }
+
+        private void UpdatePostsTypes()
+        {
+            if (LocalizationUtils.Localizations.Count == 0)
+                return;
+
+            ReloadPostsTypes();
+
+            if (PostsTypesComboBox.SelectedItem == null)
+            {
+                var postsType = SettingsManager.AppSettings
+                    .PostsTypeEnum;
+
+                PostsTypesComboBox.SelectedItem =
+                    new KeyValuePair<PostType, string>(
+                        postsType, PostTypes[postsType]);
+            }
+        }
+
+
 
         public Task UpdatePosts()
         {
-            return UpdatePosts(((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key);
+            return UpdatePosts(
+                ((KeyValuePair<PostType, string>)PostsTypesComboBox.SelectedItem)
+                .Key);
         }
-        public async Task UpdatePosts(PostType type)
+        public async Task UpdatePosts(
+            PostType type)
         {
             _autoUpdateCountTimer.Stop();
 
-            slcPostsTypes.IsEnabled = false;
-            btnRefresh.IsEnabled = false;
+            PostsTypesComboBox.IsEnabled = false;
+            RefreshPostsButton.IsEnabled = false;
 
-            await ShowLoadingGrid(true)
+            await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
             ViewModel.NewPostsCount = 0;
 
-            svPosts.IsEnabled = false;
+            PostsScrollViewer.IsEnabled = false;
 
-            foreach (var post in lstPosts.Children)
+            try
             {
-                Post postWidget = post as Post;
+                foreach (var element in PostsWrapPanel.Children)
+                {
+                    if (!(element is Post post))
+                        continue;
 
-                if (postWidget == null)
-                    continue;
+                    ImageBehavior.SetAnimatedSource(
+                        post.Image, null);
+                }
 
-                ImageBehavior.SetAnimatedSource(postWidget.Image, null);
+                PostsWrapPanel.Children.Clear();
+                PostsScrollViewer
+                    .ScrollToHorizontalOffset(0);
+
+                ViewModel.Offset = 0;
+
+                IsEmpty = true;
+
+                UpdateLayout();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
+                await LoadMorePosts(type)
+                    .ConfigureAwait(true);
+
+                if (PostsWrapPanel.Children.Count == 0)
+                {
+                    ViewModel.LastNewHeadPostId = -1;
+                }
+                else
+                {
+                    ViewModel.LastNewHeadPostId =
+                        (PostsWrapPanel.Children[0] as Post)?
+                        .CurrentPostData.Id ?? -1;
+
+                    IsEmpty = false;
+                }
             }
-
-            lstPosts.Children.Clear();
-            svPosts.ScrollToHorizontalOffset(0);
-
-            ViewModel.Offset = 0;
-
-            IsEmpty = true;
-
-            UpdateLayout();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-
-            await LoadMorePosts(type)
-                .ConfigureAwait(true);
-
-            if (lstPosts.Children.Count == 0)
+            finally
             {
-                ViewModel.LastNewHeadPostId = -1;
+                PostsScrollViewer.IsEnabled = true;
+
+                await HideLoadingGrid()
+                    .ConfigureAwait(true);
+
+                RefreshPostsButton.IsEnabled = true;
+                PostsTypesComboBox.IsEnabled = true;
+
+                _autoUpdateCountTimer.Start();
             }
-            else
-            {
-                ViewModel.LastNewHeadPostId = (lstPosts.Children[0] as Post)?
-                    .CurrentPostData.Id ?? -1;
-
-                IsEmpty = false;
-            }
-
-            svPosts.IsEnabled = true;
-
-            await ShowLoadingGrid(false)
-                .ConfigureAwait(true);
-
-            btnRefresh.IsEnabled = true;
-            slcPostsTypes.IsEnabled = true;
-
-            _autoUpdateCountTimer.Start();
         }
+
+
 
         public Task LoadMorePosts()
         {
-            return LoadMorePosts(((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key);
+            return LoadMorePosts(
+                ((KeyValuePair<PostType, string>)PostsTypesComboBox.SelectedItem)
+                .Key);
         }
-        public async Task LoadMorePosts(PostType type)
+        public async Task LoadMorePosts(
+            PostType type)
         {
-            if (lstPosts.Children.Count != 0)
+            if (PostsWrapPanel.Children.Count != 0)
             {
                 _autoUpdateCountTimer.Stop();
 
-                int newPostsCount = await GetNewPostsCount()
+                var newPostsCount = await GetNewPostsCount()
                     .ConfigureAwait(true);
 
                 ViewModel.Offset += newPostsCount;
@@ -216,32 +264,40 @@ namespace Memenim.Pages
                 _autoUpdateCountTimer.Start();
             }
 
-            await LoadMorePosts(type, ViewModel.Offset)
+            await LoadMorePosts(
+                    type, ViewModel.Offset)
                 .ConfigureAwait(true);
         }
-        public Task LoadMorePosts(PostType type, int offset)
+        public Task LoadMorePosts(
+            PostType type, int offset)
         {
-            return LoadMorePosts(type, OffsetPerTime, offset);
+            return LoadMorePosts(
+                type, OffsetPerTime, offset);
         }
-        public async Task LoadMorePosts(PostType type, int count, int offset)
+        public async Task LoadMorePosts(
+            PostType type, int count, int offset)
         {
-            ShowLoadingMoreGrid(true);
+            ShowLoadingMoreGrid();
 
-            var result = await PostApi.Get(
-                    SettingsManager.PersistentSettings.CurrentUser.Token,
-                    type, count, offset)
-                .ConfigureAwait(true);
+            try
+            {
+                var result = await PostApi.Get(
+                        SettingsManager.PersistentSettings.CurrentUser.Token,
+                        type, count, offset)
+                    .ConfigureAwait(true);
 
-            if (result == null)
-                return;
+                if (result == null)
+                    return;
 
-            if (result.Data == null)
-                result.Data = new List<PostSchema>();
+                result.Data ??= new List<PostSchema>();
 
-            await AddMorePosts(result.Data)
-                .ConfigureAwait(true);
-
-            ShowLoadingMoreGrid(false);
+                await AddMorePosts(result.Data)
+                    .ConfigureAwait(true);
+            }
+            finally
+            {
+                HideLoadingMoreGrid();
+            }
         }
 
         public Task AddMorePosts(List<PostSchema> posts)
@@ -252,16 +308,17 @@ namespace Memenim.Pages
                 {
                     await Dispatcher.InvokeAsync(() =>
                     {
-                        Post widget = new Post
+                        var postWidget = new Post
                         {
                             CurrentPostData = post,
                             TextSizeLimit = true,
                             Margin = new Thickness(5)
                         };
-                        widget.Click += Post_Click;
-                        widget.PostDelete += Post_Delete;
+                        postWidget.Click += Post_Click;
+                        postWidget.PostDelete += Post_Delete;
 
-                        lstPosts.Children.Add(widget);
+                        PostsWrapPanel.Children.Add(
+                            postWidget);
                     }).Task.ConfigureAwait(false);
                 }
 
@@ -272,38 +329,46 @@ namespace Memenim.Pages
             });
         }
 
-        public Task<int> GetNewPostsCount(int offset = 0)
+
+
+        public Task<int> GetNewPostsCount(
+            int offset = 0)
         {
-            PostType postType = PostType.Popular;
+            var postType = PostType.Popular;
 
             Dispatcher.Invoke(() =>
             {
-                postType = ((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key;
+                postType =
+                    ((KeyValuePair<PostType, string>)PostsTypesComboBox.SelectedItem)
+                    .Key;
             });
 
-            return GetNewPostsCount(postType, OffsetPerTime, offset);
+            return GetNewPostsCount(
+                postType, OffsetPerTime, offset);
         }
-        public async Task<int> GetNewPostsCount(PostType type, int countPerTime, int offset)
+        public async Task<int> GetNewPostsCount(
+            PostType type, int countPerTime, int offset)
         {
-            int postsCount = 0;
+            var postsCount = 0;
 
             Dispatcher.Invoke(() =>
             {
-                postsCount = lstPosts.Children.Count;
+                postsCount = PostsWrapPanel.Children.Count;
             });
 
             if (postsCount == 0)
             {
                 if (type == PostType.My || type == PostType.Favorite)
                 {
-                    return await GetAllPostsCount(type, countPerTime, offset)
+                    return await GetAllPostsCount(
+                            type, countPerTime, offset)
                         .ConfigureAwait(true);
                 }
 
                 return 0;
             }
 
-            int headOldId = -1;
+            var headOldId = -1;
 
             Dispatcher.Invoke(() =>
             {
@@ -315,10 +380,10 @@ namespace Memenim.Pages
 
             return await Task.Run(async () =>
             {
-                int countNew = 0;
-                int headNewId = -1;
-                bool headOldIsFound = false;
-                bool isFirstRequest = true;
+                var countNew = 0;
+                var headNewId = -1;
+                var headOldIsFound = false;
+                var isFirstRequest = true;
 
                 while (!headOldIsFound)
                 {
@@ -330,8 +395,7 @@ namespace Memenim.Pages
                     if (result?.IsError != false)
                         continue;
 
-                    if (result.Data == null)
-                        result.Data = new List<PostSchema>();
+                    result.Data ??= new List<PostSchema>();
 
                     if (result.Data.Count == 0)
                     {
@@ -354,6 +418,7 @@ namespace Memenim.Pages
                         if (post.Id == headOldId)
                         {
                             headOldIsFound = true;
+
                             break;
                         }
 
@@ -382,14 +447,17 @@ namespace Memenim.Pages
             }).ConfigureAwait(true);
         }
 
-        private async Task<int> GetAllPostsCount(PostType type, int countPerTime, int offset)
+
+
+        private async Task<int> GetAllPostsCount(
+            PostType type, int countPerTime, int offset)
         {
             if (!(type == PostType.My || type == PostType.Favorite))
                 return 0;
 
             return await Task.Run(async () =>
             {
-                int countNew = 0;
+                var countNew = 0;
 
                 while (true)
                 {
@@ -401,8 +469,7 @@ namespace Memenim.Pages
                     if (result?.IsError != false)
                         continue;
 
-                    if (result.Data == null)
-                        result.Data = new List<PostSchema>();
+                    result.Data ??= new List<PostSchema>();
 
                     if (result.Data.Count == 0)
                         break;
@@ -415,19 +482,21 @@ namespace Memenim.Pages
             }).ConfigureAwait(true);
         }
 
-        public Task ShowLoadingGrid(bool status)
+
+
+        public Task ShowLoadingGrid()
         {
-            if (status)
-            {
-                loadingIndicator.IsActive = true;
-                loadingGrid.Opacity = 1.0;
-                loadingGrid.IsHitTestVisible = true;
-                loadingGrid.Visibility = Visibility.Visible;
+            LoadingIndicator.IsActive = true;
+            LoadingGrid.Opacity = 1.0;
+            LoadingGrid.IsHitTestVisible = true;
+            LoadingGrid.Visibility = Visibility.Visible;
 
-                return Task.CompletedTask;
-            }
+            return Task.CompletedTask;
+        }
 
-            loadingIndicator.IsActive = false;
+        public Task HideLoadingGrid()
+        {
+            LoadingIndicator.IsActive = false;
 
             return Task.Run(async () =>
             {
@@ -439,13 +508,13 @@ namespace Memenim.Pages
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            loadingGrid.IsHitTestVisible = false;
+                            LoadingGrid.IsHitTestVisible = false;
                         });
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
                     });
 
                     await Task.Delay(4)
@@ -454,30 +523,31 @@ namespace Memenim.Pages
 
                 Dispatcher.Invoke(() =>
                 {
-                    loadingGrid.Visibility = Visibility.Collapsed;
+                    LoadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
         }
 
-        public void ShowLoadingMoreGrid(bool status)
+        public void ShowLoadingMoreGrid()
         {
-            if (status)
-            {
-                loadingMoreIndicator.IsActive = true;
-                loadingMoreGrid.IsHitTestVisible = true;
+            LoadingMoreIndicator.IsActive = true;
+            LoadingMoreGrid.IsHitTestVisible = true;
 
-                LoadingMoreShowAnimation.Begin();
+            LoadingMoreShowAnimation.Begin();
+        }
 
-                return;
-            }
-
-            loadingMoreIndicator.IsActive = false;
-            loadingMoreGrid.IsHitTestVisible = false;
+        public void HideLoadingMoreGrid()
+        {
+            LoadingMoreIndicator.IsActive = false;
+            LoadingMoreGrid.IsHitTestVisible = false;
 
             LoadingMoreHideAnimation.Begin();
         }
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -488,7 +558,7 @@ namespace Memenim.Pages
             ViewModel.OnPostScrollEnd = new AsyncBasicCommand(
                 async _ =>
                 {
-                    if (svPosts.HorizontalOffset == 0)
+                    if (PostsScrollViewer.HorizontalOffset == 0)
                         return;
 
                     await LoadMorePosts()
@@ -504,7 +574,8 @@ namespace Memenim.Pages
             _autoUpdateCountTimer.Start();
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
@@ -521,122 +592,94 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLocalizationUpdated(object sender, LocalizationEventArgs e)
+
+
+        private void OnLocalizationUpdated(object sender,
+            LocalizationEventArgs e)
         {
-            ReloadPostsTypes();
+            UpdatePostsTypes();
         }
 
-        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        private async void OnCurrentUserChanged(object sender,
+            UserChangedEventArgs e)
         {
             if (e.NewUser.Id == -1)
                 return;
 
             _autoUpdateCountTimer.Stop();
 
-            slcPostsTypes.IsEnabled = false;
-            btnRefresh.IsEnabled = false;
+            PostsTypesComboBox.IsEnabled = false;
+            RefreshPostsButton.IsEnabled = false;
 
-            await ShowLoadingGrid(true)
+            await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
-            svPosts.IsEnabled = false;
+            PostsScrollViewer.IsEnabled = false;
 
-            var postType = ((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key;
-
-            switch (postType)
+            try
             {
-                case PostType.Popular:
-                case PostType.New:
-                    if (lstPosts.Children.Count == 0)
-                        break;
+                var postType =
+                    ((KeyValuePair<PostType, string>)PostsTypesComboBox.SelectedItem)
+                    .Key;
 
-                    var tasks = new List<Task>(lstPosts.Children.Count);
+                switch (postType)
+                {
+                    case PostType.Popular:
+                    case PostType.New:
+                        if (PostsWrapPanel.Children.Count == 0)
+                            break;
 
-                    foreach (var post in lstPosts.Children)
-                    {
-                        if (!(post is Post postWidget))
-                            continue;
+                        var tasks = new List<Task>(
+                            PostsWrapPanel.Children.Count);
 
-                        tasks.Add(postWidget.UpdatePost());
-
-                        if (tasks.Count % 5 == 0)
+                        foreach (var post in PostsWrapPanel.Children)
                         {
-                            await Task.Delay(TimeSpan.FromMilliseconds(500))
-                                .ConfigureAwait(true);
+                            if (!(post is Post postWidget))
+                                continue;
+
+                            tasks.Add(postWidget
+                                .UpdatePost());
+
+                            if (tasks.Count % 5 == 0)
+                            {
+                                await Task.Delay(
+                                        TimeSpan.FromSeconds(0.5))
+                                    .ConfigureAwait(true);
+                            }
                         }
-                    }
 
-                    await Task.WhenAll(tasks)
-                        .ConfigureAwait(true);
+                        await Task.WhenAll(tasks)
+                            .ConfigureAwait(true);
 
-                    break;
-                case PostType.My:
-                case PostType.Favorite:
-                    await UpdatePosts()
-                        .ConfigureAwait(true);
+                        break;
+                    case PostType.My:
+                    case PostType.Favorite:
+                        await UpdatePosts()
+                            .ConfigureAwait(true);
 
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
             }
-
-            svPosts.IsEnabled = true;
-
-            await ShowLoadingGrid(false)
-                .ConfigureAwait(true);
-
-            btnRefresh.IsEnabled = true;
-            slcPostsTypes.IsEnabled = true;
-
-            _autoUpdateCountTimer.Start();
-        }
-
-        private async void AutoUpdateCountTimerCallback(object sender, ElapsedEventArgs e)
-        {
-            if (!_autoUpdateCountTimer.Enabled)
-                return;
-
-            if (State != ControlStateType.Loaded)
-                return;
-
-            _autoUpdateCountTimer.Stop();
-
-            int newPostsCount = await GetNewPostsCount()
-                .ConfigureAwait(true);
-
-            Dispatcher.Invoke(() =>
+            finally
             {
-                ViewModel.Offset += newPostsCount;
-                ViewModel.NewPostsCount += newPostsCount;
-            });
+                PostsScrollViewer.IsEnabled = true;
 
-            _autoUpdateCountTimer.Start();
+                await HideLoadingGrid()
+                    .ConfigureAwait(true);
+
+                RefreshPostsButton.IsEnabled = true;
+                PostsTypesComboBox.IsEnabled = true;
+
+                _autoUpdateCountTimer.Start();
+            }
         }
 
-        private async void slcPostTypes_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            await UpdatePosts()
-                .ConfigureAwait(true);
 
-            SettingsManager.AppSettings.PostsTypeEnum =
-                ((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key;
 
-            SettingsManager.AppSettings.Save();
-        }
-
-        private async void btnNewPostsCount_Click(object sender, RoutedEventArgs e)
-        {
-            await UpdatePosts()
-                .ConfigureAwait(true);
-        }
-
-        private async void btnRefreshPosts_Click(object sender, RoutedEventArgs e)
-        {
-            await UpdatePosts()
-                .ConfigureAwait(true);
-        }
-
-        private void Post_Click(object sender, RoutedEventArgs e)
+        private void Post_Click(object sender,
+            RoutedEventArgs e)
         {
             if (!(sender is Post post))
                 return;
@@ -648,15 +691,15 @@ namespace Memenim.Pages
             });
         }
 
-        private async void Post_Delete(object sender, RoutedEventArgs e)
+        private async void Post_Delete(object sender,
+            RoutedEventArgs e)
         {
             _autoUpdateCountTimer.Stop();
 
-            Post post = sender as Post;
-
-            if (post == null)
+            if (!(sender is Post post))
             {
                 _autoUpdateCountTimer.Start();
+
                 return;
             }
 
@@ -666,27 +709,84 @@ namespace Memenim.Pages
                     .ConfigureAwait(true);
 
                 _autoUpdateCountTimer.Start();
+
                 return;
             }
 
-            lstPosts.Children.Remove(post);
+            PostsWrapPanel.Children.Remove(post);
 
             --ViewModel.Offset;
 
-            if (lstPosts.Children.Count == 0)
+            if (PostsWrapPanel.Children.Count == 0)
                 IsEmpty = true;
 
             _autoUpdateCountTimer.Start();
         }
 
-        private void CreatePost_Click(object sender, RoutedEventArgs e)
+
+
+        private async void NewPostsCountButton_Click(object sender,
+            RoutedEventArgs e)
+        {
+            await UpdatePosts()
+                .ConfigureAwait(true);
+        }
+
+        private async void PostsTypesComboBox_SelectionChanged(object sender,
+            SelectionChangedEventArgs e)
+        {
+            await UpdatePosts()
+                .ConfigureAwait(true);
+
+            SettingsManager.AppSettings.PostsTypeEnum =
+                ((KeyValuePair<PostType, string>)PostsTypesComboBox.SelectedItem)
+                .Key;
+
+            SettingsManager.AppSettings.Save();
+        }
+
+        private async void RefreshPostsButton_Click(object sender,
+            RoutedEventArgs e)
+        {
+            await UpdatePosts()
+                .ConfigureAwait(true);
+        }
+
+        private void CreatePostButton_Click(object sender,
+            RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<SubmitPostPage>();
         }
 
-        private void SvPosts_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void PostsScrollViewer_ScrollChanged(object sender,
+            ScrollChangedEventArgs e)
         {
             ViewModel.ScrollOffset = e.HorizontalOffset;
+        }
+
+
+
+        private async void AutoUpdateCountTimer_Tick(object sender,
+            ElapsedEventArgs e)
+        {
+            if (!_autoUpdateCountTimer.Enabled)
+                return;
+
+            if (State != ControlStateType.Loaded)
+                return;
+
+            _autoUpdateCountTimer.Stop();
+
+            var newPostsCount = await GetNewPostsCount()
+                .ConfigureAwait(true);
+
+            Dispatcher.Invoke(() =>
+            {
+                ViewModel.Offset += newPostsCount;
+                ViewModel.NewPostsCount += newPostsCount;
+            });
+
+            _autoUpdateCountTimer.Start();
         }
     }
 }

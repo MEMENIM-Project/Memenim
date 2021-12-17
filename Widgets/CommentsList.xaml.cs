@@ -193,7 +193,8 @@ namespace Memenim.Widgets
             {
                 var page = this.TryFindParent<PostOverlayPage>();
 
-                page?.svPost.ScrollToVerticalOffset(0.0);
+                page?.PostScrollViewer
+                    .ScrollToVerticalOffset(0.0);
             }
 
             return LoadMoreComments();
@@ -262,7 +263,8 @@ namespace Memenim.Widgets
                         commentWidget.CommentReply += Comment_Reply;
                         commentWidget.CommentDelete += Comment_Delete;
 
-                        CommentsWrapPanel.Children.Insert(0, commentWidget);
+                        CommentsWrapPanel.Children.Insert(
+                            0, commentWidget);
                     });
                 }
 
@@ -300,7 +302,8 @@ namespace Memenim.Widgets
             {
                 await Dispatcher.Invoke(() =>
                 {
-                    return UpdateComments(false);
+                    return UpdateComments(
+                        false);
                 }).ConfigureAwait(true);
 
                 return 0;
@@ -346,7 +349,8 @@ namespace Memenim.Widgets
                     {
                         await Dispatcher.Invoke(() =>
                         {
-                            return UpdateComments(false);
+                            return UpdateComments(
+                                false);
                         }).ConfigureAwait(true);
 
                         return 0;
@@ -357,6 +361,7 @@ namespace Memenim.Widgets
                         if (comment.Id == headOldId)
                         {
                             headOldIsFound = true;
+
                             break;
                         }
 
@@ -367,7 +372,8 @@ namespace Memenim.Widgets
                     {
                         await Dispatcher.Invoke(() =>
                         {
-                            return UpdateComments(false);
+                            return UpdateComments(
+                                false);
                         }).ConfigureAwait(true);
 
                         return 0;
@@ -386,12 +392,14 @@ namespace Memenim.Widgets
         {
             _autoUpdateCommentsTimer.Stop();
 
-            var count = await GetNewCommentsCount(offset)
+            var count = await GetNewCommentsCount(
+                    offset)
                 .ConfigureAwait(true);
 
             if (count == 0)
             {
                 _autoUpdateCommentsTimer.Start();
+
                 return;
             }
 
@@ -432,8 +440,10 @@ namespace Memenim.Widgets
             Dispatcher.Invoke(() =>
             {
                 page = this.TryFindParent<PostOverlayPage>();
-                verticalOffset = page?.svPost.VerticalOffset ?? verticalOffset;
-                scrollableHeight = page?.svPost.ScrollableHeight ?? scrollableHeight;
+                verticalOffset = page?.PostScrollViewer.VerticalOffset
+                                 ?? verticalOffset;
+                scrollableHeight = page?.PostScrollViewer.ScrollableHeight
+                                   ?? scrollableHeight;
             });
 
             await AddNewComments(result.Data)
@@ -442,7 +452,7 @@ namespace Memenim.Widgets
             Dispatcher.Invoke(() =>
             {
                 if (verticalOffset >= scrollableHeight - 20)
-                    page?.svPost.ScrollToEnd();
+                    page?.PostScrollViewer.ScrollToEnd();
             });
 
             RaiseEvent(new RoutedEventArgs(CommentsUpdatedEvent));
@@ -468,7 +478,8 @@ namespace Memenim.Widgets
                         commentWidget.CommentReply += Comment_Reply;
                         commentWidget.CommentDelete += Comment_Delete;
 
-                        CommentsWrapPanel.Children.Add(commentWidget);
+                        CommentsWrapPanel.Children.Add(
+                            commentWidget);
                     });
                 }
 
@@ -582,7 +593,8 @@ namespace Memenim.Widgets
             Dispatcher.Invoke(() =>
             {
                 page = this.TryFindParent<PostOverlayPage>();
-                scrollableHeight = page?.svPost.ScrollableHeight ?? scrollableHeight;
+                scrollableHeight = page?.PostScrollViewer.ScrollableHeight
+                                   ?? scrollableHeight;
             });
 
             await LoadMoreComments()
@@ -590,11 +602,11 @@ namespace Memenim.Widgets
 
             UpdateLayout();
 
-            if (page?.svPost != null
-                && page.svPost.VerticalOffset > page.wdgPost.ActualHeight - (page.svPost.ActualHeight / 100 * 50))
+            if (page?.PostScrollViewer != null
+                && page.PostScrollViewer.VerticalOffset > page.Post.ActualHeight - (page.PostScrollViewer.ActualHeight / 100 * 50))
             {
-                page.svPost.ScrollToVerticalOffset(
-                    page.svPost.VerticalOffset + (page.svPost.ScrollableHeight - scrollableHeight));
+                page.PostScrollViewer.ScrollToVerticalOffset(
+                    page.PostScrollViewer.VerticalOffset + (page.PostScrollViewer.ScrollableHeight - scrollableHeight));
             }
 
             LoadMoreButton.IsEnabled = true;

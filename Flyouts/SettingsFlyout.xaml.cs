@@ -93,20 +93,24 @@ namespace Memenim.Flyouts
 
         private void ReloadCommentReplyModes()
         {
-            var names = Enum.GetNames(typeof(CommentReplyModeType));
-            var localizedNames = CommentReplyModeType.Legacy.GetLocalizedNames();
-            var postTypes = new Dictionary<CommentReplyModeType, string>(names.Length);
+            var names = Enum.GetNames(
+                typeof(CommentReplyModeType));
+            var localizedNames = CommentReplyModeType.Legacy
+                .GetLocalizedNames();
+            var postTypes = new Dictionary<CommentReplyModeType, string>(
+                names.Length);
 
             for (var i = 0; i < names.Length; ++i)
             {
                 postTypes.Add(
-                    Enum.Parse<CommentReplyModeType>(names[i], true),
+                    Enum.Parse<CommentReplyModeType>(
+                        names[i], true),
                     localizedNames[i]);
             }
 
             CommentReplyModeComboBox.SelectionChanged -= CommentReplyModeComboBox_SelectionChanged;
 
-            KeyValuePair<CommentReplyModeType, string> selectedItem =
+            var selectedItem =
                 new KeyValuePair<CommentReplyModeType, string>();
 
             if (CommentReplyModeComboBox.SelectedItem != null)
@@ -115,7 +119,9 @@ namespace Memenim.Flyouts
                     (KeyValuePair<CommentReplyModeType, string>)CommentReplyModeComboBox.SelectedItem;
             }
 
-            CommentReplyModes = new ReadOnlyDictionary<CommentReplyModeType, string>(postTypes);
+            CommentReplyModes =
+                new ReadOnlyDictionary<CommentReplyModeType, string>(
+                    postTypes);
 
             CommentReplyModeComboBox
                 .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
@@ -124,7 +130,8 @@ namespace Memenim.Flyouts
             if (selectedItem.Value != null)
             {
                 CommentReplyModeComboBox.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(selectedItem.Key, postTypes[selectedItem.Key]);
+                    new KeyValuePair<CommentReplyModeType, string>(
+                        selectedItem.Key, postTypes[selectedItem.Key]);
             }
 
             CommentReplyModeComboBox.SelectionChanged += CommentReplyModeComboBox_SelectionChanged;
@@ -137,12 +144,15 @@ namespace Memenim.Flyouts
 
             ReloadCommentReplyModes();
 
-            var commentReplyModeType = SettingsManager.AppSettings
-                .CommentReplyModeEnum;
+            if (CommentReplyModeComboBox.SelectedItem == null)
+            {
+                var commentReplyModeType = SettingsManager.AppSettings
+                    .CommentReplyModeEnum;
 
-            CommentReplyModeComboBox.SelectedItem =
-                new KeyValuePair<CommentReplyModeType, string>(
-                    commentReplyModeType, CommentReplyModes[commentReplyModeType]);
+                CommentReplyModeComboBox.SelectedItem =
+                    new KeyValuePair<CommentReplyModeType, string>(
+                        commentReplyModeType, CommentReplyModes[commentReplyModeType]);
+            }
         }
 
         private void UpdateSpecialEventName()

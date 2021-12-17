@@ -168,20 +168,20 @@ namespace Memenim.Protocols.Schemas.Api
                     Post sourcePost = null;
                     var page = (FeedPage)PageStorage.GetPage<FeedPage>();
 
-                    var slcPostTypes = page?.slcPostsTypes;
-
-                    if (slcPostTypes?.SelectedItem == null)
+                    if (page.PostsTypesComboBox.SelectedItem == null)
                         return false;
 
-                    var postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+                    var postType =
+                        ((KeyValuePair<PostType, string>)page.PostsTypesComboBox.SelectedItem)
+                        .Key;
 
                     switch (postType)
                     {
                         case PostType.Popular:
-                            if (page.lstPosts.Children.Count == 0)
+                            if (page.PostsWrapPanel.Children.Count == 0)
                                 break;
 
-                            foreach (var element in page.lstPosts.Children)
+                            foreach (var element in page.PostsWrapPanel.Children)
                             {
                                 if (!(element is Post post))
                                     continue;
@@ -197,19 +197,19 @@ namespace Memenim.Protocols.Schemas.Api
                         case PostType.New:
                         case PostType.My:
                         case PostType.Favorite:
-                            if (page.lstPosts.Children.Count == 0)
+                            if (page.PostsWrapPanel.Children.Count == 0)
                                 break;
 
-                            if (page.lstPosts.Children.Count > 2
-                                && (page.lstPosts.Children[0] is Post startPost
-                                    && page.lstPosts.Children[^1] is Post endPost)
+                            if (page.PostsWrapPanel.Children.Count > 2
+                                && (page.PostsWrapPanel.Children[0] is Post startPost
+                                    && page.PostsWrapPanel.Children[^1] is Post endPost)
                                 && !(startPost.CurrentPostData.Id >= id
                                      && id >= endPost.CurrentPostData.Id))
                             {
                                 break;
                             }
 
-                            foreach (var element in page.lstPosts.Children)
+                            foreach (var element in page.PostsWrapPanel.Children)
                             {
                                 if (!(element is Post post))
                                     continue;
@@ -238,10 +238,7 @@ namespace Memenim.Protocols.Schemas.Api
                     return true;
                 });
 
-                if (!result)
-                    return false;
-
-                return true;
+                return result;
             }
             catch (Exception ex)
             {

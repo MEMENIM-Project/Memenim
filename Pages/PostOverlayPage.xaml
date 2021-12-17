@@ -18,15 +18,15 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
-                      x:Name="svPost"
-                      VerticalScrollBarVisibility="Auto"
-                      ScrollChanged="SvPost_ScrollChanged">
+                      x:Name="PostScrollViewer"
+                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                      ScrollChanged="PostScrollViewer_ScrollChanged">
             <StackPanel>
-                <widgets:Post x:Name="wdgPost"
+                <widgets:Post x:Name="Post"
                               CurrentPostData="{Binding Path=DataContext.CurrentPostData, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                               ImageSizeLimit="True"
                               Margin="5"/>
-                <widgets:CommentsList x:Name="wdgCommentsList"
+                <widgets:CommentsList x:Name="CommentsList"
                                       PostId="{Binding Path=DataContext.CurrentPostData.Id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentsCount="{Binding Path=DataContext.CurrentPostData.Comments, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
@@ -37,15 +37,16 @@
             </StackPanel>
         </ScrollViewer>
         <StackPanel Grid.Row="1"
-                    x:Name="pnlWriteComment"
-                    Width="{Binding Path=ViewportWidth, ElementName=svPost}"
+                    Width="{Binding Path=ViewportWidth, ElementName=PostScrollViewer}"
+                    x:Name="WriteCommentStackPanel"
                     HorizontalAlignment="Left" VerticalAlignment="Bottom">
-            <widgets:WriteComment x:Name="wdgWriteComment" MinHeight="54"
-                                  Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+            <widgets:WriteComment MinHeight="54"
+                                  x:Name="WriteComment"
                                   PostId="{Binding Path=DataContext.CurrentPostData.Id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                                  Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                   Margin="5 0 5 0"
-                                  SizeChanged="WriteComment_SizeChanged"
-                                  CommentAdd="WriteComment_CommentAdd"/>
+                                  CommentAdd="WriteComment_CommentAdd"
+                                  SizeChanged="WriteComment_SizeChanged"/>
         </StackPanel>
     </Grid>
 </local:PageContent>

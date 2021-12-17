@@ -16,18 +16,20 @@
                    d:DesignWidth="800" d:DesignHeight="450">
     
     <local:PageContent.Resources>
+        <!-- ReSharper disable Xaml.RedundantResource -->
         <Storyboard x:Key="LoadingMoreShowAnimation">
-            <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
+            <ThicknessAnimation Storyboard.TargetName="LoadingMoreGrid"
                                 Storyboard.TargetProperty="Margin"
                                 To="0 0 -15 0"
                                 Duration="0:0:0.35"/>
         </Storyboard>
         <Storyboard x:Key="LoadingMoreHideAnimation">
-            <ThicknessAnimation Storyboard.TargetName="loadingMoreGrid"
+            <ThicknessAnimation Storyboard.TargetName="LoadingMoreGrid"
                                 Storyboard.TargetProperty="Margin"
                                 To="0 0 -85 0"
                                 Duration="0:0:0.75"/>
         </Storyboard>
+        <!-- ReSharper restore Xaml.RedundantResource -->
     </local:PageContent.Resources>
 
     <Grid>
@@ -36,36 +38,44 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0" Margin="15 0 15 0">
-            <Button Width="40" Height="40" FontSize="14"
-                    Content="{Binding Path=NewPostsCount, Converter={StaticResource NewPostsCountConverter}}"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
+        <DockPanel Grid.Row="0"
+                   Margin="15 0 15 0">
+            <Button DockPanel.Dock="Left"
+                    Width="40" Height="40"
                     Style="{DynamicResource MahApps.Styles.Button.MetroSquare.Accent}"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    Content="{Binding Path=NewPostsCount, Converter={StaticResource NewPostsCountConverter}}"
+                    FontSize="14"
                     Visibility="{Binding Path=NewPostsCount, Converter={StaticResource NewPostsCountToVisibilityConverter}}"
-                    VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                    Margin="0 5 10 5" Padding="0 0 0 0" DockPanel.Dock="Left"
-                    Click="btnNewPostsCount_Click"/>
-            <Label Content="{markupLocalization:LocalizedString FeedTitle}"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Margin="0 5 10 5"
+                    Click="NewPostsCountButton_Click"/>
+            <Label DockPanel.Dock="Left"
                    Style="{DynamicResource DescriptionHeader}"
-                   DockPanel.Dock="Left" VerticalContentAlignment="Center"/>
-            <controls:SplitButton x:Name="slcPostsTypes"
+                   Content="{markupLocalization:LocalizedString FeedTitle}"
+                   VerticalContentAlignment="Center"/>
+            <controls:SplitButton DockPanel.Dock="Left"
+                                  x:Name="PostsTypesComboBox"
                                   ItemsSource="{Binding Path=PostTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                                   DisplayMemberPath="Value"
-                                  DockPanel.Dock="Left" HorizontalAlignment="Center"
+                                  HorizontalAlignment="Center"
                                   Margin="5 14 2 14"
-                                  SelectionChanged="slcPostTypes_SelectionChanged"/>
-            <widgets:IconButton x:Name="btnRefresh"
+                                  SelectionChanged="PostsTypesComboBox_SelectionChanged"/>
+            <widgets:IconButton DockPanel.Dock="Left"
                                 Width="30" Height="30"
+                                x:Name="RefreshPostsButton"
                                 IconKind="{x:Static iconPacks:PackIconModernKind.Refresh}"
-                                DockPanel.Dock="Left"
                                 Margin="0 0 2 0"
-                                Click="btnRefreshPosts_Click"/>
-            <Button Style="{StaticResource MahApps.Styles.Button.Square}"
-                    DockPanel.Dock="Right" HorizontalAlignment="Right"
-                    Margin="5 10 0 10" BorderThickness="0"
-                    Click="CreatePost_Click">
+                                Click="RefreshPostsButton_Click"/>
+            <Button DockPanel.Dock="Right"
+                    Style="{StaticResource MahApps.Styles.Button.Square}"
+                    HorizontalAlignment="Right"
+                    BorderThickness="0"
+                    Margin="5 10 0 10"
+                    Click="CreatePostButton_Click">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconModern Height="20" Width="20"
+                    <iconPacks:PackIconModern Width="20" Height="20"
                                               Kind="NewspaperCreate"
                                               VerticalAlignment="Center"
                                               Margin="5" />
@@ -75,41 +85,55 @@
                 </StackPanel>
             </Button>
         </DockPanel>
-        <Grid Grid.Row="1" Margin="0 5 0 5"
-              HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
+        <Grid Grid.Row="1"
+              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+              Margin="0 5 0 5">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{markupLocalization:LocalizedString NotFoundAnyPostsTitle}"
                            FontSize="20"
                            Visibility="{Binding Path=IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </StackPanel>
-            <controlsRis:ExtendedScrollViewer x:Name="svPosts" SpeedRatio="1.7"
-                                              VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
+            <controlsRis:ExtendedScrollViewer x:Name="PostsScrollViewer"
+                                              SpeedRatio="1.7"
+                                              Visibility="{Binding Path=IsEmpty, Converter={StaticResource InvertedBooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                                               controls:ScrollViewerHelper.IsHorizontalScrollWheelEnabled="True"
                                               controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding Path=OnPostScrollEnd}"
-                                              Visibility="{Binding Path=IsEmpty, Converter={StaticResource InvertedBooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
-                                              ScrollChanged="SvPosts_ScrollChanged">
-                    <WrapPanel x:Name="lstPosts" ItemWidth="400"
-                               ItemHeight="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
-                               Orientation="Horizontal" VerticalAlignment="Stretch"/>
+                                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
+                                              ScrollChanged="PostsScrollViewer_ScrollChanged">
+                    <WrapPanel x:Name="PostsWrapPanel"
+                               Orientation="Horizontal"
+                               ItemWidth="400"
+                               ItemHeight="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controlsRis:ExtendedScrollViewer}}"
+                               VerticalAlignment="Stretch"/>
             </controlsRis:ExtendedScrollViewer>
         </Grid>
-        <Grid Grid.Row="1" x:Name="loadingMoreGrid"
-              Height="80" Width="80" Margin="0 0 -85 0"
+        <Grid Grid.Row="1"
+              Width="80" Height="80"
+              x:Name="LoadingMoreGrid"
+              ZIndex="2147483646"
+              Visibility="Visible"
               HorizontalAlignment="Right" VerticalAlignment="Center"
-              Visibility="Visible" ZIndex="2147483646">
+              Margin="0 0 -85 0">
             <Border CornerRadius="20" Background="{DynamicResource MahApps.Brushes.Window.Background}">
-                <indicatorsLoading:LoadingIndicator x:Name="loadingMoreIndicator" Mode="Arcs"
-                                                    SpeedRatio="2" Margin="-15 0 0 0"
-                                                    IsActive="False" Visibility="Visible"/>
+                <indicatorsLoading:LoadingIndicator x:Name="LoadingMoreIndicator"
+                                                    Mode="Arcs"
+                                                    SpeedRatio="2"
+                                                    IsActive="False"
+                                                    Visibility="Visible"
+                                                    Margin="-15 0 0 0"/>
             </Border>
         </Grid>
-        <Grid Grid.Row="1" x:Name="loadingGrid"
-              Visibility="Collapsed" ZIndex="2147483647"
-              Background="{DynamicResource MahApps.Brushes.Window.Background}">
-            <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+        <Grid Grid.Row="1"
+              x:Name="LoadingGrid"
+              Background="{DynamicResource MahApps.Brushes.Window.Background}"
+              ZIndex="2147483647"
+              Visibility="Collapsed">
+            <indicatorsLoading:LoadingIndicator x:Name="LoadingIndicator"
+                                                Mode="Arcs"
+                                                SpeedRatio="2"
+                                                IsActive="False"
+                                                Visibility="Visible"/>
         </Grid>
     </Grid>
 </local:PageContent>

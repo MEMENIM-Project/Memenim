@@ -21,6 +21,8 @@ namespace Memenim.Pages
         private readonly double _writeCommentMinHeight;
         private double _writeCommentMaxHeight;
 
+
+
         public PostOverlayViewModel ViewModel
         {
             get
@@ -28,6 +30,8 @@ namespace Memenim.Pages
                 return DataContext as PostOverlayViewModel;
             }
         }
+
+
 
         public PostOverlayPage()
         {
@@ -39,7 +43,7 @@ namespace Memenim.Pages
             _writeCommentMaxHeight = (int)(ActualHeight * 0.3);
             _writeCommentMaxHeight += 16 - (((int)_writeCommentMaxHeight - _writeCommentMinHeight) % 16);
 
-            wdgWriteComment.MaxHeight = _writeCommentMaxHeight;
+            WriteComment.MaxHeight = _writeCommentMaxHeight;
 
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
         }
@@ -49,11 +53,15 @@ namespace Memenim.Pages
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
+
+
         public Task UpdatePost()
         {
-            return UpdatePost(ViewModel.CurrentPostData.Id);
+            return UpdatePost(
+                ViewModel.CurrentPostData.Id);
         }
-        public async Task UpdatePost(int id)
+        public async Task UpdatePost(
+            int id)
         {
             if (id < 1)
             {
@@ -62,7 +70,8 @@ namespace Memenim.Pages
 
                 NavigationController.Instance.GoBack(true);
 
-                string message = LocalizationUtils.GetLocalized("PostNotFound");
+                var message = LocalizationUtils
+                    .GetLocalized("PostNotFound");
 
                 await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
@@ -97,7 +106,8 @@ namespace Memenim.Pages
 
                 NavigationController.Instance.GoBack(true);
 
-                string message = LocalizationUtils.GetLocalized("PostNotFound");
+                string message = LocalizationUtils
+                    .GetLocalized("PostNotFound");
 
                 await DialogManager.ShowErrorDialog(message)
                     .ConfigureAwait(true);
@@ -107,7 +117,7 @@ namespace Memenim.Pages
 
             ViewModel.CurrentPostData = result.Data;
 
-            wdgPost.UpdateContextMenus();
+            Post.UpdateContextMenus();
 
             if (ViewModel.SourcePost?.CurrentPostData.Id == ViewModel.CurrentPostData.Id)
             {
@@ -140,10 +150,14 @@ namespace Memenim.Pages
             return result.Data ?? postData;
         }
 
-        protected override async void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
+            CommentsList.UpdateLayout();
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -154,7 +168,8 @@ namespace Memenim.Pages
                 return;
             }
 
-            svPost.ScrollToVerticalOffset(0.0);
+            PostScrollViewer
+                .ScrollToVerticalOffset(0.0);
 
             await UpdatePost()
                 .ConfigureAwait(true);
@@ -164,31 +179,32 @@ namespace Memenim.Pages
                     ViewModel.CurrentPostData.Id)
                 .ConfigureAwait(true);
 
-            wdgWriteComment.CommentText = draft.CommentText;
-            wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+            WriteComment.CommentText = draft.CommentText;
+            WriteComment.IsAnonymous = draft.IsAnonymous;
 
-            wdgWriteComment.ContentTextBox.ScrollToEnd();
-            wdgWriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
-            wdgWriteComment.ContentTextBox.Focus();
+            WriteComment.ContentTextBox.ScrollToEnd();
+            WriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
+            WriteComment.ContentTextBox.Focus();
 
-            if (svPost.VerticalOffset >= svPost.ScrollableHeight - 20)
-                svPost.ScrollToVerticalOffset(0.0);
+            if (PostScrollViewer.VerticalOffset >= PostScrollViewer.ScrollableHeight - 20)
+                PostScrollViewer.ScrollToVerticalOffset(0.0);
         }
 
-        protected override async void OnExit(object sender, RoutedEventArgs e)
+        protected override async void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
             await StorageManager.SetPostCommentDraft(
                     SettingsManager.PersistentSettings.CurrentUser.Id,
                     ViewModel.CurrentPostData.Id,
-                    wdgWriteComment.CommentText,
-                    wdgWriteComment.IsAnonymous)
+                    WriteComment.CommentText,
+                    WriteComment.IsAnonymous)
                 .ConfigureAwait(true);
 
-            wdgCommentsList.CommentsWrapPanel.Children.Clear();
+            CommentsList.CommentsWrapPanel.Children.Clear();
 
-            wdgCommentsList.UpdateLayout();
+            CommentsList.UpdateLayout();
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();
@@ -201,7 +217,8 @@ namespace Memenim.Pages
         }
 
 #pragma warning disable SS001 // Async methods should return a Task to make them awaitable
-        protected override async void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        protected override async void OnDataContextChanged(object sender,
+            DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue is PostOverlayViewModel oldViewModel)
             {
@@ -215,13 +232,13 @@ namespace Memenim.Pages
                 await StorageManager.SetPostCommentDraft(
                         SettingsManager.PersistentSettings.CurrentUser.Id,
                         oldViewModel.CurrentPostData.Id,
-                        wdgWriteComment.CommentText,
-                        wdgWriteComment.IsAnonymous)
+                        WriteComment.CommentText,
+                        WriteComment.IsAnonymous)
                     .ConfigureAwait(true);
             }
 
-            wdgWriteComment.CommentText = string.Empty;
-            wdgWriteComment.IsAnonymous = false;
+            WriteComment.CommentText = string.Empty;
+            WriteComment.IsAnonymous = false;
 
             if (e.NewValue is PostOverlayViewModel newViewModel)
             {
@@ -237,19 +254,20 @@ namespace Memenim.Pages
                         newViewModel.CurrentPostData.Id)
                     .ConfigureAwait(true);
 
-                wdgWriteComment.CommentText = draft.CommentText;
-                wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+                WriteComment.CommentText = draft.CommentText;
+                WriteComment.IsAnonymous = draft.IsAnonymous;
 
-                wdgWriteComment.ContentTextBox.ScrollToEnd();
-                wdgWriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
-                wdgWriteComment.ContentTextBox.Focus();
+                WriteComment.ContentTextBox.ScrollToEnd();
+                WriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
+                WriteComment.ContentTextBox.Focus();
             }
 
             base.OnDataContextChanged(sender, e);
         }
 #pragma warning restore SS001 // Async methods should return a Task to make them awaitable
 
-        protected override async void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override async void ViewModelPropertyChanged(object sender,
+            PropertyChangedEventArgs e)
         {
             base.ViewModelPropertyChanged(sender, e);
 
@@ -269,7 +287,10 @@ namespace Memenim.Pages
             }
         }
 
-        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+
+
+        private async void OnCurrentUserChanged(object sender,
+            UserChangedEventArgs e)
         {
             if (e.NewUser.Id == -1)
                 return;
@@ -280,8 +301,8 @@ namespace Memenim.Pages
             await StorageManager.SetPostCommentDraft(
                     e.OldUser.Id,
                     ViewModel.CurrentPostData.Id,
-                    wdgWriteComment.CommentText,
-                    wdgWriteComment.IsAnonymous)
+                    WriteComment.CommentText,
+                    WriteComment.IsAnonymous)
                 .ConfigureAwait(true);
 
             var draft = await StorageManager.GetPostCommentDraft(
@@ -291,25 +312,61 @@ namespace Memenim.Pages
 
             if (!string.IsNullOrEmpty(draft.CommentText))
             {
-                wdgWriteComment.CommentText = draft.CommentText;
-                wdgWriteComment.IsAnonymous = draft.IsAnonymous;
+                WriteComment.CommentText = draft.CommentText;
+                WriteComment.IsAnonymous = draft.IsAnonymous;
 
-                wdgWriteComment.ContentTextBox.ScrollToEnd();
-                wdgWriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
-                wdgWriteComment.ContentTextBox.Focus();
+                WriteComment.ContentTextBox.ScrollToEnd();
+                WriteComment.ContentTextBox.CaretIndex = draft.CommentText.Length;
+                WriteComment.ContentTextBox.Focus();
             }
         }
 
-        private void SvPost_ScrollChanged(object sender, ScrollChangedEventArgs e)
+
+
+        private void Page_SizeChanged(object sender,
+            SizeChangedEventArgs e)
+        {
+            var actualHeight = e.NewSize.Height;
+
+            _writeCommentMaxHeight = (int)(actualHeight * 0.3);
+            _writeCommentMaxHeight += 16 - (((int)_writeCommentMaxHeight - _writeCommentMinHeight) % 16);
+
+            WriteComment.MaxHeight = _writeCommentMaxHeight;
+
+            var verticalOffset = PostScrollViewer.VerticalOffset;
+            var scrollableHeight = PostScrollViewer.ScrollableHeight;
+            var writeCommentHeight = Math.Clamp(
+                (int)WriteComment.ActualHeight + (((int)WriteComment.ActualHeight).IsEven() ? 0 : 1),
+                _writeCommentMinHeight, _writeCommentMaxHeight);
+            var scrollViewerHeight = actualHeight - writeCommentHeight;
+
+            writeCommentHeight = Math.Floor(writeCommentHeight);
+            scrollViewerHeight = Math.Ceiling(scrollViewerHeight);
+            scrollViewerHeight += actualHeight - writeCommentHeight - scrollViewerHeight;
+
+            PostGrid.RowDefinitions[0].Height = new GridLength(
+                scrollViewerHeight);
+            PostGrid.RowDefinitions[1].Height = new GridLength(
+                writeCommentHeight);
+
+            WriteCommentStackPanel.Height = writeCommentHeight;
+
+            if (verticalOffset >= scrollableHeight - 20)
+                PostScrollViewer.ScrollToEnd();
+        }
+
+
+
+        private void PostScrollViewer_ScrollChanged(object sender,
+            ScrollChangedEventArgs e)
         {
             ViewModel.ScrollOffset = e.VerticalOffset;
         }
 
-        private async void CommentsList_CommentsUpdate(object sender, RoutedEventArgs e)
+        private async void CommentsList_CommentsUpdate(object sender,
+            RoutedEventArgs e)
         {
-            CommentsList commentsList = sender as CommentsList;
-
-            if (commentsList == null)
+            if (!(sender is CommentsList))
                 return;
 
             var postData = await GetUpdatedPostData()
@@ -321,21 +378,17 @@ namespace Memenim.Pages
             });
         }
 
-        private async void CommentsList_CommentReply(object sender, RoutedEventArgs e)
+        private async void CommentsList_CommentReply(object sender,
+            RoutedEventArgs e)
         {
-            CommentsList commentsList = sender as CommentsList;
-
-            if (commentsList == null)
+            if (!(sender is CommentsList))
+                return;
+            if (!(e.OriginalSource is Comment comment))
                 return;
 
-            Comment comment = e.OriginalSource as Comment;
-
-            if (comment == null)
-                return;
-
-            double verticalOffset = svPost.VerticalOffset;
-            double scrollableHeight = svPost.ScrollableHeight;
-            string userNickname = !string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname)
+            var verticalOffset = PostScrollViewer.VerticalOffset;
+            var scrollableHeight = PostScrollViewer.ScrollableHeight;
+            var userNickname = !string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname)
                 ? comment.CurrentCommentData.User.Nickname
                 : "Unknown";
 
@@ -356,15 +409,15 @@ namespace Memenim.Pages
                     break;
             }
 
-            int oldCaretIndex = wdgWriteComment.ContentTextBox.CaretIndex;
+            var oldCaretIndex = WriteComment.ContentTextBox.CaretIndex;
 
-            wdgWriteComment.CommentText = replyText + wdgWriteComment.CommentText;
-            wdgWriteComment.ContentTextBox.CaretIndex = replyText.Length + oldCaretIndex;
-            wdgWriteComment.ContentTextBox.ScrollToEnd();
-            wdgWriteComment.ContentTextBox.Focus();
+            WriteComment.CommentText = replyText + WriteComment.CommentText;
+            WriteComment.ContentTextBox.CaretIndex = replyText.Length + oldCaretIndex;
+            WriteComment.ContentTextBox.ScrollToEnd();
+            WriteComment.ContentTextBox.Focus();
 
             if (verticalOffset >= scrollableHeight - 20)
-                svPost.ScrollToEnd();
+                PostScrollViewer.ScrollToEnd();
 
             if (comment.CurrentCommentData.User.Id.HasValue
                 && comment.CurrentCommentData.User.Id == SettingsManager.PersistentSettings.CurrentUser.Id)
@@ -396,11 +449,10 @@ namespace Memenim.Pages
             }
         }
 
-        private async void CommentsList_CommentDelete(object sender, RoutedEventArgs e)
+        private async void CommentsList_CommentDelete(object sender,
+            RoutedEventArgs e)
         {
-            CommentsList commentsList = sender as CommentsList;
-
-            if (commentsList == null)
+            if (!(sender is CommentsList))
                 return;
 
             var postData = await GetUpdatedPostData()
@@ -412,11 +464,10 @@ namespace Memenim.Pages
             });
         }
 
-        private async void WriteComment_CommentAdd(object sender, RoutedEventArgs e)
+        private async void WriteComment_CommentAdd(object sender,
+            RoutedEventArgs e)
         {
-            WriteComment writeComment = sender as WriteComment;
-
-            if (writeComment == null)
+            if (!(sender is WriteComment))
                 return;
 
             var postData = await GetUpdatedPostData()
@@ -427,16 +478,17 @@ namespace Memenim.Pages
                 ViewModel.CurrentPostData.Comments = postData.Comments;
             });
 
-            await wdgCommentsList.LoadNewComments()
+            await CommentsList.LoadNewComments()
                 .ConfigureAwait(true);
         }
 
-        private void WriteComment_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void WriteComment_SizeChanged(object sender,
+            SizeChangedEventArgs e)
         {
             var actualHeight = ActualHeight;
 
-            var verticalOffset = svPost.VerticalOffset;
-            var scrollableHeight = svPost.ScrollableHeight;
+            var verticalOffset = PostScrollViewer.VerticalOffset;
+            var scrollableHeight = PostScrollViewer.ScrollableHeight;
             var writeCommentHeight = Math.Clamp(
                 (int)e.NewSize.Height + (((int)e.NewSize.Height).IsEven() ? 0 : 1),
                 _writeCommentMinHeight, _writeCommentMaxHeight);
@@ -451,41 +503,10 @@ namespace Memenim.Pages
             PostGrid.RowDefinitions[1].Height = new GridLength(
                 writeCommentHeight);
 
-            pnlWriteComment.Height = writeCommentHeight;
+            WriteCommentStackPanel.Height = writeCommentHeight;
 
             if (verticalOffset >= scrollableHeight - 20)
-                svPost.ScrollToEnd();
-        }
-
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var actualHeight = e.NewSize.Height;
-
-            _writeCommentMaxHeight = (int)(actualHeight * 0.3);
-            _writeCommentMaxHeight += 16 - (((int)_writeCommentMaxHeight - _writeCommentMinHeight) % 16);
-
-            wdgWriteComment.MaxHeight = _writeCommentMaxHeight;
-
-            var verticalOffset = svPost.VerticalOffset;
-            var scrollableHeight = svPost.ScrollableHeight;
-            var writeCommentHeight = Math.Clamp(
-                (int)wdgWriteComment.ActualHeight + (((int)wdgWriteComment.ActualHeight).IsEven() ? 0 : 1),
-                _writeCommentMinHeight, _writeCommentMaxHeight);
-            var scrollViewerHeight = actualHeight - writeCommentHeight;
-
-            writeCommentHeight = Math.Floor(writeCommentHeight);
-            scrollViewerHeight = Math.Ceiling(scrollViewerHeight);
-            scrollViewerHeight += actualHeight - writeCommentHeight - scrollViewerHeight;
-
-            PostGrid.RowDefinitions[0].Height = new GridLength(
-                scrollViewerHeight);
-            PostGrid.RowDefinitions[1].Height = new GridLength(
-                writeCommentHeight);
-
-            pnlWriteComment.Height = writeCommentHeight;
-
-            if (verticalOffset >= scrollableHeight - 20)
-                svPost.ScrollToEnd();
+                PostScrollViewer.ScrollToEnd();
         }
     }
 }

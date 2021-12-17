@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,17 +29,14 @@ namespace Memenim.Pages
             DependencyProperty.Register(nameof(IsEditMode), typeof(bool), typeof(UserProfilePage),
                 new PropertyMetadata(false));
 
-        private readonly SemaphoreSlim _profileUpdateLock = new SemaphoreSlim(1, 1);
+
+
+        private readonly SemaphoreSlim _profileUpdateLock;
         private int _profileUpdateWaitingCount;
+
         private bool _loadingGridShowing;
 
-        public UserProfileViewModel ViewModel
-        {
-            get
-            {
-                return DataContext as UserProfileViewModel;
-            }
-        }
+
 
         public bool IsEditMode
         {
@@ -54,8 +50,24 @@ namespace Memenim.Pages
             }
         }
 
+
+
+        public UserProfileViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as UserProfileViewModel;
+            }
+        }
+
+
+
         public UserProfilePage()
         {
+            _profileUpdateLock =
+                new SemaphoreSlim(1, 1);
+            _profileUpdateWaitingCount = 0;
+
             InitializeComponent();
             DataContext = new UserProfileViewModel();
 
@@ -69,6 +81,8 @@ namespace Memenim.Pages
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
+
+
         private async Task SelectAvatarImage(
             string url)
         {
@@ -81,30 +95,41 @@ namespace Memenim.Pages
             ViewModel.CurrentProfileData.PhotoUrl = url;
         }
 
+
+
         public Task UpdateProfile()
         {
-            return UpdateProfile(ViewModel.CurrentProfileData.Id);
+            return UpdateProfile(
+                ViewModel.CurrentProfileData.Id);
         }
-        public async Task UpdateProfile(int id)
+        public async Task UpdateProfile(
+            int id)
         {
-            await ShowLoadingGrid(true)
-                .ConfigureAwait(true);
+            await Dispatcher.Invoke(() =>
+            {
+                return ShowLoadingGrid();
+            }).ConfigureAwait(false);
 
             try
             {
-                Interlocked.Increment(ref _profileUpdateWaitingCount);
+                Interlocked.Increment(
+                    ref _profileUpdateWaitingCount);
 
                 await _profileUpdateLock.WaitAsync()
                     .ConfigureAwait(true);
             }
             finally
             {
-                Interlocked.Decrement(ref _profileUpdateWaitingCount);
+                Interlocked.Decrement(
+                    ref _profileUpdateWaitingCount);
             }
 
             try
             {
-                btnEditMode.IsChecked = false;
+                Dispatcher.Invoke(() =>
+                {
+                    EditModeButton.IsChecked = false;
+                });
 
                 if (id < 0)
                 {
@@ -113,7 +138,8 @@ namespace Memenim.Pages
 
                     NavigationController.Instance.GoBack(true);
 
-                    string message = LocalizationUtils.GetLocalized("UserNotFound");
+                    var message = LocalizationUtils
+                        .GetLocalized("UserNotFound");
 
                     await DialogManager.ShowErrorDialog(message)
                         .ConfigureAwait(true);
@@ -121,7 +147,8 @@ namespace Memenim.Pages
                     return;
                 }
 
-                var result = await UserApi.GetProfileById(id)
+                var result = await UserApi.GetProfileById(
+                        id)
                     .ConfigureAwait(true);
 
                 if (result.IsError)
@@ -144,7 +171,8 @@ namespace Memenim.Pages
 
                     NavigationController.Instance.GoBack(true);
 
-                    string message = LocalizationUtils.GetLocalized("UserNotFound");
+                    var message = LocalizationUtils
+                        .GetLocalized("UserNotFound");
 
                     await DialogManager.ShowErrorDialog(message)
                         .ConfigureAwait(true);
@@ -152,10 +180,14 @@ namespace Memenim.Pages
                     return;
                 }
 
-                ViewModel.CurrentProfileData = result.Data;
+                Dispatcher.Invoke(() =>
+                {
+                    ViewModel.CurrentProfileData =
+                        result.Data;
 
-                UpdateStatBlock(StatBlock1, StatBlock2,
-                    StatBlock3, StatBlock4);
+                    UpdateStatBlock(StatBlock1, StatBlock2,
+                        StatBlock3, StatBlock4);
+                });
             }
             finally
             {
@@ -164,27 +196,35 @@ namespace Memenim.Pages
 
                 if (_profileUpdateWaitingCount == 0)
                 {
-                    await ShowLoadingGrid(false)
-                        .ConfigureAwait(true);
+                    await Dispatcher.Invoke(() =>
+                    {
+                        return HideLoadingGrid();
+                    }).ConfigureAwait(false);
                 }
 
                 _profileUpdateLock.Release();
             }
         }
 
-        public void UpdateStatBlock(params StackPanel[] statBlocks)
+
+
+        public void UpdateStatBlock(
+            params StackPanel[] statBlocks)
         {
             foreach (var statBlock in statBlocks)
             {
-                UpdateStatBlock(statBlock);
+                UpdateStatBlock(
+                    statBlock);
             }
         }
-        public void UpdateStatBlock(StackPanel statBlock)
+        public void UpdateStatBlock(
+            StackPanel statBlock)
         {
             UpdateLayout();
 
             var visibilityMultiBinding =
-                BindingOperations.GetMultiBindingExpression(statBlock,
+                BindingOperations.GetMultiBindingExpression(
+                    statBlock,
                     VisibilityProperty);
 
             if (visibilityMultiBinding == null)
@@ -193,13 +233,17 @@ namespace Memenim.Pages
             foreach (var binding in
                 visibilityMultiBinding.BindingExpressions)
             {
-                binding.UpdateTarget();
+                binding
+                    .UpdateTarget();
             }
 
-            visibilityMultiBinding.UpdateTarget();
+            visibilityMultiBinding
+                .UpdateTarget();
 
             UpdateLayout();
         }
+
+
 
         public void Share()
         {
@@ -212,21 +256,23 @@ namespace Memenim.Pages
             Clipboard.SetText(link);
         }
 
-        public Task ShowLoadingGrid(bool status)
+
+
+        public Task ShowLoadingGrid()
         {
-            if (status)
-            {
-                _loadingGridShowing = true;
-                loadingIndicator.IsActive = true;
-                loadingGrid.Opacity = 1.0;
-                loadingGrid.IsHitTestVisible = true;
-                loadingGrid.Visibility = Visibility.Visible;
+            _loadingGridShowing = true;
+            LoadingIndicator.IsActive = true;
+            LoadingGrid.Opacity = 1.0;
+            LoadingGrid.IsHitTestVisible = true;
+            LoadingGrid.Visibility = Visibility.Visible;
 
-                return Task.CompletedTask;
-            }
+            return Task.CompletedTask;
+        }
 
+        public Task HideLoadingGrid()
+        {
             _loadingGridShowing = false;
-            loadingIndicator.IsActive = false;
+            LoadingIndicator.IsActive = false;
 
             return Task.Run(async () =>
             {
@@ -241,13 +287,13 @@ namespace Memenim.Pages
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            loadingGrid.IsHitTestVisible = false;
+                            LoadingGrid.IsHitTestVisible = false;
                         });
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
                     });
 
                     await Task.Delay(4)
@@ -256,12 +302,15 @@ namespace Memenim.Pages
 
                 Dispatcher.Invoke(() =>
                 {
-                    loadingGrid.Visibility = Visibility.Collapsed;
+                    LoadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
         }
 
-        protected override async void OnEnter(object sender, RoutedEventArgs e)
+
+
+        protected override async void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -279,24 +328,27 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
+
+            ImageBehavior.SetAnimatedSource(
+                Avatar.Image, null);
+
+            UpdateLayout();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
 
             if (!IsOnExitActive)
             {
                 e.Handled = true;
                 return;
             }
-
-            ImageBehavior.SetAnimatedSource(Avatar.Image, null);
-
-            UpdateLayout();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
         }
 
-        protected override async void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected override async void ViewModelPropertyChanged(object sender,
+            PropertyChangedEventArgs e)
         {
             base.ViewModelPropertyChanged(sender, e);
 
@@ -307,37 +359,49 @@ namespace Memenim.Pages
             }
         }
 
-        private void OnLocalizationUpdated(object sender, LocalizationEventArgs e)
+
+
+        private void OnLocalizationUpdated(object sender,
+            LocalizationEventArgs e)
         {
-            ProfileStatPurpose
+            PurposeProfileStat
                 .GetBindingExpression(UserProfileStat.StatValueProperty)?
                 .UpdateTarget();
-            ProfileStatSex
+            SexProfileStat
                 .GetBindingExpression(UserProfileStat.StatValueProperty)?
                 .UpdateTarget();
         }
 
-        private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
+        private async void OnCurrentUserChanged(object sender,
+            UserChangedEventArgs e)
         {
             await UpdateProfile()
                 .ConfigureAwait(true);
         }
 
-        private void CopyUserLink_Click(object sender, RoutedEventArgs e)
+
+
+        private void CopyUserLink_Click(object sender,
+            RoutedEventArgs e)
         {
             Share();
         }
 
-        private void CopyUserId_Click(object sender, RoutedEventArgs e)
+        private void CopyUserId_Click(object sender,
+            RoutedEventArgs e)
         {
-            var id = ViewModel.CurrentProfileData.Id.ToString();
+            var id =
+                ViewModel.CurrentProfileData.Id
+                    .ToString();
 
             Clipboard.SetText(id);
         }
 
-        private async void CopyUserNickname_Click(object sender, RoutedEventArgs e)
+        private async void CopyUserNickname_Click(object sender,
+            RoutedEventArgs e)
         {
-            var nickname = ViewModel.CurrentProfileData.Nickname;
+            var nickname =
+                ViewModel.CurrentProfileData.Nickname;
 
             if (nickname == null)
             {
@@ -353,9 +417,11 @@ namespace Memenim.Pages
             Clipboard.SetText(nickname);
         }
 
-        private async void CopyUserLogin_Click(object sender, RoutedEventArgs e)
+        private async void CopyUserLogin_Click(object sender,
+            RoutedEventArgs e)
         {
-            var login = ViewModel.CurrentProfileData.Login;
+            var login =
+                ViewModel.CurrentProfileData.Login;
 
             if (login == null)
             {
@@ -371,13 +437,8 @@ namespace Memenim.Pages
             Clipboard.SetText(login);
         }
 
-        private void btnEditMode_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateStatBlock(StatBlock1, StatBlock2,
-                StatBlock3, StatBlock4);
-        }
-
-        private async void SelectAvatarFromUrl_Click(object sender, RoutedEventArgs e)
+        private async void SelectAvatarFromUrl_Click(object sender,
+            RoutedEventArgs e)
         {
             var title = LocalizationUtils
                 .GetLocalized("InsertingImageTitle");
@@ -392,7 +453,8 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
         }
 
-        private void SelectAvatarFromAnonymGallery_Click(object sender, RoutedEventArgs e)
+        private void SelectAvatarFromAnonymGallery_Click(object sender,
+            RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<AnonymGallerySearchPage>(new AnonymGallerySearchViewModel
             {
@@ -400,7 +462,8 @@ namespace Memenim.Pages
             });
         }
 
-        private void SelectAvatarFromTenor_Click(object sender, RoutedEventArgs e)
+        private void SelectAvatarFromTenor_Click(object sender,
+            RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<TenorSearchPage>(new TenorSearchViewModel
             {
@@ -408,7 +471,8 @@ namespace Memenim.Pages
             });
         }
 
-        private async void RemoveAvatar_Click(object sender, RoutedEventArgs e)
+        private async void RemoveAvatar_Click(object sender,
+            RoutedEventArgs e)
         {
             await ProfileUtils.RemoveAvatar()
                 .ConfigureAwait(true);
@@ -419,35 +483,49 @@ namespace Memenim.Pages
             });
         }
 
-        private async void EditName_Click(object sender, RoutedEventArgs e)
-        {
-            UserProfilePage element = this;
 
-            BindingExpression binding = element.txtName.GetBindingExpression(Emoji.Wpf.TextBlock.TextProperty);
+
+        private async void EditName_Click(object sender,
+            RoutedEventArgs e)
+        {
+            var page = this;
+
+            var binding = page.NicknameTextBox
+                .GetBindingExpression(Emoji.Wpf.TextBlock.TextProperty);
 
             if (binding == null)
                 return;
 
-            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
-            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+            var sourceClass =
+                (ProfileSchema)binding.ResolvedSource;
+            var sourceProperty =
+                typeof(ProfileSchema).GetProperty(
+                    binding.ResolvedSourcePropertyName);
 
             if (sourceClass == null || sourceProperty == null)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("ProfileEditingTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
-            string statName = LocalizationUtils.GetLocalized("Nickname");
+            var title = LocalizationUtils
+                .GetLocalized("ProfileEditingTitle");
+            var enterName = LocalizationUtils
+                .GetLocalized("EnterTitle");
+            var statName = LocalizationUtils
+                .GetLocalized("Nickname");
 
-            string oldValue = (string)sourceProperty.GetValue(sourceClass);
-            string value = await DialogManager.ShowSinglelineTextDialog(title,
-                    $"{enterName} '{statName}'", oldValue)
+            var oldValue =
+                (string)sourceProperty.GetValue(
+                    sourceClass);
+            var value = await DialogManager.ShowSinglelineTextDialog(
+                    title,
+                    $"{enterName} '{statName}'",
+                    oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
                 return;
 
-            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
-            sourceProperty.SetValue(sourceClass, value);
+            sourceProperty.SetValue(
+                sourceClass, value);
 
             var request = await UserApi.EditProfile(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -459,7 +537,8 @@ namespace Memenim.Pages
                 await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
-                sourceProperty.SetValue(sourceClass, oldValue);
+                sourceProperty.SetValue(
+                    sourceClass, oldValue);
 
                 return;
             }
@@ -468,34 +547,45 @@ namespace Memenim.Pages
                 new UserNameChangedEventArgs(oldValue, value, ViewModel.CurrentProfileData.Id));
         }
 
-        private async void EditSinglelineText_Click(object sender, RoutedEventArgs e)
+        private async void EditSinglelineText_Click(object sender,
+            RoutedEventArgs e)
         {
-            UserProfileStat element = sender as UserProfileStat;
+            var profileStat = sender as UserProfileStat;
 
-            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+            var binding = profileStat?
+                .GetBindingExpression(UserProfileStat.StatValueProperty);
 
             if (binding == null)
                 return;
 
-            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
-            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+            var sourceClass =
+                (ProfileSchema)binding.ResolvedSource;
+            var sourceProperty =
+                typeof(ProfileSchema).GetProperty(
+                    binding.ResolvedSourcePropertyName);
 
             if (sourceClass == null || sourceProperty == null)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("ProfileEditingTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            var title = LocalizationUtils
+                .GetLocalized("ProfileEditingTitle");
+            var enterName = LocalizationUtils
+                .GetLocalized("EnterTitle");
 
-            string oldValue = (string)sourceProperty.GetValue(sourceClass);
-            string value = await DialogManager.ShowSinglelineTextDialog(title,
-                    $"{enterName} '{element.StatTitle}'", oldValue)
+            var oldValue =
+                (string)sourceProperty.GetValue(
+                    sourceClass);
+            var value = await DialogManager.ShowSinglelineTextDialog(
+                    title,
+                    $"{enterName} '{profileStat.StatTitle}'",
+                    oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
                 return;
 
-            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
-            sourceProperty.SetValue(sourceClass, value);
+            sourceProperty.SetValue(
+                sourceClass, value);
 
             var request = await UserApi.EditProfile(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -507,45 +597,59 @@ namespace Memenim.Pages
                 await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
-                sourceProperty.SetValue(sourceClass, oldValue);
+                sourceProperty.SetValue(
+                    sourceClass, oldValue);
             }
 
-            var statBlock = element.TryFindParent<StackPanel>();
+            var statBlock = profileStat
+                .TryFindParent<StackPanel>();
 
             if (statBlock == null)
                 return;
 
-            UpdateStatBlock(statBlock);
+            UpdateStatBlock(
+                statBlock);
         }
 
-        private async void EditMultilineText_Click(object sender, RoutedEventArgs e)
+        private async void EditMultilineText_Click(object sender,
+            RoutedEventArgs e)
         {
-            UserProfileStat element = sender as UserProfileStat;
+            var profileStat = sender as UserProfileStat;
 
-            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+            var binding = profileStat?
+                .GetBindingExpression(UserProfileStat.StatValueProperty);
 
             if (binding == null)
                 return;
 
-            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
-            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+            var sourceClass =
+                (ProfileSchema)binding.ResolvedSource;
+            var sourceProperty =
+                typeof(ProfileSchema).GetProperty(
+                    binding.ResolvedSourcePropertyName);
 
             if (sourceClass == null || sourceProperty == null)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("ProfileEditingTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            var title = LocalizationUtils
+                .GetLocalized("ProfileEditingTitle");
+            var enterName = LocalizationUtils
+                .GetLocalized("EnterTitle");
 
-            string oldValue = (string)sourceProperty.GetValue(sourceClass);
-            string value = await DialogManager.ShowMultilineTextDialog(title,
-                    $"{enterName} '{element.StatTitle}'", oldValue)
+            var oldValue =
+                (string)sourceProperty.GetValue(
+                    sourceClass);
+            var value = await DialogManager.ShowMultilineTextDialog(
+                    title,
+                    $"{enterName} '{profileStat.StatTitle}'",
+                    oldValue)
                 .ConfigureAwait(true);
 
             if (value == null)
                 return;
 
-            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
-            sourceProperty.SetValue(sourceClass, value);
+            sourceProperty.SetValue(
+                sourceClass, value);
 
             var request = await UserApi.EditProfile(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -557,51 +661,67 @@ namespace Memenim.Pages
                 await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
-                sourceProperty.SetValue(sourceClass, oldValue);
+                sourceProperty.SetValue(
+                    sourceClass, oldValue);
             }
 
-            var statBlock = element.TryFindParent<StackPanel>();
+            var statBlock = profileStat
+                .TryFindParent<StackPanel>();
 
             if (statBlock == null)
                 return;
 
-            UpdateStatBlock(statBlock);
+            UpdateStatBlock(
+                statBlock);
         }
 
-        private async void EditComboBoxPurpose_Click(object sender, RoutedEventArgs e)
+        private async void EditComboBoxPurpose_Click(object sender,
+            RoutedEventArgs e)
         {
-            UserProfileStat element = sender as UserProfileStat;
+            var profileStat = sender as UserProfileStat;
 
-            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+            var binding = profileStat?
+                .GetBindingExpression(UserProfileStat.StatValueProperty);
 
             if (binding == null)
                 return;
 
-            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
-            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+            var sourceClass =
+                (ProfileSchema)binding.ResolvedSource;
+            var sourceProperty =
+                typeof(ProfileSchema).GetProperty(
+                    binding.ResolvedSourcePropertyName);
 
             if (sourceClass == null || sourceProperty == null)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("ProfileEditingTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            var title = LocalizationUtils
+                .GetLocalized("ProfileEditingTitle");
+            var enterName = LocalizationUtils
+                .GetLocalized("EnterTitle");
 
-            ReadOnlyCollection<string> localizedNames =
-                new ReadOnlyCollection<string>(UserPurposeType.Unknown.GetLocalizedNames());
+            var localizedNames =
+                new ReadOnlyCollection<string>(
+                    UserPurposeType.Unknown.GetLocalizedNames());
 
-            UserPurposeType oldValue = (UserPurposeType)(sourceProperty.GetValue(sourceClass) ?? UserPurposeType.Unknown);
-            string valueName = await DialogManager.ShowComboBoxDialog(title,
-                    $"{enterName} '{element.StatTitle}'", localizedNames,
+            var oldValue =
+                (UserPurposeType)(sourceProperty.GetValue(sourceClass)
+                                  ?? UserPurposeType.Unknown);
+            var valueName = await DialogManager.ShowComboBoxDialog(
+                    title,
+                    $"{enterName} '{profileStat.StatTitle}'",
+                    localizedNames,
                     oldValue.GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            UserPurposeType value = UserPurposeType.Unknown.ParseLocalizedName(valueName);
+            var value = UserPurposeType.Unknown
+                .ParseLocalizedName(valueName);
 
-            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
-            sourceProperty.SetValue(sourceClass, value);
+            sourceProperty.SetValue(
+                sourceClass, value);
 
             var request = await UserApi.EditProfile(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -613,52 +733,67 @@ namespace Memenim.Pages
                 await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
-                sourceProperty.SetValue(sourceClass, oldValue);
+                sourceProperty.SetValue(
+                    sourceClass, oldValue);
             }
 
-            var statBlock = element.TryFindParent<StackPanel>();
+            var statBlock = profileStat
+                .TryFindParent<StackPanel>();
 
             if (statBlock == null)
                 return;
 
-            UpdateStatBlock(statBlock);
+            UpdateStatBlock(
+                statBlock);
         }
 
-        private async void EditComboBoxSex_Click(object sender, RoutedEventArgs e)
+        private async void EditComboBoxSex_Click(object sender,
+            RoutedEventArgs e)
         {
-            UserProfileStat element = sender as UserProfileStat;
+            var profileStat = sender as UserProfileStat;
 
-            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+            var binding = profileStat?
+                .GetBindingExpression(UserProfileStat.StatValueProperty);
 
             if (binding == null)
                 return;
 
-            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
-            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+            var sourceClass =
+                (ProfileSchema)binding.ResolvedSource;
+            var sourceProperty =
+                typeof(ProfileSchema).GetProperty(
+                    binding.ResolvedSourcePropertyName);
 
             if (sourceClass == null || sourceProperty == null)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("ProfileEditingTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            var title = LocalizationUtils
+                .GetLocalized("ProfileEditingTitle");
+            var enterName = LocalizationUtils
+                .GetLocalized("EnterTitle");
 
-            ReadOnlyCollection<string> localizedNames =
-                new ReadOnlyCollection<string>(UserSexType.Unknown.GetLocalizedNames());
+            var localizedNames =
+                new ReadOnlyCollection<string>(
+                    UserSexType.Unknown.GetLocalizedNames());
 
-            UserSexType oldValue = (UserSexType)(sourceProperty.GetValue(sourceClass)
-                                                 ?? UserSexType.Unknown);
-            string valueName = await DialogManager.ShowComboBoxDialog(title,
-                    $"{enterName} '{element.StatTitle}'", localizedNames,
+            var oldValue =
+                (UserSexType)(sourceProperty.GetValue(sourceClass)
+                              ?? UserSexType.Unknown);
+            var valueName = await DialogManager.ShowComboBoxDialog(
+                    title,
+                    $"{enterName} '{profileStat.StatTitle}'",
+                    localizedNames,
                     oldValue.GetLocalizedName())
                 .ConfigureAwait(true);
 
             if (valueName == null)
                 return;
 
-            UserSexType value = UserSexType.Unknown.ParseLocalizedName(valueName);
+            var value = UserSexType.Unknown
+                .ParseLocalizedName(valueName);
 
-            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
-            sourceProperty.SetValue(sourceClass, value);
+            sourceProperty.SetValue(
+                sourceClass, value);
 
             var request = await UserApi.EditProfile(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -670,46 +805,63 @@ namespace Memenim.Pages
                 await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
-                sourceProperty.SetValue(sourceClass, oldValue);
+                sourceProperty.SetValue(
+                    sourceClass, oldValue);
             }
 
-            var statBlock = element.TryFindParent<StackPanel>();
+            var statBlock = profileStat
+                .TryFindParent<StackPanel>();
 
             if (statBlock == null)
                 return;
 
-            UpdateStatBlock(statBlock);
+            UpdateStatBlock(
+                statBlock);
         }
 
-        private async void EditNumericAge_Click(object sender, RoutedEventArgs e)
+        private async void EditNumericAge_Click(object sender,
+            RoutedEventArgs e)
         {
-            UserProfileStat element = sender as UserProfileStat;
+            var profileStat = sender as UserProfileStat;
 
-            BindingExpression binding = element?.GetBindingExpression(UserProfileStat.StatValueProperty);
+            var binding = profileStat?
+                .GetBindingExpression(UserProfileStat.StatValueProperty);
 
             if (binding == null)
                 return;
 
-            ProfileSchema sourceClass = (ProfileSchema)binding.ResolvedSource;
-            PropertyInfo sourceProperty = typeof(ProfileSchema).GetProperty(binding.ResolvedSourcePropertyName);
+            var sourceClass =
+                (ProfileSchema)binding.ResolvedSource;
+            var sourceProperty =
+                typeof(ProfileSchema).GetProperty(
+                    binding.ResolvedSourcePropertyName);
 
             if (sourceClass == null || sourceProperty == null)
                 return;
 
-            string title = LocalizationUtils.GetLocalized("ProfileEditingTitle");
-            string enterName = LocalizationUtils.GetLocalized("EnterTitle");
+            var title = LocalizationUtils
+                .GetLocalized("ProfileEditingTitle");
+            var enterName = LocalizationUtils
+                .GetLocalized("EnterTitle");
 
-            int oldValue = (int)(sourceProperty.GetValue(sourceClass) ?? 0);
-            double? value = await DialogManager.ShowNumericDialog(title,
-                    $"{enterName} '{element.StatTitle}'", Convert.ToDouble(oldValue),
-                    0.0, 255.0, 1.0, "F0")
+            var oldValue =
+                (int)(sourceProperty.GetValue(sourceClass)
+                      ?? 0);
+            var value = await DialogManager.ShowNumericDialog(
+                    title,
+                    $"{enterName} '{profileStat.StatTitle}'",
+                    Convert.ToDouble(oldValue),
+                    0.0,
+                    255.0,
+                    1.0,
+                    "F0")
                 .ConfigureAwait(true);
 
             if (value == null)
                 return;
 
-            //sourceProperty.SetValue(sourceClass, value.Length == 0 ? null : value);
-            sourceProperty.SetValue(sourceClass, Convert.ToInt32(value));
+            sourceProperty.SetValue(
+                sourceClass, Convert.ToInt32(value.Value));
 
             var request = await UserApi.EditProfile(
                     SettingsManager.PersistentSettings.CurrentUser.Token,
@@ -721,23 +873,36 @@ namespace Memenim.Pages
                 await DialogManager.ShowErrorDialog(request.Message)
                     .ConfigureAwait(true);
 
-                sourceProperty.SetValue(sourceClass, oldValue);
+                sourceProperty.SetValue(
+                    sourceClass, oldValue);
             }
 
-            var statBlock = element.TryFindParent<StackPanel>();
+            var statBlock = profileStat
+                .TryFindParent<StackPanel>();
 
             if (statBlock == null)
                 return;
 
-            UpdateStatBlock(statBlock);
+            UpdateStatBlock(
+                statBlock);
         }
 
-        private void Avatar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+
+
+        private void EditModeButton_Click(object sender,
+            RoutedEventArgs e)
+        {
+            UpdateStatBlock(StatBlock1, StatBlock2,
+                StatBlock3, StatBlock4);
+        }
+
+        private void Avatar_MouseLeftButtonUp(object sender,
+            MouseButtonEventArgs e)
         {
             if (string.IsNullOrEmpty(ViewModel.CurrentProfileData.PhotoUrl))
                 return;
 
-            NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel()
+            NavigationController.Instance.RequestOverlay<ImagePreviewOverlayPage>(new ImagePreviewOverlayViewModel
             {
                 ImageSource = ViewModel.CurrentProfileData.PhotoUrl
             });
@@ -745,7 +910,8 @@ namespace Memenim.Pages
             e.Handled = true;
         }
 
-        private void Avatar_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void Avatar_MouseRightButtonUp(object sender,
+            MouseButtonEventArgs e)
         {
             if (!ViewModel.EditAllowed)
                 e.Handled = true;
