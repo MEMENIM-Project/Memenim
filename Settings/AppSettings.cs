@@ -34,6 +34,54 @@ namespace Memenim.Settings
 
 
 
+        [ExcludedSetting]
+        public WindowState WindowStateEnum
+        {
+            get
+            {
+                if (Enum.GetName(typeof(WindowState), WindowState) == null)
+                    WindowState = (int)System.Windows.WindowState.Normal;
+
+                return (WindowState)WindowState;
+            }
+            set
+            {
+                WindowState = (int)WindowStateEnum;
+            }
+        }
+        [ExcludedSetting]
+        public PostType PostsTypeEnum
+        {
+            get
+            {
+                if (Enum.GetName(typeof(PostType), PostsType) == null)
+                    PostsType = (int)PostType.Popular;
+
+                return (PostType)PostsType;
+            }
+            set
+            {
+                PostsType = (int)PostsTypeEnum;
+            }
+        }
+        [ExcludedSetting]
+        public CommentReplyModeType CommentReplyModeEnum
+        {
+            get
+            {
+                if (Enum.GetName(typeof(CommentReplyModeType), CommentReplyMode) == null)
+                    CommentReplyMode = (int)CommentReplyModeType.Legacy;
+
+                return (CommentReplyModeType)CommentReplyMode;
+            }
+            set
+            {
+                CommentReplyMode = (int)CommentReplyModeEnum;
+            }
+        }
+
+
+
         public AppSettings()
             : base(Path.Combine(Environment.ExecProcessDirectoryName, SettingsFileName))
         {

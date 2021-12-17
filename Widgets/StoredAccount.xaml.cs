@@ -165,11 +165,13 @@ namespace Memenim.Widgets
 
 
 
-        private void Account_Click(object sender,
+        private void StoredAccount_Click(object sender,
             RoutedEventArgs e)
         {
             RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
+
+
 
         private async void Delete_Click(object sender,
             RoutedEventArgs e)

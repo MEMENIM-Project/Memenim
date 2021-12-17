@@ -34,43 +34,49 @@ namespace Memenim.Pages
             await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
-            var result = await PhotoApi
-                .GetLibraryPhotos()
-                .ConfigureAwait(true);
-
-            if (result.IsError
-                || result.Data == null)
+            try
             {
-                return;
-            }
+                var result = await PhotoApi
+                    .GetLibraryPhotos()
+                    .ConfigureAwait(true);
 
-            ImagesWrapPanel.Children.Clear();
-
-            foreach (var photo in result.Data)
-            {
-                if (string.IsNullOrEmpty(photo.MediumUrl))
-                    continue;
-                if (string.IsNullOrEmpty(photo.SmallUrl))
-                    photo.SmallUrl = photo.MediumUrl;
-
-                var imageButton = new ImagePreviewButton
+                if (result.IsError
+                    || result.Data == null)
                 {
-                    ButtonSize = 200,
-                    SmallImageSource = photo.SmallUrl,
-                    ImageSource = photo.MediumUrl
-                };
-                imageButton.Click += ImagePreviewButton_Click;
+                    return;
+                }
 
-                ImagesWrapPanel.Children.Add(
-                    imageButton);
+                ImagesWrapPanel.Children.Clear();
+
+                foreach (var photo in result.Data)
+                {
+                    if (string.IsNullOrEmpty(photo.MediumUrl))
+                        continue;
+                    if (string.IsNullOrEmpty(photo.SmallUrl))
+                        photo.SmallUrl = photo.MediumUrl;
+
+                    var imageButton = new ImagePreviewButton
+                    {
+                        ButtonSize = 200,
+                        SmallImageSource = photo.SmallUrl,
+                        ImageSource = photo.MediumUrl,
+                        Margin = new Thickness(5)
+                    };
+                    imageButton.Click += ImagePreviewButton_Click;
+
+                    ImagesWrapPanel.Children.Add(
+                        imageButton);
+                }
+
+                await Task.Delay(
+                        TimeSpan.FromSeconds(1))
+                    .ConfigureAwait(true);
             }
-
-            await Task.Delay(
-                    TimeSpan.FromSeconds(1))
-                .ConfigureAwait(true);
-
-            await HideLoadingGrid()
-                .ConfigureAwait(true);
+            finally
+            {
+                await HideLoadingGrid()
+                    .ConfigureAwait(true);
+            }
         }
 
 

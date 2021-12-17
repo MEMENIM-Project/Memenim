@@ -18,7 +18,7 @@ namespace Memenim.Pages
 {
     public partial class PostOverlayPage : PageContent
     {
-        private double _writeCommentMinHeight;
+        private readonly double _writeCommentMinHeight;
         private double _writeCommentMaxHeight;
 
         public PostOverlayViewModel ViewModel
@@ -328,30 +328,31 @@ namespace Memenim.Pages
             if (commentsList == null)
                 return;
 
-            UserComment comment = e.OriginalSource as UserComment;
+            Comment comment = e.OriginalSource as Comment;
 
             if (comment == null)
                 return;
 
             double verticalOffset = svPost.VerticalOffset;
             double scrollableHeight = svPost.ScrollableHeight;
-            CommentReplyModeType replyType = (CommentReplyModeType)SettingsManager.AppSettings.CommentReplyMode;
+            string userNickname = !string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname)
+                ? comment.CurrentCommentData.User.Nickname
+                : "Unknown";
 
             string replyText;
 
-            switch (replyType)
+            switch (SettingsManager.AppSettings.CommentReplyModeEnum)
             {
                 case CommentReplyModeType.Experimental:
                     replyText =
-                        //$">>> {commentsList.PostId}@{comment.CurrentCommentData.Id}@{comment.CurrentCommentData.User.Id} {comment.CurrentCommentData.User.Nickname}:\n\n"
-                        $">>> {(string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname) ? "Unknown" : comment.CurrentCommentData.User.Nickname)}:\n\n"
+                        $">>> {userNickname}:\n\n"
                         + $"{comment.CurrentCommentData.Text}\n\n"
                         + ">>>\n\n";
                     break;
                 case CommentReplyModeType.Legacy:
                 default:
                     replyText =
-                        $"{(string.IsNullOrEmpty(comment.CurrentCommentData.User.Nickname) ? "Unknown" : comment.CurrentCommentData.User.Nickname)}, ";
+                        $"{userNickname}, ";
                     break;
             }
 

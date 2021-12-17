@@ -55,59 +55,70 @@ namespace Memenim.Pages
 
 
 
-        public async Task ExecuteSearch(string query)
+        public async Task ExecuteSearch(
+            string query)
         {
+            SearchQueryTextBox.IsEnabled = false;
+
             await ShowLoadingGrid()
                 .ConfigureAwait(true);
 
-            var searchResults = !string.IsNullOrEmpty(query)
-                ? (await TenorClient.SearchAsync(query, 40)
-                    .ConfigureAwait(true)).Results
-                : (await TenorClient.GetTrendingPostsAsync(40)
-                    .ConfigureAwait(true)).Results;
-
-            ImagesWrapPanel.Children.Clear();
-
-            if (searchResults == null)
-                return;
-
-            foreach (var data in searchResults)
+            try
             {
-                var imageButton = new ImagePreviewButton
-                {
-                    ButtonSize = 150
-                };
-                imageButton.Click += ImagePreviewButton_Click;
+                var searchResults = !string.IsNullOrEmpty(query)
+                    ? (await TenorClient.SearchAsync(query, 40)
+                        .ConfigureAwait(true)).Results
+                    : (await TenorClient.GetTrendingPostsAsync(40)
+                        .ConfigureAwait(true)).Results;
 
-                foreach (var media in data.Media)
+                ImagesWrapPanel.Children.Clear();
+
+                if (searchResults == null)
+                    return;
+
+                foreach (var data in searchResults)
                 {
-                    if (!media.TryGetValue(MediaType.Gif, out var value))
+                    var imageButton = new ImagePreviewButton
+                    {
+                        ButtonSize = 150,
+                        Margin = new Thickness(5)
+                    };
+                    imageButton.Click += ImagePreviewButton_Click;
+
+                    foreach (var media in data.Media)
+                    {
+                        if (!media.TryGetValue(MediaType.Gif, out var value))
+                            continue;
+
+                        imageButton.ImageSource = value?.Url;
+
+                        if (!media.TryGetValue(MediaType.TinyGif, out value))
+                            value = media[MediaType.Gif];
+
+                        imageButton.SmallImageSource = value?.Url;
+                    }
+
+                    if (imageButton.ImageSource == null
+                        || imageButton.SmallImageSource == null)
+                    {
                         continue;
+                    }
 
-                    imageButton.ImageSource = value?.Url;
-
-                    if (!media.TryGetValue(MediaType.TinyGif, out value))
-                        value = media[MediaType.Gif];
-
-                    imageButton.SmallImageSource = value?.Url;
+                    ImagesWrapPanel.Children.Add(
+                        imageButton);
                 }
 
-                if (imageButton.ImageSource == null
-                    || imageButton.SmallImageSource == null)
-                {
-                    continue;
-                }
-
-                ImagesWrapPanel.Children.Add(
-                    imageButton);
+                await Task.Delay(
+                        TimeSpan.FromSeconds(2))
+                    .ConfigureAwait(true);
             }
+            finally
+            {
+                await HideLoadingGrid()
+                    .ConfigureAwait(true);
 
-            await Task.Delay(
-                    TimeSpan.FromSeconds(2))
-                .ConfigureAwait(true);
-
-            await HideLoadingGrid()
-                .ConfigureAwait(true);
+                SearchQueryTextBox.IsEnabled = true;
+            }
         }
 
 

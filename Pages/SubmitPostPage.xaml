@@ -126,7 +126,7 @@
                 <widgets:Post CurrentPostData="{Binding Path=DataContext.CurrentPostData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:SubmitPostPage}}"
                               PreviewMode="True"
                               ImageSizeLimit="True"
-                              Margin="15 5"/>
+                              Margin="10 10"/>
             </TabItem>
         </controls:MetroAnimatedTabControl>
     </Grid>

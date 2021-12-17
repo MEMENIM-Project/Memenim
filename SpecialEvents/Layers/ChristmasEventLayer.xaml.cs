@@ -23,9 +23,11 @@ namespace Memenim.SpecialEvents.Layers
         private string _padoruSongPath;
         private string[] _songsPaths;
         private string _currentSongPath;
+
         private DoubleAnimation _moveRightAnimation;
         private DoubleAnimation _fadeInAnimation;
         private DoubleAnimation _fadeOutAnimation;
+
         private Timer _padoruTimer;
 
 
@@ -405,7 +407,8 @@ namespace Memenim.SpecialEvents.Layers
 
 
 
-        protected override void OnEnter(object sender, RoutedEventArgs e)
+        protected override void OnEnter(object sender,
+            RoutedEventArgs e)
         {
             base.OnEnter(sender, e);
 
@@ -419,7 +422,8 @@ namespace Memenim.SpecialEvents.Layers
                 PlayRandomSong();
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
@@ -432,7 +436,8 @@ namespace Memenim.SpecialEvents.Layers
 
 
 
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Grid_SizeChanged(object sender,
+            SizeChangedEventArgs e)
         {
             _moveRightAnimation = new DoubleAnimation
             {
@@ -442,22 +447,27 @@ namespace Memenim.SpecialEvents.Layers
             };
         }
 
-        private void PadoruTimer_Tick(object sender, EventArgs e)
+        private void MusicPlayer_MediaEnded(object sender,
+            RoutedEventArgs e)
+        {
+            PlayRandomSong();
+        }
+
+        private void PadoruPlayer_MediaEnded(object sender,
+            RoutedEventArgs e)
+        {
+           StopPadoru();
+        }
+
+
+
+        private void PadoruTimer_Tick(object sender,
+            EventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
                 PlayPadoru();
             });
-        }
-
-        private void MusicPlayer_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            PlayRandomSong();
-        }
-
-        private void PadoruPlayer_MediaEnded(object sender, RoutedEventArgs e)
-        {
-           StopPadoru();
         }
     }
 }

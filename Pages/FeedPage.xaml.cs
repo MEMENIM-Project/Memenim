@@ -66,24 +66,22 @@ namespace Memenim.Pages
             LoadingMoreHideAnimation = (Storyboard)FindResource(
                 nameof(LoadingMoreHideAnimation));
 
-            _autoUpdateCountTimer = new Timer(TimeSpan.FromSeconds(60).TotalMilliseconds);
+            _autoUpdateCountTimer = new Timer
+            {
+                Interval = TimeSpan
+                    .FromSeconds(60)
+                    .TotalMilliseconds
+            };
             _autoUpdateCountTimer.Elapsed += AutoUpdateCountTimerCallback;
-            _autoUpdateCountTimer.Stop();
 
-            ReloadPostTypes();
+            ReloadPostsTypes();
 
-            if (Enum.TryParse<PostType>(
-                Enum.GetName(typeof(PostType), SettingsManager.AppSettings.PostsType),
-                true, out var postType))
-            {
-                slcPostTypes.SelectedItem =
-                    new KeyValuePair<PostType, string>(postType, PostTypes[postType]);
-            }
-            else
-            {
-                slcPostTypes.SelectedItem =
-                    new KeyValuePair<PostType, string>(PostType.Popular, PostTypes[PostType.Popular]);
-            }
+            var postsType = SettingsManager.AppSettings
+                .PostsTypeEnum;
+
+            slcPostsTypes.SelectedItem =
+                new KeyValuePair<PostType, string>(
+                    postsType, PostTypes[postsType]);
 
             LocalizationUtils.LocalizationUpdated += OnLocalizationUpdated;
             SettingsManager.PersistentSettings.CurrentUserChanged += OnCurrentUserChanged;
@@ -95,54 +93,54 @@ namespace Memenim.Pages
             SettingsManager.PersistentSettings.CurrentUserChanged -= OnCurrentUserChanged;
         }
 
-        private void ReloadPostTypes()
+        private void ReloadPostsTypes()
         {
             var names = Enum.GetNames(typeof(PostType));
             var localizedNames = PostType.New.GetLocalizedNames();
-            var postTypes = new Dictionary<PostType, string>(names.Length);
+            var postsTypes = new Dictionary<PostType, string>(names.Length);
 
             for (var i = 0; i < names.Length; ++i)
             {
-                postTypes.Add(
+                postsTypes.Add(
                         Enum.Parse<PostType>(names[i], true),
                         localizedNames[i]);
             }
 
-            slcPostTypes.SelectionChanged -= slcPostTypes_SelectionChanged;
+            slcPostsTypes.SelectionChanged -= slcPostTypes_SelectionChanged;
 
             KeyValuePair<PostType, string> selectedItem =
                 new KeyValuePair<PostType, string>();
 
-            if (slcPostTypes.SelectedItem != null)
+            if (slcPostsTypes.SelectedItem != null)
             {
                 selectedItem =
-                    (KeyValuePair<PostType, string>) slcPostTypes.SelectedItem;
+                    (KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem;
             }
 
-            PostTypes = new ReadOnlyDictionary<PostType, string>(postTypes);
+            PostTypes = new ReadOnlyDictionary<PostType, string>(postsTypes);
 
-            slcPostTypes
+            slcPostsTypes
                 .GetBindingExpression(ItemsControl.ItemsSourceProperty)?
                 .UpdateTarget();
 
             if (selectedItem.Value != null)
             {
-                slcPostTypes.SelectedItem =
-                    new KeyValuePair<PostType, string>(selectedItem.Key, postTypes[selectedItem.Key]);
+                slcPostsTypes.SelectedItem =
+                    new KeyValuePair<PostType, string>(selectedItem.Key, postsTypes[selectedItem.Key]);
             }
 
-            slcPostTypes.SelectionChanged += slcPostTypes_SelectionChanged;
+            slcPostsTypes.SelectionChanged += slcPostTypes_SelectionChanged;
         }
 
         public Task UpdatePosts()
         {
-            return UpdatePosts(((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key);
+            return UpdatePosts(((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key);
         }
         public async Task UpdatePosts(PostType type)
         {
             _autoUpdateCountTimer.Stop();
 
-            slcPostTypes.IsEnabled = false;
+            slcPostsTypes.IsEnabled = false;
             btnRefresh.IsEnabled = false;
 
             await ShowLoadingGrid(true)
@@ -194,14 +192,14 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
 
             btnRefresh.IsEnabled = true;
-            slcPostTypes.IsEnabled = true;
+            slcPostsTypes.IsEnabled = true;
 
             _autoUpdateCountTimer.Start();
         }
 
         public Task LoadMorePosts()
         {
-            return LoadMorePosts(((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key);
+            return LoadMorePosts(((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key);
         }
         public async Task LoadMorePosts(PostType type)
         {
@@ -257,7 +255,8 @@ namespace Memenim.Pages
                         Post widget = new Post
                         {
                             CurrentPostData = post,
-                            TextSizeLimit = true
+                            TextSizeLimit = true,
+                            Margin = new Thickness(5)
                         };
                         widget.Click += Post_Click;
                         widget.PostDelete += Post_Delete;
@@ -279,7 +278,7 @@ namespace Memenim.Pages
 
             Dispatcher.Invoke(() =>
             {
-                postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+                postType = ((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key;
             });
 
             return GetNewPostsCount(postType, OffsetPerTime, offset);
@@ -524,7 +523,7 @@ namespace Memenim.Pages
 
         private void OnLocalizationUpdated(object sender, LocalizationEventArgs e)
         {
-            ReloadPostTypes();
+            ReloadPostsTypes();
         }
 
         private async void OnCurrentUserChanged(object sender, UserChangedEventArgs e)
@@ -534,7 +533,7 @@ namespace Memenim.Pages
 
             _autoUpdateCountTimer.Stop();
 
-            slcPostTypes.IsEnabled = false;
+            slcPostsTypes.IsEnabled = false;
             btnRefresh.IsEnabled = false;
 
             await ShowLoadingGrid(true)
@@ -542,7 +541,7 @@ namespace Memenim.Pages
 
             svPosts.IsEnabled = false;
 
-            var postType = ((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+            var postType = ((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key;
 
             switch (postType)
             {
@@ -587,7 +586,7 @@ namespace Memenim.Pages
                 .ConfigureAwait(true);
 
             btnRefresh.IsEnabled = true;
-            slcPostTypes.IsEnabled = true;
+            slcPostsTypes.IsEnabled = true;
 
             _autoUpdateCountTimer.Start();
         }
@@ -619,8 +618,8 @@ namespace Memenim.Pages
             await UpdatePosts()
                 .ConfigureAwait(true);
 
-            SettingsManager.AppSettings.PostsType =
-                (int)((KeyValuePair<PostType, string>)slcPostTypes.SelectedItem).Key;
+            SettingsManager.AppSettings.PostsTypeEnum =
+                ((KeyValuePair<PostType, string>)slcPostsTypes.SelectedItem).Key;
 
             SettingsManager.AppSettings.Save();
         }

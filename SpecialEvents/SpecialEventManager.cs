@@ -17,9 +17,9 @@ namespace Memenim.SpecialEvents
 
 
 
+        private static readonly Timer AutoUpdateSpecialEventTimer;
+
         private static Dictionary<string, SpecialEventLayerContent> SpecialEventLayers { get; }
-        private static KeyValuePair<string, SpecialEventLayerContent>[] SpecialEventLayersArray { get; }
-        private static Timer UpdateSpecialEventTimer { get; }
 
 
 
@@ -51,27 +51,32 @@ namespace Memenim.SpecialEvents
 
         static SpecialEventManager()
         {
+            AutoUpdateSpecialEventTimer = new Timer
+            {
+                Interval = TimeSpan
+                    .FromHours(1)
+                    .TotalMilliseconds
+            };
+            AutoUpdateSpecialEventTimer.Elapsed += AutoUpdateSpecialEventTimer_Tick;
+
             SpecialEventLayers = new Dictionary<string, SpecialEventLayerContent>();
-            SpecialEventLayersArray = Array.Empty<KeyValuePair<string, SpecialEventLayerContent>>();
-            UpdateSpecialEventTimer = new Timer();
 
             CurrentInstanceName = null;
             CurrentInstance = null;
 
             foreach (var specialEventLayer in GetSpecialEventLayers())
             {
-                var name = specialEventLayer.GetType().Name;
-                name = name.Remove(name.Length - 5, 5);
+                var name = specialEventLayer
+                    .GetType()
+                    .Name;
+                name = name
+                    .Remove(name.Length - 5, 5);
 
-                SpecialEventLayers.Add(name, specialEventLayer);
+                SpecialEventLayers.Add(
+                    name, specialEventLayer);
             }
 
-            SpecialEventLayersArray = SpecialEventLayers.ToArray();
-
-            UpdateSpecialEventTimer.Interval = TimeSpan.FromHours(1).TotalMilliseconds;
-            UpdateSpecialEventTimer.Elapsed += UpdateSpecialEventTimer_Tick;
-
-            UpdateSpecialEventTimer.Start();
+            AutoUpdateSpecialEventTimer.Start();
         }
 
 
@@ -115,6 +120,8 @@ namespace Memenim.SpecialEvents
                 return Array.Empty<SpecialEventLayerContent>();
             }
         }
+
+
 
 #pragma warning disable SS002 // DateTime.Now was referenced
         private static bool LoadEvent(string specialEventName,
@@ -178,20 +185,29 @@ namespace Memenim.SpecialEvents
 
             if (CurrentInstance != null)
             {
-                var eventTimeSatisfied = CurrentInstance.EventTimeSatisfied(
-                    currentTime);
+                var eventTimeSatisfied = CurrentInstance
+                    .EventTimeSatisfied(
+                        currentTime);
 
                 if (eventTimeSatisfied)
                     return;
 
-                UnloadEvent();
+                MainWindow.Instance.Dispatcher.Invoke(() =>
+                {
+                    UnloadEvent();
+                });
             }
 
-            foreach (var specialEventLayerPair in SpecialEventLayersArray)
+            foreach (var (key, value) in SpecialEventLayers)
             {
-                var eventLoaded = LoadEvent(
-                    specialEventLayerPair.Key,
-                    specialEventLayerPair.Value);
+                var eventLoaded = false;
+
+                MainWindow.Instance.Dispatcher.Invoke(() =>
+                {
+                    eventLoaded = LoadEvent(
+                        key,
+                        value);
+                });
 
                 if (!eventLoaded)
                     continue;
@@ -213,6 +229,8 @@ namespace Memenim.SpecialEvents
             CurrentInstance?.Deactivate();
         }
 
+
+
         public static void SetVolume(
             double value)
         {
@@ -221,13 +239,13 @@ namespace Memenim.SpecialEvents
 
 
 
-        private static void UpdateSpecialEventTimer_Tick(object sender,
+        private static void AutoUpdateSpecialEventTimer_Tick(object sender,
             EventArgs e)
         {
-            MainWindow.Instance.Dispatcher.Invoke(() =>
-            {
-                UpdateEvent();
-            });
+            if (!AutoUpdateSpecialEventTimer.Enabled)
+                return;
+
+            UpdateEvent();
         }
     }
 }

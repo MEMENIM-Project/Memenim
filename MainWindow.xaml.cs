@@ -114,7 +114,7 @@ namespace Memenim
             WindowStartupLocation = WindowStartupLocation.Manual;
             Left = SettingsManager.AppSettings.WindowPositionX - (Width / 2.0);
             Top = SettingsManager.AppSettings.WindowPositionY - (Height / 2.0);
-            WindowState = (WindowState)SettingsManager.AppSettings.WindowState;
+            WindowState = SettingsManager.AppSettings.WindowStateEnum;
 
             _previousState = WindowState;
             DuringRestoreToMaximized = WindowState == WindowState.Maximized;
@@ -578,7 +578,7 @@ namespace Memenim
             SettingsManager.AppSettings.WindowHeight = Height;
             SettingsManager.AppSettings.WindowPositionX = Left + (Width / 2.0);
             SettingsManager.AppSettings.WindowPositionY = Top + (Height / 2.0);
-            SettingsManager.AppSettings.WindowState = (int)WindowState;
+            SettingsManager.AppSettings.WindowStateEnum = WindowState;
 
             SettingsManager.AppSettings.Save();
         }

@@ -6,15 +6,17 @@
 
     <system:String x:Key="Login">Логин</system:String>
     <system:String x:Key="Password">Пароль</system:String>
-    <system:String x:Key="RememberMe">Запомнить пользователя</system:String>
     <system:String x:Key="Nickname">Псевдоним</system:String>
-    <system:String x:Key="GoToRegister">Новый пользователь? Зарегистрируйтесь сейчас</system:String>
-    <system:String x:Key="SignIn">Войти</system:String>
+    <system:String x:Key="RememberMe">Запомнить пользователя</system:String>
     <system:String x:Key="SignInTitle">Вход</system:String>
-    <system:String x:Key="StoredAccountsTitle">Сохранённые аккаунты</system:String>
-    <system:String x:Key="GoToLogin">Уже зарегистрированы? Войдите сейчас</system:String>
-    <system:String x:Key="SignUp">Зарегистрироваться</system:String>
+    <system:String x:Key="SignIn">Войти</system:String>
+    <system:String x:Key="GoToRegister" xml:space="preserve">Новый пользователь?
+Зарегистрируйтесь сейчас</system:String>
     <system:String x:Key="SignUpTitle">Регистрация</system:String>
+    <system:String x:Key="SignUp">Зарегистрироваться</system:String>
+    <system:String x:Key="GoToLogin" xml:space="preserve">Уже зарегистрированы?
+Войдите сейчас</system:String>
+    <system:String x:Key="StoredAccountsTitle">Сохранённые аккаунты</system:String>
 
     <system:String x:Key="WIPTitle">Ещё не реализовано</system:String>
 
@@ -40,7 +42,7 @@
     <system:String x:Key="SubmitPost">Отправить пост</system:String>
 
     <system:String x:Key="CommentsTitle">Комментарии</system:String>
-    <system:String x:Key="LoadComments">Загрузить больше комментариев</system:String>
+    <system:String x:Key="LoadMoreComments">Загрузить больше комментариев</system:String>
     <system:String x:Key="EnterCommentText">Введите содержимое комментария</system:String>
 
     <system:String x:Key="PostContentTitle">Содержимое поста</system:String>

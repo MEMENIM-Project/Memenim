@@ -9,7 +9,7 @@
                      mc:Ignorable="d"
                      d:DesignWidth="48" d:DesignHeight="48">
 
-    <Border Padding="5">
+    <Border>
         <StackPanel Orientation="Horizontal">
             <TextBlock Foreground="{StaticResource MahApps.Brushes.Text}"
                        Text="{Binding Path=StatValue}"

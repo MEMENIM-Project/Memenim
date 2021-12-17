@@ -23,178 +23,223 @@
                 Padding="25 0 25 0">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
-                    <ColumnDefinition MinWidth="100" Width="100*"/>
-                    <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                    <ColumnDefinition MinWidth="12.5"
+                                      Width="12.5*"/>
+                    <ColumnDefinition MinWidth="100"
+                                      Width="100*"/>
+                    <ColumnDefinition MinWidth="12.5"
+                                      Width="12.5*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition MinHeight="50" Height="50*"/>
-                    <RowDefinition MinHeight="30" Height="30*"/>
-                    <RowDefinition MinHeight="120" Height="120*"/>
-                    <RowDefinition MinHeight="50" Height="50*"/>
-                    <RowDefinition MinHeight="50" Height="50*"/>
+                    <RowDefinition MinHeight="50"
+                                   Height="50*"/>
+                    <RowDefinition MinHeight="30"
+                                   Height="30*"/>
+                    <RowDefinition MinHeight="120"
+                                   Height="120*"/>
+                    <RowDefinition MinHeight="50"
+                                   Height="50*"/>
+                    <RowDefinition MinHeight="50"
+                                   Height="50*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                           Text="M  E  M  E  N  I  M"
-                           FontSize="22" FontWeight="Thin"
-                           TextAlignment="Center"
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Grid.ColumnSpan="3"
                            Foreground="#BFF1F1FF"
-                           Margin="0 5 0 0"
+                           Text="M  E  M  E  N  I  M"
+                           FontSize="22"
+                           FontWeight="Thin"
+                           TextAlignment="Center"
                            HorizontalAlignment="Center" VerticalAlignment="Top"
-                           SnapsToDevicePixels="True">
+                           SnapsToDevicePixels="True"
+                           Margin="0 5 0 0">
                     <TextBlock.LayoutTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5"
                                         ScaleX="1.05"/>
                     </TextBlock.LayoutTransform>
                 </TextBlock>
-                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           MinHeight="15"
                            Text="{markupLocalization:LocalizedString SignInTitle}"
-                           MinHeight="10" FontSize="14.5"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
-                           TextAlignment="Center" TextWrapping="Wrap"/>
-                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                           FontSize="14.5"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="2" Grid.Column="0"
+                            Grid.ColumnSpan="3">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
-                            <ColumnDefinition MinWidth="100" Width="100*"/>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
+                            <ColumnDefinition MinWidth="100"
+                                              Width="100*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!--<iconPacks:PackIconModern Grid.Column="0" Kind="User"
-                                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
-                        <TextBox Grid.Column="0" Grid.ColumnSpan="3"
-                                 Name="txtLogin" MinWidth="200" MinHeight="25"
+                        <TextBox Grid.Column="0"
+                                 Grid.ColumnSpan="3"
+                                 MinWidth="200" MinHeight="25"
+                                 x:Name="LoginTextBox"
+                                 Style="{DynamicResource MahApps.Styles.TextBox}"
                                  controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Login}"
                                  controls:TextBoxHelper.SelectAllOnFocus="True"
+                                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                  Margin="25 10 25 10"
-                                 Style="{DynamicResource MahApps.Styles.TextBox}"
-                                 VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                 TextChanged="txtLogin_TextChanged" KeyUp="txtLogin_KeyUp"/>
+                                 TextChanged="LoginTextBox_TextChanged"
+                                 KeyUp="LoginTextBox_KeyUp"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
-                            <ColumnDefinition MinWidth="100" Width="100*"/>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
+                            <ColumnDefinition MinWidth="100"
+                                              Width="100*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!--<iconPacks:PackIconModern Grid.Column="0" Kind="Key"
-                                                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
-                        <PasswordBox Grid.Column="0" Grid.ColumnSpan="3"
-                                     Name="txtPassword" MinWidth="200" MinHeight="25"
+                        <PasswordBox Grid.Column="0"
+                                     Grid.ColumnSpan="3"
+                                     MinWidth="200" MinHeight="25"
+                                     x:Name="PasswordTextBox"
+                                     Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
                                      controls:TextBoxHelper.Watermark="{markupLocalization:LocalizedString Password}"
                                      controls:TextBoxHelper.SelectAllOnFocus="True"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                      Margin="25 0 25 10"
-                                     Style="{StaticResource MahApps.Styles.PasswordBox.Button.Revealed}"
-                                     VerticalAlignment="Top" HorizontalAlignment="Center"
-                                     VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                     PasswordChanged="txtPassword_PasswordChanged" KeyUp="txtPassword_KeyUp"/>
+                                     PasswordChanged="PasswordTextBox_PasswordChanged"
+                                     KeyUp="PasswordTextBox_KeyUp"/>
                     </Grid>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
-                            <ColumnDefinition MinWidth="100" Width="100*"/>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
+                            <ColumnDefinition MinWidth="100"
+                                              Width="100*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
                         </Grid.ColumnDefinitions>
 
-                        <CheckBox Grid.Column="0" Grid.ColumnSpan="3"
-                                  Name="chkRememberMe" MinWidth="100" MinHeight="25"
-                                  FontSize="12" Margin="25 0 25 10"
-                                  Content="{markupLocalization:LocalizedString RememberMe}"
+                        <CheckBox Grid.Column="0"
+                                  Grid.ColumnSpan="3"
+                                  MinWidth="100" MinHeight="25"
+                                  x:Name="RememberMeCheckBox"
                                   Style="{StaticResource MahApps.Styles.CheckBox.Win10}"
-                                  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                  Content="{markupLocalization:LocalizedString RememberMe}"
+                                  FontSize="12"
+                                  Margin="25 0 25 10"/>
                     </Grid>
                 </StackPanel>
-                <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+                <StackPanel Grid.Row="3" Grid.Column="0"
+                            Grid.ColumnSpan="3"
                             VerticalAlignment="Center">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
-                            <ColumnDefinition MinWidth="100" Width="100*"/>
-                            <ColumnDefinition MinWidth="12.5" Width="12.5*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
+                            <ColumnDefinition MinWidth="100"
+                                              Width="100*"/>
+                            <ColumnDefinition MinWidth="12.5"
+                                              Width="12.5*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="0" Grid.ColumnSpan="3"
-                                Name="btnLogin" MinHeight="20"
-                                FontSize="16" Margin="40 5 40 5"
+                        <Button Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                x:Name="LoginButton"
                                 Style="{DynamicResource MahApps.Styles.Button.Square.Accent}"
-                                Click="btnLogin_Click">
-                            <TextBlock Text="{markupLocalization:LocalizedString SignIn}"
-                                       MinHeight="10" FontSize="16"
-                                       VerticalAlignment="Center" HorizontalAlignment="Center"
-                                       TextAlignment="Center" TextWrapping="Wrap"/>
+                                Margin="40 5 40 5"
+                                Click="LoginButton_Click">
+                            <TextBlock MinHeight="15"
+                                       Text="{markupLocalization:LocalizedString SignIn}"
+                                       FontSize="16"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Button>
-                        <!--IconKind="{x:Static iconPacks:PackIconModernKind.PeopleProfile}"-->
                         <widgets:IconToggleButton Grid.Column="2"
-                                                  x:Name="btnOpenStoredAccounts"
                                                   Width="25" Height="25"
+                                                  x:Name="OpenStoredAccountsButton"
                                                   IconKind="{x:Static iconPacks:PackIconModernKind.PeopleProfile}"
-                                                  Margin="-5 0 -5 0"
-                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  Margin="-5 0 -5 0"/>
                     </Grid>
                 </StackPanel>
-                <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
-                        Name="btnGoToRegister" MinHeight="30"
-                        FontSize="12" Margin="40 0 40 10"
+                <Button Grid.Row="4" Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        x:Name="GoToRegisterButton"
                         Style="{StaticResource Button.WithoutBackground.Accent}"
                         VerticalAlignment="Bottom"
-                        Click="btnGoToRegister_Click">
-                    <TextBlock Text="{markupLocalization:LocalizedString GoToRegister}"
-                               MinHeight="15" FontSize="12"
-                               TextAlignment="Center" TextWrapping="Wrap"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        Margin="40 0 40 10"
+                        Click="GoToRegisterButton_Click">
+                    <TextBlock MinHeight="15"
+                               Text="{markupLocalization:LocalizedString GoToRegister}"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Button>
                 <Grid Grid.Row="2" Grid.Column="1"
                       Grid.RowSpan="2"
                       Background="#FF353639"
-                      Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=btnOpenStoredAccounts}">
+                      Visibility="{Binding Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=OpenStoredAccountsButton}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition MinHeight="15" Height="Auto"/>
+                            <RowDefinition MinHeight="15"
+                                           Height="Auto"/>
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
                                    Text="{markupLocalization:LocalizedString StoredAccountsTitle}"
-                                   TextAlignment="Center"
                                    TextWrapping="Wrap"
-                                   Margin="0 0 0 5"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Top"/>
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                   Margin="0 0 0 5"/>
                         <ListBox Grid.Row="1"
-                                 x:Name="lstStoredAccounts"
-                                 SelectionMode="Single"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 x:Name="StoredAccountsListBox"
                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                  Background="#FF353639"
-                                 HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Stretch"
-                                 HorizontalContentAlignment="Stretch"
-                                 VerticalContentAlignment="Stretch">
+                                 SelectionMode="Single"
+                                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <ListBox.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                 Color="Transparent"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                                 Color="Black"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                 Color="Transparent"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
+                                                 Color="Transparent"/>
                             </ListBox.Resources>
 
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
-                                    <Setter Property="Focusable" Value="false"/>
-                                    <Setter Property="Background" Value="#FF353639"/>
+                                    <Setter Property="Background"
+                                            Value="#FF353639"/>
+                                    <Setter Property="Focusable"
+                                            Value="false"/>
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
                 </Grid>
-                <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Grid.ColumnSpan="3"
-                      x:Name="loadingGrid" Visibility="Collapsed" ZIndex="2147483647"
-                      Background="#FF353639" Margin="-25 0 -25 0">
-                    <indicatorsLoading:LoadingIndicator x:Name="loadingIndicator" Mode="Arcs"
-                                                        SpeedRatio="2" IsActive="False" Visibility="Visible"/>
+                <Grid Grid.Row="0" Grid.Column="0"
+                      Grid.RowSpan="5" Grid.ColumnSpan="3"
+                      x:Name="LoadingGrid"
+                      Background="#FF353639"
+                      ZIndex="2147483647"
+                      Visibility="Collapsed"
+                      Margin="-25 0 -25 0">
+                    <indicatorsLoading:LoadingIndicator x:Name="LoadingIndicator"
+                                                        Mode="Arcs"
+                                                        SpeedRatio="2"
+                                                        IsActive="False"
+                                                        Visibility="Visible"/>
                 </Grid>
             </Grid>
         </Border>
@@ -202,7 +247,7 @@
             <controlsLocalization:MetroLocalizationButton MinWidth="300"
                                                           Width="300"
                                                           x:Name="LocalizationButton"
-                                                          Margin="20"/>
+                                                          Margin="0 0 0 20"/>
         </Grid>
     </Grid>
 </local:PageContent>

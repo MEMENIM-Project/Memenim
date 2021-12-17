@@ -9,16 +9,13 @@
                      mc:Ignorable="d"
                      d:DesignWidth="150" d:DesignHeight="150">
 
-    <Border BorderThickness="0"
-            Padding="5">
-        <Grid>
-            <Button Height="{Binding Path=ButtonSize}"
-                    Style="{StaticResource MahApps.Styles.Button.Square}"
-                    Click="Button_Click">
-                <Image x:Name="Image"
-                       gif:ImageBehavior.AnimatedSource="{Binding Path=SmallImageSource, Converter={StaticResource PreviewImageSourceConverter}}"
-                       Stretch="Uniform" StretchDirection="Both"/>
-            </Button>
-        </Grid>
-    </Border>
+    <Grid>
+        <Button Height="{Binding Path=ButtonSize}"
+                Style="{StaticResource MahApps.Styles.Button.Square}"
+                Click="Button_Click">
+            <Image x:Name="Image"
+                   gif:ImageBehavior.AnimatedSource="{Binding Path=SmallImageSource, Converter={StaticResource PreviewImageSourceConverter}}"
+                   Stretch="Uniform" StretchDirection="Both"/>
+        </Button>
+    </Grid>
 </local:WidgetContent>

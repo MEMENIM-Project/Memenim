@@ -97,7 +97,7 @@
                             ImageUrl="{Binding Path=DataContext.CurrentProfileData.PhotoUrl, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:UserProfilePage}}"
                             ImageLoadedBackground="Transparent"
                             ImageUnloadedBackground="{StaticResource MahApps.Brushes.Gray10}"
-                            VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Top"
                             Margin="20"
                             MouseLeftButtonUp="Avatar_MouseLeftButtonUp"
                             MouseRightButtonUp="Avatar_MouseRightButtonUp">

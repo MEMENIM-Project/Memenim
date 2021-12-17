@@ -11,8 +11,8 @@
                      MinWidth="150" MinHeight="60"
                      d:DesignWidth="200" d:DesignHeight="60">
 
-    <Border Padding="5">
-        <Grid MouseLeftButtonUp="Account_Click">
+    <Border>
+        <Grid MouseLeftButtonUp="StoredAccount_Click">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="1*"/>
@@ -32,7 +32,7 @@
                               ImageUrl="{Binding Path=UserAvatarSource, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:StoredAccount}}"
                               ImageLoadedBackground="Transparent"
                               ImageUnloadedBackground="{StaticResource MahApps.Brushes.Window.Background}"
-                              VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Top"
                               Margin="0"/>
             <Grid Grid.Row="0" Grid.Column="1"
                   Grid.RowSpan="2">

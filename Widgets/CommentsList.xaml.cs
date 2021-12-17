@@ -78,7 +78,8 @@ namespace Memenim.Widgets
 
 
 
-        private readonly Timer _autoUpdateTimer;
+        private readonly Timer _autoUpdateCommentsTimer;
+
         private bool _postIdChangedUpdate;
 
 
@@ -114,12 +115,13 @@ namespace Memenim.Widgets
             InitializeComponent();
             DataContext = this;
 
-            _autoUpdateTimer = new Timer
+            _autoUpdateCommentsTimer = new Timer
             {
                 Interval = TimeSpan
-                    .FromSeconds(15).TotalMilliseconds
+                    .FromSeconds(15)
+                    .TotalMilliseconds
             };
-            _autoUpdateTimer.Elapsed += AutoUpdateTimer_Tick;
+            _autoUpdateCommentsTimer.Elapsed += AutoUpdateCommentsTimer_Tick;
         }
 
 
@@ -169,13 +171,13 @@ namespace Memenim.Widgets
         public Task UpdateComments(
             bool resetScroll = true)
         {
-            foreach (var comment in CommentsWrapPanel.Children)
+            foreach (var element in CommentsWrapPanel.Children)
             {
-                if (!(comment is UserComment userComment))
+                if (!(element is Comment comment))
                     continue;
 
                 ImageBehavior.SetAnimatedSource(
-                    userComment.Avatar.Image, null);
+                    comment.Info.Avatar.Image, null);
             }
 
             CommentsWrapPanel.Children.Clear();
@@ -202,12 +204,12 @@ namespace Memenim.Widgets
         {
             if (CommentsWrapPanel.Children.Count != 0)
             {
-                _autoUpdateTimer.Stop();
+                _autoUpdateCommentsTimer.Stop();
 
                 Offset += await GetNewCommentsCount()
                     .ConfigureAwait(true);
 
-                _autoUpdateTimer.Start();
+                _autoUpdateCommentsTimer.Start();
             }
 
             await LoadMoreComments(Offset)
@@ -253,7 +255,7 @@ namespace Memenim.Widgets
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        var commentWidget = new UserComment
+                        var commentWidget = new Comment
                         {
                             CurrentCommentData = comment
                         };
@@ -308,7 +310,7 @@ namespace Memenim.Widgets
 
             Dispatcher.Invoke(() =>
             {
-                headOldId = (CommentsWrapPanel.Children[^1] as UserComment)?
+                headOldId = (CommentsWrapPanel.Children[^1] as Comment)?
                     .CurrentCommentData.Id ?? -1;
             });
 
@@ -382,14 +384,14 @@ namespace Memenim.Widgets
         public async Task LoadNewComments(
             int offset = 0)
         {
-            _autoUpdateTimer.Stop();
+            _autoUpdateCommentsTimer.Stop();
 
             var count = await GetNewCommentsCount(offset)
                 .ConfigureAwait(true);
 
             if (count == 0)
             {
-                _autoUpdateTimer.Start();
+                _autoUpdateCommentsTimer.Start();
                 return;
             }
 
@@ -418,7 +420,7 @@ namespace Memenim.Widgets
                     return DialogManager.ShowErrorDialog(message);
                 }).ConfigureAwait(true);
 
-                _autoUpdateTimer.Start();
+                _autoUpdateCommentsTimer.Start();
 
                 return;
             }
@@ -445,7 +447,7 @@ namespace Memenim.Widgets
 
             RaiseEvent(new RoutedEventArgs(CommentsUpdatedEvent));
 
-            _autoUpdateTimer.Start();
+            _autoUpdateCommentsTimer.Start();
         }
 
         public Task AddNewComments(
@@ -459,7 +461,7 @@ namespace Memenim.Widgets
 
                     Dispatcher.Invoke(() =>
                     {
-                        var commentWidget = new UserComment
+                        var commentWidget = new Comment
                         {
                             CurrentCommentData = comment
                         };
@@ -496,7 +498,7 @@ namespace Memenim.Widgets
 
             if (_postIdChangedUpdate)
             {
-                _autoUpdateTimer.Start();
+                _autoUpdateCommentsTimer.Start();
 
                 return;
             }
@@ -504,21 +506,21 @@ namespace Memenim.Widgets
             await UpdateComments()
                 .ConfigureAwait(true);
 
-            _autoUpdateTimer.Start();
+            _autoUpdateCommentsTimer.Start();
         }
 
         protected override void OnExit(object sender,
             RoutedEventArgs e)
         {
-            _autoUpdateTimer.Stop();
+            _autoUpdateCommentsTimer.Stop();
 
-            foreach (var comment in CommentsWrapPanel.Children)
+            foreach (var element in CommentsWrapPanel.Children)
             {
-                if (!(comment is UserComment userComment))
+                if (!(element is Comment comment))
                     continue;
 
                 ImageBehavior.SetAnimatedSource(
-                    userComment.Avatar.Image, null);
+                    comment.Info.Avatar.Image, null);
             }
 
             CommentsWrapPanel.Children.Clear();
@@ -538,21 +540,23 @@ namespace Memenim.Widgets
 
 
 
-        private void Comment_Reply(object sender, RoutedEventArgs e)
+        private void Comment_Reply(object sender,
+            RoutedEventArgs e)
         {
-            if (!(sender is UserComment))
+            if (!(sender is Comment))
                 return;
 
             RaiseEvent(new RoutedEventArgs(CommentReplyEvent, sender));
         }
 
-        private void Comment_Delete(object sender, RoutedEventArgs e)
+        private void Comment_Delete(object sender,
+            RoutedEventArgs e)
         {
-            _autoUpdateTimer.Stop();
+            _autoUpdateCommentsTimer.Stop();
 
-            if (!(sender is UserComment comment))
+            if (!(sender is Comment comment))
             {
-                _autoUpdateTimer.Start();
+                _autoUpdateCommentsTimer.Start();
 
                 return;
             }
@@ -564,22 +568,11 @@ namespace Memenim.Widgets
 
             RaiseEvent(new RoutedEventArgs(CommentDeleteEvent, sender));
 
-            _autoUpdateTimer.Start();
+            _autoUpdateCommentsTimer.Start();
         }
 
-        private async void AutoUpdateTimer_Tick(object sender, ElapsedEventArgs e)
-        {
-            if (!_autoUpdateTimer.Enabled)
-                return;
-
-            if (State != ControlStateType.Loaded)
-                return;
-
-            await LoadNewComments()
-                .ConfigureAwait(true);
-        }
-
-        private async void LoadMoreButton_Click(object sender, RoutedEventArgs e)
+        private async void LoadMoreButton_Click(object sender,
+            RoutedEventArgs e)
         {
             LoadMoreButton.IsEnabled = false;
 
@@ -605,6 +598,21 @@ namespace Memenim.Widgets
             }
 
             LoadMoreButton.IsEnabled = true;
+        }
+
+
+
+        private async void AutoUpdateCommentsTimer_Tick(object sender,
+            ElapsedEventArgs e)
+        {
+            if (!_autoUpdateCommentsTimer.Enabled)
+                return;
+
+            if (State != ControlStateType.Loaded)
+                return;
+
+            await LoadNewComments()
+                .ConfigureAwait(true);
         }
     }
 }

@@ -63,6 +63,8 @@ namespace Memenim.Native.Window
             return new WindowPlacement();
         }
 
+
+
         public void SetPlacement(
             IntPtr windowHandle)
         {
@@ -116,6 +118,7 @@ namespace Memenim.Native.Window
 
             return result;
         }
+
 
         public static bool SendString(IntPtr hwnd,
             uint msg, int dwData, string value,

@@ -6,15 +6,17 @@
 
     <system:String x:Key="Login">Login</system:String>
     <system:String x:Key="Password">Password</system:String>
-    <system:String x:Key="RememberMe">Remember Me</system:String>
     <system:String x:Key="Nickname">Nickname</system:String>
-    <system:String x:Key="GoToRegister">New user? Sign Up now</system:String>
-    <system:String x:Key="SignIn">Login</system:String>
+    <system:String x:Key="RememberMe">Remember me</system:String>
     <system:String x:Key="SignInTitle">Sign In</system:String>
-    <system:String x:Key="StoredAccountsTitle">Stored accounts</system:String>
-    <system:String x:Key="GoToLogin">Already registered? Sign In now</system:String>
-    <system:String x:Key="SignUp">Register</system:String>
+    <system:String x:Key="SignIn">Login</system:String>
+    <system:String x:Key="GoToRegister" xml:space="preserve">New user?
+Sign Up now</system:String>
     <system:String x:Key="SignUpTitle">Sign Up</system:String>
+    <system:String x:Key="SignUp">Register</system:String>
+    <system:String x:Key="GoToLogin" xml:space="preserve">Already registered?
+Sign In now</system:String>
+    <system:String x:Key="StoredAccountsTitle">Stored accounts</system:String>
 
     <system:String x:Key="WIPTitle">Not implemented yet</system:String>
 
@@ -40,7 +42,7 @@ Have fun.</system:String>
     <system:String x:Key="SubmitPost">Submit post</system:String>
 
     <system:String x:Key="CommentsTitle">Comments</system:String>
-    <system:String x:Key="LoadComments">Load more comments</system:String>
+    <system:String x:Key="LoadMoreComments">Load more comments</system:String>
     <system:String x:Key="EnterCommentText">Enter comment content</system:String>
 
     <system:String x:Key="PostContentTitle">Post content</system:String>

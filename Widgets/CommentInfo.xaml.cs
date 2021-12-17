@@ -8,25 +8,22 @@ using Memenim.Pages.ViewModel;
 
 namespace Memenim.Widgets
 {
-    public partial class PostInfo : WidgetContent
+    public partial class CommentInfo : WidgetContent
     {
         public static readonly DependencyProperty UserIdProperty =
-            DependencyProperty.Register(nameof(UserId), typeof(int), typeof(PostInfo),
+            DependencyProperty.Register(nameof(UserId), typeof(int), typeof(CommentInfo),
                 new PropertyMetadata(-1));
         public static readonly DependencyProperty UserNicknameProperty =
-            DependencyProperty.Register(nameof(UserNickname), typeof(string), typeof(PostInfo),
+            DependencyProperty.Register(nameof(UserNickname), typeof(string), typeof(CommentInfo),
                 new PropertyMetadata("Unknown"));
         public static readonly DependencyProperty UserAvatarSourceProperty =
-            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(PostInfo),
+            DependencyProperty.Register(nameof(UserAvatarSource), typeof(string), typeof(CommentInfo),
                 new PropertyMetadata((string)null));
         public static readonly DependencyProperty UtcDateProperty =
-            DependencyProperty.Register(nameof(UtcDate), typeof(ulong), typeof(PostInfo),
+            DependencyProperty.Register(nameof(UtcDate), typeof(ulong), typeof(CommentInfo),
                 new PropertyMetadata(0UL));
-        public static readonly DependencyProperty PostStatusProperty =
-            DependencyProperty.Register(nameof(PostStatus), typeof(PostStatusType), typeof(PostInfo),
-                new PropertyMetadata(PostStatusType.Published));
         public static readonly DependencyProperty IsAnonymousProperty =
-            DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(PostInfo),
+            DependencyProperty.Register(nameof(IsAnonymous), typeof(bool), typeof(CommentInfo),
                 new PropertyMetadata(false));
 
 
@@ -75,17 +72,6 @@ namespace Memenim.Widgets
                 SetValue(UtcDateProperty, value);
             }
         }
-        public PostStatusType PostStatus
-        {
-            get
-            {
-                return (PostStatusType)GetValue(PostStatusProperty);
-            }
-            set
-            {
-                SetValue(PostStatusProperty, value);
-            }
-        }
         public bool IsAnonymous
         {
             get
@@ -100,7 +86,7 @@ namespace Memenim.Widgets
 
 
 
-        public PostInfo()
+        public CommentInfo()
         {
             InitializeComponent();
             DataContext = this;

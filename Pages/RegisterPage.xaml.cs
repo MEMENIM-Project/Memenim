@@ -19,7 +19,10 @@ namespace Memenim.Pages
     public partial class RegisterPage : PageContent
     {
         private bool _changeNicknameExplicit;
+
         private bool _loadingGridShowing;
+
+
 
         public RegisterViewModel ViewModel
         {
@@ -29,34 +32,43 @@ namespace Memenim.Pages
             }
         }
 
+
+
         public RegisterPage()
         {
             InitializeComponent();
             DataContext = new RegisterViewModel();
 
-            btnRegister.IsEnabled = false;
+            RegisterButton.IsEnabled = false;
         }
 
-        private bool NeedBlockRegister()
+
+
+        private bool IsRegisterBlocked()
         {
-            return txtPassword.Password.Length == 0 || txtLogin.Text.Length == 0;
+            return LoginTextBox.Text.Length == 0
+                   || PasswordTextBox.Password.Length == 0;
         }
 
-        public Task ShowLoadingGrid(bool status)
+
+
+        public Task ShowLoadingGrid()
         {
-            if (status)
-            {
-                _loadingGridShowing = true;
-                loadingIndicator.IsActive = true;
-                loadingGrid.Opacity = 1.0;
-                loadingGrid.IsHitTestVisible = true;
-                loadingGrid.Visibility = Visibility.Visible;
+            _loadingGridShowing = true;
 
-                return Task.CompletedTask;
-            }
+            LoadingIndicator.IsActive = true;
+            LoadingGrid.Opacity = 1.0;
+            LoadingGrid.IsHitTestVisible = true;
+            LoadingGrid.Visibility = Visibility.Visible;
 
+            return Task.CompletedTask;
+        }
+
+        public Task HideLoadingGrid()
+        {
             _loadingGridShowing = false;
-            loadingIndicator.IsActive = false;
+
+            LoadingIndicator.IsActive = false;
 
             return Task.Run(async () =>
             {
@@ -71,13 +83,13 @@ namespace Memenim.Pages
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            loadingGrid.IsHitTestVisible = false;
+                            LoadingGrid.IsHitTestVisible = false;
                         });
                     }
 
                     Dispatcher.Invoke(() =>
                     {
-                        loadingGrid.Opacity = opacity;
+                        LoadingGrid.Opacity = opacity;
                     });
 
                     await Task.Delay(4)
@@ -86,27 +98,34 @@ namespace Memenim.Pages
 
                 Dispatcher.Invoke(() =>
                 {
-                    loadingGrid.Visibility = Visibility.Collapsed;
+                    LoadingGrid.Visibility = Visibility.Collapsed;
                 });
             });
         }
 
-        protected override void OnFirstEnter(object sender, RoutedEventArgs e)
+
+
+        protected override void OnFirstEnter(object sender,
+            RoutedEventArgs e)
         {
+            base.OnFirstEnter(sender, e);
+
             var popup = LocalizationButton
                 .GetPopup();
 
             popup.Placement = PlacementMode.Top;
         }
 
-        protected override void OnExit(object sender, RoutedEventArgs e)
+        protected override void OnExit(object sender,
+            RoutedEventArgs e)
         {
             base.OnExit(sender, e);
 
-            txtLogin.Clear();
-            txtPassword.Clear();
-            txtNickname.Clear();
             _changeNicknameExplicit = false;
+
+            LoginTextBox.Clear();
+            PasswordTextBox.Clear();
+            NicknameTextBox.Clear();
 
             if (!IsOnExitActive)
             {
@@ -115,18 +134,83 @@ namespace Memenim.Pages
             }
         }
 
-        private async void btnGeneratePassword_Click(object sender, RoutedEventArgs e)
+
+
+        private void LoginTextBox_TextChanged(object sender,
+            TextChangedEventArgs e)
         {
-            btnRegister.IsEnabled = false;
-            btnGoToLogin.IsEnabled = false;
-            txtLogin.IsEnabled = false;
-            txtPassword.IsEnabled = false;
-            txtNickname.IsEnabled = false;
-            btnGeneratePassword.IsEnabled = false;
+            RegisterButton.IsEnabled = !IsRegisterBlocked();
+
+            if (!_changeNicknameExplicit)
+                NicknameTextBox.Text = LoginTextBox.Text;
+        }
+
+        private void LoginTextBox_KeyUp(object sender,
+            KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                PasswordTextBox.Focus();
+            }
+        }
+
+        private void PasswordTextBox_PasswordChanged(object sender,
+            RoutedEventArgs e)
+        {
+            RegisterButton.IsEnabled = !IsRegisterBlocked();
+        }
+
+        private void PasswordTextBox_KeyUp(object sender,
+            KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                NicknameTextBox.Focus();
+            }
+            else if (e.Key == Key.Up)
+            {
+                LoginTextBox.Focus();
+            }
+        }
+
+        private void NicknameTextBox_TextChanged(object sender,
+            RoutedEventArgs e)
+        {
+
+        }
+
+        private void NicknameTextBox_KeyUp(object sender,
+            KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Down)
+            {
+                if (RegisterButton.IsEnabled)
+                    RegisterButton_Click(this, new RoutedEventArgs());
+            }
+            else if (e.Key == Key.Up)
+            {
+                PasswordTextBox.Focus();
+            }
+            else
+            {
+                _changeNicknameExplicit = true;
+            }
+        }
+
+        private async void GeneratePasswordButton_Click(object sender,
+            RoutedEventArgs e)
+        {
+            RegisterButton.IsEnabled = false;
+            GoToLoginButton.IsEnabled = false;
+            LoginTextBox.IsEnabled = false;
+            PasswordTextBox.IsEnabled = false;
+            NicknameTextBox.IsEnabled = false;
+            GeneratePasswordButton.IsEnabled = false;
 
             try
             {
-                var password = GeneratingManager.RandomStringGenerator
+                var password = GeneratingManager
+                    .RandomStringGenerator
                     .GenerateString(20);
 
                 if (password == null)
@@ -140,7 +224,7 @@ namespace Memenim.Pages
                     return;
                 }
 
-                txtPassword.Password = password;
+                PasswordTextBox.Password = password;
 
                 Clipboard.SetText(password);
             }
@@ -151,47 +235,50 @@ namespace Memenim.Pages
             }
             finally
             {
-                btnRegister.IsEnabled = !NeedBlockRegister();
-                btnGoToLogin.IsEnabled = true;
-                txtLogin.IsEnabled = true;
-                txtPassword.IsEnabled = true;
-                txtNickname.IsEnabled = true;
-                btnGeneratePassword.IsEnabled = true;
+                RegisterButton.IsEnabled = !IsRegisterBlocked();
+                GoToLoginButton.IsEnabled = true;
+                LoginTextBox.IsEnabled = true;
+                PasswordTextBox.IsEnabled = true;
+                NicknameTextBox.IsEnabled = true;
+                GeneratePasswordButton.IsEnabled = true;
             }
         }
 
-        private async void btnRegister_Click(object sender, RoutedEventArgs e)
+        private async void RegisterButton_Click(object sender,
+            RoutedEventArgs e)
         {
-            btnRegister.IsEnabled = false;
-            btnGoToLogin.IsEnabled = false;
-            txtLogin.IsEnabled = false;
-            txtPassword.IsEnabled = false;
-            txtNickname.IsEnabled = false;
-            btnGeneratePassword.IsEnabled = false;
+            RegisterButton.IsEnabled = false;
+            GoToLoginButton.IsEnabled = false;
+            LoginTextBox.IsEnabled = false;
+            PasswordTextBox.IsEnabled = false;
+            NicknameTextBox.IsEnabled = false;
+            GeneratePasswordButton.IsEnabled = false;
 
             try
             {
-                string nickname = txtNickname.Text;
+                var nickname = NicknameTextBox.Text;
 
                 if (string.IsNullOrWhiteSpace(nickname))
                     nickname = null;
 
                 var result = await UserApi.Register(
-                        txtLogin.Text, txtPassword.Password, nickname)
+                        LoginTextBox.Text, PasswordTextBox.Password, nickname)
                     .ConfigureAwait(true);
 
                 if (result.IsError)
                 {
-                    var title = LocalizationUtils.GetLocalized("RegisterErrorTitle");
+                    var title = LocalizationUtils
+                        .GetLocalized("RegisterErrorTitle");
 
-                    await DialogManager.ShowMessageDialog(title, result.Message)
+                    await DialogManager.ShowMessageDialog(
+                            title, result.Message)
                         .ConfigureAwait(true);
 
                     return;
                 }
 
                 var setUserSuccess = SettingsManager.PersistentSettings.SetUser(
-                    txtLogin.Text,
+                    LoginTextBox.Text,
                     result.Data.Token,
                     result.Data.Id,
                     null);
@@ -200,7 +287,7 @@ namespace Memenim.Pages
                     return;
 
                 if (!SettingsManager.PersistentSettings.SetCurrentUser(
-                    txtLogin.Text))
+                    LoginTextBox.Text))
                 {
                     return;
                 }
@@ -210,10 +297,6 @@ namespace Memenim.Pages
                     NavigationController.Instance.RequestPage<FeedPage>();
                 else
                     NavigationController.Instance.GoBack();
-
-                txtLogin.Clear();
-                txtNickname.Clear();
-                _changeNicknameExplicit = false;
             }
             catch (Exception ex)
             {
@@ -222,75 +305,21 @@ namespace Memenim.Pages
             }
             finally
             {
-                txtPassword.Clear();
+                PasswordTextBox.Clear();
 
-                btnRegister.IsEnabled = !NeedBlockRegister();
-                btnGoToLogin.IsEnabled = true;
-                txtLogin.IsEnabled = true;
-                txtPassword.IsEnabled = true;
-                txtNickname.IsEnabled = true;
-                btnGeneratePassword.IsEnabled = true;
+                RegisterButton.IsEnabled = !IsRegisterBlocked();
+                GoToLoginButton.IsEnabled = true;
+                LoginTextBox.IsEnabled = true;
+                PasswordTextBox.IsEnabled = true;
+                NicknameTextBox.IsEnabled = true;
+                GeneratePasswordButton.IsEnabled = true;
             }
         }
 
-        private void btnGoToLogin_Click(object sender, RoutedEventArgs e)
+        private void GoToLoginButton_Click(object sender,
+            RoutedEventArgs e)
         {
             NavigationController.Instance.RequestPage<LoginPage>();
-        }
-
-        private void txtLogin_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter || e.Key == Key.Down)
-            {
-                txtPassword.Focus();
-            }
-        }
-
-        private void txtPassword_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter || e.Key == Key.Down)
-            {
-                txtNickname.Focus();
-            }
-            else if (e.Key == Key.Up)
-            {
-                txtLogin.Focus();
-            }
-        }
-
-        private void txtNickname_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter || e.Key == Key.Down)
-            {
-                if (btnRegister.IsEnabled)
-                    btnRegister_Click(this, new RoutedEventArgs());
-            }
-            else if (e.Key == Key.Up)
-            {
-                txtPassword.Focus();
-            }
-            else
-            {
-                _changeNicknameExplicit = true;
-            }
-        }
-
-        private void txtLogin_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            btnRegister.IsEnabled = !NeedBlockRegister();
-
-            if (!_changeNicknameExplicit)
-                txtNickname.Text = txtLogin.Text;
-        }
-
-        private void txtPassword_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            btnRegister.IsEnabled = !NeedBlockRegister();
-        }
-
-        private void txtNickname_TextChanged(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

@@ -43,38 +43,50 @@ namespace Memenim.Native.Window
             SendMessageTimeoutFlags flags,
             uint timeout, out UIntPtr lpdwResult);
 
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool PostMessage(
             IntPtr hwnd, uint msg,
             IntPtr wparam, IntPtr lparam);
 
+
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern uint RegisterWindowMessage(
             string message);
 
-        [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(
-            IntPtr hWnd);
+
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetWindowPlacement(
             IntPtr hWnd, ref WindowPlacement lpwndpl);
 
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool GetWindowPlacement(
             IntPtr hWnd, ref WindowPlacement lpwndpl);
 
+
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindow(
             IntPtr hWnd, int uCmd);
+
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr SetActiveWindow(
             IntPtr hWnd);
 
         [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(
+            IntPtr hWnd);
+
+
+        [DllImport("user32.dll")]
         public static extern bool IsWindowVisible(
             IntPtr hWnd);
+
+
 
         [DllImport("user32.dll")]
         public static extern bool EnumThreadWindows(

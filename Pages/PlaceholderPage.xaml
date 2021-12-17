@@ -13,7 +13,7 @@
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel>
-            <emoji:TextBlock Name="SmileTextBox"
+            <emoji:TextBlock x:Name="SmileTextBox"
                              Style="{DynamicResource Header1}"
                              FontSize="34"
                              FontWeight="Bold"

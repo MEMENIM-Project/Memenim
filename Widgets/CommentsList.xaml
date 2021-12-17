@@ -9,40 +9,38 @@
                      mc:Ignorable="d"
                      d:DesignWidth="800" d:DesignHeight="450">
 
-    <Border BorderThickness="0"
-            Padding="5">
-        <Grid Background="{StaticResource MahApps.Brushes.Gray10}">
+    <Grid Background="{StaticResource MahApps.Brushes.Gray10}">
+        <Grid Margin="16 5 16 5">
             <Grid.RowDefinitions>
                 <RowDefinition MinHeight="35"
                                Height="35"/>
-                <RowDefinition MinHeight="40"
-                               Height="40"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
                        Style="{DynamicResource Header2}"
                        Text="{markupLocalization:LocalizedString CommentsTitle}"
-                       Margin="16 5 16 5"/>
-            <Button Grid.Row="1"
-                    x:Name="LoadMoreButton"
-                    Style="{StaticResource MahApps.Styles.Button.Square}"
-                    Visibility="Collapsed"
-                    Margin="16 5 16 5"
-                    Click="LoadMoreButton_Click">
-                <TextBlock Text="{markupLocalization:LocalizedString LoadComments}"
-                           FontSize="12"
-                           TextWrapping="Wrap"
-                           TextAlignment="Center"/>
-            </Button>
-            <Grid Grid.Row="2"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                  Margin="16 5 16 5">
-                <WrapPanel Name="CommentsWrapPanel"
-                           ItemWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
-                           Orientation="Vertical"
-                           HorizontalAlignment="Stretch"/>
-            </Grid>
+                       Margin="5 0 0 0"/>
+            <StackPanel Grid.Row="1">
+                <Button x:Name="LoadMoreButton"
+                        MinHeight="30"
+                        Height="Auto"
+                        Style="{StaticResource MahApps.Styles.Button.Square}"
+                        Visibility="Collapsed"
+                        Margin="0 5 0 10"
+                        Click="LoadMoreButton_Click">
+                    <TextBlock Text="{markupLocalization:LocalizedString LoadMoreComments}"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+                </Button>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <WrapPanel x:Name="CommentsWrapPanel"
+                               ItemWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
+                               Orientation="Vertical"
+                               HorizontalAlignment="Stretch"/>
+                </Grid>
+            </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
 </local:WidgetContent>

@@ -17,17 +17,20 @@
             <RowDefinition MinHeight="54"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Row="0" x:Name="svPost"
+        <ScrollViewer Grid.Row="0"
+                      x:Name="svPost"
                       VerticalScrollBarVisibility="Auto"
                       ScrollChanged="SvPost_ScrollChanged">
             <StackPanel>
                 <widgets:Post x:Name="wdgPost"
+                              CurrentPostData="{Binding Path=DataContext.CurrentPostData, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                               ImageSizeLimit="True"
-                              CurrentPostData="{Binding Path=DataContext.CurrentPostData, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"/>
+                              Margin="5"/>
                 <widgets:CommentsList x:Name="wdgCommentsList"
-                                      Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       PostId="{Binding Path=DataContext.CurrentPostData.Id, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
                                       CommentsCount="{Binding Path=DataContext.CurrentPostData.Comments, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                                      Visibility="{Binding Path=DataContext.CurrentPostData.IsCommentsOpen, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PostOverlayPage}}"
+                                      Margin="5"
                                       CommentsUpdated="CommentsList_CommentsUpdate"
                                       CommentReply="CommentsList_CommentReply"
                                       CommentDelete="CommentsList_CommentDelete"/>

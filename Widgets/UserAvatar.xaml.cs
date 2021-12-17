@@ -8,7 +8,7 @@ namespace Memenim.Widgets
     {
         public static readonly DependencyProperty MinSizeProperty =
             DependencyProperty.Register(nameof(MinSize), typeof(double), typeof(UserAvatar),
-                new PropertyMetadata(0D));
+                new PropertyMetadata(50D));
         public static readonly DependencyProperty MaxSizeProperty =
             DependencyProperty.Register(nameof(MaxSize), typeof(double), typeof(UserAvatar),
                 new PropertyMetadata(double.PositiveInfinity));
@@ -99,8 +99,6 @@ namespace Memenim.Widgets
         public UserAvatar()
         {
             InitializeComponent();
-
-            MinSize = 50;
         }
 
 

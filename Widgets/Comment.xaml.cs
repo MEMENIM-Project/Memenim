@@ -12,19 +12,19 @@ using Memenim.Utils;
 
 namespace Memenim.Widgets
 {
-    public partial class UserComment : WidgetContent
+    public partial class Comment : WidgetContent
     {
         public static readonly RoutedEvent CommentReplyEvent =
             EventManager.RegisterRoutedEvent(nameof(CommentReply), RoutingStrategy.Direct,
-                typeof(EventHandler<RoutedEventArgs>), typeof(UserComment));
+                typeof(EventHandler<RoutedEventArgs>), typeof(Comment));
         public static readonly RoutedEvent CommentDeleteEvent =
             EventManager.RegisterRoutedEvent(nameof(CommentDelete), RoutingStrategy.Direct,
-                typeof(EventHandler<RoutedEventArgs>), typeof(UserComment));
+                typeof(EventHandler<RoutedEventArgs>), typeof(Comment));
         
         
 
         public static readonly DependencyProperty CurrentCommentDataProperty =
-            DependencyProperty.Register(nameof(CurrentCommentData), typeof(CommentSchema), typeof(UserComment),
+            DependencyProperty.Register(nameof(CurrentCommentData), typeof(CommentSchema), typeof(Comment),
                 new PropertyMetadata(new CommentSchema { User = new CommentUserSchema {Id = -1} }));
 
 
@@ -68,7 +68,7 @@ namespace Memenim.Widgets
 
 
 
-        public UserComment()
+        public Comment()
         {
             InitializeComponent();
             DataContext = this;
@@ -346,21 +346,6 @@ namespace Memenim.Widgets
             {
                 DislikeButton.IsEnabled = true;
             }
-        }
-
-        private void Avatar_MouseLeftButtonUp(object sender,
-            MouseButtonEventArgs e)
-        {
-            if (!CurrentCommentData.User.Id.HasValue || CurrentCommentData.User.Id == -1)
-                return;
-
-            NavigationController.Instance.RequestPage<UserProfilePage>(new UserProfileViewModel
-            {
-                CurrentProfileData = new ProfileSchema
-                {
-                    Id = CurrentCommentData.User.Id.Value
-                }
-            });
         }
     }
 }

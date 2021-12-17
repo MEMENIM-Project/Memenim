@@ -168,7 +168,7 @@ namespace Memenim.Protocols.Schemas.Api
                     Post sourcePost = null;
                     var page = (FeedPage)PageStorage.GetPage<FeedPage>();
 
-                    var slcPostTypes = page?.slcPostTypes;
+                    var slcPostTypes = page?.slcPostsTypes;
 
                     if (slcPostTypes?.SelectedItem == null)
                         return false;

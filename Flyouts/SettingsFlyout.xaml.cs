@@ -137,20 +137,12 @@ namespace Memenim.Flyouts
 
             ReloadCommentReplyModes();
 
-            if (Enum.TryParse<CommentReplyModeType>(
-                Enum.GetName(typeof(CommentReplyModeType), SettingsManager.AppSettings.CommentReplyMode),
-                true, out var commentReplyModeType))
-            {
-                CommentReplyModeComboBox.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(
-                        commentReplyModeType, CommentReplyModes[commentReplyModeType]);
-            }
-            else
-            {
-                CommentReplyModeComboBox.SelectedItem =
-                    new KeyValuePair<CommentReplyModeType, string>(
-                        CommentReplyModeType.Legacy, CommentReplyModes[CommentReplyModeType.Legacy]);
-            }
+            var commentReplyModeType = SettingsManager.AppSettings
+                .CommentReplyModeEnum;
+
+            CommentReplyModeComboBox.SelectedItem =
+                new KeyValuePair<CommentReplyModeType, string>(
+                    commentReplyModeType, CommentReplyModes[commentReplyModeType]);
         }
 
         private void UpdateSpecialEventName()
@@ -201,7 +193,9 @@ namespace Memenim.Flyouts
         private async void CommentReplyModeComboBox_SelectionChanged(object sender,
             SelectionChangedEventArgs e)
         {
-            var newReplyMode = ((KeyValuePair<CommentReplyModeType, string>)CommentReplyModeComboBox.SelectedItem).Key;
+            var newReplyMode =
+                ((KeyValuePair<CommentReplyModeType, string>)CommentReplyModeComboBox.SelectedItem)
+                .Key;
 
             switch (newReplyMode)
             {
@@ -242,8 +236,8 @@ namespace Memenim.Flyouts
                     break;
             }
 
-            SettingsManager.AppSettings.CommentReplyMode =
-                (int)((KeyValuePair<CommentReplyModeType, string>)CommentReplyModeComboBox.SelectedItem).Key;
+            SettingsManager.AppSettings.CommentReplyModeEnum =
+                ((KeyValuePair<CommentReplyModeType, string>)CommentReplyModeComboBox.SelectedItem).Key;
 
             SettingsManager.AppSettings.Save();
         }

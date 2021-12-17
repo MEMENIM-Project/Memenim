@@ -276,6 +276,8 @@ namespace Memenim.Widgets
             RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
 
+
+
         private async void Edit_Click(object sender,
             RoutedEventArgs e)
         {

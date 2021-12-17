@@ -48,7 +48,7 @@
             <Label Content="{markupLocalization:LocalizedString FeedTitle}"
                    Style="{DynamicResource DescriptionHeader}"
                    DockPanel.Dock="Left" VerticalContentAlignment="Center"/>
-            <controls:SplitButton Name="slcPostTypes"
+            <controls:SplitButton x:Name="slcPostsTypes"
                                   ItemsSource="{Binding Path=PostTypes, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                                   DisplayMemberPath="Value"
                                   DockPanel.Dock="Left" HorizontalAlignment="Center"
@@ -90,7 +90,7 @@
                                               controls:ScrollViewerHelper.EndOfHorizontalScrollReachedCommand="{Binding Path=OnPostScrollEnd}"
                                               Visibility="{Binding Path=IsEmpty, Converter={StaticResource InvertedBooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:FeedPage}}"
                                               ScrollChanged="SvPosts_ScrollChanged">
-                    <WrapPanel Name="lstPosts" ItemWidth="400"
+                    <WrapPanel x:Name="lstPosts" ItemWidth="400"
                                ItemHeight="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
                                Orientation="Horizontal" VerticalAlignment="Stretch"/>
             </controlsRis:ExtendedScrollViewer>
