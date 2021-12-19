@@ -12,7 +12,8 @@
                      d:DesignWidth="400" d:DesignHeight="150">
 
     <Border>
-        <Grid>
+        <Grid Background="{StaticResource MahApps.Brushes.Gray10}"
+              HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="1*"/>
