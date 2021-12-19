@@ -17,7 +17,7 @@ namespace Memenim.Widgets
                 new PropertyMetadata(double.NaN));
         public static readonly DependencyProperty ImageUrlProperty =
             DependencyProperty.Register(nameof(ImageUrl), typeof(string), typeof(UserAvatar),
-                new PropertyMetadata((string)null));
+                new PropertyMetadata((string)null, ImageUrlChangedCallback));
         public static readonly DependencyProperty ImageLoadedBackgroundProperty =
             DependencyProperty.Register(nameof(ImageLoadedBackground), typeof(Brush), typeof(UserAvatar),
                 new PropertyMetadata(new SolidColorBrush(Colors.Transparent), ImageLoadedBackgroundChangedCallback));
@@ -103,6 +103,14 @@ namespace Memenim.Widgets
 
 
 
+        private static void ImageUrlChangedCallback(DependencyObject sender,
+            DependencyPropertyChangedEventArgs e)
+        {
+            var target = sender as UserAvatar;
+
+            target?.OnImageUrlChanged(e);
+        }
+
         private static void ImageLoadedBackgroundChangedCallback(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
@@ -123,6 +131,12 @@ namespace Memenim.Widgets
 
 #pragma warning disable IDE0060 // Удалите неиспользуемый параметр
         // ReSharper disable UnusedParameter.Local
+
+        private void OnImageUrlChanged(
+            DependencyPropertyChangedEventArgs e)
+        {
+            UpdateImageBackground();
+        }
 
         private void OnImageLoadedBackgroundChanged(
             DependencyPropertyChangedEventArgs e)

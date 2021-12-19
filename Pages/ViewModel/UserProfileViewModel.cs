@@ -57,7 +57,7 @@ namespace Memenim.Pages.ViewModel
             PropertyChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(e.PropertyName)
-                || e.PropertyName == "id")
+                || e.PropertyName == nameof(CurrentProfileData.Id))
             {
                 OnPropertyChanged(nameof(EditAllowed));
             }

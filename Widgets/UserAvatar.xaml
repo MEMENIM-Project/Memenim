@@ -8,10 +8,10 @@
                      mc:Ignorable="d"
                      MinWidth="{Binding Path=MinSize, RelativeSource={RelativeSource Mode=Self}}"
                      MinHeight="{Binding Path=MinSize, RelativeSource={RelativeSource Mode=Self}}"
-                     MaxWidth="{Binding Path=MaxSize, RelativeSource={RelativeSource Mode=Self}}"
-                     MaxHeight="{Binding Path=MaxSize, RelativeSource={RelativeSource Mode=Self}}"
                      Width="{Binding Path=Size, RelativeSource={RelativeSource Mode=Self}}"
                      Height="{Binding Path=Size, RelativeSource={RelativeSource Mode=Self}}"
+                     MaxWidth="{Binding Path=MaxSize, RelativeSource={RelativeSource Mode=Self}}"
+                     MaxHeight="{Binding Path=MaxSize, RelativeSource={RelativeSource Mode=Self}}"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      d:DesignWidth="200" d:DesignHeight="200">
 

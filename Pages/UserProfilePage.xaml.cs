@@ -18,7 +18,6 @@ using Memenim.Settings;
 using Memenim.Utils;
 using Memenim.Widgets;
 using RIS.Localization;
-using WpfAnimatedGif;
 using Math = RIS.Mathematics.Math;
 
 namespace Memenim.Pages
@@ -314,10 +313,6 @@ namespace Memenim.Pages
         {
             base.OnEnter(sender, e);
 
-            UpdateLayout();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-
             if (!IsOnEnterActive)
             {
                 e.Handled = true;
@@ -333,9 +328,7 @@ namespace Memenim.Pages
         {
             base.OnExit(sender, e);
 
-            ImageBehavior.SetAnimatedSource(
-                Avatar.Image, null);
-
+            Avatar.UpdateLayout();
             UpdateLayout();
             GC.WaitForPendingFinalizers();
             GC.Collect();

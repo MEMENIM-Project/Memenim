@@ -159,7 +159,7 @@ namespace Memenim.Protocols.Schemas.Api
 
                 var result = MainWindow.Instance.Dispatcher.Invoke(() =>
                 {
-                    if (!NavigationController.Instance.IsCurrentContent<FeedPage>())
+                    if (!NavigationController.Instance.IsCurrentPage<FeedPage>())
                     {
                         NavigationController.Instance.RequestPage<FeedPage>(
                             null, true);

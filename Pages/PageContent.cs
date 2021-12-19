@@ -112,7 +112,7 @@ namespace Memenim.Pages
             try
             {
                 if (e.OldValue != null)
-                    ((PageViewModel) e.OldValue).PropertyChanged -= ViewModelPropertyChanged;
+                    ((PageViewModel)e.OldValue).PropertyChanged -= ViewModelPropertyChanged;
             }
             catch (NullReferenceException)
             {
@@ -121,10 +121,9 @@ namespace Memenim.Pages
 
             if (e.NewValue != null)
             {
-                ((PageViewModel) e.NewValue).PropertyChanged += ViewModelPropertyChanged;
+                ((PageViewModel)e.NewValue).PropertyChanged += ViewModelPropertyChanged;
 
-                if (!IsOnEnterActive)
-                    ((PageViewModel) e.NewValue).OnPropertyChanged(string.Empty);
+                ((PageViewModel)e.NewValue).OnPropertyChanged(string.Empty);
             }
         }
 
