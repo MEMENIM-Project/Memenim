@@ -3,7 +3,7 @@
 set /p releaseVersion="Enter release version (example format - '1.1.1'): "
 set releaseVersionHash=%releaseVersion:.=_%
 
-set publishPath=bin\Release\netcoreapp3.1\publish
+set publishPath=bin\Release\net5.0-windows\publish
 set releasePath=_release\v%releaseVersion%
 set preparedPath=_release\v%releaseVersion%\prepared
 
