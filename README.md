@@ -7,8 +7,12 @@
 ## <div align="center">[![Discord](https://img.shields.io/discord/758775270861307946?style=flat&label=discord&logo=discord&logoColor=8099DF&color=5194f0)](https://discord.gg/yhATVBWxZG) [![Telegram](https://img.shields.io/badge/telegram-MEMENIM%20%20Ghetto-2A8?style=flat&label=telegram&logo=telegram&logoColor=white&color=5194f0)](https://t.me/joinchat/Vf9B3XM5SM-zUbkf)</div>
 
 
-### <div align="center">Custom client for [Anonym social network](https://anonym.network/).</div>
+### <div align="center">Custom client for [Anonym social network](https://anonym.network/).</div><br>
 
+
+### <div align="center">Goodnight, sweet prince</div>
+### <div align="center">2020-2022</div><br>
+### <div align="center">[![Картинка со звуком](https://i.ibb.co/pnt4j4J/memenim-rip-sd.png)](https://www.youtube.com/watch?v=YwGi-d51LOU "Картинка со звуком")</div>
 
 <br/>
 
